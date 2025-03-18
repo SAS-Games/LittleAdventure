@@ -1,0 +1,3 @@
+[submodule "Packages/StateMachineCharacterController"]
+	path = Packages/StateMachineCharacterController
+	url = https://github.com/SAS-Games/StateMachineCharacterController.git

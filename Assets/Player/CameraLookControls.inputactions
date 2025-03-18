@@ -1,0 +1,54 @@
+{
+    "name": "CameraLookControls",
+    "maps": [
+        {
+            "name": "Mouse",
+            "id": "2cffaa72-0860-4761-8b83-0ad6b514440b",
+            "actions": [
+                {
+                    "name": "RotateCamera",
+                    "type": "Value",
+                    "id": "ab279fab-3b37-44e4-9660-e40e1c443a79",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "MouseControlCamera",
+                    "type": "Button",
+                    "id": "7c3e646d-f37f-4f5a-8959-3252a8934ca9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "16b65cc5-9f55-4881-914d-d91190567ba7",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fdb97ab8-0728-405e-9944-1bb291e5c864",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseControlCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
