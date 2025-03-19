@@ -1,8 +1,10 @@
 using SAS.StateMachineCharacterController;
 using SAS.Utilities.TagSystem;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace SAS.WeaponSystem.Components
 {
@@ -10,7 +12,8 @@ namespace SAS.WeaponSystem.Components
     {
         public event Action<List<(Collider collider, Vector3 point)>> OnDetectedCollider3D;
 
-        [FieldRequiresParent] private IMovementVectorHandler _movementVectorHandler;
+        [FieldRequiresParent] private ICharacter _character;
+        [FieldRequiresParent] private Animator _animator;
 
         private Vector3 offset;
         private Collider[] detected;
@@ -23,8 +26,7 @@ namespace SAS.WeaponSystem.Components
 
         private void HandleAttackAction()
         {
-
-            Vector3 characterForward = (_movementVectorHandler as Component).transform.forward; // Use forward vector for direction
+            Vector3 characterForward = _character.Forward; // Use forward vector for direction
 
             offset = transform.position +
                      (characterForward * currentAttackData.HitBox.center.z) + // Move in the forward direction
@@ -48,16 +50,17 @@ namespace SAS.WeaponSystem.Components
             OnDetectedCollider3D?.Invoke(detectedCollisions);
         }
 
-        protected override void Start()
+        private void Update()
         {
-            base.Start();
-            _animationEventDispatcher.Subscribe(data.AnimationEventName, HandleAttackAction);
-        }
+            if (!isAttackActive)
+                return;
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            _animationEventDispatcher.Unsubscribe(data.AnimationEventName, HandleAttackAction);
+            AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+            float animTime = stateInfo.normalizedTime;
+
+            if (animTime >= currentAttackData.StartTime && animTime <= currentAttackData.EndTime)
+                HandleAttackAction();
         }
 
         private void OnDrawGizmosSelected()

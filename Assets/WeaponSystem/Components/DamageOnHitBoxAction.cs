@@ -6,15 +6,20 @@ namespace SAS.WeaponSystem.Components
     public class DamageOnHitBoxAction : WeaponComponent<DamageOnHitBoxActionData, AttackDamage>
     {
         private ActionHitBox _hitBox;
-        private GameObject Root;
+        private GameObject _root;
+        private HashSet<GameObject> _hitObjects = new();
 
         private void HandleDetectCollider(List<(Collider collider, Vector3 point)> colliders)
         {
             foreach (var (collider, point) in colliders)
             {
+                if (_hitObjects.Contains(collider.gameObject))
+                    continue; // Skip if already hit in this attack
+
                 if (collider.TryGetComponent(out IDamageable damageable))
                 {
-                    damageable.Damage(new DamageInfo(currentAttackData.Amount, Root));
+                    damageable.Damage(new DamageInfo(currentAttackData.Amount, _root));
+                    _hitObjects.Add(collider.gameObject);
                 }
             }
         }
@@ -23,21 +28,27 @@ namespace SAS.WeaponSystem.Components
         {
             base.Init();
             _hitBox = GetComponent<ActionHitBox>();
-            Root = this.transform.root.gameObject;
+            _root = this.transform.root.gameObject;
         }
 
         protected override void Start()
         {
             base.Start();
-
-            _hitBox.OnDetectedCollider3D += HandleDetectCollider;
+            if (_hitBox != null)
+                _hitBox.OnDetectedCollider3D += HandleDetectCollider;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            if (_hitBox != null)
+                _hitBox.OnDetectedCollider3D -= HandleDetectCollider;
+        }
 
-            _hitBox.OnDetectedCollider3D -= HandleDetectCollider;
+        protected override void HandleEnter()
+        {
+            base.HandleEnter();
+            _hitObjects.Clear(); // Reset hit tracking at the start of each attack
         }
     }
 }

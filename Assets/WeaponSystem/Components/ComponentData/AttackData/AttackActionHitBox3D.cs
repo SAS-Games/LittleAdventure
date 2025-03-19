@@ -8,5 +8,8 @@ namespace SAS.WeaponSystem.Components
     {
         public bool Debug;
         [field: SerializeField] public Bounds HitBox { get; private set; }
+        [field: SerializeField] public float StartTime { get; private set; }
+        [field: SerializeField] public float EndTime { get; private set; }
+
     }
 }

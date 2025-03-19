@@ -19,6 +19,9 @@ MonoBehaviour:
   <NumberOfAttacks>k__BackingField: 1
   <ComponentData>k__BackingField:
   - rid: 4097107246286635260
+  - rid: 4097107325939089483
+  - rid: 4097107325939089409
+  - rid: 4097107325939089410
   references:
     version: 2
     RefIds:
@@ -29,3 +32,36 @@ MonoBehaviour:
         repeatData: 1
         attackData: []
         <ParamName>k__BackingField: Attack
+    - rid: 4097107325939089409
+      type: {class: DamageOnHitBoxActionData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
+      data:
+        name: DamageOnHitBoxActionData
+        repeatData: 0
+        attackData:
+        - name: Attack 1
+          <Amount>k__BackingField: 50
+    - rid: 4097107325939089410
+      type: {class: EffectOnHitBoxActionData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
+      data:
+        name: EffectOnHitBoxActionData
+        repeatData: 0
+        attackData:
+        - name: Attack 1
+        <EventName>k__BackingField: PlaySlash
+    - rid: 4097107325939089483
+      type: {class: ActionHitBoxData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
+      data:
+        name: ActionHitBoxData
+        repeatData: 0
+        attackData:
+        - name: Attack 1
+          Debug: 1
+          <HitBox>k__BackingField:
+            m_Center: {x: 0, y: 0.5, z: 0.85}
+            m_Extent: {x: 0.7, y: 0.5, z: 0.85}
+          <StartTime>k__BackingField: 0.44
+          <EndTime>k__BackingField: 0.5
+        <DetectableLayers>k__BackingField:
+          serializedVersion: 2
+          m_Bits: 128
+        <AnimationEventName>k__BackingField: OnAttackAction
