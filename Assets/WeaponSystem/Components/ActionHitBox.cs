@@ -1,10 +1,8 @@
 using SAS.StateMachineCharacterController;
 using SAS.Utilities.TagSystem;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 namespace SAS.WeaponSystem.Components
 {
@@ -13,15 +11,16 @@ namespace SAS.WeaponSystem.Components
         public event Action<List<(Collider collider, Vector3 point)>> OnDetectedCollider3D;
 
         [FieldRequiresParent] private ICharacter _character;
-        [FieldRequiresParent] private Animator _animator;
+        private Animator _animator;
 
         private Vector3 offset;
-        private Collider[] detected;
+        private Collider[] detected = new Collider[10];
 
         public override void Init()
         {
-            base.Init();
             this.Initialize();
+            base.Init();
+            _animator = _weapon.Animator;
         }
 
         private void HandleAttackAction()
@@ -33,17 +32,20 @@ namespace SAS.WeaponSystem.Components
                      (transform.right * currentAttackData.HitBox.center.x) + // Move left/right
                      (transform.up * currentAttackData.HitBox.center.y); // Move up/down
 
-            detected = Physics.OverlapBox(offset, currentAttackData.HitBox.extents, transform.rotation, data.DetectableLayers);
 
-            if (detected.Length == 0)
+            // Perform the OverlapBoxNonAlloc check
+            int hitCount = Physics.OverlapBoxNonAlloc(offset, currentAttackData.HitBox.extents, detected, transform.rotation, data.DetectableLayers);
+
+            // If no colliders are found, exit early
+            if (hitCount == 0)
                 return;
 
-            Debug.Log("HandleAttackAction");
-
+            // Create a list to store detected colliders and their closest hit points
             List<(Collider, Vector3)> detectedCollisions = new();
 
-            foreach (var collider in detected)
+            for (int i = 0; i < hitCount; i++)
             {
+                Collider collider = detected[i];
                 Vector3 collisionPoint = collider.ClosestPoint(offset);
                 detectedCollisions.Add((collider, collisionPoint));
             }
@@ -56,7 +58,6 @@ namespace SAS.WeaponSystem.Components
                 return;
 
             AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-
             float animTime = stateInfo.normalizedTime;
 
             if (animTime >= currentAttackData.StartTime && animTime <= currentAttackData.EndTime)

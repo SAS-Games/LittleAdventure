@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using UniRx;
 using UnityEngine;
 
@@ -7,7 +6,7 @@ public interface IHealthModel
     float MaxHealth { get; }
     ReactiveProperty<float> CurrentHealth { get; }
     void Decrease(float health);
-
+    void Increase(float health);
 }
 public class HealthModel : IHealthModel
 {
@@ -27,6 +26,12 @@ public class HealthModel : IHealthModel
         var value = CurrentHealth.Value;
         value = Mathf.Clamp(0, value - damage, _maxHealth);
         CurrentHealth.Value = value;
-        Debug.Log(CurrentHealth.Value);
+    }
+
+    void IHealthModel.Increase(float health)
+    {
+        var value = CurrentHealth.Value;
+        value = Mathf.Clamp(0, value + health, _maxHealth);
+        CurrentHealth.Value = value;
     }
 }

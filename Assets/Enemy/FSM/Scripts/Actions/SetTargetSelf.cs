@@ -1,4 +1,5 @@
 using EnemySystem;
+using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace EnemySystem
     public class SetTargetSelf : IStateAction
     {
         [FieldRequiresSelf] private NavMeshAgent _agent;
-        [FieldRequiresSelf] private Enemy _enemy;
+        [FieldRequiresSelf] private ICharacter _character;
 
         void IStateAction.OnInitialize(Actor actor, Tag tag, string key)
         {
@@ -18,7 +19,7 @@ namespace EnemySystem
 
         void IStateAction.Execute(ActionExecuteEvent executeEvent)
         {
-            _agent.SetDestination(_enemy.transform.position);
+            _agent.SetDestination(_character.Transform.position);
         }
 
     }

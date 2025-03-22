@@ -1,4 +1,5 @@
 using EnemySystem;
+using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using SAS.Utilities.BlackboardSystem;
 using UnityEngine;
@@ -7,13 +8,15 @@ namespace EnemySystem
 {
     public class IsTargetInFOV : ICustomCondition
     {
-        private Enemy _enemy;
+        private ICharacter _character;
+        private IHasTarget _targetHolder;
         private BlackboardKey _FOVKey = default;
         private Actor _actor;
 
         void ICustomCondition.OnInitialize(Actor actor)
         {
-            _enemy = actor.GetComponent<Enemy>();
+            _character = actor.GetComponent<ICharacter>();
+            _targetHolder = _character as IHasTarget;
             _FOVKey = actor.GetOrRegisterKey(EnemyBlackboardKey.FOV);
             _actor = actor;
 
@@ -21,8 +24,8 @@ namespace EnemySystem
 
         bool ICustomCondition.Evaluate()
         {
-            Vector3 dirToPlayer = (_enemy.Target.position - _enemy.transform.position).normalized;
-            return (Vector3.Angle(_enemy.transform.forward, dirToPlayer) < _actor.GetValue<float>(_FOVKey) / 2);
+            Vector3 dirToPlayer = (_targetHolder.Target.position - _character.Transform.position).normalized;
+            return (Vector3.Angle(_character.Transform.forward, dirToPlayer) < _actor.GetValue<float>(_FOVKey) / 2);
         }
 
 

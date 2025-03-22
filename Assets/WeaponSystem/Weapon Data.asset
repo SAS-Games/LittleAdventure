@@ -16,7 +16,7 @@ MonoBehaviour:
   <Description>k__BackingField: 
   <View>k__BackingField: {fileID: 0}
   <AnimatorController>k__BackingField: {fileID: 0}
-  <NumberOfAttacks>k__BackingField: 1
+  <NumberOfAttacks>k__BackingField: 3
   <ComponentData>k__BackingField:
   - rid: 4097107246286635260
   - rid: 4097107256536989767
@@ -42,24 +42,23 @@ MonoBehaviour:
         attackData:
         - name: Attack 1
           <Velocity>k__BackingField: 5
-          <Duration>k__BackingField: 0.1
+          <Duration>k__BackingField: 0.05
     - rid: 4097107268341071943
       type: {class: ActionHitBoxData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
       data:
         name: ActionHitBoxData
-        repeatData: 0
+        repeatData: 1
         attackData:
         - name: Attack 1
           Debug: 1
           <HitBox>k__BackingField:
-            m_Center: {x: 0, y: 0.5, z: 1}
-            m_Extent: {x: 0.5, y: 0.5, z: 0.5}
-          <StartTime>k__BackingField: 0.18
-          <EndTime>k__BackingField: 0.26
+            m_Center: {x: 0, y: 0.75, z: 0.8}
+            m_Extent: {x: 0.6, y: 0.75, z: 0.8}
+          <StartTime>k__BackingField: 0.17
+          <EndTime>k__BackingField: 0.35
         <DetectableLayers>k__BackingField:
           serializedVersion: 2
-          m_Bits: 64
-        <AnimationEventName>k__BackingField: OnAttackAction
+          m_Bits: 65
     - rid: 4097107268341071944
       type: {class: DamageOnHitBoxActionData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
       data:
@@ -68,6 +67,10 @@ MonoBehaviour:
         attackData:
         - name: Attack 1
           <Amount>k__BackingField: 10
+        - name: Attack 2
+          <Amount>k__BackingField: 15
+        - name: Attack 3
+          <Amount>k__BackingField: 20
     - rid: 4097107296120995912
       type: {class: EffectOnHitBoxActionData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
       data:

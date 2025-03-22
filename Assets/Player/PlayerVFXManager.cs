@@ -5,8 +5,9 @@ using UnityEngine.VFX;
 public class PlayerVFXManager : MonoBehaviour
 {
     [SerializeField] private VisualEffect m_FootStep;
-    [SerializeField] private ParticleSystem m_Blade01;
+    [SerializeField] private ParticleSystem[] m_BladeVFXs;
     [SerializeField] private VisualEffect m_Slash;
+    [SerializeField] private VisualEffect m_Heal;
 
     [FieldRequiresSelf] private IEventDispatcher _animationEventDispatcher;
 
@@ -16,6 +17,7 @@ public class PlayerVFXManager : MonoBehaviour
         _animationEventDispatcher.Subscribe<bool>("UpdateFootStep", UpdateFootStep);
         _animationEventDispatcher.Subscribe<int>("PlayBlade", PlayBlade);
         _animationEventDispatcher.Subscribe<Vector3>("PlaySlash", PlaySlash);
+        _animationEventDispatcher.Subscribe("Heal", PlayHeal);
     }
 
     private void UpdateFootStep(bool state)
@@ -28,8 +30,14 @@ public class PlayerVFXManager : MonoBehaviour
 
     private void PlayBlade(int index)
     {
-        if (index == 0)
-            m_Blade01.Play();
+        if (index > 0)
+            m_BladeVFXs[index - 1].Stop();
+        m_BladeVFXs[index].Play();
+    }
+
+    private void PlayHeal()
+    {
+        m_Heal.SendEvent("OnPlay");
     }
 
     public void PlaySlash(Vector3 position)

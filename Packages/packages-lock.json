@@ -44,7 +44,7 @@
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.1.0"
       },
-      "hash": "22de19cfc50f36c81455d07a8bf7b8f007229cc7"
+      "hash": "85cb2c7af2084ed6a23903e70d3d0f94269cbadf"
     },
     "com.unity.addressables": {
       "version": "2.2.2",

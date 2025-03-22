@@ -1,10 +1,15 @@
+using SAS.TimerSystem;
 using System;
+using System.Threading;
+using UniRx;
 using UnityEngine;
 
 namespace SAS.WeaponSystem
 {
     public class Weapon : MonoBehaviour, IWeapon
     {
+        [SerializeField] private float m_AttackCounterResetCooldown;
+
         public const string Tag = "";
         public float AttackStartTime { get; internal set; }
         public WeaponDataSO Data { get; private set; }
@@ -21,27 +26,33 @@ namespace SAS.WeaponSystem
         public Action OnExit { get; internal set; }
 
         public bool IsInUse { get; private set; }
-        private TimeNotifier attackCounterResetTimeNotifier;
+        public Animator Animator { get; private set; }
 
-        void IWeapon.Init()
+        private CountdownTimer _attackCounterResetTimer = new CountdownTimer(1);
+        private CancellationTokenSource _cts;
+
+        private void Awake()
         {
-            //attackCounterResetTimeNotifier = new TimeNotifier();
-            GetComponentInParent<IEventDispatcher>().Subscribe("OnAttackAnimationEnd", OnAttackAnimationEnd);
+            _attackCounterResetTimer = new CountdownTimer();
+            Animator = GetComponentInParent<Animator>();
         }
 
         void IWeapon.Enter()
         {
+            Debug.Log($"Enter{Time.time}", Tag);
             AttackStartTime = Time.time;
-            //attackCounterResetTimeNotifier.Disable();
-            Debug.Log("Enter", Tag);
+            Animator.SetInteger("Counter", currentAttackCounter);
+            //_attackCounterResetTimer.Pause();
+            WaitForAttackAnimFinish(Animator);
             IsInUse = true;
             OnEnter?.Invoke();
         }
 
         void IWeapon.Exit()
         {
-            Debug.Log("Exit", Tag);
+           // Debug.Log($"Exit{Time.time}", Tag);
             CurrentAttackCounter++;
+            _attackCounterResetTimer.Start(m_AttackCounterResetCooldown);
             OnExit?.Invoke();
             IsInUse = false;
         }
@@ -62,19 +73,38 @@ namespace SAS.WeaponSystem
             CurrentAttackCounter = 0;
         }
 
-        private void OnAttackAnimationEnd()
-        {
-            (this as IWeapon).Exit();
-        }
-
         private void OnEnable()
         {
-           // attackCounterResetTimeNotifier.OnNotify += ResetAttackCounter;
+            _attackCounterResetTimer.OnTimerStop += ResetAttackCounter;
         }
 
         private void OnDisable()
         {
-           // attackCounterResetTimeNotifier.OnNotify -= ResetAttackCounter;
+            _attackCounterResetTimer.OnTimerStop -= ResetAttackCounter;
+        }
+
+        protected async void WaitForAttackAnimFinish(Animator animator)
+        {
+            _cts?.Cancel(); 
+            _cts?.Dispose(); 
+            _cts = new CancellationTokenSource(); 
+
+            try
+            {
+                await Awaitable.NextFrameAsync();
+
+                await animator.WhenStateExit("Attack").ToTask(_cts.Token);
+
+                (this as IWeapon).Exit();
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Previous attack animation wait canceled.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
         }
     }
 }

@@ -126,13 +126,6 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9617224
-        functionName: TriggerEvent
-        data: OnAttackAnimationEnd
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -142,7 +135,7 @@ ModelImporter:
       takeName: LittleAdventurerAndie_ATTACK_02
       internalID: 0
       firstFrame: 0
-      lastFrame: 17
+      lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -161,7 +154,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.32951295
+        functionName: TriggerParamEvent
+        data: 
+        objectReferenceParameter: {fileID: 11400000, guid: 1b3e08475d44ffa4cacf1064efc1dfe2, type: 2}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -190,7 +190,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.25883478
+        functionName: TriggerParamEvent
+        data: 
+        objectReferenceParameter: {fileID: 11400000, guid: 307d638d573723d409f0b18ac19b0180, type: 2}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -219,7 +226,14 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.35829568
+        functionName: TriggerEvent
+        data: DropWeapon
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

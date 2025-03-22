@@ -1,3 +1,4 @@
+using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using SAS.Utilities.BlackboardSystem;
 using UnityEngine;
@@ -6,13 +7,15 @@ namespace EnemySystem
 {
     public class IsTargetInRange : ICustomCondition
     {
-        private Enemy _enemy;
+        private ICharacter _character;
+        private IHasTarget _targetHolder;
         private BlackboardKey _rangeKey = default;
         private Actor _actor;
 
         void ICustomCondition.OnInitialize(Actor actor)
         {
-            _enemy = actor.GetComponent<Enemy>();
+            _character = actor.GetComponent<ICharacter>();
+            _targetHolder = _character as IHasTarget;
             _rangeKey = actor.GetOrRegisterKey(EnemyBlackboardKey.ChaseRange);
             _actor = actor;
 
@@ -20,7 +23,9 @@ namespace EnemySystem
 
         bool ICustomCondition.Evaluate()
         {
-            return Vector3.Distance(_enemy.transform.position, _enemy.Target.position) < _actor.GetValue<float>(_rangeKey);
+            if (!_targetHolder.Target)
+                return false;
+            return Vector3.Distance(_character.Transform.position, _targetHolder.Target.position) < _actor.GetValue<float>(_rangeKey);
         }
 
 

@@ -1,3 +1,4 @@
+using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using SAS.Utilities.BlackboardSystem;
 using SAS.Utilities.TagSystem;
@@ -9,13 +10,16 @@ namespace EnemySystem
     public class IsTargetInAttackRange : ICustomCondition
     {
         [FieldRequiresSelf] private NavMeshAgent _navMeshAgent;
-        [FieldRequiresSelf] private Enemy _enemy;
+        [FieldRequiresSelf] private ICharacter _character;
+        private IHasTarget _targetHolder;
+
         private BlackboardKey _rangeKey = default;
         private Actor _actor;
 
         void ICustomCondition.OnInitialize(Actor actor)
         {
             actor.Initialize(this);
+            _targetHolder = _character as IHasTarget;
             _rangeKey = actor.GetOrRegisterKey(EnemyBlackboardKey.ChaseRange);
             _actor = actor;
 
@@ -23,7 +27,9 @@ namespace EnemySystem
 
         bool ICustomCondition.Evaluate()
         {
-            var distance = Vector3.Distance(_enemy.transform.position, _enemy.Target.position);
+            if (_targetHolder.Target == null)
+                return false;
+            var distance = Vector3.Distance(_character.Transform.position, _targetHolder.Target.position);
             return distance < _navMeshAgent.stoppingDistance;
         }
 

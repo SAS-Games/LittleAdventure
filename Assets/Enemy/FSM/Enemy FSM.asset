@@ -175,6 +175,10 @@ MonoBehaviour:
   m_Position: {x: 405, y: 329, z: 0}
   m_Tag: 
   m_StateActions:
+  - fullName: SpwanHealer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    tag: 1
+    key: 
+    whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ActivateChached, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     tag: 1

@@ -26,8 +26,6 @@ namespace SAS.WeaponSystem
             this.Initialize();
             _weaponInventory.OnWeaponDataChanged += HandleWeaponDataChanged;
             _animator = GetComponentInChildren<Animator>();
-            (_weapon as IWeapon).Init();
-
             if (_weaponInventory.TryGetWeapon(0, out var data))
                 GenerateWeapon(data);
         }

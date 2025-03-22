@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab061c32342bcc47b77cfdeb3191be6, type: 3}
   m_Name: Dash Movement Config
   m_EditorClassIdentifier: 
-  horizontalSpeed: 25
-  verticalSpeed: 25
-  gravityMultiplier: 12
-  gravityComebackMultiplier: 0.08
-  gravityDivider: 0.75
+  horizontalSpeed: 10
+  verticalSpeed: 10
+  forwardDirection: 1

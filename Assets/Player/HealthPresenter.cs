@@ -1,4 +1,3 @@
-using SAS.StateMachineGraph.Utilities;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,10 +7,9 @@ public interface IHealthPresenter
     IHealthModel HealthModel { get; }
 }
 
-public class HealthPresenter : MonoBehaviour, IHealthPresenter, IActivatable
+public class HealthPresenter : MonoBehaviour, IHealthPresenter
 {
     [FieldRequiresChild] private IDamageable _damageable;
-
     [SerializeField] private int m_MaxHealth = 100;
     [SerializeField] private UnityEvent m_OnDeath;
     public IHealthModel HealthModel => _healthModel;
@@ -32,18 +30,10 @@ public class HealthPresenter : MonoBehaviour, IHealthPresenter, IActivatable
     {
         _healthModel.Decrease(amount);
         if ((int)_healthModel.CurrentHealth.Value <= 0)
+        {
             m_OnDeath.Invoke();
-    }
-
-
-    void IActivatable.Activate()
-    {
-        enabled = true;
-    }
-
-    void IActivatable.Deactivate()
-    {
-        enabled = false;
+            Debug.Log("Death");
+        }
     }
 
     void OnEnable()
