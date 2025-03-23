@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+[DisallowMultipleComponent]
 public class NavMeshKnockback : KnockbackBase
 {
     private NavMeshAgent _agent;

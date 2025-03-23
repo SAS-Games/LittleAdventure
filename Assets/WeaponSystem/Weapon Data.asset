@@ -57,6 +57,7 @@ MonoBehaviour:
             m_Extent: {x: 0.6, y: 0.75, z: 0.8}
           <StartTime>k__BackingField: 0.17
           <EndTime>k__BackingField: 0.35
+          <StateTag>k__BackingField: 
         <DetectableLayers>k__BackingField:
           serializedVersion: 2
           m_Bits: 65
@@ -87,5 +88,5 @@ MonoBehaviour:
         repeatData: 1
         attackData:
         - name: Attack 1
-          <Angle>k__BackingField: {x: 1, y: 0, z: 1}
-          <Strength>k__BackingField: 5
+          <Angle>k__BackingField: {x: 1, y: 0, z: 0.5}
+          <Strength>k__BackingField: 2

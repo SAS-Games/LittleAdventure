@@ -10,6 +10,6 @@ namespace SAS.WeaponSystem.Components
         [field: SerializeField] public Bounds HitBox { get; private set; }
         [field: SerializeField] public float StartTime { get; private set; }
         [field: SerializeField] public float EndTime { get; private set; }
-
+        [field: SerializeField] public string StateTag { get; internal set; };
     }
 }

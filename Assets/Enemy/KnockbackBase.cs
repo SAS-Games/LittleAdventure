@@ -17,7 +17,7 @@ public abstract class KnockbackBase : MonoBehaviour, IKnockbackable
     {
         Vector3 attackDirection = attacker.Forward;
 
-        Vector3 adjustedDirection = (angle + attackDirection) / 2;
+        Vector3 adjustedDirection = (angle + attackDirection);
 
         Vector3 knockbackDirection = adjustedDirection.normalized;
 

@@ -60,7 +60,7 @@ namespace SAS.WeaponSystem.Components
             AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
             float animTime = stateInfo.normalizedTime;
 
-            if (animTime >= currentAttackData.StartTime && animTime <= currentAttackData.EndTime)
+            if (stateInfo.IsTag(currentAttackData.StateTag) && animTime >= currentAttackData.StartTime && animTime <= currentAttackData.EndTime)
                 HandleAttackAction();
         }
 
