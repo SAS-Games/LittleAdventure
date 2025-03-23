@@ -23,6 +23,7 @@ MonoBehaviour:
   - rid: 4097107268341071943
   - rid: 4097107268341071944
   - rid: 4097107296120995912
+  - rid: 4097107407687123016
   references:
     version: 2
     RefIds:
@@ -79,3 +80,12 @@ MonoBehaviour:
         attackData:
         - name: Attack 1
         <EventName>k__BackingField: PlaySlash
+    - rid: 4097107407687123016
+      type: {class: KnockbackData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
+      data:
+        name: KnockbackData
+        repeatData: 1
+        attackData:
+        - name: Attack 1
+          <Angle>k__BackingField: {x: 1, y: 0, z: 1}
+          <Strength>k__BackingField: 5

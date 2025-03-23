@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Speed: 6
-  m_Damage: 50
+  m_Damage: 30
   m_CollisionTags:
   - Player
   m_HitVFXPool: {fileID: 11400000, guid: bb80130937624834bb6b8bd9333f221c, type: 2}
