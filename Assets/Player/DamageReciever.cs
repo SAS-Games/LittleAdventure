@@ -18,6 +18,7 @@ public class DamageReciever : MonoBehaviour, IDamageable
     {
         if (!enabled)
             return;
+        Debug.Log(damageInfo.Amount);
         if (!string.IsNullOrEmpty(m_EffectEventName))
             _eventDispatcher?.TriggerParamEvent(m_EffectEventName, damageInfo.Source.transform.position);
         OnDamageTaken?.Invoke(damageInfo.Amount);

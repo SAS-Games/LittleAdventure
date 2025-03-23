@@ -1,9 +1,8 @@
 using EnemySystem;
 using SAS.StateMachineGraph;
 using SAS.Utilities.TagSystem;
-using UnityEngine;
 
-public class SpwanHealer : IStateAction
+public class SpawnHealer : IStateAction
 {
     [FieldRequiresSelf] private Enemy _character;
     void IStateAction.OnInitialize(Actor actor, Tag tag, string key)

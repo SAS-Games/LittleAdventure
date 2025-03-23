@@ -20,7 +20,7 @@ namespace EnemySystem
     public class Enemy : MonoBehaviour, ICharacter, IHasTarget
     {
         [field: SerializeField] public LayerMask VisibilityBlockers { get; private set; }
-        [SerializeField] private string m_DeadStateName = "Dead";
+        [SerializeField] private string m_DeadStateTriggerName = "Dead";
         [SerializeField] private SpawnablePoolSO m_HealerObjectPool;
 
         Vector3 ICharacter.Position => transform.position;
@@ -43,7 +43,7 @@ namespace EnemySystem
 
         public void OnDeath()
         {
-            GetComponent<Actor>().SetState(m_DeadStateName);
+            GetComponent<Actor>().SetTrigger(m_DeadStateTriggerName);
         }
 
         public GameObject DropItem(Vector3 position)

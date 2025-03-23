@@ -23,9 +23,12 @@ GameObject:
   - component: {fileID: 4365929872556655166}
   - component: {fileID: 7192408892039881532}
   - component: {fileID: 5352540595996090453}
-  - component: {fileID: 4723594299808150771}
   - component: {fileID: 2668216528024146678}
   - component: {fileID: 940108172316850776}
+  - component: {fileID: -7481611239061601693}
+  - component: {fileID: 6135646720188040865}
+  - component: {fileID: 3704558499008420492}
+  - component: {fileID: 8185560798594048755}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -175,7 +178,7 @@ MonoBehaviour:
   <VisibilityBlockers>k__BackingField:
     serializedVersion: 2
     m_Bits: 0
-  m_DeadStateName: Dead
+  m_DeadStateTriggerName: Dead
   m_HealerObjectPool: {fileID: 11400000, guid: d5d871d26223f254b86f1bf84fa9f5c5, type: 2}
 --- !u!114 &4307742841906401719
 MonoBehaviour:
@@ -346,24 +349,6 @@ MonoBehaviour:
   m_BlinkValue: 0.4
   m_BlinkDuration: 1
   m_BlinkInterval: 0.1
---- !u!114 &4723594299808150771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7170290597381789726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 888e2c3d50570e64f97febe4d090cfb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MeshRenderer: {fileID: 997031194993467934}
-  m_DissolvePropertyName: _dissolve_height
-  m_InitialDelay: 2
-  m_DessolveDuration: 1
-  m_StartHeight: 30
-  m_TargetHeight: -12
 --- !u!114 &2668216528024146678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,6 +379,70 @@ MonoBehaviour:
   m_Tags:
   - m_Component: {fileID: 2668216528024146678}
     m_Value: 1
+--- !u!114 &-7481611239061601693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170290597381789726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a2433de8ab04434aa0af4dbeb610054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6135646720188040865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170290597381789726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6c5afdb8615f9c4bb63e24425de57c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MeshRenderer: {fileID: 997031194993467934}
+  m_DissolvePropertyName: _dissolve_height
+  m_InitialDelay: 2
+  m_Duration: 1
+  m_StartHeight: 0
+  m_TargetHeight: 0
+  dissolveStartHeight: 20
+  dissolveTargetHeight: -10
+--- !u!114 &3704558499008420492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170290597381789726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5d04520892a14845a2a82b33b7e2763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MeshRenderer: {fileID: 997031194993467934}
+  m_DissolvePropertyName: _dissolve_height
+  m_InitialDelay: 0
+  m_Duration: 1
+  m_StartHeight: 0
+  m_TargetHeight: 0
+  appearStartHeight: -10
+  appearTargetHeight: 20
+--- !u!114 &8185560798594048755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170290597381789726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed609e17d068737469d525d86990229c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7556026994685775652
 GameObject:
   m_ObjectHideFlags: 0

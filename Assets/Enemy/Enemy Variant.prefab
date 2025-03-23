@@ -321,6 +321,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 22100000, guid: 08af5b88e00cefc47b0828fcfdef6c22, type: 2}
+    - target: {fileID: 3704558499008420492, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
+      propertyPath: m_MeshRenderer
+      value: 
+      objectReference: {fileID: 9160433134188403454}
     - target: {fileID: 4307742841906401719, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
       propertyPath: m_BeingHit
       value: 
@@ -345,6 +349,10 @@ PrefabInstance:
       propertyPath: '<weaponData>k__BackingField.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 965e138aa64dc4e4eb273fc082c8ebec, type: 2}
+    - target: {fileID: 6135646720188040865, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
+      propertyPath: m_MeshRenderer
+      value: 
+      objectReference: {fileID: 9160433134188403454}
     - target: {fileID: 6208787614829853555, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
       propertyPath: m_Speed
       value: 4
