@@ -180,6 +180,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   m_DeadStateTriggerName: Dead
+  m_SpawnTriggerName: Spawn
   m_HealerObjectPool: {fileID: 11400000, guid: d5d871d26223f254b86f1bf84fa9f5c5, type: 2}
 --- !u!114 &4307742841906401719
 MonoBehaviour:

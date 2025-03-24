@@ -193,7 +193,7 @@ MonoBehaviour:
   m_ExitTime: 0
   m_WaitForAwaitableActionsToComplete: 1
   m_Conditions:
-  - m_Name: Spwan
+  - m_Name: Spawn
     m_Mode: -1
     m_Type: 9
     m_FloatValue: 0
@@ -291,7 +291,7 @@ MonoBehaviour:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-  - m_Name: Spwan
+  - m_Name: Spawn
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0

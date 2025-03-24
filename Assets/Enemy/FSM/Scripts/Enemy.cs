@@ -17,10 +17,11 @@ namespace EnemySystem
         LayerMask VisibilityBlockers { get; }
     }
 
-    public class Enemy : MonoBehaviour, ICharacter, IHasTarget
+    public class Enemy : MonoBehaviour, ICharacter, IHasTarget, ISpawnable
     {
         [field: SerializeField] public LayerMask VisibilityBlockers { get; private set; }
         [SerializeField] private string m_DeadStateTriggerName = "Dead";
+        [SerializeField] private string m_SpawnTriggerName = "Spawn";
         [SerializeField] private SpawnablePoolSO m_HealerObjectPool;
 
         Vector3 ICharacter.Position => transform.position;
@@ -51,6 +52,16 @@ namespace EnemySystem
             var healer = m_HealerObjectPool.Spawn(position).gameObject;
             GetComponent<Poolable>().Despawn();
             return healer;
+        }
+
+        void ISpawnable.OnSpawn(object data)
+        {
+            GetComponent<IHealthPresenter>().HealthModel.Reset();
+            GetComponent<Actor>().SetTrigger(m_SpawnTriggerName);
+        }
+
+        void ISpawnable.OnDespawn()
+        {
         }
     }
 

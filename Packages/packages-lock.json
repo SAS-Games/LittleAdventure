@@ -38,13 +38,12 @@
       "hash": "8b53f84ab42b32de234ecb8ec67312c1590f9431"
     },
     "com.sas.tweenmanagement": {
-      "version": "https://github.com/SAS-Games/SASPackages-Tween.git",
+      "version": "file:SASPackages-Tween",
       "depth": 0,
-      "source": "git",
+      "source": "embedded",
       "dependencies": {
         "com.sas.utilities": "1.0.0"
-      },
-      "hash": "15e321976db112f4e60b62fb84b18d023adb9dbb"
+      }
     },
     "com.sas.utilities": {
       "version": "https://github.com/SAS-Games/SASPackages-Utilities.git#master-platformer",

@@ -7,6 +7,7 @@ public interface IHealthModel
     ReactiveProperty<float> CurrentHealth { get; }
     void Decrease(float health);
     void Increase(float health);
+    void Reset();
 }
 public class HealthModel : IHealthModel
 {
@@ -33,5 +34,10 @@ public class HealthModel : IHealthModel
         var value = CurrentHealth.Value;
         value = Mathf.Clamp(0, value + health, _maxHealth);
         CurrentHealth.Value = value;
+    }
+
+    void IHealthModel.Reset()
+    {
+        CurrentHealth.Value = _maxHealth;
     }
 }

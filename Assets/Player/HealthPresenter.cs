@@ -19,10 +19,6 @@ public class HealthPresenter : MonoBehaviour, IHealthPresenter
     void Awake()
     {
         this.Initialize();
-    }
-
-    void Start()
-    {
         _healthModel = new HealthModel(m_MaxHealth);
     }
 

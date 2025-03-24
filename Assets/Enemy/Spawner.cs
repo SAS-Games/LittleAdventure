@@ -75,6 +75,6 @@ public class Spawner : MonoBehaviour
         if (_collider == null)
             _collider = GetComponent<Collider>();
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position, _collider.bounds.size);
+        Gizmos.DrawWireCube(transform.position-_collider.bounds.center, _collider.bounds.size);
     }
 }
