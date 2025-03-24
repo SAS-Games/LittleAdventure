@@ -575,6 +575,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpawnPoint (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4406742532216470055, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -918,6 +922,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpawnPoint (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4406742532216470055, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1251,6 +1259,10 @@ PrefabInstance:
     - target: {fileID: 4406742532216470055, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
       propertyPath: m_Name
       value: SpawnPoint (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4406742532216470055, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2207,7 +2219,7 @@ PrefabInstance:
     - target: {fileID: 6787640998273677475, guid: c72b17fa36f701d46a56d9b8e28068aa, type: 3}
       propertyPath: m_PoolSO
       value: 
-      objectReference: {fileID: 11400000, guid: b33281ca4ba925241aec6a07661c5a19, type: 2}
+      objectReference: {fileID: 11400000, guid: 73c10471111370d44bc04c694ce018a2, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2291,6 +2303,10 @@ PrefabInstance:
     - target: {fileID: 4406742532216470055, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
       propertyPath: m_Name
       value: SpawnPoint (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4406742532216470055, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

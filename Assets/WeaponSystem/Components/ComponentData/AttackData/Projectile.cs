@@ -16,15 +16,8 @@ public class Projectile : Poolable, ISpawnable, IDamageable
 
     event System.Action<float> IDamageable.OnDamageTaken
     {
-        add
-        {
-            throw new System.NotImplementedException();
-        }
-
-        remove
-        {
-            throw new System.NotImplementedException();
-        }
+        add { }
+        remove { }
     }
 
     void ISpawnable.OnSpawn(object data)
@@ -59,13 +52,18 @@ public class Projectile : Poolable, ISpawnable, IDamageable
         projectile.rotation = Quaternion.LookRotation(direction);
 
         // Ignore collision between the projectile and the character
-        Collider characterCollider = characterTransform.root.GetComponent<Collider>();
+        Collider[] characterColliders = characterTransform.root.GetComponentsInChildren<Collider>();
         Collider projectileCollider = projectile.GetComponent<Collider>();
 
-        if (characterCollider != null && projectileCollider != null)
-            Physics.IgnoreCollision(projectileCollider, characterCollider);
+        if (projectileCollider != null)
+        {
+            foreach (var characterCollider in characterColliders)
+            {
+                Physics.IgnoreCollision(projectileCollider, characterCollider);
+            }
+        }
         else
-            Debug.LogWarning("Projectile or character does not have a collider, skipping collision ignore.");
+            Debug.LogWarning("Projectile does not have a collider, skipping collision ignore.");
     }
 
     private void OnTriggerEnter(Collider other)

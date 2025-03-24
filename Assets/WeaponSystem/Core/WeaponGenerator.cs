@@ -90,7 +90,8 @@ namespace SAS.WeaponSystem
 
         private void OnDestroy()
         {
-            _weaponInventory.OnWeaponDataChanged -= HandleWeaponDataChanged;
+            if (_weaponInventory != null)
+                _weaponInventory.OnWeaponDataChanged -= HandleWeaponDataChanged;
         }
     }
 }
