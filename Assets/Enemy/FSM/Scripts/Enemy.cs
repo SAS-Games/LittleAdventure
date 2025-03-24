@@ -48,7 +48,9 @@ namespace EnemySystem
 
         public GameObject DropItem(Vector3 position)
         {
-            return m_HealerObjectPool.Spawn(position).gameObject;
+            var healer = m_HealerObjectPool.Spawn(position).gameObject;
+            GetComponent<Poolable>().Despawn();
+            return healer;
         }
     }
 

@@ -1,6 +1,19 @@
 using SAS.Pool;
 using SAS.Utilities.TagSystem;
+using System;
 using UnityEngine;
+public struct SpawnData
+{
+    public SpawnPoint Point;
+    public Action<GameObject> OnDespawn;
+
+    public SpawnData(SpawnPoint point, Action<GameObject> onDespawn)
+    {
+        Point = point;
+        OnDespawn = onDespawn;
+    }
+}
+
 
 [RequireComponent(typeof(OnTriggerHandler))]
 public class Spawner : MonoBehaviour
@@ -10,11 +23,14 @@ public class Spawner : MonoBehaviour
     [FieldRequiresSelf] Collider _collider;
     private bool _hasSpawned;
 
+    public Action OnAllSpawnedObjectsCollected { get; set; }
+
     private void Awake()
     {
         this.Initialize();
     }
 
+    //this will get invoked by TriggerHandler
     private void Spawn()
     {
         if (_hasSpawned)
@@ -25,7 +41,32 @@ public class Spawner : MonoBehaviour
         foreach (SpawnPoint point in _spawnPoints)
         {
             if (point.SpawnedObject == null)
-                m_PoolSO.Spawn(point);
+            {
+                var spawnData = new SpawnData(point, OnObjectDespawned);
+                m_PoolSO.Spawn(spawnData);
+            }
+        }
+    }
+
+    private void OnObjectDespawned(GameObject gameObject)
+    {
+        Debug.Log($"{gameObject.name} has been despawned from Spawner {name}.");
+
+        // Check if all objects in the Spawner are gone
+        bool allDespawned = true;
+        foreach (SpawnPoint point in _spawnPoints)
+        {
+            if (point.SpawnedObject != null)
+            {
+                allDespawned = false;
+                break;
+            }
+        }
+
+        if (allDespawned)
+        {
+            Debug.Log($"All objects in  Spawner {name} have been eliminated!");
+            OnAllSpawnedObjectsCollected?.Invoke();
         }
     }
 

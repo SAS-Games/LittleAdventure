@@ -3,21 +3,23 @@ using UnityEngine;
 
 public class ObjectPositionSetter : MonoBehaviour, ISpawnable
 {
-    private SpawnPoint _spawnPoint;
+    private SpawnData _spawnData;
+
     void ISpawnable.OnSpawn(object data)
     {
-        if (data is SpawnPoint point)
+        if (data is SpawnData spawnData)
         {
-            _spawnPoint = point;
-            this.transform.position = point.transform.position;
-            this.transform.rotation = point.transform.rotation;
-            point.SpawnedObject = this.gameObject;
+            _spawnData = spawnData;
+
+            this.transform.SetPositionAndRotation(spawnData.Point.transform.position, spawnData.Point.transform.rotation);
+            spawnData.Point.SpawnedObject = this.gameObject;
         }
     }
 
     void ISpawnable.OnDespawn()
     {
-        _spawnPoint.SpawnedObject = null;
-        _spawnPoint = null;
+        _spawnData.Point.SpawnedObject = null;
+        _spawnData.OnDespawn?.Invoke(gameObject);
+        _spawnData = default;
     }
 }

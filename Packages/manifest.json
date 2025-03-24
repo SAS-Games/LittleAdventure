@@ -3,6 +3,7 @@
     "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
     "com.sas.library.unirx": "https://github.com/SAS-Games/UniRx.git",
     "com.sas.statemachine": "https://github.com/SAS-Games/SASPackages-StateMachine.git#master-platformer",
+    "com.sas.tweenmanagement": "https://github.com/SAS-Games/SASPackages-Tween.git",
     "com.sas.utilities": "https://github.com/SAS-Games/SASPackages-Utilities.git#master-platformer",
     "com.unity.addressables": "2.2.2",
     "com.unity.ai.navigation": "2.0.6",
