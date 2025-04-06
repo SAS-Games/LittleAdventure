@@ -21,7 +21,7 @@ namespace SAS.WeaponSystem.Components
         {
             base.HandleEnter();
             _direction = (movementVectorHandler as Component).transform.forward;
-            _duration = currentAttackData.Duration; // Set movement duration
+            _duration = CurrentAttackData.Duration; // Set movement duration
             _elapsedTime = 0f; // Reset timer
         }
 
@@ -30,7 +30,7 @@ namespace SAS.WeaponSystem.Components
             if (!isAttackActive || _elapsedTime >= _duration)
                 return;
 
-            movementVectorHandler.MovementVector = currentAttackData.Velocity * _direction;
+            movementVectorHandler.MovementVector = CurrentAttackData.Velocity * _direction;
             _elapsedTime += Time.deltaTime;
 
             if (_elapsedTime >= _duration)

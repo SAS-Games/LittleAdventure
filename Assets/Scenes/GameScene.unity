@@ -781,7 +781,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 6678000430069629453, guid: a9d07cf6e45ab884f9ca8cee8b6b54c0, type: 3}
+      propertyPath: AttackCounterResetCooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6678000430069629453, guid: a9d07cf6e45ab884f9ca8cee8b6b54c0, type: 3}
+      propertyPath: <AttackCounterResetCooldown>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

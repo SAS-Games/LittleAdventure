@@ -11,6 +11,7 @@ namespace SAS.WeaponSystem.Components
 
         private void HandleDetectCollider(List<(Collider collider, Vector3 point)> colliders)
         {
+            Debug.Log("HandleDetectCollider");
             foreach (var (collider, point) in colliders)
             {
                 if (_hitObjects.Contains(collider.gameObject))
@@ -18,7 +19,7 @@ namespace SAS.WeaponSystem.Components
 
                 if (collider.TryGetComponent(out IDamageable damageable))
                 {
-                    damageable.Damage(new DamageInfo(currentAttackData.Amount, _root));
+                    damageable.Damage(new DamageInfo(CurrentAttackData.Amount, _root));
                     _hitObjects.Add(collider.gameObject);
                 }
             }

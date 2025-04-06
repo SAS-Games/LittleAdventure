@@ -18,7 +18,7 @@ namespace SAS.WeaponSystem.Components
             {
                 if (collider.TryGetComponent<IDamageable>(out _))
                 {
-                    _eventDispatcher.TriggerParamEvent(data.EventName, transform.position + Vector3.up * 0.5f);
+                    _eventDispatcher.TriggerParamEvent(Data.EventName, transform.position + Vector3.up * 0.5f);
                     _effectPlayed = true;
                     break; // Play the effect only once per attack if a damageable is found
                 }

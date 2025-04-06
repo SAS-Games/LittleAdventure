@@ -43,6 +43,7 @@ namespace SAS.WeaponSystem.Components
 
 
         public T[] GetAllAttackData() => attackData;
+        public int AttackDataCount => attackData.Length;
 
         public override void SetAttackDataNames()
         {

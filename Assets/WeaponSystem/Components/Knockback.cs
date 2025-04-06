@@ -20,7 +20,7 @@ namespace SAS.WeaponSystem.Components
 
                 if (collider.TryGetComponent(out IKnockbackable knockbackable))
                 {
-                    knockbackable.PerformAction(_character, currentAttackData.Angle, currentAttackData.Strength);
+                    knockbackable.PerformAction(_character, CurrentAttackData.Angle, CurrentAttackData.Strength);
                     _hitObjects.Add(collider.gameObject);
                 }
             }

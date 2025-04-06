@@ -5,12 +5,12 @@ public class AnimationActivator : WeaponComponent<AnimationActivatorData, EmptyA
     protected override void HandleEnter()
     {
         base.HandleEnter();
-        _weapon.Animator.SetBool(data.ParamName, true);
+        _weapon.Animator.SetBool(Data.ParamName, true);
     }
 
     protected override void HandleExit()
     {
         base.HandleExit();
-        _weapon.Animator.SetBool(data.ParamName, false);
+        _weapon.Animator.SetBool(Data.ParamName, false);
     }
 }

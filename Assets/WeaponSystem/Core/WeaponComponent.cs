@@ -8,7 +8,7 @@ namespace SAS.WeaponSystem.Components
 
         protected IEventDispatcher _animationEventDispatcher;
 
-        protected float attackStartTime => _weapon.AttackStartTime;
+        protected float attackStartTime => _weapon.AttackEndTime;
 
         protected bool isAttackActive;
 
@@ -20,6 +20,9 @@ namespace SAS.WeaponSystem.Components
 
         protected virtual void Start()
         {
+            if (_weapon == null)
+                _weapon = GetComponent<Weapon>();
+
             _weapon.OnEnter += HandleEnter;
             _weapon.OnExit += HandleExit;
         }
@@ -43,21 +46,14 @@ namespace SAS.WeaponSystem.Components
 
     public abstract class WeaponComponent<T1, T2> : WeaponComponent where T1 : ComponentData<T2> where T2 : AttackData
     {
-        protected T1 data;
-        protected T2 currentAttackData;
-
-        protected override void HandleEnter()
-        {
-            base.HandleEnter();
-
-            currentAttackData = data.GetAttackData(_weapon.CurrentAttackCounter);
-        }
+        protected T1 Data { get; private set; }
+        protected T2 CurrentAttackData => Data.GetAttackData(_weapon.CurrentAttackCounter);
 
         public override void Init()
         {
             base.Init();
 
-            data = _weapon.Data.GetData<T1>();
+            Data = _weapon.Data.GetData<T1>();
         }
     }
 }

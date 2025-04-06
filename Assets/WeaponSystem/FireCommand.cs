@@ -10,12 +10,19 @@ namespace SAS.WeaponSystem
         private Action<CallbackContext> _firePerformed;
         private Action<CallbackContext> _fireCanceled;
         private InputAction _inputAction;
+        private string _inputActionKey;
 
-        public FireCommand(FSMCharacterController fsmcontroller)
+        public FireCommand(string inputActionKey, FSMCharacterController fsmcontroller)
         {
+            _inputActionKey = inputActionKey;
             _firePerformed = _ => fsmcontroller.OnFire();
             _fireCanceled = _ => fsmcontroller.OnFireCanceled();
         }
+
+        public void AddFirePerformedCallback(Action<CallbackContext> callback) => _firePerformed += callback;
+        public void RemoveFirePerformedCallback(Action<CallbackContext> callback) => _firePerformed -= callback;
+        public void AddFireCanceledCallback(Action<CallbackContext> callback) => _fireCanceled += callback;
+        public void RemoveFireCanceledCallback(Action<CallbackContext> callback) => _fireCanceled -= callback;
 
         public void SetActive(InputConfig inputConfig, bool active)
         {
@@ -28,7 +35,7 @@ namespace SAS.WeaponSystem
                     _inputAction.Disable();
                 }
 
-                _inputAction = inputConfig.GetInputAction("Attack");
+                _inputAction = inputConfig.GetInputAction(_inputActionKey);
                 if (_inputAction != null)
                 {
                     _inputAction.performed += _firePerformed;

@@ -40,7 +40,7 @@ MonoBehaviour:
         repeatData: 0
         attackData:
         - name: Attack 1
-          <Amount>k__BackingField: 50
+          <Amount>k__BackingField: 0
     - rid: 4097107325939089410
       type: {class: EffectOnHitBoxActionData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
       data:

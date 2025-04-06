@@ -18,7 +18,7 @@ namespace SAS.WeaponSystem.Components
         // Weapon Action Animation Event is used to trigger firing the projectiles
         private void HandleAttackAction()
         {
-            foreach (var projectileSpawnInfo in currentAttackData.SpawnInfos)
+            foreach (var projectileSpawnInfo in CurrentAttackData.SpawnInfos)
             {
                 projectileSpawnInfo.SetTransform(_character.Transform);
                 _objectPool.Spawn(projectileSpawnInfo);
@@ -29,23 +29,23 @@ namespace SAS.WeaponSystem.Components
         {
             this.Initialize();
             base.Init();
-            _objectPool = data.ObjectPool;
+            _objectPool = Data.ObjectPool;
             _objectPool.Initialize(4);
-            _eventDispatcher.Subscribe(data.AnimationEventName, HandleAttackAction);
+            _eventDispatcher.Subscribe(Data.AnimationEventName, HandleAttackAction);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            _eventDispatcher.Unsubscribe(data.AnimationEventName, HandleAttackAction);
+            _eventDispatcher.Unsubscribe(Data.AnimationEventName, HandleAttackAction);
         }
 
         private void OnDrawGizmosSelected()
         {
-            if (data == null || !Application.isPlaying)
+            if (Data == null || !Application.isPlaying)
                 return;
 
-            foreach (var item in data.GetAllAttackData())
+            foreach (var item in Data.GetAllAttackData())
             {
                 foreach (var point in item.SpawnInfos)
                 {

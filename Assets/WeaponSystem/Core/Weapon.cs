@@ -8,51 +8,65 @@ namespace SAS.WeaponSystem
 {
     public class Weapon : MonoBehaviour, IWeapon
     {
-        [SerializeField] private float m_AttackCounterResetCooldown;
+        public event Action<bool> OnCurrentInputChange;
+
+        [field: SerializeField] public float AttackCounterResetCooldown { get; set; }
 
         public const string Tag = "";
-        public float AttackStartTime { get; internal set; }
+        public float AttackEndTime { get; internal set; }
         public WeaponDataSO Data { get; private set; }
 
-        private int currentAttackCounter;
+        private int _currentAttackCounter;
+
         public int CurrentAttackCounter
         {
-            get => currentAttackCounter;
-            private set => currentAttackCounter = value >= Data.NumberOfAttacks ? 0 : value;
+            get => _currentAttackCounter;
+            set => _currentAttackCounter = value >= Data.NumberOfAttacks ? 0 : value;
         }
+
 
         public bool CanEnterAttack { get; set; }
         public Action OnEnter { get; internal set; }
         public Action OnExit { get; internal set; }
 
-        public bool IsInUse { get; private set; }
+        public bool IsInUse { get; set; }
         public Animator Animator { get; private set; }
 
-        private CountdownTimer _attackCounterResetTimer = new CountdownTimer(1);
+        private bool _currentInput;
+
+        public bool CurrentInput
+        {
+            get => _currentInput;
+            set
+            {
+                if (_currentInput != value)
+                {
+                    _currentInput = value;
+                    OnCurrentInputChange?.Invoke(_currentInput);
+                }
+            }
+        }
+
+        public CountdownTimer attackCounterResetTimer = new CountdownTimer(1);
         private CancellationTokenSource _cts;
+
 
         private void Awake()
         {
-            _attackCounterResetTimer = new CountdownTimer();
             Animator = GetComponentInParent<Animator>();
         }
 
         void IWeapon.Enter()
         {
-            Debug.Log($"Enter{Time.time}", Tag);
-            AttackStartTime = Time.time;
-            Animator.SetInteger("Counter", currentAttackCounter);
-            //_attackCounterResetTimer.Pause();
-            WaitForAttackAnimFinish(Animator);
             IsInUse = true;
+            WaitForAttackAnimFinish(Animator);
             OnEnter?.Invoke();
         }
 
         void IWeapon.Exit()
         {
-           // Debug.Log($"Exit{Time.time}", Tag);
             CurrentAttackCounter++;
-            _attackCounterResetTimer.Start(m_AttackCounterResetCooldown);
+            attackCounterResetTimer.Start(AttackCounterResetCooldown);
             OnExit?.Invoke();
             IsInUse = false;
         }
@@ -71,30 +85,33 @@ namespace SAS.WeaponSystem
         {
             print("Reset Attack Counter");
             CurrentAttackCounter = 0;
+            AttackEndTime = Time.time;
         }
 
         private void OnEnable()
         {
-            _attackCounterResetTimer.OnTimerStop += ResetAttackCounter;
+            attackCounterResetTimer.OnTimerStop += ResetAttackCounter;
         }
 
         private void OnDisable()
         {
-            _attackCounterResetTimer.OnTimerStop -= ResetAttackCounter;
+            attackCounterResetTimer.OnTimerStop -= ResetAttackCounter;
         }
 
         protected async void WaitForAttackAnimFinish(Animator animator)
         {
-            _cts?.Cancel(); 
-            _cts?.Dispose(); 
-            _cts = new CancellationTokenSource(); 
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+            }
+
+            _cts = new CancellationTokenSource();
 
             try
             {
                 await Awaitable.NextFrameAsync();
-
                 await animator.WhenStateExit("Attack").ToTask(_cts.Token);
-
                 (this as IWeapon).Exit();
             }
             catch (OperationCanceledException)

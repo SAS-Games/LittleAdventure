@@ -1,11 +1,23 @@
 using SAS.StateMachineCharacterController;
-using SAS.WeaponSystem;
-using UnityEngine;
+using SAS.WeaponSystem.Components;
 
-public class AttackInputBinder : MonoBehaviour
+namespace SAS.WeaponSystem
 {
-    void Start()
+    public class AttackInputBinder : WeaponComponent<AttackInputComponentData, EmptyAttackData>
     {
-        GetComponent<InputHandler>().CreateInputCommand("Attack", new FireCommand(GetComponent<FSMCharacterController>()), true);
+        public override void Init()
+        {
+            base.Init();
+            var fireCommand = new FireCommand(Data.AttackInputKey, GetComponentInParent<FSMCharacterController>());
+            fireCommand.AddFirePerformedCallback(_ =>
+            {
+                _weapon.CurrentInput = true;
+            });
+            fireCommand.AddFireCanceledCallback(_ =>
+            {
+                _weapon.CurrentInput = false;
+            });
+            GetComponentInParent<InputHandler>().CreateInputCommand(Data.AttackInputKey, fireCommand, true);
+        }
     }
 }

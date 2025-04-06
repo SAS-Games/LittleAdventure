@@ -18,7 +18,8 @@ MonoBehaviour:
   <AnimatorController>k__BackingField: {fileID: 0}
   <NumberOfAttacks>k__BackingField: 3
   <ComponentData>k__BackingField:
-  - rid: 4097107246286635260
+  - rid: 4097107546755563520
+  - rid: 4097107480356061258
   - rid: 4097107256536989767
   - rid: 4097107268341071943
   - rid: 4097107268341071944
@@ -27,14 +28,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 4097107246286635260
-      type: {class: AnimationActivatorData, ns: , asm: Assembly-CSharp}
-      data:
-        name: AnimationActivatorData
-        repeatData: 1
-        attackData:
-        - name: Attack 1
-        <ParamName>k__BackingField: Attack
     - rid: 4097107256536989767
       type: {class: MovementData, ns: , asm: Assembly-CSharp}
       data:
@@ -57,7 +50,7 @@ MonoBehaviour:
             m_Extent: {x: 0.6, y: 0.75, z: 0.5}
           <StartTime>k__BackingField: 0.17
           <EndTime>k__BackingField: 0.35
-          <StateTag>k__BackingField: 
+          <StateTag>k__BackingField: Attack
         <DetectableLayers>k__BackingField:
           serializedVersion: 2
           m_Bits: 65
@@ -90,3 +83,21 @@ MonoBehaviour:
         - name: Attack 1
           <Angle>k__BackingField: {x: 1, y: 0, z: 0.5}
           <Strength>k__BackingField: 2
+    - rid: 4097107480356061258
+      type: {class: ComboComponentData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
+      data:
+        name: ComboComponentData
+        repeatData: 1
+        attackData:
+        - name: Attack 1
+          <RequiredAnimationProgress>k__BackingField: 0.7
+          <StateTag>k__BackingField: Attack
+        <InputDelay>k__BackingField: 0.25
+    - rid: 4097107546755563520
+      type: {class: AttackInputComponentData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
+      data:
+        name: AttackInputComponentData
+        repeatData: 1
+        attackData:
+        - name: Attack 1
+        <AttackInputKey>k__BackingField: Attack

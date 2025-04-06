@@ -28,13 +28,13 @@ namespace SAS.WeaponSystem.Components
             Vector3 characterForward = _character.Forward; // Use forward vector for direction
 
             offset = transform.position +
-                     (characterForward * currentAttackData.HitBox.center.z) + // Move in the forward direction
-                     (transform.right * currentAttackData.HitBox.center.x) + // Move left/right
-                     (transform.up * currentAttackData.HitBox.center.y); // Move up/down
+                     (characterForward * CurrentAttackData.HitBox.center.z) + // Move in the forward direction
+                     (transform.right * CurrentAttackData.HitBox.center.x) + // Move left/right
+                     (transform.up * CurrentAttackData.HitBox.center.y); // Move up/down
 
 
             // Perform the OverlapBoxNonAlloc check
-            int hitCount = Physics.OverlapBoxNonAlloc(offset, currentAttackData.HitBox.extents, detected, transform.rotation, data.DetectableLayers);
+            int hitCount = Physics.OverlapBoxNonAlloc(offset, CurrentAttackData.HitBox.extents, detected, transform.rotation, Data.DetectableLayers);
 
             // If no colliders are found, exit early
             if (hitCount == 0)
@@ -60,15 +60,15 @@ namespace SAS.WeaponSystem.Components
             AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
             float animTime = stateInfo.normalizedTime;
 
-            if (stateInfo.IsTag(currentAttackData.StateTag) && animTime >= currentAttackData.StartTime && animTime <= currentAttackData.EndTime)
+            if (stateInfo.IsTag(CurrentAttackData.StateTag) && animTime >= CurrentAttackData.StartTime && animTime <= CurrentAttackData.EndTime)
                 HandleAttackAction();
         }
 
         private void OnDrawGizmosSelected()
         {
-            if (data == null) return;
+            if (Data == null) return;
 
-            foreach (var item in data.GetAllAttackData())
+            foreach (var item in Data.GetAllAttackData())
             {
                 if (!item.Debug) continue;
 
