@@ -1,0 +1,108 @@
+pipeline {
+    agent any
+
+    environment {
+        UNITY_PATH = '/path/to/Unity'
+        BUILD_TARGET = 'Windows'
+        TEAMS_WEBHOOK = credentials('TEAMS_WEBHOOK')
+        SLACK_CHANNEL = '#build-alerts'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building for ${BUILD_TARGET}"
+                sh "${UNITY_PATH} -batchmode -nographics -quit -executeMethod JenkinsBuild.PerformBuild platform=${BUILD_TARGET}"
+            }
+        }
+    }
+
+    post {
+        success {
+            slackSend(channel: "${SLACK_CHANNEL}", message: "✅ Build succeeded for ${BUILD_TARGET}")
+
+            script {
+                def msg = """
+                          {
+                            "@type": "MessageCard",
+                            "@context": "http://schema.org/extensions",
+                            "summary": "Unity Build Success",
+                            "themeColor": "00FF00",
+                            "title": "✅ Build Succeeded",
+                            "text": "**Platform:** ${BUILD_TARGET}\n**Status:** Success"
+                          }
+                          """
+                httpRequest httpMode: 'POST', contentType: 'APPLICATION_JSON', requestBody: msg, url: "${TEAMS_WEBHOOK}"
+            }
+        }
+
+        failure {
+            slackSend(channel: "${SLACK_CHANNEL}", message: "❌ Build FAILED for ${BUILD_TARGET}")
+
+            script {
+                def msg = """
+                          {
+                            "@type": "MessageCard",
+                            "@context": "http://schema.org/extensions",
+                            "summary": "Unity Build Failed",
+                            "themeColor": "FF0000",
+                            "title": "❌ Build Failed",
+                            "text": "**Platform:** ${BUILD_TARGET}\n**Status:** Failed"
+                          }
+                          """
+                httpRequest httpMode: 'POST', contentType: 'APPLICATION_JSON', requestBody: msg, url: "${TEAMS_WEBHOOK}"
+            }
+        }
+    }
+}
+
+
+pipeline {
+  agent any
+  parameters {
+    choice(name: 'PLATFORM', choices: ['Windows', 'Android', 'iOS'], description: 'Target platform')
+    string(name: 'FEATURE_STREAM', defaultValue: '', description: 'Perforce feature stream path')
+  }
+
+  environment {
+    UNITY_PATH = 'C:/Program Files/Unity/Hub/Editor/2021.3.11f1/Editor/Unity.exe'
+    P4CLIENT = "jenkins-${JOB_NAME}-${BUILD_NUMBER}"
+  }
+
+  stages {
+    stage('Sync Stream') {
+      steps {
+        script {
+          // Determine stream path
+          def streamPath = params.FEATURE_STREAM ?: '//stream/submission/...'
+          p4sync(
+            credential: 'perforce-cred',
+            stream: streamPath,
+            workspace: staticSpec(charset: 'none', name: env.P4CLIENT)
+          )
+        }
+      }
+    }
+
+    stage('Unity Build') {
+      steps {
+        script {
+          def buildTarget = params.PLATFORM.toLowerCase()
+          bat """
+            "${UNITY_PATH}" -quit -batchmode \
+            -projectPath "${WORKSPACE}/YourProject" \
+            -executeMethod BuildScript.${buildTarget}Build \
+            -logFile "${WORKSPACE}/build.log"
+          """
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      p4cleanup(deleteClient: true, credential: 'perforce-cred')
+      archiveArtifacts artifacts: '**/Builds/*'
+    }
+  }
+}
