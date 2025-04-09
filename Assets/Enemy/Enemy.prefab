@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3116689710209305241}
   - component: {fileID: 6208787614829853555}
   - component: {fileID: 400613935299163818}
-  - component: {fileID: -1890540379068361102}
   - component: {fileID: 8062570761865048911}
   - component: {fileID: 195983439888438717}
   - component: {fileID: 4307742841906401719}
@@ -119,29 +118,6 @@ CapsuleCollider:
   serializedVersion: 2
   m_Radius: 1
   m_Height: 2.5
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
---- !u!136 &-1890540379068361102
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7170290597381789726}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.8
-  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &8062570761865048911
@@ -364,7 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Components:
-  - {fileID: -1890540379068361102}
+  - {fileID: 0}
   - {fileID: 400613935299163818}
 --- !u!114 &940108172316850776
 MonoBehaviour:
@@ -543,7 +519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df270c9561b2f974e94b3c14f054574a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AttackCounterResetCooldown: 0
+  <AttackCounterResetCooldown>k__BackingField: 0
 --- !u!114 &1958770342302133497
 MonoBehaviour:
   m_ObjectHideFlags: 0

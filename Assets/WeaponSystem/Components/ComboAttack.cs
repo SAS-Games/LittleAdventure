@@ -1,3 +1,5 @@
+using SAS.StateMachineGraph;
+using SAS.Utilities.TagSystem;
 using UnityEngine;
 
 namespace SAS.WeaponSystem.Components
@@ -6,18 +8,26 @@ namespace SAS.WeaponSystem.Components
     {
         private const string TAG = "Combo";
         private float _lastInputTime = -Mathf.Infinity;
+        private bool _playNextAttack = false;
+        private Actor _actor;
 
         protected override void Start()
         {
             base.Start();
+            _actor = _weapon.GetComponentInParent<Actor>();
             _weapon.OnCurrentInputChange += HandleInputChange;
+        }
+
+        protected override void HandleEnter()
+        {
+            base.HandleEnter();
+            _weapon.Animator.Play($"Attack{_weapon.CurrentAttackCounter}", 0, 0);
         }
 
         private void HandleInputChange(bool isPressed)
         {
             if (!isPressed) // Prevent input during active combo
                 return;
-
             float timeSinceLastInput = Time.time - _lastInputTime;
 
             if (timeSinceLastInput < Data.InputDelay)
@@ -29,20 +39,17 @@ namespace SAS.WeaponSystem.Components
             AnimatorStateInfo animState = _weapon.Animator.GetCurrentAnimatorStateInfo(0);
             if (animState.IsTag(CurrentAttackData.StateTag))
             {
+                _playNextAttack = true;
                 if (animState.normalizedTime < CurrentAttackData.RequiredAnimationProgress)
                 {
                     Debug.Log($"Input ignored. Animation at {animState.normalizedTime * 100:F1}%", TAG);
                     return;
                 }
 
-                _weapon.CurrentAttackCounter++;
-                Debug.Log($"Combo continues at {animState.normalizedTime * 100:F1} NextAttackCounter: {_weapon.CurrentAttackCounter}", TAG);
+                _weapon.InterruptAttack();
             }
 
             _lastInputTime = Time.time;
-            if (_weapon.CurrentAttackCounter < 0)
-                _weapon.CurrentAttackCounter = 0;
-            _weapon.Animator.Play($"Attack{_weapon.CurrentAttackCounter}", 0, 0);
         }
 
         protected override void OnDestroy()
@@ -51,10 +58,17 @@ namespace SAS.WeaponSystem.Components
             _weapon.OnCurrentInputChange -= HandleInputChange;
         }
 
-        protected override void HandleExit()
+        protected override async void HandleExit()
         {
             base.HandleExit();
-            _weapon.CurrentAttackCounter--; //reset counter to its previous value if increased by onExit
+
+            if (_playNextAttack)
+            {
+                _playNextAttack = false;
+                _actor.SetBool("Attack", true);
+                await Awaitable.NextFrameAsync(); // delay by 1 frame
+                _actor.SetBool("Attack", false);
+            }
         }
     }
 }

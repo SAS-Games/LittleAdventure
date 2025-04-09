@@ -90,9 +90,9 @@ MonoBehaviour:
         repeatData: 1
         attackData:
         - name: Attack 1
-          <RequiredAnimationProgress>k__BackingField: 0.7
+          <RequiredAnimationProgress>k__BackingField: 0.35
           <StateTag>k__BackingField: Attack
-        <InputDelay>k__BackingField: 0.25
+        <InputDelay>k__BackingField: 0.1
     - rid: 4097107546755563520
       type: {class: AttackInputComponentData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
       data:

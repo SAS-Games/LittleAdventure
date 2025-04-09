@@ -11,7 +11,8 @@ namespace SAS.WeaponSystem.Components
 
         private void HandleDetectCollider(List<(Collider collider, Vector3 point)> colliders)
         {
-            Debug.Log("HandleDetectCollider");
+            Debug.Log($"HandleDetectCollider: {Time.frameCount}");
+
             foreach (var (collider, point) in colliders)
             {
                 if (_hitObjects.Contains(collider.gameObject))
@@ -19,6 +20,7 @@ namespace SAS.WeaponSystem.Components
 
                 if (collider.TryGetComponent(out IDamageable damageable))
                 {
+                    Debug.Log($"Damage: {CurrentAttackData.Amount}");
                     damageable.Damage(new DamageInfo(CurrentAttackData.Amount, _root));
                     _hitObjects.Add(collider.gameObject);
                 }
@@ -48,8 +50,9 @@ namespace SAS.WeaponSystem.Components
 
         protected override void HandleEnter()
         {
+            _hitObjects.Clear(); // Reset hit tracking
             base.HandleEnter();
-            _hitObjects.Clear(); // Reset hit tracking at the start of each attack
+
         }
     }
 }
