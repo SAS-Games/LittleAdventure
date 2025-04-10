@@ -61,7 +61,7 @@ pipeline {
   agent any
   parameters {
     choice(name: 'PLATFORM', choices: ['Windows', 'Android', 'iOS'], description: 'Target platform')
-    string(name: 'FEATURE_STREAM', defaultValue: '', description: 'Perforce feature stream path')
+    string(name: 'STREAM', defaultValue: '', description: 'Perforce feature stream path')
   }
 
   environment {
@@ -74,7 +74,7 @@ pipeline {
       steps {
         script {
           // Determine stream path
-          def streamPath = params.FEATURE_STREAM ?: '//stream/submission/...'
+          def streamPath = params.STREAM ?: '//stream/submission/...'
           p4sync(
             credential: 'perforce-cred',
             stream: streamPath,
@@ -105,4 +105,49 @@ pipeline {
       archiveArtifacts artifacts: '**/Builds/*'
     }
   }
+}
+
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'P4_STREAM', defaultValue: '//UnityGameDev/LittleAdventure', description: 'Perforce stream to sync')
+        choice(name: 'BUILD_PLATFORM', choices: ['windows', 'android', 'ios'], description: 'Target platform for Unity build')
+    }
+
+    environment {
+        UNITY_PATH = "C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.0f1\\Editor\\Unity.exe" // ✅ Unity path on Windows
+        UNITY_BUILD_METHOD = "JenkinsBuild.PerformBuild"
+    }
+
+    stages {
+        stage('Checkout from Perforce') {
+            steps {
+                script {
+                    checkout([
+                        $class: 'PerforceScm',
+                        credential: 'your-p4-credentials-id', // Replace with your actual Jenkins credential ID
+                        populate: [$class: 'AutoCleanImpl', delete: true, modtime: false, quiet: true],
+                        streamName: "${params.P4_STREAM}"
+                    ])
+                }
+            }
+        }
+
+        stage('Unity Build') {
+            steps {
+                script {
+                    echo "🚀 Running Unity build for platform: ${params.BUILD_PLATFORM}"
+
+                    def unityCmd = "\"${env.UNITY_PATH}\" -batchmode -nographics -quit " +
+                                   "-projectPath \"${env.WORKSPACE}\" " +
+                                   "-executeMethod ${env.UNITY_BUILD_METHOD} " +
+                                   "platform=${params.BUILD_PLATFORM}"
+
+                    echo "Running Unity command: ${unityCmd}"
+                    bat unityCmd // ✅ Use 'bat' instead of 'sh' on Windows
+                }
+            }
+        }
+    }
 }
