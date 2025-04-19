@@ -210,10 +210,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainSceneGroupLoader
       objectReference: {fileID: 0}
-    - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_SetActiveScene
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -294,7 +290,7 @@ MonoBehaviour:
   m_LoadOptionalScenes: 0
   m_LoadOnStart: 0
   m_SetActiveScene: MainMenu
-  m_LoadingScreenBehaviour: {fileID: 0}
+  m_LoadingScreen: {fileID: 0}
 --- !u!4 &1297613296
 Transform:
   m_ObjectHideFlags: 0
