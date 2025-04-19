@@ -838,7 +838,7 @@ MonoBehaviour:
   m_SourceState: {fileID: 8166284527128004876}
   m_TargetState: {fileID: 7383936760125653877}
   m_HasExitTime: 1
-  m_ExitTime: 0.22
+  m_ExitTime: 0.3
   m_WaitForAwaitableActionsToComplete: 1
   m_Conditions:
   - m_Name: Custom

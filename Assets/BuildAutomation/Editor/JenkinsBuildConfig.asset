@@ -15,4 +15,6 @@ MonoBehaviour:
   jenkinsUrl: http://your-jenkins-url/job/UnityBuild/buildWithParameters
   username: your-username
   apiToken: your-api-token
-  platform: Windows
+  platform: 0
+  selectedStreamIndex: -1
+  availableStreams: []

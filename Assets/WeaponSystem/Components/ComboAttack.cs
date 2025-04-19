@@ -60,6 +60,7 @@ namespace SAS.WeaponSystem.Components
 
         protected override async void HandleExit()
         {
+            _weapon.attackCounterResetTimer.Start();
             base.HandleExit();
 
             if (_playNextAttack)
