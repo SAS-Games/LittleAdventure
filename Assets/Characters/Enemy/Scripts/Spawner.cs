@@ -37,6 +37,7 @@ public class Spawner : MonoBehaviour
             return;
 
         _hasSpawned = true;
+        gameObject.SetActive(false);
 
         foreach (SpawnPoint point in _spawnPoints)
         {
