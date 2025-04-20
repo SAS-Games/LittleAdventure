@@ -1,11 +1,13 @@
 ﻿using System.Collections;
+using SAS.StateMachineCharacterController;
 using Unity.Cinemachine;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 public class CameraManager : MonoBehaviour, IObjectSpawnedListener
 {
-    [SerializeField] private CameraLookControls m_CameraLookControls;
     [SerializeField] private Camera m_MainCamera;
+
     [Header("Cinemachine")]
     [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
     public Transform CinemachineCameraTarget;
@@ -20,6 +22,7 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
     public float CameraAngleOverride = 0.0f;
 
     // cinemachine
+    private CameraLookControls _cameraLookControls;
     private float _cinemachineTargetYaw;
     private float _cinemachineTargetPitch;
     private bool _isRMBPressed;
@@ -31,31 +34,22 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
 
     private void Awake()
     {
-        m_CameraLookControls = new CameraLookControls();
+        _cameraLookControls = new CameraLookControls();
         cinemachineBrain = GetComponent<CinemachineBrain>();
     }
 
     private void OnEnable()
     {
-        m_CameraLookControls.Mouse.Enable();
-
-        m_CameraLookControls.Mouse.RotateCamera.started += context => OnCameraMove(context.ReadValue<Vector2>(), context.control.device.name == "Mouse");
-        m_CameraLookControls.Mouse.RotateCamera.performed += context => OnCameraMove(context.ReadValue<Vector2>(), context.control.device.name == "Mouse");
-        m_CameraLookControls.Mouse.RotateCamera.canceled += context => OnCameraMove(context.ReadValue<Vector2>(), context.control.device.name == "Mouse");
-
-        m_CameraLookControls.Mouse.MouseControlCamera.performed += _ => OnEnableMouseControlCamera();
-        m_CameraLookControls.Mouse.MouseControlCamera.canceled += _ => OnDisableMouseControlCamera();
+        _cameraLookControls.Mouse.Enable();
+        _cameraLookControls.Mouse.MouseControlCamera.performed += _ => OnEnableMouseControlCamera();
+        _cameraLookControls.Mouse.MouseControlCamera.canceled += _ => OnDisableMouseControlCamera();
         StartCoroutine(CheckForCameraChanges());
     }
 
     private void OnDisable()
     {
-        m_CameraLookControls.Mouse.RotateCamera.started -= context => OnCameraMove(context.ReadValue<Vector2>(), context.control.device.name == "Mouse");
-        m_CameraLookControls.Mouse.RotateCamera.performed -= context => OnCameraMove(context.ReadValue<Vector2>(), context.control.device.name == "Mouse");
-        m_CameraLookControls.Mouse.RotateCamera.canceled -= context => OnCameraMove(context.ReadValue<Vector2>(), context.control.device.name == "Mouse");
-
-        m_CameraLookControls.Mouse.MouseControlCamera.performed -= _ => OnEnableMouseControlCamera();
-        m_CameraLookControls.Mouse.MouseControlCamera.canceled -= _ => OnDisableMouseControlCamera();
+        _cameraLookControls.Mouse.MouseControlCamera.performed -= _ => OnEnableMouseControlCamera();
+        _cameraLookControls.Mouse.MouseControlCamera.canceled -= _ => OnDisableMouseControlCamera();
     }
 
     IEnumerator CheckForCameraChanges()
@@ -67,11 +61,14 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
             yield return null; // Check every 0.1 seconds
             activeCamera = cinemachineBrain.ActiveVirtualCamera;
         }
-        var cinemachineCamera = activeCamera as CinemachineCamera; ;
+
+        var cinemachineCamera = activeCamera as CinemachineCamera;
+        ;
         while (cinemachineCamera.Target.TrackingTarget == null)
         {
             yield return null;
         }
+
         CinemachineCameraTarget = cinemachineCamera.Target.TrackingTarget;
         _cinemachineTargetYaw = CinemachineCameraTarget.rotation.eulerAngles.y;
     }
@@ -112,35 +109,35 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
         // if there is an input and camera position is not fixed
         if (cameraMovement.sqrMagnitude >= _threshold)
         {
-            //Don't multiply mouse input by Time.deltaTime;
-            float deltaTimeMultiplier = isDeviceMouse ? 1.0f : Time.deltaTime;
-
-            _cinemachineTargetYaw += cameraMovement.x * deltaTimeMultiplier;
-            _cinemachineTargetPitch += cameraMovement.y * deltaTimeMultiplier;
-        }     
+            _cinemachineTargetYaw += cameraMovement.x;
+            _cinemachineTargetPitch += cameraMovement.y;
+        }
     }
 
     private void LateUpdate()
     {
-        if(CinemachineCameraTarget == null)
+        var cameraMovement = _cameraLookControls.Mouse.RotateCamera.ReadValue<Vector2>();
+        var isDeviceMouse = _cameraLookControls.Mouse.RotateCamera.activeControl?.device.name == "Mouse";
+        OnCameraMove(cameraMovement, isDeviceMouse);
+        if (CinemachineCameraTarget == null)
             return;
         // clamp our rotations so our values are limited 360 degrees
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
         _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
         CinemachineCameraTarget.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-           _cinemachineTargetYaw, 0.0f);
+            _cinemachineTargetYaw, 0.0f);
     }
 
 
     void IObjectSpawnedListener.OnSpawn(GameObject gameObject)
     {
-
-
+        //todo: this must be removed from here.
+        var cameraLookAt = gameObject.GetComponent<ICameraLookAt>();
+        CinemachineCameraTarget = cameraLookAt.Target;
     }
 
     void IObjectSpawnedListener.OnDespawn(GameObject gameObject)
     {
-
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

@@ -9,7 +9,7 @@
                     "name": "RotateCamera",
                     "type": "Value",
                     "id": "ab279fab-3b37-44e4-9660-e40e1c443a79",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -28,7 +28,18 @@
                 {
                     "name": "",
                     "id": "16b65cc5-9f55-4881-914d-d91190567ba7",
-                    "path": "",
+                    "path": "<Pointer>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateCamera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d4df7f29-de02-4237-b723-3a9aadfe01bb",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -39,7 +50,7 @@
                 {
                     "name": "",
                     "id": "fdb97ab8-0728-405e-9944-1bb291e5c864",
-                    "path": "",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
