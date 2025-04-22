@@ -57,12 +57,13 @@ GameObject:
   - component: {fileID: 8245588806867666461}
   - component: {fileID: 5969322159665116357}
   - component: {fileID: 2261841214966393158}
-  - component: {fileID: 324327762719006952}
   - component: {fileID: 4408061827609880794}
   - component: {fileID: 1392526365081547643}
   - component: {fileID: 4242162623136758871}
   - component: {fileID: 982385090900151853}
   - component: {fileID: 4945325074976538099}
+  - component: {fileID: 9002388050143003221}
+  - component: {fileID: 324327762719006952}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -476,21 +477,6 @@ MonoBehaviour:
   - {fileID: 6478100189421423029}
   - {fileID: 7741954779662780768}
   - {fileID: 3511421163113381256}
---- !u!114 &324327762719006952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622055182962459638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 856a766c0c2378649b5d1bc372e038c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Tags:
-  - m_Component: {fileID: 2261841214966393158}
-    m_Value: 1
 --- !u!114 &4408061827609880794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -589,6 +575,35 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &9002388050143003221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c058a692c081a244ba5eb5b096108ebd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &324327762719006952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 856a766c0c2378649b5d1bc372e038c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Tags:
+  - m_Component: {fileID: 2261841214966393158}
+    m_Value: 1
+  - m_Component: {fileID: 9002388050143003221}
+    m_Value: 2
 --- !u!1 &5867608038117725257
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,7 +749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df270c9561b2f974e94b3c14f054574a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackCounterResetCooldown: 0
+  <AttackCounterResetCooldown>k__BackingField: 0
 --- !u!114 &3812062728938002290
 MonoBehaviour:
   m_ObjectHideFlags: 0

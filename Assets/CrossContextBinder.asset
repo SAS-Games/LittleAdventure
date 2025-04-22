@@ -18,10 +18,4 @@ MonoBehaviour:
     m_Type: SAS.SceneManagement.SceneLoader, AssemblyUtilities, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     m_Tag: 0
-    m_ExcludedPlatforms: 00000000
-  - m_Interface: SAS.SceneManagement.ISceneLoader, AssemblyUtilities, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_Type: SAS.SceneManagement.SceneLoader, AssemblyUtilities, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
-    m_ExcludedPlatforms: 06000000
+    m_ExcludedPlatforms: 

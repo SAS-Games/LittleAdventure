@@ -1,4 +1,5 @@
 using SAS.Utilities.TagSystem;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,6 +10,7 @@ public interface IHealthPresenter
 
 public class HealthPresenter : MonoBehaviour, IHealthPresenter
 {
+    [FieldRequiresSelf] private IProxyView<float> _healthView;
     [FieldRequiresChild] private IDamageable _damageable;
     [SerializeField] private int m_MaxHealth = 100;
     [SerializeField] private UnityEvent m_OnDeath;
@@ -20,16 +22,13 @@ public class HealthPresenter : MonoBehaviour, IHealthPresenter
     {
         this.Initialize();
         _healthModel = new HealthModel(m_MaxHealth);
+        _healthModel.CurrentHealth.Subscribe(current => { _healthView?.OnValueChanged(current); }).AddTo(this);
+        _healthModel.OnDeath.Subscribe(_ => { m_OnDeath?.Invoke(); }).AddTo(this);
     }
 
     private void HandleDamage(float amount)
     {
         _healthModel.Decrease(amount);
-        if ((int)_healthModel.CurrentHealth.Value <= 0)
-        {
-            m_OnDeath.Invoke();
-            Debug.Log("Death");
-        }
     }
 
     void OnEnable()
