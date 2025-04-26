@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.sas.fsmcharactercontroller": "https://github.com/SAS-Games/StateMachineCharacterController.git#master-platformer",
     "com.sas.library.unirx": "https://github.com/SAS-Games/UniRx.git",
     "com.sas.statemachine": "https://github.com/SAS-Games/SASPackages-StateMachine.git#master-platformer",
