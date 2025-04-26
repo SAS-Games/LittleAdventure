@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using SAS.StateMachineGraph.Utilities;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ZLinq;
 using Object = UnityEngine.Object;
 
 interface IMetaLocator : IBindable
@@ -149,7 +149,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
 
         var baseTypes = type.GetInterfaces();
         if (type.BaseType != null)
-            baseTypes = baseTypes.Prepend(type.BaseType).ToArray();
+            baseTypes = baseTypes.AsValueEnumerable().Prepend(type.BaseType).ToArray();
 
         foreach (var baseType in baseTypes)
             AddToLocal(baseType, service, tag);

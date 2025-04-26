@@ -8,11 +8,10 @@ namespace SAS.WeaponSystem
 {
     public class Weapon : MonoBehaviour, IWeapon
     {
+        public const string TAG = "Weapon";
         public event Action<bool> OnCurrentInputChange;
 
         [field: SerializeField] public float AttackCounterResetCooldown { get; set; }
-
-        public const string Tag = "";
         public float AttackEndTime { get; internal set; }
         public WeaponDataSO Data { get; private set; }
 
@@ -58,7 +57,7 @@ namespace SAS.WeaponSystem
 
         void IWeapon.Enter()
         {
-            UnityEngine.Debug.Log($"======================Enter {Time.frameCount}");
+            Debug.Log("Weapon Enter {Time.frameCount}", TAG);
             IsInUse = true;
             WaitForAttackAnimFinish(Animator);
             OnEnter?.Invoke();
@@ -66,7 +65,7 @@ namespace SAS.WeaponSystem
 
         void IWeapon.Exit()
         {
-            UnityEngine.Debug.Log($"=======================Exit {Time.frameCount}");
+            Debug.Log("Weapon Exit {Time.frameCount}", TAG);
             CurrentAttackCounter++;
             attackCounterResetTimer.Start(AttackCounterResetCooldown);
             IsInUse = false;
@@ -85,7 +84,7 @@ namespace SAS.WeaponSystem
 
         private void ResetAttackCounter()
         {
-            print("Reset Attack Counter");
+            Debug.Log("Reset Attack Counter", TAG);
             CurrentAttackCounter = 0;
             AttackEndTime = Time.time;
         }
@@ -100,14 +99,14 @@ namespace SAS.WeaponSystem
             attackCounterResetTimer.OnTimerStop -= ResetAttackCounter;
         }
 
-        protected async void WaitForAttackAnimFinish(Animator animator)
+        private async void WaitForAttackAnimFinish(Animator animator)
         {
             _cts?.Cancel();
             _cts?.Dispose();
 
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
-            
+
             try
             {
                 await Awaitable.NextFrameAsync(); // Let the state fully start
@@ -123,13 +122,11 @@ namespace SAS.WeaponSystem
             }
             finally
             {
-                // Whether cancelled or completed, call Exit
-               // if (IsInUse) // safety check, optional
-                    (this as IWeapon).Exit();
+                (this as IWeapon).Exit();
             }
         }
 
-        
+
         public void InterruptAttack()
         {
             _cts?.Cancel(); // This will trigger the catch block and call Exit

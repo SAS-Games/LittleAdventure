@@ -2,8 +2,8 @@
 using SAS.WeaponSystem.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using ZLinq;
 
 namespace SAS.WeaponSystem
 {
@@ -46,17 +46,17 @@ namespace SAS.WeaponSystem
             _componentsAddedToWeapon.Clear();
             _componentDependencies.Clear();
 
-            _componentAlreadyOnWeapon = GetComponents<WeaponComponent>().ToList();
+            _componentAlreadyOnWeapon = GetComponents<WeaponComponent>().AsValueEnumerable().ToList();
 
             _componentDependencies = data.GetAllDependencies();
 
             foreach (var dependency in _componentDependencies)
             {
-                if (_componentsAddedToWeapon.FirstOrDefault(component => component.GetType() == dependency))
+                if (_componentsAddedToWeapon.AsValueEnumerable().FirstOrDefault(component => component.GetType() == dependency))
                     continue;
 
                 var weaponComponent =
-                    _componentAlreadyOnWeapon.FirstOrDefault(component => component.GetType() == dependency);
+                    _componentAlreadyOnWeapon.AsValueEnumerable().FirstOrDefault(component => component.GetType() == dependency);
 
                 if (weaponComponent == null)
                 {
@@ -68,7 +68,7 @@ namespace SAS.WeaponSystem
                 _componentsAddedToWeapon.Add(weaponComponent);
             }
 
-            var componentsToRemove = _componentAlreadyOnWeapon.Except(_componentsAddedToWeapon);
+            var componentsToRemove = _componentAlreadyOnWeapon.AsValueEnumerable().Except(_componentsAddedToWeapon);
 
             foreach (var weaponComponent in componentsToRemove)
             {
