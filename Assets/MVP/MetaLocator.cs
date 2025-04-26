@@ -1,61 +1,61 @@
-using SAS.StateMachineGraph.Utilities;
-using SAS.Utilities;
-using SAS.Utilities.TagSystem;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using SAS.StateMachineGraph.Utilities;
+using SAS.Utilities.TagSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
-public partial class MetaLocator : MonoBehaviour, IActivatable, IIniter
+interface IMetaLocator : IBindable
+{
+    void CacheLocalMeta(IContextBinder contextBinder);
+    void AddHandlers(IEnumerable<MetaLocator.IHandler> handlers);
+    bool InjectInto(Scene gameScene);
+    void RemoveHandlers(IEnumerable<MetaLocator.IHandler> handlers);
+}
+
+public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
 {
     public interface IHandler
     {
         void OnMetaLoaded(MetaLocator metaLocator);
         void OnCoreLoaded(MetaLocator metaLocator);
     }
+
     public interface IReset
     {
         void Reset();
     }
 
-    [SerializeField] BaseContextBinder m_ContextBinder;
     private List<IHandler> _handlers = new List<IHandler>();
     private Dictionary<Key, object> _localMeta = new Dictionary<Key, object>();
     private ICore _core;
-    private IContextBinder _contextBinder => m_ContextBinder;
 
-    public Task Init()
-    {
-        var tcs = new TaskCompletionSource<bool>();
-        StaticCoroutine.Start(Init(tcs));
-        return tcs.Task;
-    }
-
-    private IEnumerator Init(TaskCompletionSource<bool> tcs)
+    private void Awake()
     {
         foreach (var handler in _handlers)
             (handler as IReset)?.Reset();
-        
+
         _handlers.Clear();
         _localMeta.Clear();
-        
-        foreach (var keyValue in _contextBinder.GetAll())
+
+        var rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+        foreach (var rootObject in rootObjects)
+        {
+            AddHandlers(rootObject.GetComponentsInChildren<IHandler>(true));
+        }
+    }
+
+    void IMetaLocator.CacheLocalMeta(IContextBinder contextBinder)
+    {
+        foreach (var keyValue in contextBinder.GetAll())
         {
             if (!_localMeta.ContainsKey(keyValue.Key))
                 _localMeta.Add(keyValue.Key, keyValue.Value);
             else
                 Debug.Log($"An item with the same key has already been added. Key: {keyValue.Key}");
         }
-        yield return null;
-        var rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-        foreach (var rootObject in rootObjects)
-        {
-            AddHandlers(rootObject.GetComponentsInChildren<IHandler>(true));
-        }
-        tcs.SetResult(true);
     }
 
     public void AddHandlers(IEnumerable<IHandler> handlers)
@@ -67,7 +67,7 @@ public partial class MetaLocator : MonoBehaviour, IActivatable, IIniter
         }
     }
 
-    public void RemoveHandlers(IEnumerable<IHandler> handlers)
+    void IMetaLocator.RemoveHandlers(IEnumerable<IHandler> handlers)
     {
         foreach (var handler in handlers)
         {
@@ -96,6 +96,7 @@ public partial class MetaLocator : MonoBehaviour, IActivatable, IIniter
                 {
                     handler.OnCoreLoaded(this);
                 }
+
                 return true;
             }
         }
@@ -105,7 +106,7 @@ public partial class MetaLocator : MonoBehaviour, IActivatable, IIniter
 
     public bool TryGet<T>(out T instance, Tag tag = Tag.None)
     {
-        if (_core as UnityEngine.Object == null || !_core.TryGet(out instance, tag))
+        if (_core as Object == null || !_core.TryGet(out instance, tag))
         {
             var key = GetKey(typeof(T), tag);
             if (!_localMeta.TryGetValue(key, out object result))
@@ -114,9 +115,11 @@ public partial class MetaLocator : MonoBehaviour, IActivatable, IIniter
                 Debug.LogError($"Required service of type {typeof(T).Name} with tag {tag} is not found");
                 return false;
             }
+
             instance = (T)result;
             return true;
         }
+
         return true;
     }
 
@@ -132,7 +135,7 @@ public partial class MetaLocator : MonoBehaviour, IActivatable, IIniter
     public void Add<T>(T service, Tag tag = Tag.None)
     {
         AddToLocal(typeof(T), service, tag);
-        if (_core as UnityEngine.Object != null)
+        if (_core as Object != null)
         {
             _core.Add<T>(service, tag);
         }
@@ -171,5 +174,10 @@ public partial class MetaLocator : MonoBehaviour, IActivatable, IIniter
     {
         _localMeta.Clear();
         _handlers.Clear();
+    }
+
+    public void OnInstanceCreated()
+    {
+        Debug.Log("OnInstanceCreated MetaLocator");
     }
 }
