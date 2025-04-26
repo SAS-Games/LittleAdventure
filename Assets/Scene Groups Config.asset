@@ -23,12 +23,17 @@ MonoBehaviour:
   - m_Name: GameScene
     Scenes:
     - Reference:
+        asset: {fileID: 102900000, guid: a2efce2887be36049872b2aec3bdabed, type: 3}
+        guid: a2efce2887be36049872b2aec3bdabed
+      SceneType: 4
+      IsOptinal: 0
+    - Reference:
         asset: {fileID: 102900000, guid: 38b37c3fdd7077a4f83ac75d16b2441b, type: 3}
         guid: 38b37c3fdd7077a4f83ac75d16b2441b
       SceneType: 1
       IsOptinal: 0
     - Reference:
-        asset: {fileID: 102900000, guid: a2efce2887be36049872b2aec3bdabed, type: 3}
-        guid: a2efce2887be36049872b2aec3bdabed
-      SceneType: 3
+        asset: {fileID: 102900000, guid: 8406f48641c5ab348a73934b2ee54f82, type: 3}
+        guid: 8406f48641c5ab348a73934b2ee54f82
+      SceneType: 1
       IsOptinal: 0

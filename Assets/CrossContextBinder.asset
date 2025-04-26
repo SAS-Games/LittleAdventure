@@ -19,3 +19,14 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms: 
+  - m_Interface: IMetaLocator, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Type: MetaLocator, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_Tag: 0
+    m_ExcludedPlatforms: 
+  - m_Interface: ISaveSystem, AssemblyUtilities, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Type: JsonFileSaveSystem, AssemblyUtilities, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Tag: 0
+    m_ExcludedPlatforms: 0500000006000000

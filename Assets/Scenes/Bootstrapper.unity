@@ -208,7 +208,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3223484884199218714, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_Name
-      value: SceneGroupLoader (1)
+      value: SceneGroupLoader
       objectReference: {fileID: 0}
     - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_LoadOnStart
