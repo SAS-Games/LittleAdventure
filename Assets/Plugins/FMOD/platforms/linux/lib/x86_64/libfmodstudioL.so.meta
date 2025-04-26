@@ -1,22 +1,27 @@
 fileFormatVersion: 2
-guid: 2dab3dda051681d4a9ea3ed67cb9877f
-timeCreated: 1518408468
-licenseType: Free
+guid: 2eb594aec048b7d4b8d48e813584c21c
 PluginImporter:
-  serializedVersion: 1
+  externalObjects: {}
+  serializedVersion: 3
   iconMap: {}
   executionOrder: {}
+  defineConstraints: []
   isPreloaded: 0
+  isOverridable: 0
+  isExplicitlyReferenced: 0
+  validateReferences: 1
   platformData:
     Any:
       enabled: 0
       settings: {}
     Editor:
-      enabled: 0
+      enabled: 1
       settings:
+        CPU: x86_64
         DefaultValueInitialized: true
-    WebGL:
-      enabled: 0
+        OS: Linux
+    Linux64:
+      enabled: 1
       settings: {}
   userData: 
   assetBundleName: 
