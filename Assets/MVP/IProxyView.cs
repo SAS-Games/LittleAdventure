@@ -1,7 +1,7 @@
 using SAS.Utilities.TagSystem;
 using UniRx;
 
-public interface IProxyView<T> : ServiceLocator.IService
+public interface IProxyView<T>
 {
     void OnValueChanged(T value);
     IReadOnlyReactiveProperty<T> Value { get; }

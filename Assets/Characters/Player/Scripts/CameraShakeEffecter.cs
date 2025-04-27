@@ -35,6 +35,5 @@ public class CameraShakeEffecter : MonoBehaviour
             _cinemachineImpulseListener.ReactionSettings.AmplitudeGain = m_Profile.ListenerAmplitude;
             _cinemachineImpulseListener.ReactionSettings.FrequencyGain = m_Profile.ListenerFrequncy;
         }
-
     }
 }

@@ -16,6 +16,6 @@ public class InjectMetaReferences : MonoBehaviour
     {
         Scene scene = gameObject.scene;
         if (scene.isLoaded)
-            _metaLocator.InjectInto(scene);
+            _metaLocator?.InjectInto(scene);
     }
 }
