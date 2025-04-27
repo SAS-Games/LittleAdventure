@@ -1,6 +1,14 @@
+using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIScreenView : UIBehaviour
+public abstract class UIScreenView : UIBehaviour, IPointerClickHandler
 {
-    
+    protected virtual void OnButtonClick(GameObject button, PointerEventData eventData)
+    {
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        OnButtonClick(eventData.selectedObject, eventData);
+    }
 }

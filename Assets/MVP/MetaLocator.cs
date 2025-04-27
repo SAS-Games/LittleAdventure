@@ -71,8 +71,11 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
     {
         foreach (var handler in handlers)
         {
-            _handlers.Remove(handler);
+            if (handler != null)
+                _handlers.Remove(handler);
         }
+
+        _handlers.RemoveAll(h => h == null);
     }
 
     public bool InjectInto(Scene gameScene)
