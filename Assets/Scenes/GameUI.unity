@@ -211,6 +211,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2991786606344671338, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991786606344671338, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991786606344671338, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991786606344671338, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991786606589205353, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991786606589205353, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991786606589205353, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2991786606589205353, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5228197426702467132, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
       propertyPath: m_GameSceneGroupLoader
       value: 
@@ -219,6 +251,22 @@ PrefabInstance:
       propertyPath: m_MainSceneGroupLoader
       value: 
       objectReference: {fileID: 1414380725}
+    - target: {fileID: 7650230491708132733, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7650230491708132733, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7650230491708132733, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7650230491708132733, guid: ef3529a2a3d81144a815c38c81a7b30f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -558,10 +606,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game Over UI
       objectReference: {fileID: 0}
-    - target: {fileID: 2767669643814859873, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2767669643814859886, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -642,38 +686,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2991786605443079037, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991786605443079037, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991786605443079037, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 80.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991786605443079037, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -49.81667
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991786605770309737, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991786605770309737, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991786605770309737, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 80.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2991786605770309737, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -12.166667
-      objectReference: {fileID: 0}
+    - target: {fileID: 8348497640093015006, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
+      propertyPath: m_GameSceneGroupLoader
+      value: 
+      objectReference: {fileID: 1175837400}
+    - target: {fileID: 8348497640093015006, guid: 5a06f931ec797304c9a7c6484104ab4f, type: 3}
+      propertyPath: m_MainSceneGroupLoader
+      value: 
+      objectReference: {fileID: 1414380725}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

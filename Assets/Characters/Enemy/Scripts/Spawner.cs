@@ -2,6 +2,7 @@ using SAS.Pool;
 using SAS.Utilities.TagSystem;
 using System;
 using UnityEngine;
+
 public struct SpawnData
 {
     public SpawnPoint Point;
@@ -28,6 +29,7 @@ public class Spawner : MonoBehaviour
     private void Awake()
     {
         this.Initialize();
+        m_PoolSO.SetSceneAndSetParent(gameObject.scene, null);
     }
 
     //this will get invoked by TriggerHandler
@@ -76,6 +78,6 @@ public class Spawner : MonoBehaviour
         if (_collider == null)
             _collider = GetComponent<Collider>();
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position-_collider.bounds.center, _collider.bounds.size);
+        Gizmos.DrawWireCube(transform.position - _collider.bounds.center, _collider.bounds.size);
     }
 }
