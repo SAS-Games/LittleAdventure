@@ -9,6 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fafac715ff920c4383fed91a38a351e, type: 3}
-  m_Name: OnFlagCapturedEvent
+  m_Script: {fileID: 11500000, guid: 4e9a29b7c81b95b4794d5ea4004d1b5f, type: 3}
+  m_Name: Coin Spawnable Factory SO
   m_EditorClassIdentifier: 
+  m_Prefab: {fileID: 6288073570681547556, guid: a23a6ca5f2876b347a042d6e8b16ed7d, type: 3}

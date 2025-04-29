@@ -9,6 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fafac715ff920c4383fed91a38a351e, type: 3}
-  m_Name: OnCoinCollectedEvent
+  m_Script: {fileID: 11500000, guid: 10b3afd2e910a2d4d8abb36eb38df812, type: 3}
+  m_Name: Coin Spawnable Pool SO
   m_EditorClassIdentifier: 
+  _factory: {fileID: 11400000, guid: c3a68400ead6e624b9ec9427d422b0b9, type: 2}
