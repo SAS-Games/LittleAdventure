@@ -874,6 +874,21 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "27e1a26776204e5fa1d965ed1f47f611",
+    "m_Id": 445278221,
+    "m_DisplayName": "Smoothness",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "_Smoothness",
+    "m_StageCapability": 2,
+    "m_Value": 0.5,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.SubGraphNode",
     "m_ObjectId": "2822700dbdcf4d188b89db2201bd72d2",
     "m_Group": {
@@ -1998,6 +2013,9 @@
             "m_Id": "488d63210f8141b3894fa7a16b3a8065"
         },
         {
+            "m_Id": "27e1a26776204e5fa1d965ed1f47f611"
+        },
+        {
             "m_Id": "ae44366009e347d0b15ffb8513d506c2"
         }
     ],
@@ -2012,11 +2030,13 @@
     "m_SerializedSubGraph": "{\n    \"subGraph\": {\n        \"fileID\": -5475051401550479605,\n        \"guid\": \"5c64c2577c7182643826ba81417a48e4\",\n        \"type\": 3\n    }\n}",
     "m_PropertyGuids": [
         "e23f2d28-529e-4017-aed8-7b90c7ba5ea2",
-        "dfa1f8fb-3f63-4bd4-bcdb-6b17f136f612"
+        "dfa1f8fb-3f63-4bd4-bcdb-6b17f136f612",
+        "4763fbcd-a7ea-48fa-96e5-2dafbcd13eba"
     ],
     "m_PropertyIds": [
         -1878188577,
-        -1847055659
+        -1847055659,
+        445278221
     ],
     "m_Dropdowns": [],
     "m_DropdownSelectedEntries": []
