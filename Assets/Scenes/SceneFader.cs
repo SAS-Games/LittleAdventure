@@ -12,9 +12,24 @@ namespace SAS.SceneManagement
         RadialWipe,
         GradientTexture
     }
+
+    [Serializable]
+    public class SpriteArrayWrapper
+    {
+        [ConditionalField("FadeType", FadeType.GradientTexture)]
+        [SerializeField] private Sprite[] m_Sprites;
+        public int Length => m_Sprites.Length;
+        public Texture GetRandomTexture()
+        {
+            return m_Sprites[UnityEngine.Random.Range(0, m_Sprites.Length)].texture;
+        }
+    }
+
     public class SceneFader : MonoBehaviour, ILoadingScreen
     {
         [SerializeField] private FadeType m_FadeType;
+        [ConditionalField(nameof(m_FadeType), FadeType.GradientTexture)]
+        [SerializeField] private SpriteArrayWrapper m_FadePattern;
         [SerializeField] private Image m_Image;
         [SerializeField] private float m_FadeInDuration = 1f;
         [SerializeField] private float m_FadeOutDuration = 1f;
@@ -23,6 +38,7 @@ namespace SAS.SceneManagement
         private int _useRadialWipe = Shader.PropertyToID("_UseRadialWipe");
         private int _useGradientTexture = Shader.PropertyToID("_UseGradientTexture");
         private int _useAlpha = Shader.PropertyToID("_UseAlpha");
+        private int _mainTex = Shader.PropertyToID("_MainTex");
 
         private int? _lastEffect;
         private ITween _fadeTween;
@@ -77,6 +93,7 @@ namespace SAS.SceneManagement
                     SwitchEffect(_useRadialWipe);
                     break;
                 case FadeType.GradientTexture:
+                    _material.SetTexture(_mainTex, m_FadePattern.GetRandomTexture());
                     SwitchEffect(_useGradientTexture);
                     break;
             }

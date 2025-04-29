@@ -115,7 +115,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eadf3fce10ec9e42945690e0055968e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FadeType: 0
+  m_FadeType: 3
+  m_FadePattern:
+    m_Sprites:
+    - {fileID: 21300000, guid: a4d49141c2e0f2a4dac4431ac3289479, type: 3}
+    - {fileID: 21300000, guid: 4aec77e8f3fc157488a8c1a7d5698fb5, type: 3}
+    - {fileID: 21300000, guid: 3e379cac0cab4a94aa6b5c6b4a50e631, type: 3}
+    - {fileID: 21300000, guid: d56ae78bc9cffe34ab5c09d2616a2857, type: 3}
+    - {fileID: 21300000, guid: 011a2ce60928c03418d3665bb85cccf6, type: 3}
+    - {fileID: 21300000, guid: 656f2ae49c84ab142b2932a11ef43082, type: 3}
+    - {fileID: 21300000, guid: b015e41e52e5f4148a670adaa1e79bb3, type: 3}
+    - {fileID: 21300000, guid: 2b163e72035789c4888efb427d6aacef, type: 3}
+    - {fileID: 21300000, guid: 7ef85e98217738540898d2688c1f9c75, type: 3}
+    - {fileID: 21300000, guid: f737fecb164f0cd4dab6f82539b26552, type: 3}
+    - {fileID: 21300000, guid: b1a7e3e078837e34f8fb2026273948c2, type: 3}
+    - {fileID: 21300000, guid: b97e08311bc703a4b9160862ad76e977, type: 3}
   m_Image: {fileID: 1430724018407590739}
   m_FadeInDuration: 0.5
   m_FadeOutDuration: 0.5
