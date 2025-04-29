@@ -5,13 +5,24 @@ using UnityEngine.UI;
 
 namespace SAS.SceneManagement
 {
+    public enum FadeType
+    {
+        Alpha,
+        Shutter,
+        RadialWipe,
+        GradientTexture
+    }
     public class SceneFader : MonoBehaviour, ILoadingScreen
     {
+        [SerializeField] private FadeType m_FadeType;
         [SerializeField] private Image m_Image;
         [SerializeField] private float m_FadeInDuration = 1f;
         [SerializeField] private float m_FadeOutDuration = 1f;
         private int _fadeAmount = Shader.PropertyToID("_Amount");
         private int _useShutters = Shader.PropertyToID("_UseShutters");
+        private int _useRadialWipe = Shader.PropertyToID("_UseRadialWipe");
+        private int _useGradientTexture = Shader.PropertyToID("_UseGradientTexture");
+        private int _useAlpha = Shader.PropertyToID("_UseAlpha");
 
         private int? _lastEffect;
         private ITween _fadeTween;
@@ -40,12 +51,50 @@ namespace SAS.SceneManagement
         {
             if (active)
                 gameObject.SetActive(true);
-            _material.SetFloat(_useShutters, 1);
+
+            FaderSetup(m_FadeType);
+
             _fadeTween?.Stop(true);
             _fadeTween = active
                 ? Tween.CreateTween(0f, 1f, FadeTween, ref _fadeInTweenConfig)
                 : Tween.CreateTween(1f, 0f, FadeTween, ref _fadeOutTweenConfig);
             _fadeTween.Run();
+        }
+
+        private void FaderSetup(FadeType fadeType)
+        {
+            ResetAllFadeType();
+
+            switch (fadeType)
+            {
+                case FadeType.Shutter:
+                    SwitchEffect(_useShutters);
+                    break;
+                case FadeType.Alpha:
+                    SwitchEffect(_useAlpha);
+                    break;
+                case FadeType.RadialWipe:
+                    SwitchEffect(_useRadialWipe);
+                    break;
+                case FadeType.GradientTexture:
+                    SwitchEffect(_useGradientTexture);
+                    break;
+            }
+
+        }
+
+        private void SwitchEffect(int effectToTurnOn)
+        {
+            _material.SetFloat(effectToTurnOn, 1);
+            _lastEffect = effectToTurnOn;
+        }
+
+        private void ResetAllFadeType()
+        {
+            _material.SetFloat(_useAlpha, 0);
+            _material.SetFloat(_useShutters, 0);
+            _material.SetFloat(_useRadialWipe, 0);
+            _material.SetFloat(_useGradientTexture, 0);
         }
 
         public Action OnFadeInComplete { get; set; }

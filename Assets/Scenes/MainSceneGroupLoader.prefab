@@ -139,6 +139,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6837322592884312461, guid: e03080ba7e4576a42834658c84455ac2, type: 3}
+      propertyPath: m_FadeType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837322592884312461, guid: e03080ba7e4576a42834658c84455ac2, type: 3}
       propertyPath: m_FadeInDuration
       value: 0
       objectReference: {fileID: 0}

@@ -13,6 +13,10 @@ PrefabInstance:
       value: GameSceneGroupLoader
       objectReference: {fileID: 0}
     - target: {fileID: 3492246449791135575, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
+      propertyPath: m_FadeType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3492246449791135575, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_FadeInDuration
       value: 0.5
       objectReference: {fileID: 0}
