@@ -3336,7 +3336,7 @@ MonoBehaviour:
   m_MainCamera: {fileID: 1962947657}
   CinemachineCameraTarget: {fileID: 0}
   TopClamp: 70
-  BottomClamp: 40
+  BottomClamp: 10
   CameraAngleOverride: 0
 --- !u!1 &2011898517 stripped
 GameObject:
