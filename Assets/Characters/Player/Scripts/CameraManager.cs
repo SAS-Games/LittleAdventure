@@ -70,6 +70,7 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
         }
 
         CinemachineCameraTarget = cinemachineCamera.Target.TrackingTarget;
+        _cinemachineTargetPitch = cinemachineCamera.transform.eulerAngles.x;
         _cinemachineTargetYaw = CinemachineCameraTarget.rotation.eulerAngles.y;
     }
 
