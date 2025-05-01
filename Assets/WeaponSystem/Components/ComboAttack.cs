@@ -1,5 +1,4 @@
 using SAS.StateMachineGraph;
-using SAS.Utilities.TagSystem;
 using UnityEngine;
 
 namespace SAS.WeaponSystem.Components
@@ -60,12 +59,12 @@ namespace SAS.WeaponSystem.Components
 
         protected override async void HandleExit()
         {
-            _weapon.attackCounterResetTimer.Start();
             base.HandleExit();
-
             if (_playNextAttack)
             {
+                Debug.Log("Queued input detected — triggering the next animation in sequence.", TAG);
                 _playNextAttack = false;
+                await Awaitable.NextFrameAsync(); // delay by 1 frame
                 _actor.SetBool("Attack", true);
                 await Awaitable.NextFrameAsync(); // delay by 1 frame
                 _actor.SetBool("Attack", false);

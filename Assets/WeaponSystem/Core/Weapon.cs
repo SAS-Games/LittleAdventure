@@ -57,7 +57,8 @@ namespace SAS.WeaponSystem
 
         void IWeapon.Enter()
         {
-            Debug.Log("Weapon Enter {Time.frameCount}", TAG);
+            Debug.Log($"Weapon Enter {Time.frameCount} {CurrentAttackCounter}", TAG);
+            attackCounterResetTimer.Pause();
             IsInUse = true;
             WaitForAttackAnimFinish(Animator);
             OnEnter?.Invoke();
@@ -65,11 +66,12 @@ namespace SAS.WeaponSystem
 
         void IWeapon.Exit()
         {
-            Debug.Log("Weapon Exit {Time.frameCount}", TAG);
+            Debug.Log($"Weapon Exit {Time.frameCount}", TAG);
             CurrentAttackCounter++;
-            attackCounterResetTimer.Start(AttackCounterResetCooldown);
             IsInUse = false;
             OnExit?.Invoke();
+            attackCounterResetTimer.Reset(AttackCounterResetCooldown);
+            attackCounterResetTimer.Start();
         }
 
         public void SetData(WeaponDataSO data)
@@ -132,6 +134,11 @@ namespace SAS.WeaponSystem
             _cts?.Cancel(); // This will trigger the catch block and call Exit
             _cts?.Dispose();
             _cts = null;
+        }
+
+        private void OnDestroy()
+        {
+            attackCounterResetTimer.Dispose();
         }
     }
 }
