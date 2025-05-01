@@ -28,12 +28,17 @@ MonoBehaviour:
       SceneType: 4
       IsOptinal: 0
     - Reference:
-        asset: {fileID: 102900000, guid: 38b37c3fdd7077a4f83ac75d16b2441b, type: 3}
-        guid: 38b37c3fdd7077a4f83ac75d16b2441b
-      SceneType: 1
-      IsOptinal: 0
-    - Reference:
         asset: {fileID: 102900000, guid: 8406f48641c5ab348a73934b2ee54f82, type: 3}
         guid: 8406f48641c5ab348a73934b2ee54f82
+      SceneType: 3
+      IsOptinal: 0
+    - Reference:
+        asset: {fileID: 102900000, guid: 38b37c3fdd7077a4f83ac75d16b2441b, type: 3}
+        guid: 38b37c3fdd7077a4f83ac75d16b2441b
+      SceneType: 6
+      IsOptinal: 0
+    - Reference:
+        asset: {fileID: 102900000, guid: 7494e97c15556e844acd31b9ef37aee4, type: 3}
+        guid: 7494e97c15556e844acd31b9ef37aee4
       SceneType: 1
       IsOptinal: 0

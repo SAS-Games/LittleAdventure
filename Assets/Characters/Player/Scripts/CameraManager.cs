@@ -1,17 +1,9 @@
 ﻿using System.Collections;
-using SAS.StateMachineCharacterController;
 using Unity.Cinemachine;
 using UnityEngine;
-using Debug = SAS.Debug;
 
-public class CameraManager : MonoBehaviour, IObjectSpawnedListener
+public class CameraManager : MonoBehaviour
 {
-    [SerializeField] private Camera m_MainCamera;
-
-    [Header("Cinemachine")]
-    [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-    public Transform CinemachineCameraTarget;
-
     [Tooltip("How far in degrees can you move the camera up")]
     public float TopClamp = 70.0f;
 
@@ -29,13 +21,13 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
     private const float _threshold = 0.01f;
 
     private bool _cameraMovementLock = false;
-    private CinemachineBrain cinemachineBrain;
-
+    private CinemachineBrain _cinemachineBrain;
+    private Transform _cinemachineCameraTarget;
 
     private void Awake()
     {
         _cameraLookControls = new CameraLookControls();
-        cinemachineBrain = GetComponent<CinemachineBrain>();
+        _cinemachineBrain = Camera.main.GetComponent<CinemachineBrain>();
     }
 
     private void OnEnable()
@@ -54,12 +46,12 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
 
     IEnumerator CheckForCameraChanges()
     {
-        ICinemachineCamera activeCamera = cinemachineBrain.ActiveVirtualCamera;
+        ICinemachineCamera activeCamera = _cinemachineBrain.ActiveVirtualCamera;
 
         while (activeCamera == null)
         {
             yield return null; // Check every 0.1 seconds
-            activeCamera = cinemachineBrain.ActiveVirtualCamera;
+            activeCamera = _cinemachineBrain.ActiveVirtualCamera;
         }
 
         var cinemachineCamera = activeCamera as CinemachineCamera;
@@ -69,9 +61,9 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
             yield return null;
         }
 
-        CinemachineCameraTarget = cinemachineCamera.Target.TrackingTarget;
-        _cinemachineTargetPitch = cinemachineCamera.transform.eulerAngles.x;
-        _cinemachineTargetYaw = CinemachineCameraTarget.rotation.eulerAngles.y;
+        _cinemachineCameraTarget = cinemachineCamera.Target.TrackingTarget;
+        _cinemachineTargetPitch = _cinemachineCameraTarget.eulerAngles.x;
+        _cinemachineTargetYaw = _cinemachineCameraTarget.rotation.eulerAngles.y;
     }
 
     private void OnEnableMouseControlCamera()
@@ -120,25 +112,13 @@ public class CameraManager : MonoBehaviour, IObjectSpawnedListener
         var cameraMovement = _cameraLookControls.Mouse.RotateCamera.ReadValue<Vector2>();
         var isDeviceMouse = _cameraLookControls.Mouse.RotateCamera.activeControl?.device.name == "Mouse";
         OnCameraMove(cameraMovement, isDeviceMouse);
-        if (CinemachineCameraTarget == null)
+        if (_cinemachineCameraTarget == null)
             return;
         // clamp our rotations so our values are limited 360 degrees
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
         _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-        CinemachineCameraTarget.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+        _cinemachineCameraTarget.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
             _cinemachineTargetYaw, 0.0f);
-    }
-
-
-    void IObjectSpawnedListener.OnSpawn(GameObject gameObject)
-    {
-        //todo: this must be removed from here.
-        var cameraLookAt = gameObject.GetComponent<ICameraLookAt>();
-        CinemachineCameraTarget = cameraLookAt.Target;
-    }
-
-    void IObjectSpawnedListener.OnDespawn(GameObject gameObject)
-    {
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
