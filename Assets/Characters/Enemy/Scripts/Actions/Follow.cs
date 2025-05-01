@@ -16,8 +16,8 @@ namespace EnemySystem
 
         void IStateAction.Execute(ActionExecuteEvent executeEvent)
         {
-            _agent.SetDestination(_targetHolder.Target.position);
+            if (_targetHolder.Target)
+                _agent.SetDestination(_targetHolder.Target.position);
         }
-
     }
 }
