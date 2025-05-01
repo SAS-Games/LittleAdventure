@@ -252,8 +252,8 @@ MonoBehaviour:
     key: 
     whenToExecute: 1
   m_Transitions:
-  - {fileID: -9106185067002372399}
   - {fileID: -3309143806952122287}
+  - {fileID: -9106185067002372399}
 --- !u!114 &-6726854997549635797
 MonoBehaviour:
   m_ObjectHideFlags: 1
