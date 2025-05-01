@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: 
-  m_Position: {x: 777, y: 139, z: 0}
+  m_Position: {x: 803, y: 187, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: AttackAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -253,6 +253,7 @@ MonoBehaviour:
     whenToExecute: 1
   m_Transitions:
   - {fileID: -9106185067002372399}
+  - {fileID: -3309143806952122287}
 --- !u!114 &-6726854997549635797
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -424,7 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Dizzy
   m_EditorClassIdentifier: 
-  m_Position: {x: 791, y: 250, z: 0}
+  m_Position: {x: 801, y: 98, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.StopMovement, AssemblyStateMachineCharacterController,
@@ -515,6 +516,35 @@ MonoBehaviour:
     m_Type: 10
     m_FloatValue: 0
     m_CustomCondition: SAS.StateMachineCharacterController.IsGrounded, AssemblyStateMachineCharacterController,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+--- !u!114 &-3309143806952122287
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
+  m_Name: Attack->To->Dash
+  m_EditorClassIdentifier: 
+  m_SourceState: {fileID: -6736576259512663916}
+  m_TargetState: {fileID: 8166284527128004876}
+  m_HasExitTime: 0
+  m_ExitTime: 0
+  m_WaitForAwaitableActionsToComplete: 0
+  m_Conditions:
+  - m_Name: Dash
+    m_Mode: 3
+    m_Type: 9
+    m_FloatValue: 0
+    m_CustomCondition: 
+  - m_Name: Custom
+    m_Mode: 2
+    m_Type: 10
+    m_FloatValue: 0
+    m_CustomCondition: SAS.StateMachineCharacterController.IsDashing, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &-2937460947493084407
 MonoBehaviour:
@@ -1210,6 +1240,24 @@ MonoBehaviour:
   m_StateActions: []
   m_Transitions:
   - {fileID: -7779623985197876532}
+--- !u!114 &7720942010342709083
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
+  m_Name: Dash->To->Attack
+  m_EditorClassIdentifier: 
+  m_SourceState: {fileID: 8166284527128004876}
+  m_TargetState: {fileID: -6736576259512663916}
+  m_HasExitTime: 1
+  m_ExitTime: 0.3
+  m_WaitForAwaitableActionsToComplete: 1
+  m_Conditions: []
 --- !u!114 &8138495459549282573
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1276,6 +1324,7 @@ MonoBehaviour:
   m_Transitions:
   - {fileID: 789061411378292087}
   - {fileID: -6309288573742276966}
+  - {fileID: 7720942010342709083}
 --- !u!114 &8439081178952667331
 MonoBehaviour:
   m_ObjectHideFlags: 1
