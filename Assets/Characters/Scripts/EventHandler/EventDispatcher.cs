@@ -2,14 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using static UnityEngine.Rendering.DebugUI;
 
-[Serializable]
-public class UnityEventNameMap
-{
-    public string eventName; // Name of the animation event
-    public UnityEvent unityEvent; // Unity Event to invoke
-}
 public interface IEventDispatcher
 {
     void Subscribe(string eventName, Action callback);
@@ -19,7 +12,6 @@ public interface IEventDispatcher
     void TriggerEvent(string eventName);
     void TriggerParamEvent(CustomParam eventParam);
     void TriggerParamEvent<T>(string eventName, T value);
-
 }
 
 [System.Serializable]
@@ -42,20 +34,8 @@ public class CustomParam<T> : CustomParam
 
 public class EventDispatcher : MonoBehaviour, IEventDispatcher
 {
-    [SerializeField] private List<UnityEventNameMap> m_EventsList = new();
-
-    private Dictionary<string, UnityEvent> _unityEventsDict = new();
     private Dictionary<string, Action> _parameterlessCallbacks = new();
     private Dictionary<string, Action<object>> _parameterizedCallbacks = new();
-
-    private void Awake()
-    {
-        foreach (var evt in m_EventsList)
-        {
-            if (!string.IsNullOrEmpty(evt.eventName) && evt.unityEvent != null)
-                _unityEventsDict[evt.eventName] = evt.unityEvent;
-        }
-    }
 
     public void TriggerParamEvent(CustomParam eventParam)
     {
@@ -69,18 +49,12 @@ public class EventDispatcher : MonoBehaviour, IEventDispatcher
 
         if (_parameterlessCallbacks.TryGetValue(eventName, out var noParamCallback))
             noParamCallback?.Invoke(); // Invoke parameterless callback
-
-        if (_unityEventsDict.TryGetValue(eventName, out var unityEvent))
-            unityEvent?.Invoke();
     }
 
     public void TriggerEvent(string eventName)
     {
         if (_parameterlessCallbacks.TryGetValue(eventName, out var callback))
             callback?.Invoke();
-
-        if (_unityEventsDict.TryGetValue(eventName, out var unityEvent))
-            unityEvent?.Invoke();
     }
 
     public void TriggerParamEvent<T>(string eventName, T value)
@@ -90,9 +64,6 @@ public class EventDispatcher : MonoBehaviour, IEventDispatcher
 
         if (_parameterlessCallbacks.TryGetValue(eventName, out var noParamCallback))
             noParamCallback?.Invoke(); // Invoke parameterless callback
-
-        if (_unityEventsDict.TryGetValue(eventName, out var unityEvent))
-            unityEvent?.Invoke();
     }
 
     public void Subscribe(string eventName, Action callback)

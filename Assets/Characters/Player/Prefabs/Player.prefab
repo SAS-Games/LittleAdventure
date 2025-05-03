@@ -52,8 +52,9 @@ GameObject:
   - component: {fileID: 8403914265729320286}
   - component: {fileID: 5673189588447209542}
   - component: {fileID: 1674525412422912833}
-  - component: {fileID: 1611186305954959729}
+  - component: {fileID: 386373596483041357}
   - component: {fileID: 6266289746105320398}
+  - component: {fileID: 1611186305954959729}
   - component: {fileID: 679413138631834102}
   - component: {fileID: 8245588806867666461}
   - component: {fileID: 5969322159665116357}
@@ -64,8 +65,8 @@ GameObject:
   - component: {fileID: 982385090900151853}
   - component: {fileID: 9002388050143003221}
   - component: {fileID: -5799533150554955070}
-  - component: {fileID: 324327762719006952}
   - component: {fileID: -1448693804168666403}
+  - component: {fileID: 324327762719006952}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -399,13 +400,121 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02378acfaabf9964eb5a61e4a696c151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FootStep: {fileID: 8761746045161120039}
   m_BladeVFXs:
   - {fileID: 7944968238721486197}
   - {fileID: 1215167786371534310}
   - {fileID: 748484480425326059}
+  m_FootStep: {fileID: 8761746045161120039}
   m_Slash: {fileID: 3471871687541727572}
   m_Heal: {fileID: 6110140506387515078}
+--- !u!114 &386373596483041357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ebd7d6049dff5b44b9014da1f12ee4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventBindings:
+  - rid: 1253642346392191078
+  - rid: 1253642346392191079
+  - rid: 1253642346392191080
+  - rid: 1253642346392191081
+  references:
+    version: 2
+    RefIds:
+    - rid: 1253642346392191078
+      type: {class: BoolEventHook, ns: , asm: Assembly-CSharp}
+      data:
+        m_EventName: UpdateFootStep
+        m_OnEventTrigger:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 1674525412422912833}
+              m_TargetAssemblyTypeName: PlayerVFXManager, Assembly-CSharp
+              m_MethodName: UpdateFootStep
+              m_Mode: 0
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+    - rid: 1253642346392191079
+      type: {class: IntEventHook, ns: , asm: Assembly-CSharp}
+      data:
+        m_EventName: PlayBlade
+        m_OnEventTrigger:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 1674525412422912833}
+              m_TargetAssemblyTypeName: PlayerVFXManager, Assembly-CSharp
+              m_MethodName: PlayBlade
+              m_Mode: 0
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+    - rid: 1253642346392191080
+      type: {class: Vector3EventHook, ns: , asm: Assembly-CSharp}
+      data:
+        m_EventName: PlaySlash
+        m_OnEventTrigger:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 1674525412422912833}
+              m_TargetAssemblyTypeName: PlayerVFXManager, Assembly-CSharp
+              m_MethodName: PlaySlash
+              m_Mode: 0
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+    - rid: 1253642346392191081
+      type: {class: VoidEventHook, ns: , asm: Assembly-CSharp}
+      data:
+        m_EventName: Heal
+        m_OnEventTrigger:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 1674525412422912833}
+              m_TargetAssemblyTypeName: PlayerVFXManager, Assembly-CSharp
+              m_MethodName: PlayHeal
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+--- !u!114 &6266289746105320398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15b35fc7dc3ac6b4cb8a4a43965caf60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1611186305954959729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,19 +529,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <weaponData>k__BackingField:
   - {fileID: 11400000, guid: 1f0df70b5352e7a42a9fab28975c8e50, type: 2}
---- !u!114 &6266289746105320398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622055182962459638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15b35fc7dc3ac6b4cb8a4a43965caf60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventsList: []
 --- !u!114 &679413138631834102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,6 +697,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b59101962b2a847bacbccffa3a7018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1448693804168666403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddd3c3a7ce805f743bc34bbd0358ce34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DashStateName: Dash
+  m_AttackStateName: Attack
+  m_DashInputName: Dash
 --- !u!114 &324327762719006952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,18 +729,6 @@ MonoBehaviour:
     m_Value: 1
   - m_Component: {fileID: 9002388050143003221}
     m_Value: 2
---- !u!114 &-1448693804168666403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622055182962459638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddd3c3a7ce805f743bc34bbd0358ce34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5867608038117725257
 GameObject:
   m_ObjectHideFlags: 0
