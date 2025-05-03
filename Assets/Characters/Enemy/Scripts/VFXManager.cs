@@ -1,5 +1,3 @@
-using SAS.Pool;
-using SAS.Utilities.TagSystem;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -12,26 +10,10 @@ namespace EnemySystem
         [SerializeField] private VisualEffect m_AttackVFX;
         [SerializeField] private ParticleSystem m_BeingHit;
 
-        [FieldRequiresSelf] private IEventDispatcher _eventDispatcher;
+        public void PlayFootStepVFX() => m_FootStep.SendEvent("OnPlay");
+        public void PlayAttackVFX() => m_AttackVFX.SendEvent("OnPlay");
 
-        private void Awake()
-        {
-            this.Initialize();
-            _eventDispatcher.Subscribe("BurstFootStep", PlayFootStepVFX);
-            _eventDispatcher.Subscribe("PlayAttack", PlayAttackVFX);
-            _eventDispatcher.Subscribe<Vector3>("BeingHit", PlayBeingHitVFX);
-        }
-
-        private void OnDestroy()
-        {
-            _eventDispatcher.Unsubscribe("BurstFootStep", PlayFootStepVFX);
-            _eventDispatcher.Unsubscribe("PlayAttack", PlayAttackVFX);
-            _eventDispatcher.Unsubscribe<Vector3>("BeingHit", PlayBeingHitVFX);
-        }
-
-        private void PlayFootStepVFX() => m_FootStep.SendEvent("OnPlay");
-        private void PlayAttackVFX() => m_AttackVFX.SendEvent("OnPlay");
-        private void PlayBeingHitVFX(Vector3 position)
+        public void PlayBeingHitVFX(Vector3 position)
         {
             var dir = (transform.position - position).normalized;
             dir.y = 0;

@@ -15,9 +15,10 @@ GameObject:
   - component: {fileID: 8062570761865048911}
   - component: {fileID: 195983439888438717}
   - component: {fileID: 4307742841906401719}
+  - component: {fileID: 3935570698599595057}
+  - component: {fileID: 7261890327173871634}
   - component: {fileID: 6001012791764321214}
   - component: {fileID: 1975040365461661644}
-  - component: {fileID: 7261890327173871634}
   - component: {fileID: 6393824167755000296}
   - component: {fileID: 4365929872556655166}
   - component: {fileID: 7192408892039881532}
@@ -175,6 +176,94 @@ MonoBehaviour:
   m_FootStep: {fileID: 5014119597411983293}
   m_AttackVFX: {fileID: 8371532009440666657}
   m_BeingHit: {fileID: 7027450637023723699}
+--- !u!114 &3935570698599595057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170290597381789726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ebd7d6049dff5b44b9014da1f12ee4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventBindings:
+  - rid: 1253642346392191082
+  - rid: 1253642346392191083
+  - rid: 1253642346392191084
+  references:
+    version: 2
+    RefIds:
+    - rid: 1253642346392191082
+      type: {class: VoidEventHook, ns: , asm: Assembly-CSharp}
+      data:
+        m_EventName: BurstFootStep
+        m_OnEventTrigger:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 4307742841906401719}
+              m_TargetAssemblyTypeName: EnemySystem.VFXManager, Assembly-CSharp
+              m_MethodName: PlayFootStepVFX
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+    - rid: 1253642346392191083
+      type: {class: VoidEventHook, ns: , asm: Assembly-CSharp}
+      data:
+        m_EventName: PlayAttack
+        m_OnEventTrigger:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 4307742841906401719}
+              m_TargetAssemblyTypeName: EnemySystem.VFXManager, Assembly-CSharp
+              m_MethodName: PlayAttackVFX
+              m_Mode: 1
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+    - rid: 1253642346392191084
+      type: {class: Vector3EventHook, ns: , asm: Assembly-CSharp}
+      data:
+        m_EventName: BeingHit
+        m_OnEventTrigger:
+          m_PersistentCalls:
+            m_Calls:
+            - m_Target: {fileID: 4307742841906401719}
+              m_TargetAssemblyTypeName: EnemySystem.VFXManager, Assembly-CSharp
+              m_MethodName: PlayBeingHitVFX
+              m_Mode: 0
+              m_Arguments:
+                m_ObjectArgument: {fileID: 0}
+                m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+                m_IntArgument: 0
+                m_FloatArgument: 0
+                m_StringArgument: 
+                m_BoolArgument: 0
+              m_CallState: 2
+--- !u!114 &7261890327173871634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170290597381789726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15b35fc7dc3ac6b4cb8a4a43965caf60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6001012791764321214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,19 +367,6 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: -1, z: 0}
---- !u!114 &7261890327173871634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7170290597381789726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15b35fc7dc3ac6b4cb8a4a43965caf60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventsList: []
 --- !u!114 &6393824167755000296
 MonoBehaviour:
   m_ObjectHideFlags: 0

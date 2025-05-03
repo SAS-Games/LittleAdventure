@@ -7,6 +7,7 @@ public abstract class EventHook
 {
     [SerializeField] protected string m_EventName;
     public abstract void Subscribe(IEventDispatcher dispatcher);
+    public abstract void Unsubscribe(IEventDispatcher dispatcher);
 }
 
 [Serializable]
@@ -17,6 +18,11 @@ public class VoidEventHook : EventHook
     public override void Subscribe(IEventDispatcher dispatcher)
     {
         dispatcher.Subscribe(m_EventName, m_OnEventTrigger.Invoke);
+    }
+
+    public override void Unsubscribe(IEventDispatcher dispatcher)
+    {
+        dispatcher.Unsubscribe(m_EventName, m_OnEventTrigger.Invoke);
     }
 }
 
@@ -29,6 +35,11 @@ public class BoolEventHook : EventHook
     {
         dispatcher.Subscribe<bool>(m_EventName, m_OnEventTrigger.Invoke);
     }
+
+    public override void Unsubscribe(IEventDispatcher dispatcher)
+    {
+        dispatcher.Unsubscribe<bool>(m_EventName, m_OnEventTrigger.Invoke);
+    }
 }
 
 [Serializable]
@@ -40,6 +51,11 @@ public class IntEventHook : EventHook
     {
         dispatcher.Subscribe<int>(m_EventName, m_OnEventTrigger.Invoke);
     }
+
+    public override void Unsubscribe(IEventDispatcher dispatcher)
+    {
+        dispatcher.Unsubscribe<int>(m_EventName, m_OnEventTrigger.Invoke);
+    }
 }
 
 [Serializable]
@@ -50,5 +66,10 @@ public class Vector3EventHook : EventHook
     public override void Subscribe(IEventDispatcher dispatcher)
     {
         dispatcher.Subscribe<Vector3>(m_EventName, m_OnEventTrigger.Invoke);
+    }
+
+    public override void Unsubscribe(IEventDispatcher dispatcher)
+    {
+        dispatcher.Unsubscribe<Vector3>(m_EventName, m_OnEventTrigger.Invoke);
     }
 }
