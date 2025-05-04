@@ -10,6 +10,6 @@ public class FmodAudioPlayer : MonoBehaviour
 
     public void PlayOneShot(string eventPath)
     {
-        RuntimeManager.PlayOneShot(eventPath);
+        RuntimeManager.PlayOneShot(eventPath, transform.position);
     }
 }
