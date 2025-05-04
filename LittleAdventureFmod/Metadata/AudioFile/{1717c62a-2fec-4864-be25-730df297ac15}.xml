@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{1717c62a-2fec-4864-be25-730df297ac15}">
+		<property name="assetPath">
+			<value>Music/LevelBGM/Level/Calm/Lead/Section1/2DGameKitMusic_Lv4_Calm_Lead_Section1_A_2.ogg</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>6.2608616780045354</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b7c981d0-b246-4d0a-b1c3-cec0e31aacf1}</destination>
+		</relationship>
+	</object>
+</objects>

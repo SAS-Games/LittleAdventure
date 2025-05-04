@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{ffe9b30d-68f4-45b8-b854-b8401e56ef26}">
+		<property name="assetPath">
+			<value>Music/LevelBGM/Level/Tense/Section4/2DGameKitMusic_Lv4_Tense_All_Section4_6.ogg</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>8.3478231292517009</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b7c981d0-b246-4d0a-b1c3-cec0e31aacf1}</destination>
+		</relationship>
+	</object>
+</objects>
