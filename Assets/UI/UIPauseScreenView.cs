@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class UIPauseScreenView : UIScreenView
 {
-    [SerializeField] private Button m_MainMenuButton;
-    [SerializeField] private Button m_RestartButton;
+    [SerializeField] private UIButton m_MainMenuButton;
+    [SerializeField] private UIButton m_RestartButton;
     [SerializeField] private SceneGroupLoader m_MainSceneGroupLoader;
     [SerializeField] private SceneGroupLoader m_GameSceneGroupLoader;
     private EventBinding<GamePauseEvent> _pauseEventBinding;
@@ -18,11 +18,11 @@ public class UIPauseScreenView : UIScreenView
         EventBus<GamePauseEvent>.Register(_pauseEventBinding);
     }
 
-    protected override void OnButtonClick(GameObject button, PointerEventData eventData)
+    public override void OnButtonClick(UIButton button, BaseEventData eventData)
     {
-        if (button == m_MainMenuButton.gameObject)
+        if (button == m_MainMenuButton)
             m_MainSceneGroupLoader.Load();
-        else if (button == m_RestartButton.gameObject)
+        else if (button == m_RestartButton)
             m_GameSceneGroupLoader.Load();
     }
 

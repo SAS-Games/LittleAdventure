@@ -4,18 +4,25 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-public class UIButton : MonoBehaviour, IPointerClickHandler
+public class UIButton : Button
 {
-    [FieldRequiresSelf] private Button _button;
     [FieldRequiresParent] private UIScreenView _screenView;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         this.Initialize();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public override void OnPointerClick(PointerEventData eventData)
     {
-        _screenView.OnPointerClick(eventData);
+        base.OnPointerClick(eventData);
+        _screenView?.OnButtonClick(this, eventData);
+    }
+
+    public override void OnSubmit(BaseEventData eventData)
+    {
+        base.OnSubmit(eventData);
+        _screenView?.OnButtonClick(this, eventData);
     }
 }

@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class UIGameOverScreenView : UIScreenView
 {
-    [SerializeField] private Button m_MainMenuButton;
-    [SerializeField] private Button m_RestartButton;
+    [SerializeField] private UIButton m_MainMenuButton;
+    [SerializeField] private UIButton m_RestartButton;
     [SerializeField] private SceneGroupLoader m_MainSceneGroupLoader;
     [SerializeField] private SceneGroupLoader m_GameSceneGroupLoader;
     private EventBinding<GameOverEvent> _gameOverEventBinding;
@@ -18,11 +18,11 @@ public class UIGameOverScreenView : UIScreenView
         EventBus<GameOverEvent>.Register(_gameOverEventBinding);
     }
 
-    protected override void OnButtonClick(GameObject button, PointerEventData eventData)
+    public override void OnButtonClick(UIButton button, BaseEventData eventData)
     {
-        if (button == m_MainMenuButton.gameObject)
+        if (button == m_MainMenuButton)
             m_MainSceneGroupLoader.Load();
-        else if (button == m_RestartButton.gameObject)
+        else if (button == m_RestartButton)
             m_GameSceneGroupLoader.Load();
     }
 
