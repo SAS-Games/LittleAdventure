@@ -70,20 +70,50 @@ MonoBehaviour:
   - {fileID: 4836408399513921231}
   - {fileID: -7831722363760167790}
   - {fileID: 7589259434228781934}
+  - {fileID: 1297185977285660173}
   EditorParameters: []
   MasterBanks:
   - {fileID: 4140079131557594611}
   StringsBanks:
   - {fileID: 6428136582363532634}
   cacheVersion: 131847
-  cacheTime: 638819882924556684
+  cacheTime: 638823397006978225
   SerializableEventsDict:
   - key: event:/SFX/Player/Attack
     index: 0
   - key: event:/SFX/Player/Hurt
     index: 1
-  - key: event:/Music/Lv4 Music
+  - key: event:/Music/BGM
     index: 2
+  - key: event:/SFX/Environment/Ambience
+    index: 3
+--- !u!114 &1297185977285660173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Environment/Ambience
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Environment/Ambience
+  Guid:
+    Data1: -1430179850
+    Data2: 1142945574
+    Data3: -2028289387
+    Data4: -55957723
+  Banks:
+  - {fileID: 4140079131557594611}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 123964
 --- !u!114 &1691760592305285463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,10 +153,10 @@ MonoBehaviour:
   Path: LittleAdventureFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638819882924496074
+  lastModified: 638823397006952166
   FileSizes:
   - Name: Desktop
-    Value: 11194112
+    Value: 12785824
   Exists: 1
 --- !u!114 &4836408399513921231
 MonoBehaviour:
@@ -170,10 +200,10 @@ MonoBehaviour:
   Path: LittleAdventureFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638819882924556684
+  lastModified: 638823397006978225
   FileSizes:
   - Name: Desktop
-    Value: 1028
+    Value: 1090
   Exists: 1
 --- !u!114 &7589259434228781934
 MonoBehaviour:

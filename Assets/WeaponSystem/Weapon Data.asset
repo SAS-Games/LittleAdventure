@@ -53,7 +53,7 @@ MonoBehaviour:
           <StateTag>k__BackingField: Attack
         <DetectableLayers>k__BackingField:
           serializedVersion: 2
-          m_Bits: 65
+          m_Bits: 64
     - rid: 4097107268341071944
       type: {class: DamageOnHitBoxActionData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
       data:

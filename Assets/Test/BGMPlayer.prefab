@@ -99,6 +99,7 @@ GameObject:
   m_Component:
   - component: {fileID: 811455978079137778}
   - component: {fileID: 8991286880465423461}
+  - component: {fileID: -8632877114064624606}
   m_Layer: 0
   m_Name: BGMPlayer
   m_TagString: Untagged
@@ -141,3 +142,34 @@ MonoBehaviour:
       Data3: -540654698
       Data4: 1199886969
     Path: event:/Music/BGM
+--- !u!114 &-8632877114064624606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6084525970184045959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1430179850
+      Data2: 1142945574
+      Data3: -2028289387
+      Data4: -55957723
+    Path: event:/SFX/Environment/Ambience
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
