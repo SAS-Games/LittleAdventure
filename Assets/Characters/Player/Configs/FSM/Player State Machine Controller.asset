@@ -278,6 +278,12 @@ MonoBehaviour:
     m_FloatValue: 0
     m_CustomCondition: SAS.StateMachineCharacterController.IsWithinCoyoteTime, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - m_Name: Custom
+    m_Mode: 1
+    m_Type: 10
+    m_FloatValue: 0
+    m_CustomCondition: SAS.StateMachineCharacterController.IsJumpAvailable, AssemblyStateMachineCharacterController,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &-6382713695125987550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -642,7 +648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Jump Ascending
   m_EditorClassIdentifier: 
-  m_Position: {x: 565, y: 183, z: 0}
+  m_Position: {x: 565, y: 182, z: 0}
   m_Tag: Jump
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.ConsumeRemainingJumpCount, AssemblyStateMachineCharacterController,

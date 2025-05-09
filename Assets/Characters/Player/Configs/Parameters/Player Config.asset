@@ -57,7 +57,7 @@ MonoBehaviour:
     valueType: 0
     value:
       type: 0
-      intValue: 1
+      intValue: 0
       floatValue: 0.2
       boolValue: 0
       stringValue: 
