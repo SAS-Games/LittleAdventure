@@ -113,6 +113,11 @@ MonoBehaviour:
     tag: 0
     key: 
     whenToExecute: 2
+  - fullName: DecreaseThreatLevel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    tag: 0
+    key: 
+    whenToExecute: 1
   m_Transitions:
   - {fileID: -6622849491326269904}
 --- !u!114 &-6622849491326269904
@@ -447,6 +452,16 @@ MonoBehaviour:
     tag: 0
     key: Idle
     whenToExecute: 1
+  - fullName: DecreaseThreatLevel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    tag: 0
+    key: 
+    whenToExecute: 1
+  - fullName: IncreaseThreatLevel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    tag: 0
+    key: 
+    whenToExecute: 16
   m_Transitions:
   - {fileID: -2809814802159978074}
   - {fileID: 449403998331974175}
