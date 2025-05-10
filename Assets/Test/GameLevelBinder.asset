@@ -17,3 +17,8 @@ MonoBehaviour:
     m_Type: LevelBGMPlayer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms: 
+  - m_Interface: ITargetRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Type: TargetRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_Tag: 0
+    m_ExcludedPlatforms: 

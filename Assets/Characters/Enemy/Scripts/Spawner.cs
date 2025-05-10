@@ -1,6 +1,7 @@
 using SAS.Pool;
 using SAS.Utilities.TagSystem;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct SpawnData
@@ -17,41 +18,44 @@ public struct SpawnData
 
 
 [RequireComponent(typeof(OnTriggerHandler))]
-public class Spawner : MonoBehaviour
+public class Spawner : MonoBase
 {
     [SerializeField] private SpawnablePoolSO m_PoolSO;
-    [FieldRequiresChild] private SpawnPoint[] _spawnPoints;
-    [FieldRequiresSelf] Collider _collider;
+    [FieldRequiresChild] protected SpawnPoint[] _spawnPoints;
+    [FieldRequiresSelf] protected Collider _collider;
     private bool _hasSpawned;
 
     public Action OnAllSpawnedObjectsCollected { get; set; }
 
-    private void Awake()
+    protected override void Init()
     {
-        this.Initialize();
+        base.Init();
         m_PoolSO.SetSceneAndSetParent(gameObject.scene, null);
     }
 
     //this will get invoked by TriggerHandler
-    private void Spawn()
+    public void Spawn()
     {
         if (_hasSpawned)
             return;
 
         _hasSpawned = true;
-        gameObject.SetActive(false);
-
         foreach (SpawnPoint point in _spawnPoints)
         {
             if (point.SpawnedObject == null)
             {
                 var spawnData = new SpawnData(point, OnObjectDespawned);
-                m_PoolSO.Spawn(spawnData);
+                var spawnedObject = m_PoolSO.Spawn(spawnData);
+                OnObjectsSpawned(spawnedObject.gameObject);
             }
         }
     }
 
-    private void OnObjectDespawned(GameObject gameObject)
+    protected virtual void OnObjectsSpawned(GameObject gameObject)
+    {
+    }
+
+    protected virtual void OnObjectDespawned(GameObject gameObject)
     {
         Debug.Log($"{gameObject.name} has been despawned from Spawner {name}.");
 

@@ -23,23 +23,18 @@ namespace EnemySystem
         [SerializeField] private string m_DeadStateTriggerName = "Dead";
         [SerializeField] private string m_SpawnTriggerName = "Spawn";
         [SerializeField] private SpawnablePoolSO m_HealerObjectPool;
+        [field: SerializeField] public TargetingProfileSO TargetingProfile { get; private set; }
 
-        Vector3 ICharacter.Position => transform.position;
-        Vector3 ICharacter.Forward => transform.forward;
-        Transform ICharacter.Transform => transform;
+        public Vector3 Position => transform.position;
+        public Vector3 Forward => transform.forward;
+        public Transform Transform => transform;
         Transform IHasTarget.Target => _target.Transform;
 
-        private ICharacter _target;
+        private ITarget _target;
 
         private void Awake()
         {
             m_HealerObjectPool.Initialize(4);
-        }
-
-        void OnEnable()
-        {
-            if (_target == null)
-                _target = FindAnyObjectByType<FSMCharacterController>() as ICharacter;
         }
 
         public void OnDeath()
@@ -63,6 +58,10 @@ namespace EnemySystem
         void ISpawnable.OnDespawn()
         {
         }
-    }
 
+        public void SetTarget(ITarget bestTarget)
+        {
+            _target = bestTarget;
+        }
+    }
 }
