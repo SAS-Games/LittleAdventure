@@ -4,7 +4,7 @@ using SAS.Utilities.TagSystem;
 
 public interface ITargetRegistry : IBindable
 {
-    List<ITarget> Targets { get; }
+    HashSet<ITarget> Targets { get; }
     public void RegisterTarget(ITarget target);
     public void UnregisterTarget(ITarget target);
 }
@@ -12,8 +12,8 @@ public interface ITargetRegistry : IBindable
 
 public class TargetRegistry : ITargetRegistry
 {
-    private List<ITarget> _targets;
-    List<ITarget> ITargetRegistry.Targets => _targets;
+    private HashSet<ITarget> _targets;
+    HashSet<ITarget> ITargetRegistry.Targets => _targets;
 
     public TargetRegistry(IContextBinder _)
     {
@@ -21,7 +21,7 @@ public class TargetRegistry : ITargetRegistry
 
     void IBindable.OnInstanceCreated()
     {
-        _targets = new List<ITarget>();
+        _targets = new HashSet<ITarget>();
     }
 
     void ITargetRegistry.RegisterTarget(ITarget target)

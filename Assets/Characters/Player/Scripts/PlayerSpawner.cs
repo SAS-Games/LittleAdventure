@@ -4,9 +4,8 @@ using SAS.Utilities.TagSystem;
 using UnityEngine;
 using UniRx;
 
-public class PlayerSpawner : MonoBase
+public class PlayerSpawner : MonoBehaviour
 {
-    [Inject] private ITargetRegistry _targetRegistry;
     [SerializeField] private GameObject m_PlayerPrefab;
     private List<GameObject> _players = new List<GameObject>();
 
@@ -14,8 +13,6 @@ public class PlayerSpawner : MonoBase
     {
         var player = m_PlayerPrefab; //Instantiate(m_PlayerPrefab);
         _players.Add(player);
-        _targetRegistry.RegisterTarget(player.GetComponent<ITarget>());
-
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>
         {
             EventBus<PlayerThreatLevelEvent>.Raise(new PlayerThreatLevelEvent
@@ -46,11 +43,5 @@ public class PlayerSpawner : MonoBase
         {
             averageThreatLevel = averageThreat
         });
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        _targetRegistry.Targets.Clear();
     }
 }

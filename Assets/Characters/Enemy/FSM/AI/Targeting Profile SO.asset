@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8840c0cb0cfcddf42ba577133fb6cbed, type: 3}
   m_Name: Targeting Profile SO
   m_EditorClassIdentifier: 
-  m_Evaluators: []
+  m_Evaluators:
+  - {fileID: 11400000, guid: 482ac8b23f285574a86242c8e4a0e80b, type: 2}

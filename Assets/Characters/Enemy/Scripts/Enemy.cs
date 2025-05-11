@@ -28,7 +28,7 @@ namespace EnemySystem
         public Vector3 Position => transform.position;
         public Vector3 Forward => transform.forward;
         public Transform Transform => transform;
-        Transform IHasTarget.Target => _target.Transform;
+        Transform IHasTarget.Target => _target?.Transform;
 
         private ITarget _target;
 
