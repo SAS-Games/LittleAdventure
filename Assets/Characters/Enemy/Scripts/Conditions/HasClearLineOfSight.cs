@@ -24,8 +24,11 @@ namespace EnemySystem
 
         bool ICustomCondition.Evaluate()
         {
-            Vector3 dirToPlayer = (_targetHolder.Target.position - _character.Transform.position).normalized;
-            float distanceToPlayer = Vector3.Distance(_character.Transform.position, _targetHolder.Target.position);
+            if (_targetHolder.Target == null || !_targetHolder.Target.IsActive)
+                return false;
+
+            Vector3 dirToPlayer = (_targetHolder.Target.Position - _character.Transform.position).normalized;
+            float distanceToPlayer = Vector3.Distance(_character.Transform.position, _targetHolder.Target.Position);
 
             // Check if there are obstacles blocking the view
             if (!Physics.Raycast(_character.Transform.position, dirToPlayer, distanceToPlayer, _targetHolder.VisibilityBlockers))

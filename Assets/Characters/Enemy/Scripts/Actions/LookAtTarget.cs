@@ -20,11 +20,11 @@ namespace EnemySystem
 
         void IStateAction.Execute(ActionExecuteEvent executeEvent)
         {
-            if (_targetHolder.Target == null)
+            if (_targetHolder.Target == null || !_targetHolder.Target.IsActive)
                 return;
 
             // Get direction to the target
-            Vector3 direction = _targetHolder.Target.position - _character.Transform.position;
+            Vector3 direction = _targetHolder.Target.Position - _character.Transform.position;
             direction.y = 0; // Ignore Y-axis to prevent tilting
 
             if (direction != Vector3.zero)

@@ -54,12 +54,15 @@ public class EnemyTargetingSystem : MonoBase
 
         foreach (var target in _targetRegistry.Targets)
         {
-            float score = profile.Evaluate(enemy, target);
-
-            if (score > bestScore)
+            if (target.IsActive)
             {
-                bestScore = score;
-                bestTarget = target;
+                float score = profile.Evaluate(enemy, target);
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestTarget = target;
+                }
             }
         }
 

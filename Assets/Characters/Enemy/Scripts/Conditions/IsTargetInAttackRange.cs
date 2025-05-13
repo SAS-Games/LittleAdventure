@@ -27,9 +27,9 @@ namespace EnemySystem
 
         bool ICustomCondition.Evaluate()
         {
-            if (_targetHolder.Target == null)
+            if (_targetHolder.Target == null || !_targetHolder.Target.IsActive)
                 return false;
-            var distance = Vector3.Distance(_character.Transform.position, _targetHolder.Target.position);
+            var distance = Vector3.Distance(_character.Transform.position, _targetHolder.Target.Position);
             return distance < _navMeshAgent.stoppingDistance;
         }
 

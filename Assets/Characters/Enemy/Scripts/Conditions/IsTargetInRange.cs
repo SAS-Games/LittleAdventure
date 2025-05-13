@@ -23,9 +23,9 @@ namespace EnemySystem
 
         bool ICustomCondition.Evaluate()
         {
-            if (!_targetHolder.Target)
+            if (_targetHolder.Target == null || !_targetHolder.Target.IsActive)
                 return false;
-            return Vector3.Distance(_character.Transform.position, _targetHolder.Target.position) < _actor.GetValue<float>(_rangeKey);
+            return Vector3.Distance(_character.Transform.position, _targetHolder.Target.Position) < _actor.GetValue<float>(_rangeKey);
         }
 
 

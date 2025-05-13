@@ -13,7 +13,7 @@ namespace EnemySystem
 
     public interface IHasTarget
     {
-        Transform Target { get; }
+        ITarget Target { get; }
         LayerMask VisibilityBlockers { get; }
     }
 
@@ -28,7 +28,7 @@ namespace EnemySystem
         public Vector3 Position => transform.position;
         public Vector3 Forward => transform.forward;
         public Transform Transform => transform;
-        Transform IHasTarget.Target => _target?.Transform;
+        ITarget IHasTarget.Target => _target;
 
         private ITarget _target;
 
