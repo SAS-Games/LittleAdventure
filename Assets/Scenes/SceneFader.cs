@@ -46,7 +46,7 @@ namespace SAS.SceneManagement
         private TweenConfig _fadeOutTweenConfig;
         private Material _material;
 
-        void Awake()
+        protected virtual void Awake()
         {
             _fadeInTweenConfig = new TweenConfig().Duration(m_FadeInDuration)
                 .TweenCompleteCallback(_ => OnFadeInComplete?.Invoke());
@@ -63,7 +63,7 @@ namespace SAS.SceneManagement
             _material = m_Image.material;
         }
 
-        public void SetActive(bool active)
+        public virtual void SetActive(bool active)
         {
             if (active)
                 gameObject.SetActive(true);

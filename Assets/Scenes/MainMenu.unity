@@ -194,10 +194,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1347383257006974748, guid: 31b201b8fc5eb0548ae55ca9260ab867, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3023900297120979732, guid: 31b201b8fc5eb0548ae55ca9260ab867, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 42182989}
   m_SourcePrefab: {fileID: 100100000, guid: 31b201b8fc5eb0548ae55ca9260ab867, type: 3}
 --- !u!114 &42182986 stripped
 MonoBehaviour:
@@ -210,6 +214,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fde994e112e5cb0479a29532af4a0b7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &42182987 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3023900297120979732, guid: 31b201b8fc5eb0548ae55ca9260ab867, type: 3}
+  m_PrefabInstance: {fileID: 42182985}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &42182988 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6884634563694765506, guid: 31b201b8fc5eb0548ae55ca9260ab867, type: 3}
+  m_PrefabInstance: {fileID: 42182985}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &42182989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42182987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5975b82cedd34346ae42e729dff4c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FadeType: 3
+  m_FadePattern:
+    m_Sprites:
+    - {fileID: 21300000, guid: a4d49141c2e0f2a4dac4431ac3289479, type: 3}
+    - {fileID: 21300000, guid: 4aec77e8f3fc157488a8c1a7d5698fb5, type: 3}
+    - {fileID: 21300000, guid: 3e379cac0cab4a94aa6b5c6b4a50e631, type: 3}
+    - {fileID: 21300000, guid: d56ae78bc9cffe34ab5c09d2616a2857, type: 3}
+    - {fileID: 21300000, guid: 011a2ce60928c03418d3665bb85cccf6, type: 3}
+    - {fileID: 21300000, guid: 656f2ae49c84ab142b2932a11ef43082, type: 3}
+    - {fileID: 21300000, guid: b015e41e52e5f4148a670adaa1e79bb3, type: 3}
+    - {fileID: 21300000, guid: 2b163e72035789c4888efb427d6aacef, type: 3}
+    - {fileID: 21300000, guid: 7ef85e98217738540898d2688c1f9c75, type: 3}
+    - {fileID: 21300000, guid: f737fecb164f0cd4dab6f82539b26552, type: 3}
+    - {fileID: 21300000, guid: b1a7e3e078837e34f8fb2026273948c2, type: 3}
+    - {fileID: 21300000, guid: b97e08311bc703a4b9160862ad76e977, type: 3}
+  m_Image: {fileID: 42182988}
+  m_FadeInDuration: 0.5
+  m_FadeOutDuration: 0.5
+  m_SceneName: CoreScene
 --- !u!114 &63602721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,9 +655,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3744321355654872281, guid: 7afccb46afae0ec4d82e772dd5035a64, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1135423724}
     - targetCorrespondingSourceObject: {fileID: 3744321355808592987, guid: 7afccb46afae0ec4d82e772dd5035a64, type: 3}
       insertIndex: -1
       addedObject: {fileID: 690738831}
@@ -1192,43 +1240,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1135423723 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3744321355654872281, guid: 7afccb46afae0ec4d82e772dd5035a64, type: 3}
-  m_PrefabInstance: {fileID: 690738798}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1135423724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1135423723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowDebugText: 0
-  ShowCameraFrustum: 1
-  IgnoreTimeScale: 0
-  WorldUpOverride: {fileID: 0}
-  ChannelMask: -1
-  UpdateMethod: 2
-  BlendUpdateMethod: 1
-  LensModeOverride:
-    Enabled: 0
-    DefaultMode: 2
-  DefaultBlend:
-    Style: 1
-    Time: 2
-    CustomCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  CustomBlends: {fileID: 0}
 --- !u!114 &1192912927
 MonoBehaviour:
   m_ObjectHideFlags: 0
