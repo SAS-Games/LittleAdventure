@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SAS.StateMachineGraph.Utilities;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
@@ -11,7 +12,7 @@ interface IMetaLocator : IBindable
 {
     void CacheLocalMeta(IContextBinder contextBinder);
     void AddHandlers(IEnumerable<MetaLocator.IHandler> handlers);
-    bool InjectInto(Scene gameScene);
+    Task<bool> InjectInto(Scene gameScene);
     void RemoveHandlers(IEnumerable<MetaLocator.IHandler> handlers);
 }
 
@@ -78,7 +79,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
         _handlers.RemoveAll(h => h == null);
     }
 
-    public bool InjectInto(Scene gameScene)
+    public async Task<bool> InjectInto(Scene gameScene)
     {
         foreach (var root in gameScene.GetRootGameObjects())
         {
@@ -94,11 +95,14 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
             {
                 _core = core;
                 AddLocalToCore(core);
+
+                var readyDependencyGroup = root.GetComponentInChildren<ReadyDependencyGroup>();
+                if (readyDependencyGroup != null)
+                    await readyDependencyGroup.WaitUntilReadyAsync();
+
                 _core.Init();
                 foreach (var handler in _handlers)
-                {
                     handler.OnCoreLoaded(this);
-                }
 
                 return true;
             }

@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using SAS.StateMachineCharacterController;
-using SAS.Utilities.TagSystem;
-using UnityEngine;
 using UniRx;
+using UnityEngine;
 
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject m_PlayerPrefab;
     private List<GameObject> _players = new List<GameObject>();
 
-    public GameObject SpawnPlayer()
+    public GameObject SpawnPlayer(GameObject player)
     {
-        var player = m_PlayerPrefab; //Instantiate(m_PlayerPrefab);
+        //var player = m_PlayerPrefab; //Instantiate(m_PlayerPrefab);
         _players.Add(player);
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>
         {

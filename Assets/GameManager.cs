@@ -1,7 +1,7 @@
 using SAS.StateMachineCharacterController;
-using UniRx;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 struct GamePauseEvent : IEvent
 {
@@ -27,19 +27,27 @@ public struct GlobalThreatLevelEvent : IEvent
     public float averageThreatLevel; // Can be int if you want whole numbers
 }
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IReady
 {
     [SerializeField] private PlayerSpawner m_PlayerSpawner;
     private bool _gamePaused = false;
+    private bool _isReady = false;
 
     private void Start()
     {
-        var player = m_PlayerSpawner.SpawnPlayer();
-        
+        PlayerInputManager.instance.JoinPlayer(0);
+    }
+
+    public void OnPlayerJoined(PlayerInput input)
+    {
+        var player = input.gameObject;
+        SceneUtility.MoveGameObjectToScene(player, gameObject.scene);
+        m_PlayerSpawner.SpawnPlayer(player);
+
         CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
         (brain.ActiveVirtualCamera as CinemachineCamera).Target.TrackingTarget =
             player.GetComponent<ICameraLookAt>().Target;
-        player.GetComponent<IHealthPresenter>().HealthModel.OnDeath.Subscribe(_ => { GameOver(); }).AddTo(this);
+        _isReady = true;
     }
 
     public void PauseGame()
@@ -57,4 +65,6 @@ public class GameManager : MonoBehaviour
     {
         EventBus<LevelCompleteEvent>.Raise(new LevelCompleteEvent() { });
     }
+
+    public bool IsReady => _isReady;
 }
