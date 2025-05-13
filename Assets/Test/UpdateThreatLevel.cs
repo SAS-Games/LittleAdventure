@@ -14,7 +14,7 @@ public abstract class UpdateThreatLevel : IStateAction
 
     void IStateAction.Execute(ActionExecuteEvent executeEvent)
     {
-        var threatLevel = _targetHolder.Target?.GetComponent<IThreatLevel>();
+        var threatLevel = _targetHolder.Target.Transform?.GetComponent<IThreatLevel>();
         if (threatLevel != null)
         {
             int delta = GetThreatDelta();
