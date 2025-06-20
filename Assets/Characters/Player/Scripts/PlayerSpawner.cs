@@ -7,9 +7,9 @@ public class PlayerSpawner : MonoBehaviour
     [SerializeField] private GameObject m_PlayerPrefab;
     private List<GameObject> _players = new List<GameObject>();
 
-    public GameObject SpawnPlayer(GameObject player)
+    public GameObject SpawnPlayer()
     {
-        //var player = m_PlayerPrefab; //Instantiate(m_PlayerPrefab);
+        var player = Instantiate(m_PlayerPrefab);
         _players.Add(player);
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>
         {
