@@ -6,5 +6,6 @@ namespace SAS.Utilities.TagSystem
         Activatable = 1,
         Health = 2,
         Pause = 3,
+        Coin = 4,
     }
 }

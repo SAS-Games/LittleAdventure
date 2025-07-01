@@ -10,7 +10,7 @@ public interface IHealthPresenter
 
 public class HealthPresenter : MonoBehaviour, IHealthPresenter
 {
-    [FieldRequiresSelf] private IProxyView<float> _healthView;
+    [FieldRequiresSelf(tag: Tag.Health)] private IProxyView<float> _healthView;
     [FieldRequiresChild] private IDamageable _damageable;
     [SerializeField] private int m_MaxHealth = 100;
     [SerializeField] private UnityEvent m_OnDeath;
