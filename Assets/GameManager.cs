@@ -35,14 +35,13 @@ public class GameManager : MonoBehaviour, IReady
 
     private void Start()
     {
-        PlayerInputManager.instance.JoinPlayer(0);
+        OnPlayerJoined();
     }
 
-    public void OnPlayerJoined(PlayerInput input)
+    public void OnPlayerJoined()
     {
-        var player = input.gameObject;
+        var player = m_PlayerSpawner.SpawnPlayer();
         SceneUtility.MoveGameObjectToScene(player, gameObject.scene);
-        m_PlayerSpawner.SpawnPlayer(player);
 
         CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
         (brain.ActiveVirtualCamera as CinemachineCamera).Target.TrackingTarget =
