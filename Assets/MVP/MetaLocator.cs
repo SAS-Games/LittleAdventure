@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SAS.StateMachineGraph.Utilities;
 using SAS.Utilities.TagSystem;
@@ -18,6 +19,14 @@ interface IMetaLocator : IBindable
 
 public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
 {
+    private static readonly Type[] UnityBaseTypes =
+    {
+            typeof(UnityEngine.MonoBehaviour),
+            typeof(UnityEngine.Behaviour),
+            typeof( UnityEngine.Component),
+            typeof(UnityEngine.Object),
+    };
+
     public interface IHandler
     {
         void OnMetaLoaded(MetaLocator metaLocator);
@@ -30,7 +39,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
     }
 
     private List<IHandler> _handlers = new List<IHandler>();
-    private Dictionary<Key, object> _localMeta = new Dictionary<Key, object>();
+    private Dictionary<Key, List<object>> _localMeta = new Dictionary<Key, List<object>>();
     private ICore _core;
 
     private void Awake()
@@ -53,9 +62,9 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
         foreach (var keyValue in contextBinder.GetAll())
         {
             if (!_localMeta.ContainsKey(keyValue.Key))
-                _localMeta.Add(keyValue.Key, keyValue.Value);
+                _localMeta.Add(keyValue.Key, new List<object>() { keyValue.Value });
             else
-                Debug.Log($"An item with the same key has already been added. Key: {keyValue.Key}");
+                Debug.LogWarning($"An item with the same key has already been added. Key: {keyValue.Key}");
         }
     }
 
@@ -116,18 +125,35 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
         if (_core as Object == null || !_core.TryGet(out instance, tag))
         {
             var key = GetKey(typeof(T), tag);
-            if (!_localMeta.TryGetValue(key, out object result))
+            if (!_localMeta.TryGetValue(key, out var result))
             {
                 instance = default;
                 Debug.LogError($"Required service of type {typeof(T).Name} with tag {tag} is not found");
                 return false;
             }
 
-            instance = (T)result;
+            if (result.Count > 1)
+                Debug.LogWarning($"There is more than one IService that implements{typeof(T).Name}");
+
+
+            instance = (T)result[0]; ;
             return true;
         }
 
         return true;
+    }
+
+    public IEnumerable<T> GetAll<T>(Tag tag = Tag.None)
+    {
+        return GetAll(typeof(T), tag).Cast<T>();
+    }
+
+    public IEnumerable<object> GetAll(Type type, Tag tag = Tag.None)
+    {
+        if (_localMeta.TryGetValue(GetKey(type, tag), out var value))
+            return value;
+        else
+            return Array.Empty<object>();
     }
 
     private void AddLocalToCore(ICore core)
@@ -151,11 +177,20 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
     private void AddToLocal(Type type, object service, Tag tag = Tag.None)
     {
         var key = GetKey(type, tag);
-        if (!_localMeta.TryGetValue(key, out var instance))
-            _localMeta.Add(key, service);
+        if (!_localMeta.TryGetValue(key, out var instanceList))
+        {
+            instanceList = new List<object>();
+            _localMeta.Add(key, instanceList);
+        }
+
+        if (!instanceList.Contains(service))
+            instanceList.Add(service);
+
+        if (UnityBaseTypes.AsValueEnumerable().Any(stopType => stopType == type))
+            return;
 
         var baseTypes = type.GetInterfaces();
-        if (type.BaseType != null)
+        if (type.BaseType != null && !UnityBaseTypes.Any(ut => ut == type.BaseType))
             baseTypes = baseTypes.AsValueEnumerable().Prepend(type.BaseType).ToArray();
 
         foreach (var baseType in baseTypes)
