@@ -30,3 +30,9 @@ MonoBehaviour:
       PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms: 0500000006000000
+  - m_Interface: IPlayerSetupModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Type: PlayerSetupModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Tag: 0
+    m_ExcludedPlatforms: 
