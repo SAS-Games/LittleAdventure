@@ -20,6 +20,13 @@ MonoBehaviour:
         guid: ce40d848cffdeae4d93858f6c1866adf
       SceneType: 2
       IsOptinal: 0
+  - m_Name: PlayerSelectionScreen
+    Scenes:
+    - Reference:
+        asset: {fileID: 102900000, guid: be82e2b7935f04e46aeeee11e1e88995, type: 3}
+        guid: be82e2b7935f04e46aeeee11e1e88995
+      SceneType: 3
+      IsOptinal: 0
   - m_Name: GameScene
     Scenes:
     - Reference:

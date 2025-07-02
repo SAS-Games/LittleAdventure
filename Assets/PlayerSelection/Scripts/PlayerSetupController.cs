@@ -6,8 +6,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerSetupController : Singleton<PlayerSetupController>
 {
+    [SerializeField] private PlayerInput m_DefaultPlayer;
     [SerializeField] private int m_MaxPlayers = 2;
     [Inject] private IPlayerSetupModel _playerSetupModel;
+    public int MaxPlayers => m_MaxPlayers;
 
     protected override void Awake()
     {
@@ -31,22 +33,16 @@ public class PlayerSetupController : Singleton<PlayerSetupController>
     {
         foreach (var player in _playerSetupModel.Players)
         {
-            Destroy(player.Input.gameObject);
+            if (player.Input && player.Input.gameObject)
+                Destroy(player.Input.gameObject);
         }
+
         _playerSetupModel.Clear();
     }
 
     public void AddDefaultPlayer()
     {
-        _playerSetupModel.AddPlayer(new PlayerProfile(null,"DefaultPlayer", 0));
+        var defaultPlayer = Instantiate(m_DefaultPlayer.gameObject);
+        HandlePlayerJoin(defaultPlayer.GetComponent<PlayerInput>());
     }
-
-    // public void ReadyPlayer(int index)
-    // {
-    //     playerConfigs[index].IsReady = true;
-    //     if (playerConfigs.Count == MaxPlayers && playerConfigs.All(p => p.IsReady == true))
-    //     {
-    //         SceneManager.LoadScene("SampleScene");
-    //     }
-    // }
 }

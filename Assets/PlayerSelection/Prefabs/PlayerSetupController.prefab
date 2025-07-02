@@ -45,5 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _PersistentOnSceneChange: 1
-  m_PlayerConfigurationUI: {fileID: 0}
+  m_DefaultPlayer: {fileID: 3698094019892413940, guid: 7092edde0ee9cb449998f6855771321c, type: 3}
   m_MaxPlayers: 2
