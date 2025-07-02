@@ -1,3 +1,4 @@
+using SAS.StateMachineCharacterController;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -7,10 +8,14 @@ public class PlayerSpawner : MonoBehaviour
     [SerializeField] private GameObject m_PlayerPrefab;
     private List<GameObject> _players = new List<GameObject>();
 
-    public GameObject SpawnPlayer()
+    public GameObject SpawnPlayer(PlayerProfile playerProfile)
     {
         var player = Instantiate(m_PlayerPrefab);
         _players.Add(player);
+        
+        if (playerProfile != null && playerProfile.Input != null)
+            player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
+
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>
         {
             EventBus<PlayerThreatLevelEvent>.Raise(new PlayerThreatLevelEvent

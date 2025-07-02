@@ -6,6 +6,8 @@ public interface IPlayerSetupModel : IBindable
 {
     IReadOnlyList<PlayerProfile> Players { get; }
     void AddPlayer(PlayerInput playerInput);
+    void AddPlayer(PlayerProfile playerProfile);
+    void Clear();
     PlayerProfile GetPlayer(int index);
 }
 
@@ -14,17 +16,35 @@ public class PlayerSetupModel : IPlayerSetupModel
     private readonly List<PlayerProfile> _players = new List<PlayerProfile>();
     public IReadOnlyList<PlayerProfile> Players => _players;
 
-    public PlayerSetupModel(IContextBinder _)
-    {
-    }
+    public PlayerSetupModel(IContextBinder _) { }
+    public void OnInstanceCreated() { }
 
     void IPlayerSetupModel.AddPlayer(PlayerInput playerInput)
     {
-        if (_players.Exists(p => p.Input.playerIndex == playerInput.playerIndex))
+        if (_players.Exists(p => p.Input?.playerIndex == playerInput?.playerIndex))
             return;
 
         var playerProfile = new PlayerProfile(playerInput);
         _players.Add(playerProfile);
+    }
+
+    void IPlayerSetupModel.AddPlayer(PlayerProfile playerProfile)
+    {
+        if (playerProfile == null)
+            return;
+
+        // If it's a default player with null input, just check by Index
+        if (playerProfile.Input == null)
+        {
+            if (_players.Exists(p => p.Index == playerProfile.Index))
+                return;
+
+            _players.Add(playerProfile);
+            return;
+        }
+
+        // If input exists, defer to playerInput overload
+        (this as IPlayerSetupModel).AddPlayer(playerProfile.Input);
     }
 
     PlayerProfile IPlayerSetupModel.GetPlayer(int index)
@@ -32,7 +52,11 @@ public class PlayerSetupModel : IPlayerSetupModel
         return _players.Find(p => p.Index == index);
     }
 
-    public void OnInstanceCreated()
+
+    void IPlayerSetupModel.Clear()
     {
+        _players.Clear();
     }
+
+    
 }

@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using SAS.Utilities;
+﻿using SAS.Utilities;
 using SAS.Utilities.TagSystem;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerSetupController : Singleton<PlayerSetupController>
 {
-    [SerializeField] private PlayerConfigurationUI m_PlayerConfigurationUI;
     [SerializeField] private int m_MaxPlayers = 2;
     [Inject] private IPlayerSetupModel _playerSetupModel;
 
@@ -26,8 +25,20 @@ public class PlayerSetupController : Singleton<PlayerSetupController>
         {
             _playerSetupModel.AddPlayer(playerInput);
         }
+    }
 
-        m_PlayerConfigurationUI.OnPlayerJoin(playerInput);
+    public void Clear()
+    {
+        foreach (var player in _playerSetupModel.Players)
+        {
+            Destroy(player.Input.gameObject);
+        }
+        _playerSetupModel.Clear();
+    }
+
+    public void AddDefaultPlayer()
+    {
+        _playerSetupModel.AddPlayer(new PlayerProfile(null,"DefaultPlayer", 0));
     }
 
     // public void ReadyPlayer(int index)

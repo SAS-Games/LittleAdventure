@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -15,6 +14,7 @@ public class PlayerConfigurationUI : UIScreenView
 
     public void OnPlayerJoin(PlayerInput playerInput)
     {
+        PlayerSetupController.Instance.HandlePlayerJoin(playerInput);
         var menu = Instantiate(m_PlayerConfigScreen, m_Content.transform);
         playerInput.uiInputModule = menu.GetComponentInChildren<InputSystemUIInputModule>();
         menu.GetComponent<PlayerSetupMenuController>().SetPlayerIndex(playerInput.playerIndex);

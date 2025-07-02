@@ -1,4 +1,5 @@
 using SAS.StateMachineCharacterController;
+using SAS.Utilities.TagSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -30,23 +31,28 @@ public struct GlobalThreatLevelEvent : IEvent
 public class GameManager : MonoBehaviour, IReady
 {
     [SerializeField] private PlayerSpawner m_PlayerSpawner;
+    [Inject] private IPlayerSetupModel _playerSetupModel;
     private bool _gamePaused = false;
     private bool _isReady = false;
 
     private void Start()
     {
-        OnPlayerJoined();
+        this.Initialize();
+        foreach (PlayerProfile player in _playerSetupModel.Players)
+        {
+            SpawnPlayer(player);
+        }
+        _isReady = true;
     }
 
-    public void OnPlayerJoined()
+    private void SpawnPlayer(PlayerProfile playerProfile)
     {
-        var player = m_PlayerSpawner.SpawnPlayer();
+        var player = m_PlayerSpawner.SpawnPlayer(playerProfile);
         SceneUtility.MoveGameObjectToScene(player, gameObject.scene);
 
         CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
         (brain.ActiveVirtualCamera as CinemachineCamera).Target.TrackingTarget =
             player.GetComponent<ICameraLookAt>().Target;
-        _isReady = true;
     }
 
     public void PauseGame()
