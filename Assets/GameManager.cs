@@ -2,7 +2,6 @@ using SAS.StateMachineCharacterController;
 using SAS.Utilities.TagSystem;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 struct GamePauseEvent : IEvent
 {
