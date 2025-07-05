@@ -19,6 +19,7 @@ public class PlayerSpawner : MonoBehaviour
     {
         var player = Instantiate(m_PlayerPrefab);
         player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
+        player.SetActive(true);
         _players.Add(player);
         player.GetComponent<FSMCharacterController>().SetPosition(_spawnPoints[_players.Count - 1].transform.position);
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>

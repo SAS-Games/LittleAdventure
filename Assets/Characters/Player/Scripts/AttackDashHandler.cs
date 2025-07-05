@@ -1,3 +1,4 @@
+using System;
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using UnityEngine;
@@ -20,5 +21,12 @@ public class AttackDashHandler : MonoBehaviour
     {
         if (_actor.CurrentStateName == m_AttackStateName)
             _actor.SetState(m_DashStateName);
+    }
+
+    private void OnDestroy()
+    {
+        var inputCommand = GetComponentInParent<InputHandler>().GetCommand(m_DashInputName);
+        if (inputCommand != null)
+            (inputCommand as IInputCallbackRegistry).UnregisterCallback(DashCallback);
     }
 }
