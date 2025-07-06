@@ -25,7 +25,7 @@ public class AttackDashHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        var inputCommand = GetComponentInParent<InputHandler>().GetCommand(m_DashInputName);
+        var inputCommand = GetComponentInParent<InputHandler>()?.GetCommand(m_DashInputName);
         if (inputCommand != null)
             (inputCommand as IInputCallbackRegistry).UnregisterCallback(DashCallback);
     }
