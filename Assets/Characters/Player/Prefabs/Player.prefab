@@ -72,6 +72,7 @@ GameObject:
   - component: {fileID: 550901977605995055}
   - component: {fileID: 6214022986580445627}
   - component: {fileID: 324327762719006952}
+  - component: {fileID: -5229356649627402190}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -578,7 +579,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6865034d40526484f88bcad5dbd3b32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MaxHealth: 100
+  m_MaxValue: 100
+  m_OnEmpty:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7741954779662780768}
+        m_TargetAssemblyTypeName: SAS.StateMachineCharacterController.FSMCharacterController,
+          AssemblyStateMachineCharacterController
+        m_MethodName: OnDeath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnDeath:
     m_PersistentCalls:
       m_Calls:
@@ -832,6 +849,21 @@ MonoBehaviour:
     m_Value: 2
   - m_Component: {fileID: 550901977605995055}
     m_Value: 4
+--- !u!114 &-5229356649627402190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6515f8aa439077248a62f7b905d12579, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EarlyBinding: 0
+  m_Scope: 2
+  m_Binder: {fileID: 11400000, guid: faab314b82c57ee4ba363d0a9fd8b47a, type: 2}
 --- !u!1 &5867608038117725257
 GameObject:
   m_ObjectHideFlags: 0
