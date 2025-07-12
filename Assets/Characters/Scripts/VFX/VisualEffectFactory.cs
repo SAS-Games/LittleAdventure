@@ -6,10 +6,9 @@ using UnityEngine.VFX;
 public class VisualEffectFactory : ScriptableObject, IFactory<VisualEffect>
 {
     [SerializeField] private VisualEffect m_Prefab;
-    public bool Create(out VisualEffect item)
+    public bool Create(string id, out VisualEffect item)
     {
         item = GameObject.Instantiate(m_Prefab);
         return item != null;
     }
-
 }
