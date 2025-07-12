@@ -4,7 +4,6 @@ public class HealthPresenter : StatPresenter<IHealthModel>
 {
     [field: FieldRequiresSelf(tag: Tag.Health)] protected override IProxyView<float> View { get; }
     [FieldRequiresChild] private IDamageable _damageable;
-    public IHealthModel HealthModel => _model;
 
     private void HandleDamage(float amount)
     {

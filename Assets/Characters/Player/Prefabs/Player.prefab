@@ -55,7 +55,6 @@ GameObject:
   - component: {fileID: 386373596483041357}
   - component: {fileID: 6266289746105320398}
   - component: {fileID: 1611186305954959729}
-  - component: {fileID: 679413138631834102}
   - component: {fileID: 8245588806867666461}
   - component: {fileID: 5969322159665116357}
   - component: {fileID: 2261841214966393158}
@@ -63,14 +62,17 @@ GameObject:
   - component: {fileID: 1392526365081547643}
   - component: {fileID: 4242162623136758871}
   - component: {fileID: 982385090900151853}
-  - component: {fileID: 9002388050143003221}
   - component: {fileID: -5799533150554955070}
   - component: {fileID: -1448693804168666403}
   - component: {fileID: -8360673312945006277}
   - component: {fileID: -4054211711262245944}
   - component: {fileID: 5115065603554025157}
-  - component: {fileID: 550901977605995055}
+  - component: {fileID: 679413138631834102}
+  - component: {fileID: 9002388050143003221}
   - component: {fileID: 6214022986580445627}
+  - component: {fileID: 550901977605995055}
+  - component: {fileID: 2472744964377216257}
+  - component: {fileID: 832196968613378172}
   - component: {fileID: 324327762719006952}
   - component: {fileID: -5229356649627402190}
   m_Layer: 7
@@ -567,51 +569,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <weaponData>k__BackingField:
   - {fileID: 11400000, guid: 1f0df70b5352e7a42a9fab28975c8e50, type: 2}
---- !u!114 &679413138631834102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622055182962459638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6865034d40526484f88bcad5dbd3b32c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MaxValue: 100
-  m_OnEmpty:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7741954779662780768}
-        m_TargetAssemblyTypeName: SAS.StateMachineCharacterController.FSMCharacterController,
-          AssemblyStateMachineCharacterController
-        m_MethodName: OnDeath
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_OnDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7741954779662780768}
-        m_TargetAssemblyTypeName: SAS.StateMachineCharacterController.FSMCharacterController,
-          AssemblyStateMachineCharacterController
-        m_MethodName: OnDeath
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &8245588806867666461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,18 +686,6 @@ MonoBehaviour:
   m_TargetHeight: 0
   dissolveStartHeight: 20
   dissolveTargetHeight: -10
---- !u!114 &9002388050143003221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622055182962459638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c058a692c081a244ba5eb5b096108ebd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-5799533150554955070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -804,7 +749,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a6e7c0211c260445927f1b78e903dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &550901977605995055
+--- !u!114 &679413138631834102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6865034d40526484f88bcad5dbd3b32c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MaxValue: 100
+  m_OnEmpty:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7741954779662780768}
+        m_TargetAssemblyTypeName: SAS.StateMachineCharacterController.FSMCharacterController,
+          AssemblyStateMachineCharacterController
+        m_MethodName: OnDeath
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &9002388050143003221
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -830,6 +804,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ProxyViewTag: 4
   _currencyType: Coins
+--- !u!114 &550901977605995055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c058a692c081a244ba5eb5b096108ebd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2472744964377216257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a40f7e10d52e11c4c84127c8e4f05708, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MaxValue: 1
+  m_OnEmpty:
+    m_PersistentCalls:
+      m_Calls: []
+  m_EnergyRegenAmount: 0.1
+  m_EnergyRegenFrequency: 1
+--- !u!114 &832196968613378172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c058a692c081a244ba5eb5b096108ebd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &324327762719006952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -849,6 +865,8 @@ MonoBehaviour:
     m_Value: 2
   - m_Component: {fileID: 550901977605995055}
     m_Value: 4
+  - m_Component: {fileID: 832196968613378172}
+    m_Value: 5
 --- !u!114 &-5229356649627402190
 MonoBehaviour:
   m_ObjectHideFlags: 0

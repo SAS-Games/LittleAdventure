@@ -13,6 +13,6 @@ public class ProxyViewFloat : MonoBehaviour, IProxyView<float>, ServiceLocator.I
     void IProxyView<float>.OnValueChanged(float value)
     {
         _value.Value = value;
-        Debug.Log($"Value: {value}");
+        Debug.Log($"Value: {value}", this.GetTag().ToString());
     }
 }

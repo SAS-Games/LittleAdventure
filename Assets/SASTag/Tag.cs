@@ -7,5 +7,6 @@ namespace SAS.Utilities.TagSystem
         Health = 2,
         Pause = 3,
         Coin = 4,
+        Energy = 5,
     }
 }
