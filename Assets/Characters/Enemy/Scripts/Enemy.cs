@@ -1,6 +1,7 @@
 using SAS.Pool;
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
+using SAS.Utilities.TagSystem;
 using UnityEngine;
 
 namespace EnemySystem
@@ -19,6 +20,7 @@ namespace EnemySystem
 
     public class Enemy : MonoBehaviour, ICharacter, IHasTarget, ISpawnable
     {
+        [Inject] private IHealthModel _healthModel;
         [field: SerializeField] public LayerMask VisibilityBlockers { get; private set; }
         [SerializeField] private string m_DeadStateTriggerName = "Dead";
         [SerializeField] private string m_SpawnTriggerName = "Spawn";
@@ -35,6 +37,7 @@ namespace EnemySystem
         private void Awake()
         {
             m_HealerObjectPool.Initialize(4);
+            this.Initialize();
         }
 
         public void OnDeath()
@@ -51,7 +54,7 @@ namespace EnemySystem
 
         void ISpawnable.OnSpawn(object data)
         {
-            GetComponent<IHealthPresenter>().HealthModel.Reset();
+            _healthModel.Reset();
             GetComponent<Actor>().SetTrigger(m_SpawnTriggerName);
         }
 

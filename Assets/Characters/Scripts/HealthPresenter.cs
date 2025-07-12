@@ -1,11 +1,6 @@
 using SAS.Utilities.TagSystem;
 
-public interface IHealthPresenter
-{
-    IHealthModel HealthModel { get; }
-}
-
-public class HealthPresenter : StatPresenter<IHealthModel>, IHealthPresenter
+public class HealthPresenter : StatPresenter<IHealthModel>
 {
     [field: FieldRequiresSelf(tag: Tag.Health)] protected override IProxyView<float> View { get; }
     [FieldRequiresChild] private IDamageable _damageable;

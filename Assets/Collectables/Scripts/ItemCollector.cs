@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ItemCollector : Collector
 {
-    [FieldRequiresSelf] private IHealthPresenter _healthPresenter;
     [FieldRequiresSelf] private ICurrencyPresenter _currencyPresenter;
     [FieldRequiresChild] private IEventDispatcher _eventDispatcher;
+    [Inject] private IHealthModel _healthModel;
     [SerializeField] private string m_HealVFX = "Heal";
 
     private void Start()
@@ -14,7 +14,6 @@ public class ItemCollector : Collector
         this.Initialize();
         EventBus<CollectionEvent<Healer>>.Register(new EventBinding<CollectionEvent<Healer>>(val => IncreaseHealth(val)));
         EventBus<CollectionEvent<Coin>>.Register(new EventBinding<CollectionEvent<Coin>>(val => IncreaseCollectedCoin(val)));
-
     }
 
     private void OnDestroy()
@@ -28,7 +27,7 @@ public class ItemCollector : Collector
         if (collectionEventData.collector == this)
         {
             var healer = collectionEventData.collectable;
-            _healthPresenter.HealthModel.Increase(healer.Value);
+            _healthModel.Increase(healer.Value);
             _eventDispatcher.TriggerEvent(m_HealVFX);
         }
     }
