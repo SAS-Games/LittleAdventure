@@ -9,14 +9,6 @@ namespace SAS.WeaponSystem
         {
             base.Init();
             var fireCommand = new FireCommand(Data.AttackInputKey, _weapon, GetComponentInParent<FSMCharacterController>());
-            // fireCommand.AddFirePerformedCallback(_ =>
-            // {
-            //     _weapon.CurrentInput = true;
-            // });
-            // fireCommand.AddFireCanceledCallback(_ =>
-            // {
-            //     _weapon.CurrentInput = false;
-            // });
             GetComponentInParent<InputHandler>().CreateInputCommand(Data.AttackInputKey, fireCommand, true);
         }
     }

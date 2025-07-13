@@ -89,3 +89,7 @@ MonoBehaviour:
   - original: SAS.StateMachineCharacterController.WallJump, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     overridden: 
+  m_StateModelOverrides:
+  - stateModel: {fileID: -5011031136293539259, guid: 0b96c4faae8f11f48990aaefc4a8095c, type: 2}
+    AddedActions: []
+    ModifiedAction: []
