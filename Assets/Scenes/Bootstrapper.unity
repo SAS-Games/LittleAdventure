@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EarlyBinding: 1
-  <IsCrossContextBinder>k__BackingField: 1
+  m_Scope: 0
   m_Binder: {fileID: 11400000, guid: b64e7c54f511fd041896c98f7f62912e, type: 2}
 --- !u!4 &1397979628
 Transform:

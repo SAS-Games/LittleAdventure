@@ -24,6 +24,23 @@
       "dependencies": {},
       "hash": "fe31ad0904abee296b5ea72c6073157accba59e8"
     },
+    "com.inkle.ink-unity-integration": {
+      "version": "https://github.com/inkle/ink-unity-integration.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2b6b4fc41b040202b929a8b7ba76e45a17867b8c"
+    },
+    "com.sas.dev-utilities": {
+      "version": "https://github.com/SAS-Games/SASPackage-DevUtilities.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.textmeshpro": "3.0.6",
+        "com.unity.inputsystem": "1.6.3"
+      },
+      "hash": "1077d42b6fba9a26145481b2c2e8c4601a5fa424"
+    },
     "com.sas.fsmcharactercontroller": {
       "version": "https://github.com/SAS-Games/StateMachineCharacterController.git#master-platformer",
       "depth": 0,
@@ -34,7 +51,7 @@
         "com.unity.inputsystem": "1.5.0",
         "com.unity.cinemachine": "2.8.9"
       },
-      "hash": "cd7d366366eefd5d2c01162d0c929df716c79e0e"
+      "hash": "82ad2507f260d5a5de7a51113f7344ec62365fb7"
     },
     "com.sas.library.unirx": {
       "version": "https://github.com/SAS-Games/UniRx.git",
@@ -43,6 +60,15 @@
       "dependencies": {},
       "hash": "f8ff4db73464bd543cce8acc25ac6d5c267b71c5"
     },
+    "com.sas.scene-management": {
+      "version": "https://github.com/SAS-Games/SASPackage-SceneManagement.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.addressables": "2.4.4"
+      },
+      "hash": "9a524bf176d8e74b8aa5eaac328b5dd57e9007c2"
+    },
     "com.sas.statemachine": {
       "version": "https://github.com/SAS-Games/SASPackages-StateMachine.git#master-platformer",
       "depth": 0,
@@ -50,7 +76,7 @@
       "dependencies": {
         "com.sas.utilities": "1.0.0"
       },
-      "hash": "fe80aa9f649199eda125b6fdcf8996e21a3b93ad"
+      "hash": "d5e13267ebb6dc64d322c77ef8c6ff11b1f15e05"
     },
     "com.sas.tweenmanagement": {
       "version": "https://github.com/SAS-Games/SASPackages-Tween.git#master-platformer",
@@ -68,7 +94,7 @@
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.1.0"
       },
-      "hash": "55612d7f42bbea48aa54d056552b6cc8e1d3b73b"
+      "hash": "88f5258c7c9af41f917ba85c954c95da1eec075b"
     },
     "com.unity.addressables": {
       "version": "2.4.4",
@@ -164,6 +190,16 @@
       "source": "registry",
       "dependencies": {
         "com.unity.modules.uielements": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.localization": {
+      "version": "1.5.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.addressables": "1.22.2",
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
       },
       "url": "https://packages.unity.com"
     },
@@ -309,6 +345,14 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.unity.textmeshpro": {
+      "version": "5.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.ugui": "2.0.0"
+      }
     },
     "com.unity.timeline": {
       "version": "1.8.7",
