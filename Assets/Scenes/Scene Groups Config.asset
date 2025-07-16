@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 019d158f4d9962446ac2d7236c4050ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 2671669a0c1b7f341ab56dd269762d88, type: 3}
   m_Name: Scene Groups Config
   m_EditorClassIdentifier: 
   m_SceneGroups:

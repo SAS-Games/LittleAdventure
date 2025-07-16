@@ -391,8 +391,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1397979628}
   - component: {fileID: 1397979627}
-  - component: {fileID: 1397979626}
   - component: {fileID: 1397979625}
+  - component: {fileID: 1397979629}
   m_Layer: 0
   m_Name: CrossContextBinder
   m_TagString: Untagged
@@ -412,19 +412,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec7870945b823584b94f70c2e05d6f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1397979626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1397979624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b33d09444be19d640b39e9565dd9730b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneGroupsConfig: {fileID: 11400000, guid: ceae414f5e080074ea06e440fba8ea32, type: 2}
 --- !u!114 &1397979627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,6 +442,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1397979629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397979624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfce45f661a025047bd01d24be1994e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneGroupsConfig: {fileID: 11400000, guid: ceae414f5e080074ea06e440fba8ea32, type: 2}
 --- !u!1001 &1402912385
 PrefabInstance:
   m_ObjectHideFlags: 0

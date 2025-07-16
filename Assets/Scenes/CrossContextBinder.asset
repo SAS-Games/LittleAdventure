@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: CrossContextBinder
   m_EditorClassIdentifier: 
   m_Bindings:
-  - m_Interface: SAS.SceneManagement.ISceneLoader, AssemblyUtilities, Version=0.0.0.0,
+  - m_Interface: SAS.SceneManagement.ISceneLoader, AssemblySceneManagement, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-    m_Type: SAS.SceneManagement.SceneLoader, AssemblyUtilities, Version=0.0.0.0,
+    m_Type: SAS.SceneManagement.SceneLoader, AssemblySceneManagement, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms: 

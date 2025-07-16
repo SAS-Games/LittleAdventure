@@ -42,7 +42,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3223484884199218714}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fde994e112e5cb0479a29532af4a0b7c, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f9bf0c951422924d98efb562145cf55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_SceneGroupName: MainMenu
