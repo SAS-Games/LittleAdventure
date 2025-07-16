@@ -72,7 +72,7 @@ public class SplineHapticFeedback : MonoBehaviour, ISplineFeedback
         float low = bumpiness * m_LeftMotorWeight;
         float high = steepness * m_RightMotorWeight;
 
-        SAS.Debug.Log($"Motor speed low frequency: {low} & high frequency: {high}");
+       // SAS.Debug.Log($"Motor speed low frequency: {low} & high frequency: {high}", "SplineHapticFeedback");
 
 
         if (Gamepad.current != null)
