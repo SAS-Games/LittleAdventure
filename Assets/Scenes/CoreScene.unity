@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &526202050
+--- !u!1001 &164827471
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -129,7 +129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2762706121050783279, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1
+      value: -0.65
       objectReference: {fileID: 0}
     - target: {fileID: 2762706121050783279, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -137,7 +137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2762706121050783279, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 36.9
+      value: -10.21
       objectReference: {fileID: 0}
     - target: {fileID: 2762706121050783279, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -176,10 +176,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
---- !u!4 &526202051 stripped
+--- !u!4 &164827472 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2762706121050783279, guid: 3727582190093c049816b3ea91e1ce7e, type: 3}
-  m_PrefabInstance: {fileID: 526202050}
+  m_PrefabInstance: {fileID: 164827471}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &686500580
 PrefabInstance:
@@ -295,7 +295,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 686500581}
-  - {fileID: 526202051}
+  - {fileID: 164827472}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1834802549
@@ -450,7 +450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EarlyBinding: 1
-  <IsCrossContextBinder>k__BackingField: 0
+  m_Scope: 1
   m_Binder: {fileID: 11400000, guid: f46ff3dbd58b1ff44818bdaab0e03d4f, type: 2}
 --- !u!4 &1958207996
 Transform:
