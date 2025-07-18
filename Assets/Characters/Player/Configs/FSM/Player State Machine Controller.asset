@@ -835,9 +835,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: RespawnWait
   m_EditorClassIdentifier: 
-  m_Position: {x: 213, y: 427, z: 0}
+  m_Position: {x: 212, y: 428, z: 0}
   m_Tag: 
-  m_StateActions: []
+  m_StateActions:
+  - fullName: SAS.StateMachineCharacterController.InvokeCharacterDiedEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    tag: 0
+    key: 
+    whenToExecute: 1
   m_Transitions: []
 --- !u!114 &789061411378292087
 MonoBehaviour:
