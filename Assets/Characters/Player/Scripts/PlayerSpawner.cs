@@ -44,7 +44,7 @@ public class PlayerSpawner : MonoBehaviour
     private void OnPlayerDied(GameObject player)
     {
         _players.Remove(player);
-        Destroy(player);
+         player.SetActive(false);
     }
 
     private void UpdateGlobalThreatLevel()
