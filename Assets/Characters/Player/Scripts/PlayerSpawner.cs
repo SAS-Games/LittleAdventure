@@ -9,10 +9,13 @@ public class PlayerSpawner : MonoBehaviour
     [SerializeField] private GameObject m_PlayerPrefab;
     [FieldRequiresChild] protected SpawnPoint[] _spawnPoints;
     private List<GameObject> _players = new List<GameObject>();
+    private EventBinding<CharacterDiedEvent> _OnPlayerDiedEventBinding;
 
     private void Awake()
     {
         this.Initialize();
+        _OnPlayerDiedEventBinding = new EventBinding<CharacterDiedEvent>(playerDiedEvent => OnPlayerDied(playerDiedEvent.character));
+        EventBus<CharacterDiedEvent>.Register(_OnPlayerDiedEventBinding);
     }
 
     public GameObject SpawnPlayer(PlayerProfile playerProfile)
@@ -33,7 +36,15 @@ public class PlayerSpawner : MonoBehaviour
             UpdateGlobalThreatLevel();
         }).AddTo(player);
 
+
+
         return player;
+    }
+
+    private void OnPlayerDied(GameObject player)
+    {
+        _players.Remove(player);
+        Destroy(player);
     }
 
     private void UpdateGlobalThreatLevel()
@@ -52,5 +63,10 @@ public class PlayerSpawner : MonoBehaviour
         {
             averageThreatLevel = averageThreat
         });
+    }
+
+    private void OnDestroy()
+    {
+        EventBus<CharacterDiedEvent>.Deregister(_OnPlayerDiedEventBinding);
     }
 }

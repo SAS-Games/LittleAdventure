@@ -1,7 +1,6 @@
 using SAS.StateMachineCharacterController;
 using SAS.Utilities.TagSystem;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 struct GamePauseEvent : IEvent
@@ -22,6 +21,7 @@ struct PlayerThreatLevelEvent : IEvent
     public GameObject character;
     public int value;
 }
+
 
 public struct GlobalThreatLevelEvent : IEvent
 {
@@ -54,8 +54,6 @@ public class GameManager : MonoBehaviour, IReady
         var targetGroup = (brain.ActiveVirtualCamera as CinemachineCamera).Target.TrackingTarget;
         var cinemachineTargetGroup = targetGroup.GetComponent<CinemachineTargetGroup>();
         cinemachineTargetGroup.AddMember(player.GetComponent<ICameraLookAt>().Target, 0.5f, 1);
-        //(brain.ActiveVirtualCamera as CinemachineCamera).Target.TrackingTarget =
-        //     player.GetComponent<ICameraLookAt>().Target;
     }
 
     public void PauseGame()

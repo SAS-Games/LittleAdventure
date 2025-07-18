@@ -10,7 +10,16 @@ public class Target : MonoBehaviour, ITarget
     Transform IEntity.Transform => _transform;
     Vector3 IEntity.Position => _transform.position;
     Vector3 IEntity.Forward => _transform.forward;
-    bool ITarget.IsActive => enabled && gameObject.activeSelf;
+    bool ITarget.IsActive
+
+    {
+        get
+        {
+            if (this == null)
+                return false;
+            return enabled && gameObject.activeSelf;
+        }
+    }
 
     private void Start()
     {

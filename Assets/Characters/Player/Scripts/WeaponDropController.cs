@@ -1,9 +1,10 @@
 using SAS.Utilities.TagSystem;
 using UnityEngine;
 
-public class DropWeapons : MonoBehaviour
+public class WeaponDropController : MonoBehaviour
 {
     [FieldRequiresSelf] private IEventDispatcher _eventDispatcher;
+    [SerializeField] private GameObject[] m_WeaponsContainer;
     [SerializeField] private GameObject[] m_Weapons;
     [SerializeField] private string m_weaponDropAnimEventName = "DropWeapon";
 
@@ -26,7 +27,21 @@ public class DropWeapons : MonoBehaviour
     private void OnDestroy()
     {
         _eventDispatcher.Unsubscribe(m_weaponDropAnimEventName, Drop);
-
     }
 
+    private void RestoreWeaponsToOriginalState()
+    {
+        for (int i = 0; i < m_Weapons.Length; i++)
+        {
+            var weapon = m_Weapons[i];
+            var container = m_WeaponsContainer[i];
+
+            Destroy(weapon.GetComponent<Rigidbody>());
+            Destroy(weapon.GetComponent<BoxCollider>());
+
+            weapon.transform.SetParent(container.transform);
+            weapon.transform.localPosition = Vector3.zero;
+            weapon.transform.localRotation = Quaternion.identity;
+        }
+    }
 }
