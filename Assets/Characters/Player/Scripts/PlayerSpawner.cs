@@ -23,6 +23,7 @@ public class PlayerSpawner : MonoBehaviour
     public GameObject SpawnPlayer(PlayerProfile playerProfile)
     {
         var player = Instantiate(m_PlayerPrefab);
+        playerProfile.Character = player;
         player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
         player.SetActive(true);
         Players.Add(player);
@@ -37,7 +38,6 @@ public class PlayerSpawner : MonoBehaviour
 
             UpdateGlobalThreatLevel();
         }).AddTo(player);
-
         _activePlayersCount++;
         return player;
     }

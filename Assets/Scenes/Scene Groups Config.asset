@@ -49,7 +49,7 @@ MonoBehaviour:
         guid: be82e2b7935f04e46aeeee11e1e88995
       SceneType: 3
       IsOptinal: 0
-  - m_Name: GameScene
+  - m_Name: BattleArena
     Scenes:
     - Reference:
         asset: {fileID: 102900000, guid: a2efce2887be36049872b2aec3bdabed, type: 3}
