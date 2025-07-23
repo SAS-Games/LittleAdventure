@@ -27,7 +27,6 @@ public class PlayerSpawner : MonoBehaviour
         player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
         player.SetActive(true);
         Players.Add(player);
-        player.GetComponent<FSMCharacterController>().SetPosition(_spawnPoints[Players.Count - 1].transform.position);
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>
         {
             EventBus<PlayerThreatLevelEvent>.Raise(new PlayerThreatLevelEvent

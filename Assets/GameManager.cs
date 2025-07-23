@@ -66,15 +66,15 @@ public class GameManager : MonoBehaviour, IReady
         foreach (var player in m_PlayerSpawner.Players)
             player.GetComponent<Actor>().enabled = false;
     }
-    
+
     private async void OnSceneGroupLoaded(SceneGroupLoadedEvent sceneGroupLoadedEvent)
     {
         _isReady = false;
-        
+
         await CameraTargetSetupAsync();
         foreach (var player in m_PlayerSpawner.Players)
             player.GetComponent<Actor>().enabled = true;
-        
+
         _isReady = true;
     }
 
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour, IReady
 
             cinemachineTargetGroup.AddMember(lookAtTarget, 0.5f, 1f);
         }
-        
+
         GetComponent<CameraManager>().enabled = m_PlayerSpawner.Players.Count == 1;
     }
 

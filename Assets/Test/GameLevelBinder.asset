@@ -22,3 +22,9 @@ MonoBehaviour:
     m_Type: TargetRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms: 
+  - m_Interface: ICheckpointManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Type: PlayerCheckpointManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Tag: 0
+    m_ExcludedPlatforms: 
