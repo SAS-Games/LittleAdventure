@@ -23,6 +23,7 @@ public class PlayerSpawner : MonoBehaviour
     public GameObject SpawnPlayer(PlayerProfile playerProfile)
     {
         var player = Instantiate(m_PlayerPrefab);
+        player.transform.position = Vector3.one * -1000;
         playerProfile.Character = player;
         player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
         player.SetActive(true);
