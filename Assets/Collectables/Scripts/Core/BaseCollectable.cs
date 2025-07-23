@@ -1,5 +1,4 @@
 using SAS.Pool;
-using UnityEngine;
 
 namespace SAS.Collectables
 {
@@ -13,8 +12,9 @@ namespace SAS.Collectables
     {
         private SelfDespawnable _selfDespawnable;
         
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _selfDespawnable = GetComponent<SelfDespawnable>();
         }
 
