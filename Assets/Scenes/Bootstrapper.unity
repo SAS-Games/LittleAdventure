@@ -176,75 +176,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc6e6b4c8bfb8784092f816829281f70, type: 3}
---- !u!1001 &509379447
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3223484884199218714, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_Name
-      value: SceneGroupLoader
-      objectReference: {fileID: 0}
-    - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LoadOnStart
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LoadingScreen
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_SetActiveScene
-      value: MainMenu
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
 --- !u!1001 &705660746
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -314,6 +245,7 @@ GameObject:
   - component: {fileID: 1397979627}
   - component: {fileID: 1397979625}
   - component: {fileID: 1397979629}
+  - component: {fileID: 1397979630}
   m_Layer: 0
   m_Name: CrossContextBinder
   m_TagString: Untagged
@@ -376,6 +308,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SceneGroupsConfig: {fileID: 11400000, guid: ceae414f5e080074ea06e440fba8ea32, type: 2}
+--- !u!114 &1397979630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397979624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 751b6014c09a43f499266f059a94e9d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InjectionSceneGroups:
+  - Introduction
+  - GameScene
 --- !u!1001 &1402912385
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -613,7 +560,6 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 509379447}
   - {fileID: 1397979628}
   - {fileID: 705660746}
   - {fileID: 1962947658}

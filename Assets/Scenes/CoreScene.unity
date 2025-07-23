@@ -254,7 +254,6 @@ GameObject:
   - component: {fileID: 1834802548}
   - component: {fileID: 1834802547}
   - component: {fileID: 1834802549}
-  - component: {fileID: 1834802550}
   - component: {fileID: 1834802555}
   - component: {fileID: 1834802551}
   - component: {fileID: 1834802552}
@@ -310,18 +309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665146efef8697449b8de18a986ec908, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1834802550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834802546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 751b6014c09a43f499266f059a94e9d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1834802551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,6 +321,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3f42d650a9ca034a84a9237b3552dc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_InjectionSceneGroups:
+  - Introduction
+  - GameScene
   m_PlayerSpawner: {fileID: 1834802555}
 --- !u!114 &1834802552
 MonoBehaviour:

@@ -1,28 +1,16 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
 public class TestThread : MonoBehaviour
 {
+    [SerializeField] private GameObject m_SceneLoader;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    IEnumerator Start()
     {
-        new Thread(PrintNumbers).Start(); // Thread A
-        new Thread(PrintNumbers).Start();
+        yield return new WaitForSeconds(10);
+      m_SceneLoader.SetActive(true);
     }
-
-    void PrintNumbers()
-    {
-        int k = -1;
-        {
-            for (int i = 1; i <= 5;)
-            {
-                {
-                    k= i++;
-                }
-                Debug.Log($"Number: {k} (Thread ID: {Thread.CurrentThread.ManagedThreadId})");
-            }
-        }
-    }
-
 }
