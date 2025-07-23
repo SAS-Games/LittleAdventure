@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SAS.StateMachineCharacterController;
 using SAS.Utilities.TagSystem;
 
-public interface ITargetRegistry : IBindable
+public interface ITargetRegistry : IBindable, IInitializable
 {
     HashSet<ITarget> Targets { get; }
     public void RegisterTarget(ITarget target);
@@ -19,7 +19,7 @@ public class TargetRegistry : ITargetRegistry
     {
     }
 
-    void IBindable.OnInstanceCreated()
+    void IInitializable.OnCreated()
     {
         _targets = new HashSet<ITarget>();
     }

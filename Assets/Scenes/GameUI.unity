@@ -417,6 +417,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameSceneGroupLoader
       objectReference: {fileID: 0}
+    - target: {fileID: 4805172231462267767, guid: 31b201b8fc5eb0548ae55ca9260ab867, type: 3}
+      propertyPath: m_SceneGroupName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6225409233726645297, guid: 31b201b8fc5eb0548ae55ca9260ab867, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

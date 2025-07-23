@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public interface ICheckpointManager : IBindable
+public interface ICheckpointManager : IBindable, IInitializable, IDestroyable
 {
     void RegisterGroup(SpawnPointGroup group);
     void UnregisterGroup(SpawnPointGroup group);
@@ -17,13 +17,6 @@ public class PlayerCheckpointManager : ICheckpointManager
     private string m_ActiveCheckpointGroupID;
     private Dictionary<string, SpawnPointGroup> _groupsByID = new();
     private EventBinding<SceneGroupLoadedEvent> _sceneGroupLoadedEventBinding;
-
-    //private void Awake()
-    //{
-    //    this.InjectFieldBindings();
-    //    _sceneGroupLoadedEventBinding = new EventBinding<SceneGroupLoadedEvent>(OnSceneGroupLoaded);
-    //    EventBus<SceneGroupLoadedEvent>.Register(_sceneGroupLoadedEventBinding);
-    //}
 
     void OnSceneGroupLoaded(SceneGroupLoadedEvent sceneGroupLoadedEvent)
     {
@@ -71,20 +64,20 @@ public class PlayerCheckpointManager : ICheckpointManager
         return group.GetSpawnPointByPlayerId(playerIndex);
     }
 
-    protected void OnDestroy()
-    {
-        EventBus<SceneGroupLoadedEvent>.Deregister(_sceneGroupLoadedEventBinding);
-    }
-
     public PlayerCheckpointManager(IContextBinder contextBinder)
     {
 
         (contextBinder as Component).Initialize(this);
     }
 
-    void IBindable.OnInstanceCreated()
+    void IInitializable.OnCreated()
     {
         _sceneGroupLoadedEventBinding = new EventBinding<SceneGroupLoadedEvent>(OnSceneGroupLoaded);
         EventBus<SceneGroupLoadedEvent>.Register(_sceneGroupLoadedEventBinding);
+    }
+
+    void IDestroyable.OnDestroyed()
+    {
+        EventBus<SceneGroupLoadedEvent>.Deregister(_sceneGroupLoadedEventBinding);
     }
 }
