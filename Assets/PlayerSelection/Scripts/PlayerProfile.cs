@@ -6,7 +6,10 @@ public class PlayerProfile
     public PlayerInput Input { get; private set; }
     public int Index { get; private set; }
     public string Name { get; private set; }
+    public string DisplayName { get; set; }
+    public string Color { get; set; }
     public GameObject Character { get; set; }
+
     public PlayerProfile(PlayerInput playerInput)
     {
         Input = playerInput;
@@ -21,5 +24,4 @@ public class PlayerProfile
         Index = index;
         Name = name;
     }
-    
 }
