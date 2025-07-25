@@ -8,8 +8,7 @@ using UnityEngine.InputSystem.UI;
 
 public class PlayerSetupMenu : UIScreenView
 {
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI m_TitleText;
+    [Header("UI")] [SerializeField] private TextMeshProUGUI m_TitleText;
     [SerializeField] private GameObject m_ReadyText;
     [SerializeField] private UIButton m_ReadyButton;
     [SerializeField] private TMP_Dropdown m_NameDropdown;
@@ -37,7 +36,7 @@ public class PlayerSetupMenu : UIScreenView
     public void SetPlayerIndex(int index)
     {
         _playerIndex = index;
-        m_TitleText.text = $"Player {index + 1}";
+        m_TitleText.text = $"{_nameOptions[m_NameDropdown.value]}";
         _ignoreInputTime = Time.time + _ignoreInputTime;
     }
 
@@ -53,7 +52,8 @@ public class PlayerSetupMenu : UIScreenView
         SetupDropdown(m_ColorDropdown, colors, selectedColor, _ => NotifyColorChange());
     }
 
-    private void SetupDropdown(TMP_Dropdown dropdown, List<string> options, string selectedValue, UnityAction<int> onChangeCallback)
+    private void SetupDropdown(TMP_Dropdown dropdown, List<string> options, string selectedValue,
+        UnityAction<int> onChangeCallback)
     {
         dropdown.onValueChanged.RemoveAllListeners();
         dropdown.ClearOptions();
@@ -66,7 +66,7 @@ public class PlayerSetupMenu : UIScreenView
         dropdown.onValueChanged.AddListener(onChangeCallback);
     }
 
-    
+
     void Update()
     {
         if (Time.time > _ignoreInputTime)
@@ -89,7 +89,10 @@ public class PlayerSetupMenu : UIScreenView
     private void NotifyNameChange()
     {
         if (_nameOptions != null && m_NameDropdown.value >= 0 && m_NameDropdown.value < _nameOptions.Count)
+        {
+            m_TitleText.text = $"{_nameOptions[m_NameDropdown.value]}";
             OnNameSelected?.Invoke(_playerIndex, _nameOptions[m_NameDropdown.value]);
+        }
     }
 
     private void NotifyColorChange()
