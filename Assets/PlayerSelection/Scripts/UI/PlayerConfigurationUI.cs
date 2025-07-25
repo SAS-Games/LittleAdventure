@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.UI;
 
 public class PlayerConfigurationUI : UIScreenView
 {
+    [SerializeField] private GameObject[] m_Players;
     [SerializeField] private PlayerSetupMenu m_PlayerConfigScreen;
     [SerializeField] private RectTransform m_Content;
     [SerializeField] private SceneGroupLoader m_SceneGroupLoader;
@@ -43,11 +44,14 @@ public class PlayerConfigurationUI : UIScreenView
         int playerIndex = playerInput.playerIndex;
         _playerMenus[playerIndex] = menu;
 
+        m_Players[playerIndex].SetActive(true);
+        _playerSetupModel.Players[playerIndex].Character = m_Players[playerIndex];
+
         string defaultName = GetAvailableNames(playerIndex).FirstOrDefault();
         string defaultColor = GetAvailableColors(playerIndex).FirstOrDefault();
-        _chosenNames[playerIndex] = defaultName;
-        _chosenColors[playerIndex] = defaultColor;
-        
+        OnNameChosen(playerIndex, defaultName);
+        OnColorChosen(playerIndex, defaultColor);
+
         menu.SetPlayerIndex(playerIndex);
         menu.SetNameOptions(GetAvailableNames(playerIndex), defaultName);
         menu.SetColorOptions(GetAvailableColors(playerIndex), defaultColor);
@@ -68,6 +72,10 @@ public class PlayerConfigurationUI : UIScreenView
     {
         _chosenColors[playerIndex] = color;
         _playerSetupModel.Players[playerIndex].Color = color;
+        var character = _playerSetupModel.Players[playerIndex].Character;
+        SkinnedMeshRenderer skinnedRenderer = character.GetComponentInChildren<SkinnedMeshRenderer>();
+        Material material = skinnedRenderer.material;
+        material.SetColor("_BaseColor", m_ColorConfig.GetColor(color));
         UpdateAllColorDropdowns();
     }
 
@@ -108,7 +116,8 @@ public class PlayerConfigurationUI : UIScreenView
         => GetAvailableOptions(_colorOptions, _chosenColors, requestingPlayer);
 
 
-    private List<string> GetAvailableOptions(IReadOnlyList<string> allOptions, Dictionary<int, string> chosenMap, int requestingPlayer)
+    private List<string> GetAvailableOptions(IReadOnlyList<string> allOptions, Dictionary<int, string> chosenMap,
+        int requestingPlayer)
     {
         var used = new HashSet<string>(chosenMap.Values);
 
@@ -124,7 +133,7 @@ public class PlayerConfigurationUI : UIScreenView
 
         return available;
     }
-    
+
     private void OnPlayerReady(int playerIndex)
     {
         _readyPlayerIndices.Add(playerIndex);
