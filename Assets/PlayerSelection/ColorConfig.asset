@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NamedColors:
   - <Name>k__BackingField: Red
-    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 0}
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  - <Name>k__BackingField: Green
+    <Color>k__BackingField: {r: 0, g: 1, b: 0, a: 1}
   - <Name>k__BackingField: Black
     <Color>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
