@@ -824,7 +824,7 @@ MonoBehaviour:
   m_OnEmpty:
     m_PersistentCalls:
       m_Calls: []
-  m_EnergyRegenAmount: 0.1
+  m_EnergyRegenAmount: 0.025
   m_EnergyRegenFrequency: 1
 --- !u!114 &832196968613378172
 MonoBehaviour:

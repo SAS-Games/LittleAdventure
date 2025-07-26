@@ -83,3 +83,13 @@ MonoBehaviour:
       stringValue: 
       vector3Value: {x: 0, y: 0, z: 0}
     readOnly: 1
+  - keyName: EnergyCost
+    valueType: 1
+    value:
+      type: 1
+      intValue: 4
+      floatValue: 0.1
+      boolValue: 0
+      stringValue: 
+      vector3Value: {x: 0, y: 0, z: 0}
+    readOnly: 1

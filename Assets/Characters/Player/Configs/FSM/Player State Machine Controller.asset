@@ -1279,6 +1279,11 @@ MonoBehaviour:
     tag: 0
     key: DashExit
     whenToExecute: 16
+  - fullName: EnergyConsumer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    tag: 0
+    key: 
+    whenToExecute: 1
   m_Transitions:
   - {fileID: 789061411378292087}
   - {fileID: -1532102297834133590}
