@@ -7,7 +7,6 @@ using UnityEngine;
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject m_PlayerPrefab;
-    [FieldRequiresChild] protected SpawnPoint[] _spawnPoints;
     public List<GameObject> Players { get; } = new();
     private EventBinding<CharacterDiedEvent> _OnPlayerDiedEventBinding;
     private int _activePlayersCount;
@@ -25,7 +24,12 @@ public class PlayerSpawner : MonoBehaviour
         var player = Instantiate(m_PlayerPrefab);
         player.transform.position = Vector3.one * -1000;
         playerProfile.Character = player;
+        SetColor(playerProfile);
+        var proxyViews = player.GetComponentsInChildren<IProxyView>();
+        foreach (var proxyView in proxyViews)
+            proxyView.ProxyControlID = playerProfile.Index;
         player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
+        player.transform.GetComponent<IProxyView<string>>(Tag.Name)?.OnValueChanged(playerProfile.DisplayName);
         player.SetActive(true);
         Players.Add(player);
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>
@@ -66,6 +70,13 @@ public class PlayerSpawner : MonoBehaviour
         {
             averageThreatLevel = averageThreat
         });
+    }
+
+    private void SetColor(PlayerProfile playerProfile)
+    {
+        SkinnedMeshRenderer skinnedRenderer = playerProfile.Character.GetComponentInChildren<SkinnedMeshRenderer>();
+        Material material = skinnedRenderer.material;
+        material.SetColor("_BaseColor", playerProfile.Color);
     }
 
     private void OnDestroy()

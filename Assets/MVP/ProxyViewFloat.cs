@@ -8,7 +8,7 @@ public class ProxyViewFloat : MonoBehaviour, IProxyView<float>, ServiceLocator.I
     private ReactiveProperty<float> _value = new(0);
     public IReadOnlyReactiveProperty<float> Value => _value;
 
-    int IProxyView<float>.ProxyControlID { get; set; } = -1;
+    int IProxyView.ProxyControlID { get; set; } = -1;
 
     void IProxyView<float>.OnValueChanged(float value)
     {

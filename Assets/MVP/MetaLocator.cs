@@ -136,7 +136,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
                 Debug.LogWarning($"There is more than one IService that implements{typeof(T).Name}");
 
 
-            instance = (T)result[0]; ;
+            instance = (T)result[0];
             return true;
         }
 
@@ -145,15 +145,19 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
 
     public IEnumerable<T> GetAll<T>(Tag tag = Tag.None)
     {
-        return GetAll(typeof(T), tag).Cast<T>();
-    }
+        if (_core as Object != null)
+        {
+            var coreResults = _core.GetAll<T>(tag);
+            if (coreResults != null && coreResults.Any())
+                return coreResults;
+        }
 
-    public IEnumerable<object> GetAll(Type type, Tag tag = Tag.None)
-    {
-        if (_localMeta.TryGetValue(GetKey(type, tag), out var value))
-            return value;
-        else
-            return Array.Empty<object>();
+        var key = GetKey(typeof(T), tag);
+        if (_localMeta.TryGetValue(key, out var result))
+            return result.OfType<T>();
+
+        Debug.LogError($"Required service(s) of type {typeof(T).Name} with tag {tag} not found");
+        return Enumerable.Empty<T>();
     }
 
     private void AddLocalToCore(ICore core)

@@ -28,7 +28,7 @@ public abstract class ProxyViewBinder<T> : MonoBehaviour, MetaLocator.IHandler
         if (matchedProxyView != null)
             matchedProxyView.Value.Subscribe(OnValueChanged).AddTo(_disposable);
         else
-            Debug.LogError($"[ProxyViewBinder<{typeof(T).Name}>] No ProxyView found with tag '{this.GetTag()}' and ControlID '{_proxyControlID}' on '{gameObject.name}'", "ProxyViewBinder");
+            Debug.LogWarning($"[ProxyViewBinder<{typeof(T).Name}>] No ProxyView found with tag '{this.GetTag()}' and ControlID '{_proxyControlID}' on '{gameObject.name}'", "ProxyViewBinder");
     }
 
     public void OnMetaLoaded(MetaLocator metaLocator)

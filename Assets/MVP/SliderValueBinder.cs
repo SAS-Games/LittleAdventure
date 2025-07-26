@@ -1,4 +1,3 @@
-using System;
 using SAS.Utilities.TagSystem;
 using UnityEngine.UI;
 

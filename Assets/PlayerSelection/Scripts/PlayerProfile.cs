@@ -6,8 +6,8 @@ public class PlayerProfile
     public PlayerInput Input { get; private set; }
     public int Index { get; private set; }
     public string Name { get; private set; }
-    public string DisplayName { get; set; }
-    public string Color { get; set; }
+    public string DisplayName { get; set; } = "Arclen"; 
+    public Color Color { get; set; } = Color.white; 
     public GameObject Character { get; set; }
 
     public PlayerProfile(PlayerInput playerInput)

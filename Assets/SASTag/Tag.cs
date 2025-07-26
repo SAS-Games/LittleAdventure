@@ -8,5 +8,6 @@ namespace SAS.Utilities.TagSystem
         Pause = 3,
         Coin = 4,
         Energy = 5,
+        Name = 6
     }
 }

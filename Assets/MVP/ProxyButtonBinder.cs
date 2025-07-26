@@ -35,7 +35,7 @@ public class ProxyButtonBinder : MonoBehaviour, MetaLocator.IHandler
         }
         else
         {
-            Debug.LogError(
+            Debug.LogWarning(
                 $"[ProxyButtonBinder<{name}>] No ProxyButton found with tag '{this.GetTag()}' on '{gameObject.name}'",
                 "ProxyButtonBinder");
         }

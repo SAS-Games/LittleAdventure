@@ -71,11 +71,12 @@ public class PlayerConfigurationUI : UIScreenView
     private void OnColorChosen(int playerIndex, string color)
     {
         _chosenColors[playerIndex] = color;
-        _playerSetupModel.Players[playerIndex].Color = color;
+        Color selectedColor = m_ColorConfig.GetColor(color);
+        _playerSetupModel.Players[playerIndex].Color = selectedColor;
         var character = _playerSetupModel.Players[playerIndex].Character;
         SkinnedMeshRenderer skinnedRenderer = character.GetComponentInChildren<SkinnedMeshRenderer>();
         Material material = skinnedRenderer.material;
-        material.SetColor("_BaseColor", m_ColorConfig.GetColor(color));
+        material.SetColor("_BaseColor", selectedColor);
         UpdateAllColorDropdowns();
     }
 

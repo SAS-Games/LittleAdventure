@@ -1,10 +1,12 @@
-using SAS.Utilities.TagSystem;
 using UniRx;
-using UnityEngine;
 
-public interface IProxyView<T>
-{
+public interface IProxyView
+{ 
     int ProxyControlID { get; set; }
+}
+
+public interface IProxyView<T>: IProxyView
+{
     void OnValueChanged(T value);
     IReadOnlyReactiveProperty<T> Value { get; }
 }

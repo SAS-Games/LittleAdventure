@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
 
@@ -20,6 +21,11 @@ public class ServiceRegistry : MonoBehaviour, ICore
     public bool TryGet<T>(out T instance, Tag tag)
     {
         return _serviceLocator.TryGet<T>(out instance, tag);
+    }
+
+    public IEnumerable<T> GetAll<T>(Tag tag = Tag.None)
+    {
+        return _serviceLocator.GetAll<T>( tag);
     }
 
     private bool TryGet(Type type, out object instance, Tag tag = Tag.None)

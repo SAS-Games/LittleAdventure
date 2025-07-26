@@ -2,21 +2,22 @@ using SAS.Utilities.TagSystem;
 using TMPro;
 using UnityEngine;
 
-public class TextValueBinder : ProxyViewBinder<float>
+public class TextValueBinder<T> : ProxyViewBinder<T>
 {
-    [FieldRequiresChild] private TMP_Text m_TextMesh;
+    [FieldRequiresChild] protected TMP_Text m_TextMesh;
     [SerializeField] private string m_ReplacableText = "{Value}";
 
-    private string _text;
+    private string _originalText;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         this.Initialize();
-        _text = m_TextMesh.text;
+        _originalText = m_TextMesh.text;
     }
 
-    protected override void OnValueChanged(float value)
+    protected override void OnValueChanged(T value)
     {
-        m_TextMesh.text = _text.Replace(m_ReplacableText, value.ToString());
+        string displayValue = value != null ? value.ToString() : string.Empty;
+        m_TextMesh.text = _originalText.Replace(m_ReplacableText, displayValue);
     }
 }
