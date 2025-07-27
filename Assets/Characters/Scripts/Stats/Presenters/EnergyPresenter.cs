@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnergyPresenter : StatPresenter<IEnergyModel>
 {
-    [field: FieldRequiresSelf(tag: Tag.Energy)] protected override IProxyView<float> View { get; }
+    [field: FieldRequiresSelf(tag: Tag.Energy)] protected override IProxyView View { get; }
     [SerializeField] private float m_EnergyRegenAmount = 0.1f;
     [SerializeField] private int m_EnergyRegenFrequency = 1;
     private FrequencyTimer _regenTimer;

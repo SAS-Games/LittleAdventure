@@ -8,18 +8,36 @@ public abstract class StatPresenter<TModel> : MonoBehaviour where TModel : IStat
     [SerializeField] private int m_MaxValue;
     [SerializeField] protected UnityEvent m_OnEmpty;
     [Inject] protected TModel _model;
-    protected abstract IProxyView<float> View { get; }
+    protected abstract IProxyView View { get; }
+    private IProxyView<float> _proxyView;
+    private IRangeProxyView<float> _rangeProxyView;
 
     protected virtual void Awake()
     {
         this.Initialize();
+        
+        /*Todo:
+         Need a better way. may be one can create the base class StatPresenterBase<TModel, TView>
+         where TView can be either IProxyView<float> or IRangeProxyView<float>
+         then there will be two separate classes like StatPresenter<TModel, IProxyView<float>> and 
+         RangeStatePresenter<TModel, IRangeProxyView<float>>
+         */
+        if (View is IRangeProxyView<float> rangeView)
+            _rangeProxyView = rangeView;
+        else if (View is IProxyView<float> proxyView)
+            _proxyView = proxyView;
+        
         _model.Setup(m_MaxValue);
         _model.Current.Subscribe(OnValueChanged).AddTo(this);
+        _model.Max.Subscribe(OnValueChanged).AddTo(this);
     }
 
     protected virtual void OnValueChanged(float current)
     {
-        View?.OnValueChanged(current);
+        if (_rangeProxyView != null)
+            _rangeProxyView.OnValueChanged(current, _model.Max.Value);
+        else
+            _proxyView?.OnValueChanged(current);
         if (current <= 0)
             m_OnEmpty?.Invoke();
     }
