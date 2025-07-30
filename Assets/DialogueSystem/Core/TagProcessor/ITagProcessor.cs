@@ -6,4 +6,5 @@ public interface ITagProcessor
     IEnumerable<string> SupportedKeys { get; }
     bool CanHandle(string tagKey);
     void Process(string tagValue, TagProcessContext context);
+    void Reset();
 }

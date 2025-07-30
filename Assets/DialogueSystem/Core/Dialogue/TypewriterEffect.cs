@@ -97,8 +97,6 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
         }
     }
 
-    //todo: change it to use new input system
-
     public void StartTyping(string text)
     {
         PrepareForNewText(text);
@@ -171,9 +169,6 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
 
         StopCoroutine(_typewriterCoroutine);
         StartCoroutine(SkipWithDelay());
-        //_textBox.maxVisibleCharacters = _textBox.textInfo.characterCount;
-        //_readyForNewText = true;
-        //CompleteTextRevealed?.Invoke();
     }
 
     private IEnumerator SkipWithDelay()

@@ -14,7 +14,7 @@ public class ChoiceView : MonoBehaviour
 
     private void Awake()
     {
-        m_LocalizedStringEvent.OnUpdateString.AddListener(SetText);
+       // m_LocalizedStringEvent.OnUpdateString.AddListener(SetText);
 
     }
 

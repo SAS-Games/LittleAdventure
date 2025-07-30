@@ -1,4 +1,5 @@
 using SAS.Utilities.TagSystem;
+using System.Collections;
 using UnityEngine;
 
 
@@ -12,9 +13,12 @@ public class DialogueTrigger : MonoBehaviour
 
     private bool _triggered = false;
 
-    private void Awake()
+    private IEnumerator Start()
     {
+        _dialogueHandler = GetComponentInChildren<IDialogueHandler>();
         this.Initialize();
+        yield return new WaitForSeconds(1);
+        ShowDialogue();
     }
 
     public void ShowDialogue()

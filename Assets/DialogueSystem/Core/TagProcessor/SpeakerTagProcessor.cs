@@ -10,22 +10,25 @@ public class SpeakerTagProcessor : BaseTagProcessor
         public string id;
         public SpeakerView view;
     }
-    
-    [SerializeField] private List<Speaker> speakers;
-    public override IEnumerable<string> SupportedKeys { get; } = new string[] { "speaker" };
 
+    [SerializeField] private List<Speaker> m_Speakers;
+    private Dictionary<string, SpeakerView> _speakersUi = new Dictionary<string, SpeakerView>();
+
+
+    private void Awake()
+    {
+        foreach (var speaker in m_Speakers)
+            _speakersUi.Add(speaker.id, speaker.view);
+    }
     public override void Process(string tagValue, TagProcessContext context)
     {
-        if (!CanHandle(tagValue))
-            return;
-        
-        foreach (var s in speakers)
+        foreach (var s in m_Speakers)
             s.view.gameObject.SetActive(false);
-        
+
         var parsed = context.MetaParser.Parse(tagValue);
         if (parsed.TryGetValue("id", out var speaker))
         {
-            SpeakerView speakerView = null;//speakerViews[speaker];
+            SpeakerView speakerView = _speakersUi[speaker];
             speakerView.gameObject.SetActive(true);
             foreach (var keyValue in parsed)
             {

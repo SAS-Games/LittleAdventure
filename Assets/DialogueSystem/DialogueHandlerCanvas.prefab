@@ -148,6 +148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3532464232595738143}
   - component: {fileID: 1077585814266566042}
+  - component: {fileID: 5162814665326054837}
   m_Layer: 5
   m_Name: DialogueChoices
   m_TagString: Untagged
@@ -204,6 +205,23 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &5162814665326054837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925031533165583716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d8235e7d9ce9694c8b869c13e5df054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Choices:
+  - {fileID: 7811866755988944226}
+  - {fileID: 1093123971830905734}
+  - {fileID: 1658697813243837422}
+  - {fileID: 2991860942084027317}
 --- !u!1 &2277253147278809730
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,6 +575,7 @@ GameObject:
   - component: {fileID: 4034448263208063312}
   - component: {fileID: 7127081666449838312}
   - component: {fileID: 1961505320690042708}
+  - component: {fileID: 5219887342131705221}
   m_Layer: 5
   m_Name: DialogueText
   m_TagString: Untagged
@@ -722,6 +741,18 @@ MonoBehaviour:
   m_AudioInfos: []
   m_MakePredictable: 0
   m_AutoPlay: 0
+--- !u!114 &5219887342131705221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4293277004330069122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbf6b7c53cbc8c746a74734cd3f79dd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4627647359639425192
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,7 +850,6 @@ MonoBehaviour:
   m_LoadGlobalsJSON: {fileID: 4900000, guid: 3cd9c26b55e3afa4ebbbb2ebd47dca82, type: 3}
   m_DialoguePanel: {fileID: 4627647359639425192}
   m_ContinueIcon: {fileID: 8743069265964213950}
-  m_DialogueText: {fileID: 7127081666449838312}
   m_LayoutAnimator: {fileID: 6699412997712243619}
   m_LocalizedTableName: DialogueTextTable
   m_Auto: 0
@@ -840,11 +870,7 @@ MonoBehaviour:
       m_Action: Next Input
       m_Flags: 0
     m_Flags: 0
-  m_Choices:
-  - {fileID: 7811866755988944226}
-  - {fileID: 1093123971830905734}
-  - {fileID: 1658697813243837422}
-  - {fileID: 2991860942084027317}
+  canContinueToNextLine: 0
 --- !u!95 &6699412997712243619
 Animator:
   serializedVersion: 7
