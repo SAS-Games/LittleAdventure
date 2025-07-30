@@ -116,7 +116,14 @@ public class GameManager : MonoBehaviour, IReady
             cinemachineTargetGroup.AddMember(lookAtTarget, 0.5f, 1f);
         }
 
-        GetComponent<CameraManager>().enabled = m_PlayerSpawner.Players.Count == 1;
+
+        var cameraManager = GetComponent<CameraManager>();
+        if (cameraManager)
+        {
+            cameraManager.enabled = false;
+            await Awaitable.NextFrameAsync();
+            cameraManager.enabled = m_PlayerSpawner.Players.Count == 1;
+        }
     }
 
     private async Task WaitUntilCameraIsReady(CinemachineBrain brain)
