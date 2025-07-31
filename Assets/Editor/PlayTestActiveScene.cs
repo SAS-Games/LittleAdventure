@@ -10,6 +10,7 @@ public static class PlayLoadedScene
 {
     private static readonly string[] prefabPaths =
     {
+        "Assets/Editor/Prefabs/SceneTestPrerequsites.prefab",
         "Assets/Editor/Prefabs/TestBootstrapper.prefab",
         "Assets/Editor/Prefabs/TestSceneGroupLoader.prefab"
     };
