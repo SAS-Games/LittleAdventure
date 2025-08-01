@@ -14,9 +14,7 @@ namespace SAS.DialogueSystem
         [SerializeField] private TextAsset m_LoadGlobalsJSON;
         [SerializeField] private GameObject m_DialoguePanel;
 
-        [SerializeField] private GameObject m_ContinueIcon;
-
-        [SerializeField] private bool m_Auto;
+        [SerializeField] private bool m_AutoContinueToNextLine;
         [SerializeField] private InputAction _nextInputAction;
         [FieldRequiresSelf] private IInkMetaParser _inkMetaParser;
 
@@ -34,6 +32,7 @@ namespace SAS.DialogueSystem
         public Action OnEnterDialogueMode;
         public Action OnExitDialogueMode;
         public Action OnSkipRequested;
+        private bool _canContinueToNextLine = false;
 
         private void Awake()
         {
@@ -58,6 +57,7 @@ namespace SAS.DialogueSystem
 
         public void EnterDialogueMode(TextAsset inkJSON, Animator emoteAnimator)
         {
+            _canContinueToNextLine = true;
             EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent { dialogueHandler = this });
             OnEnterDialogueMode?.Invoke();
 
@@ -89,12 +89,19 @@ namespace SAS.DialogueSystem
 
         public void ContinueStory()
         {
+            if (!m_AutoContinueToNextLine)
+            {
+                if (_canContinueToNextLine)
+                    _canContinueToNextLine = false;
+                else
+                    return;
+            }
+
             if (_currentStory.canContinue)
             {
                 string nextLine = _currentStory.Continue();
                 if (!nextLine.Equals("") || _currentStory.canContinue)
                 {
-                    m_ContinueIcon.SetActive(false);
                     HandleTags(_currentStory.currentTags);
                     OnStoryContinue?.Invoke(nextLine);
                 }
@@ -131,6 +138,7 @@ namespace SAS.DialogueSystem
         private void Skip()
         {
             OnSkipRequested?.Invoke();
+            _canContinueToNextLine = true;
         }
 
         private void OnApplicationQuit()

@@ -20,7 +20,6 @@ namespace SAS.DialogueSystem
 
             _typewriterEffect.CompleteTextRevealed += () =>
             {
-                // m_ContinueIcon.SetActive(true);
                 _dialogueHandler.OnStoryMessageShown?.Invoke(_dialogueHandler._currentStory);
                 if (_dialogueHandler._currentStory.currentChoices.Count == 0)
                     _dialogueHandler.ContinueStory();

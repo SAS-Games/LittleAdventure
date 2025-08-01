@@ -15,7 +15,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private IEnumerator Start()
     {
-        _dialogueHandler = GetComponentInChildren<IDialogueHandler>();
+        _dialogueHandler = GetComponentInChildren<IDialogueHandler>(true);
         this.Initialize();
         yield return new WaitForSeconds(1);
         ShowDialogue();

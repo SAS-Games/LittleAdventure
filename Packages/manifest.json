@@ -4,6 +4,7 @@
     "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.inkle.ink-unity-integration": "https://github.com/inkle/ink-unity-integration.git#upm",
+    "com.interhaptics.core_sdk": "https://github.com/Interhaptics/Unity_CoreSDK.git",
     "com.sas.dev-utilities": "https://github.com/SAS-Games/SASPackage-DevUtilities.git",
     "com.sas.fsmcharactercontroller": "https://github.com/SAS-Games/StateMachineCharacterController.git#master-platformer",
     "com.sas.library.unirx": "https://github.com/SAS-Games/UniRx.git",
