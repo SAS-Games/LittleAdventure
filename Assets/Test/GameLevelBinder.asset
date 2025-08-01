@@ -28,3 +28,9 @@ MonoBehaviour:
       PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms: 
+  - m_Interface: IDialogueHandler, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    m_Type: SAS.DialogueSystem.DialogueHandler, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_Tag: 0
+    m_ExcludedPlatforms: 
