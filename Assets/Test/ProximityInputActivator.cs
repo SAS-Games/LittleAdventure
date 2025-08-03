@@ -1,3 +1,4 @@
+using System;
 using SAS.StateMachineCharacterController;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,8 @@ using Debug = SAS.Debug;
 public abstract class ProximityInputActivator : MonoBehaviour
 {
     [SerializeField] private string m_InputActionName = "Interact";
-    private readonly Dictionary<IInputHandler, InputAction> _activeBindings = new();
-    protected abstract void OnInputPerformed(InputAction.CallbackContext context);
+    private readonly Dictionary<IInputHandler, (InputAction action, Action<InputAction.CallbackContext> callback)> _activeBindings = new();
+    protected abstract void OnInputPerformed(InputAction.CallbackContext context, PlayerInput playerInput);
 
     public virtual void OnPlayerEntered(GameObject gameObject)
     {
@@ -25,9 +26,9 @@ public abstract class ProximityInputActivator : MonoBehaviour
             Debug.LogWarning($"Input action '{m_InputActionName}' not found on player.", nameof(ProximityInputActivator));
             return;
         }
-
-        inputAction.performed += OnInputPerformed;
-        _activeBindings[inputHandler] = inputAction;
+        void Callback(InputAction.CallbackContext context) => OnInputPerformed(context, inputHandler.PlayerInput);
+        inputAction.performed += Callback;
+        _activeBindings[inputHandler] = (inputAction, Callback);
     }
 
     public virtual void OnPlayerExited(GameObject gameObject)
@@ -36,9 +37,9 @@ public abstract class ProximityInputActivator : MonoBehaviour
         if (inputHandler == null || inputHandler.PlayerInput == null)
             return;
 
-        if (_activeBindings.TryGetValue(inputHandler, out var inputAction))
+        if (_activeBindings.TryGetValue(inputHandler, out var binding))
         {
-            inputAction.performed -= OnInputPerformed;
+            binding.action.performed -= binding.callback;
             _activeBindings.Remove(inputHandler);
         }
     }

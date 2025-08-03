@@ -18,9 +18,9 @@ namespace SAS.DialogueSystem
         [SerializeField] private InputAction _nextInputAction;
         [FieldRequiresSelf] private IInkMetaParser _inkMetaParser;
 
-        public Story _currentStory { get; private set; }
+        public Story CurrentStory { get; private set; }
 
-        private DialogueVariables _dialogueVariables;
+        private DialogueGlobalVariables _dialogueGlobalVariables;
         private InkExternalFunctions _inkExternalFunctions;
         public bool DialogueIsPlaying { get; private set; }
 
@@ -41,7 +41,7 @@ namespace SAS.DialogueSystem
             _tagProcessContext = new TagProcessContext(_inkMetaParser);
             _nextInputAction.performed += _ => Skip();
 
-            _dialogueVariables = new DialogueVariables(m_LoadGlobalsJSON);
+            _dialogueGlobalVariables = new DialogueGlobalVariables(m_LoadGlobalsJSON);
             _inkExternalFunctions = new InkExternalFunctions();
         }
 
@@ -61,12 +61,12 @@ namespace SAS.DialogueSystem
             EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent { dialogueHandler = this });
             OnEnterDialogueMode?.Invoke();
 
-            _currentStory = new Story(inkJSON.text);
+            CurrentStory = new Story(inkJSON.text);
             DialogueIsPlaying = true;
             m_DialoguePanel.SetActive(true);
-            _dialogueVariables.StartListening(_currentStory);
+            _dialogueGlobalVariables.StartListening(CurrentStory);
             if (emoteAnimator)
-                _inkExternalFunctions.Bind(_currentStory, emoteAnimator);
+                _inkExternalFunctions.Bind(CurrentStory, emoteAnimator);
             ContinueStory();
         }
 
@@ -74,7 +74,7 @@ namespace SAS.DialogueSystem
         {
             yield return new WaitForSeconds(0.2f);
 
-            _dialogueVariables.StopListening(_currentStory);
+            _dialogueGlobalVariables.StopListening(CurrentStory);
 
             // _inkExternalFunctions.Unbind(_currentStory); ToDo
 
@@ -97,12 +97,12 @@ namespace SAS.DialogueSystem
                     return;
             }
 
-            if (_currentStory.canContinue)
+            if (CurrentStory.canContinue)
             {
-                string nextLine = _currentStory.Continue();
-                if (!nextLine.Equals("") || _currentStory.canContinue)
+                string nextLine = CurrentStory.Continue();
+                if (!nextLine.Equals("") || CurrentStory.canContinue)
                 {
-                    HandleTags(_currentStory.currentTags);
+                    HandleTags(CurrentStory.currentTags);
                     OnStoryContinue?.Invoke(nextLine);
                 }
                 else
@@ -130,7 +130,7 @@ namespace SAS.DialogueSystem
 
         public void MakeChoice(int choiceIndex)
         {
-            _currentStory.ChooseChoiceIndex(choiceIndex);
+            CurrentStory.ChooseChoiceIndex(choiceIndex);
             ContinueStory();
 
         }
@@ -143,7 +143,7 @@ namespace SAS.DialogueSystem
 
         private void OnApplicationQuit()
         {
-            _dialogueVariables?.SaveVariables();
+            _dialogueGlobalVariables?.SaveVariables();
         }
     }
 }

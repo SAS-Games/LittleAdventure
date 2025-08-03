@@ -60,5 +60,7 @@ Strange… the Shard remembers two.
     
 === fring_place===
     This place is the Fringe. It exists between memory and purpose. You must learn to move again...
+    To dash, press {dashButton}.  
+    To attack, press {attackButton}.
 
 -> END

@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Ink.Runtime;
 
-public class DialogueVariables
+public class DialogueGlobalVariables
 {
     public Dictionary<string, Ink.Runtime.Object> GlobalVariables { get; private set; }
 
     private Story _globalVariablesStory;
     private const string SaveVariablesKey = "INK_VARIABLES";
 
-    public DialogueVariables(TextAsset loadGlobalsJSON) 
+    public DialogueGlobalVariables(TextAsset loadGlobalsJSON) 
     {
         // create the story
         _globalVariablesStory = new Story(loadGlobalsJSON.text);

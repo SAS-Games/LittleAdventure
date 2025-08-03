@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(DialogueTrigger))]
 public class DialogueProximityActivator : ProximityInputActivator
 {
-    [SerializeField] private UnityEvent m_OnInteract;
+    [SerializeField] private UnityEvent<PlayerInput> m_OnInteract;
     private DialogueTrigger _dialogueTrigger;
 
     private void Awake()
@@ -13,9 +13,9 @@ public class DialogueProximityActivator : ProximityInputActivator
         _dialogueTrigger = GetComponent<DialogueTrigger>();
     }
 
-    protected override void OnInputPerformed(InputAction.CallbackContext context)
+    protected override void OnInputPerformed(InputAction.CallbackContext context, PlayerInput playerInput)
     {
         _dialogueTrigger.ShowDialogue();
-        m_OnInteract?.Invoke();
+        m_OnInteract?.Invoke(playerInput);
     }
 }

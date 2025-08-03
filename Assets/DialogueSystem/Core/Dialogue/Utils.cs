@@ -4,10 +4,10 @@ namespace SAS.DialogueSystem
 {
     public static class Utils
     {
-        public static Ink.Runtime.Object GetVariableState(this DialogueVariables dialogueVariables, string variableName)
+        public static Ink.Runtime.Object GetVariableState(this DialogueGlobalVariables dialogueGlobalVariables, string variableName)
         {
             Ink.Runtime.Object variableValue = null;
-            dialogueVariables.GlobalVariables.TryGetValue(variableName, out variableValue);
+            dialogueGlobalVariables.GlobalVariables.TryGetValue(variableName, out variableValue);
             if (variableValue == null)
             {
                 Debug.LogWarning("Ink Variable was found to be null: " + variableName);
