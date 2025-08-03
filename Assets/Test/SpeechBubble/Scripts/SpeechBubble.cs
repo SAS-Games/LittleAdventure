@@ -1,49 +1,37 @@
-﻿using SAS.Utilities;
-using System.Collections;
+﻿using SAS.TimerSystem;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SpeechBubble : MonoBehaviour
 {
-    [SerializeField] private Animator m_Animator;
-    [SerializeField] private float m_DisplayDuration = 5;
-
-    private Coroutine _routine;
+    [SerializeField] private float m_DisplayDuration = 5f;
+    [SerializeField] private UnityEvent m_OnShow;
+    [SerializeField] private UnityEvent m_OnHide;
+    
+    private CountdownTimer _countdownTimer;
+    private bool _isShowing;
 
     public void Show()
     {
-        if (m_Animator)
-            m_Animator.SetTrigger("show");
-
+        if (_isShowing)
+            return;
+        _isShowing = true;
+        m_OnShow?.Invoke();
         if (m_DisplayDuration > 0)
-        {
-            _routine = StaticCoroutine.Start(ShowUntilTimeExpire());
-        }
+            ShowUntilTimeExpire();
     }
 
-    public void Hide()
+    public void Unload()
     {
-        if (m_Animator)
-            m_Animator.SetTrigger("hide");
-        else
-            Unload();
+        _countdownTimer?.Dispose();
+        _countdownTimer = null;
+        _isShowing = false;
     }
 
-    //called from animation event as well
-    private void Unload()
+    private void ShowUntilTimeExpire()
     {
-        if (_routine != null)
-        {
-            StaticCoroutine.Stop(_routine);
-            _routine = null;
-        }
-    }
-
-    IEnumerator ShowUntilTimeExpire()
-    {
-        if (m_DisplayDuration > 0)
-        {
-            yield return new WaitForSeconds(m_DisplayDuration);
-            Unload();
-        }
+        _countdownTimer ??= new CountdownTimer(m_DisplayDuration);
+        _countdownTimer.Start();
+        _countdownTimer.OnTimerStop += () => m_OnHide?.Invoke();
     }
 }
