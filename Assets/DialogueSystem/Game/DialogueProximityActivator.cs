@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 public class DialogueProximityActivator : ProximityInputActivator
 {
     [SerializeField] private UnityEvent<PlayerInput> m_OnInteract;
-    [SerializeField] private UnityEvent m_OnDialogueEnd;
     private DialogueTrigger _dialogueTrigger;
 
     private void Awake()

@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 7384771391858244707}
   - component: {fileID: 567984864853128217}
   - component: {fileID: 1355464038859746050}
+  - component: {fileID: 4342618872855799801}
   m_Layer: 0
   m_Name: InteractionProximity
   m_TagString: Untagged
@@ -193,21 +194,9 @@ MonoBehaviour:
   m_OnInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: 
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Talk
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4342618872855799801}
         m_TargetAssemblyTypeName: DialogueInputLabelConnector, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: UpdateControlLabels
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -215,33 +204,6 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Talk
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2810601784566921555}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Talk
-          m_BoolArgument: 1
-        m_CallState: 2
-  m_OnDialogueEnd:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2810601784566921555}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1355464038859746050
@@ -288,3 +250,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4342618872855799801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8348861375034907059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8752dee22443c1244ad7655025ee56bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

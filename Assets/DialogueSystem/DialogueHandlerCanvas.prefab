@@ -868,6 +868,14 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Next Input
       m_Flags: 0
+    - m_Name: 
+      m_Id: 9fca65d2-d08b-4654-9bd4-ab3f148e41c0
+      m_Path: <Gamepad>/buttonWest
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Next Input
+      m_Flags: 0
     m_Flags: 0
 --- !u!95 &6699412997712243619
 Animator:

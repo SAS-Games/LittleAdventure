@@ -1,5 +1,6 @@
 using UnityEngine.InputSystem;
 using System.Linq;
+using UnityEngine.InputSystem.DualShock;
 
 public static class InputDeviceUtils
 {
@@ -17,14 +18,7 @@ public static class InputDeviceUtils
         if (playerInput == null)
             return InputDeviceType.Unknown;
 
-        var device = playerInput.user.pairedDevices.FirstOrDefault();
-        if (device == null)
-            return InputDeviceType.Unknown;
-
-        if (device is Keyboard || device is Mouse)
-            return InputDeviceType.KeyboardMouse;
-
-        if (device is Gamepad gamepad)
+        if (playerInput.GetDevice<Gamepad>() is Gamepad gamepad)
         {
             var desc = gamepad.description;
             var product = desc.product?.ToLower() ?? "";
@@ -39,6 +33,10 @@ public static class InputDeviceUtils
 
             return InputDeviceType.OtherGamepad;
         }
+        else if (playerInput.GetDevice<Keyboard>() is  Keyboard)
+                return InputDeviceType.KeyboardMouse;
+        else if (playerInput.GetDevice<Mouse>() is Mouse )
+                return InputDeviceType.KeyboardMouse;
 
         return InputDeviceType.Unknown;
     }
