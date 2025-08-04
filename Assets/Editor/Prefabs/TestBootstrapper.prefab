@@ -154,14 +154,14 @@ MonoBehaviour:
     DefaultMode: 2
   DefaultBlend:
     Style: 1
-    Time: 2
+    Time: 1
     CustomCurve:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  CustomBlends: {fileID: 0}
+  CustomBlends: {fileID: 11400000, guid: 3546312bba2a4df408b367fef57b42d7, type: 2}
 --- !u!114 &1847961818631773267
 MonoBehaviour:
   m_ObjectHideFlags: 0

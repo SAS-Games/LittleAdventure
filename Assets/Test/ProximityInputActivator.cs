@@ -8,7 +8,7 @@ using Debug = SAS.Debug;
 public abstract class ProximityInputActivator : MonoBehaviour
 {
     [SerializeField] private string m_InputActionName = "Interact";
-    private readonly Dictionary<IInputHandler, (InputAction action, Action<InputAction.CallbackContext> callback)> _activeBindings = new();
+    protected readonly Dictionary<IInputHandler, (InputAction action, Action<InputAction.CallbackContext> callback)> _activeBindings = new();
     protected abstract void OnInputPerformed(InputAction.CallbackContext context, PlayerInput playerInput);
 
     public virtual void OnPlayerEntered(GameObject gameObject)

@@ -768,6 +768,8 @@ GameObject:
   - component: {fileID: 6699412997712243619}
   - component: {fileID: 7972820065310619787}
   - component: {fileID: 3486634075382174250}
+  - component: {fileID: 1916877757377227407}
+  - component: {fileID: 7406577211281165454}
   m_Layer: 5
   m_Name: DialoguePanel
   m_TagString: Untagged
@@ -849,10 +851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LoadGlobalsJSON: {fileID: 4900000, guid: 3cd9c26b55e3afa4ebbbb2ebd47dca82, type: 3}
   m_DialoguePanel: {fileID: 4627647359639425192}
-  m_ContinueIcon: {fileID: 8743069265964213950}
-  m_LayoutAnimator: {fileID: 6699412997712243619}
-  m_LocalizedTableName: DialogueTextTable
-  m_Auto: 0
+  m_AutoContinueToNextLine: 0
   _nextInputAction:
     m_Name: Next Input
     m_Type: 1
@@ -870,7 +869,6 @@ MonoBehaviour:
       m_Action: Next Input
       m_Flags: 0
     m_Flags: 0
-  canContinueToNextLine: 0
 --- !u!95 &6699412997712243619
 Animator:
   serializedVersion: 7
@@ -917,11 +915,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb9c1204e7bf4ea4bbe657083b73b547, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speakers:
-  - id: Left
+  <SupportedKeys>k__BackingField:
+  - speaker
+  m_Speakers:
+  - id: left
     view: {fileID: 3957348744000455243}
-  - id: Right
+  - id: npc
     view: {fileID: 7283821106171472584}
+--- !u!114 &1916877757377227407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4627647359639425192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b727af48ea324798bf547216baab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <SupportedKeys>k__BackingField: []
+--- !u!114 &7406577211281165454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4627647359639425192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451dc05b14801c44dbf6294c3b1763c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ContinueIcon: {fileID: 8743069265964213950}
 --- !u!1 &5011532392078521750
 GameObject:
   m_ObjectHideFlags: 0
