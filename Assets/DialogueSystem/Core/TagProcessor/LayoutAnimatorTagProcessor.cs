@@ -8,7 +8,6 @@ namespace SAS.DialogueSystem
         public string LayoutAnim { get; private set; } = string.Empty;
 
         [FieldRequiresSelf] private Animator m_LayoutAnimator;
-        [FieldRequiresSelf] private LayoutAnimatorTagProcessor _tagProcessor;
         [FieldRequiresParent] private DialogueHandler _dialogueHandler;
 
         void Awake()

@@ -1,3 +1,4 @@
+using SAS.Utilities.TagSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ public class SpeakerView : MonoBehaviour
     [SerializeField] private Animator m_PortraitAnimator;
     [SerializeField] private Image m_Image;
     [SerializeField] private ImageKeyMapConfig m_ImageKeyMapConfig;
+    [FieldRequiresSelf] private IAnimatorProcessor _animatorProcessor;
 
     public void SetName(string name)
     {
@@ -29,7 +31,10 @@ public class SpeakerView : MonoBehaviour
     public void SetAnimationState(string stateName)
     {
         if (m_PortraitAnimator && !string.IsNullOrEmpty(stateName))
+        {
             m_PortraitAnimator.Play(stateName);
+            _animatorProcessor?.Process(stateName);
+        }
     }
 
     internal void SetDisplayValues(string speakerTag, string animationState)
