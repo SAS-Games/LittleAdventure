@@ -1,6 +1,4 @@
 using UnityEngine.InputSystem;
-using System.Linq;
-using UnityEngine.InputSystem.DualShock;
 
 public static class InputDeviceUtils
 {
@@ -13,7 +11,7 @@ public static class InputDeviceUtils
         Unknown
     }
 
-    public static InputDeviceType GetActiveDevice(PlayerInput playerInput)
+    public static InputDeviceType GetActiveDevice(this PlayerInput playerInput)
     {
         if (playerInput == null)
             return InputDeviceType.Unknown;
