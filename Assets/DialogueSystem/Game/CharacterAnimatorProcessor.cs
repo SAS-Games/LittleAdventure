@@ -1,4 +1,5 @@
 using SAS.Utilities.TagSystem;
+using System;
 using System.Linq;
 using UniRx;
 using UnityEngine;
@@ -6,13 +7,19 @@ using Debug = SAS.Debug;
 
 public class CharacterAnimatorProcessor : MonoBehaviour
 {
-    [SerializeField] private string m_Tag;
     [Inject] private IDialogueHandler _dialogueHandler;
+    [SerializeField] private string m_Tag;
     [SerializeField] private Animator m_Animator;
+    private IDisposable _disposable;
 
     void Start()
     {
-        var animatorProcessors = m_Animator.GetComponentsInChildren<IAnimatorProcessor>(true);
+        this.Initialize();
+    }
+
+    public void Register()
+    {
+        var animatorProcessors = (_dialogueHandler as Component).GetComponentsInChildren<IAnimatorProcessor>(true);
         var animatorProcessor = animatorProcessors.FirstOrDefault(p => p.Tag == m_Tag);
 
         if (animatorProcessor == null)
@@ -23,12 +30,20 @@ public class CharacterAnimatorProcessor : MonoBehaviour
             return;
         }
 
-        animatorProcessor.AnimatorState
-            .Subscribe(state =>
-            {
-                if (m_Animator != null)
-                    m_Animator.Play(state);
-            })
-            .AddTo(this);
+        if (_disposable == null)
+        {
+           _disposable = animatorProcessor.AnimatorState
+                .Subscribe(state =>
+                {
+                    if (m_Animator != null)
+                        m_Animator.Play(state);
+                })
+                .AddTo(this);
+        }
+    }
+
+    public void Unregister() { 
+        _disposable?.Dispose();
+        _disposable = null;
     }
 }
