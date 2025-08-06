@@ -1134,6 +1134,16 @@ MonoBehaviour:
     tag: 0
     key: VerticalPull
     whenToExecute: 4
+  - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    tag: 0
+    key: Idle
+    whenToExecute: 1
+  - fullName: SAS.StateMachineCharacterController.StopMovement, AssemblyStateMachineCharacterController,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    tag: 0
+    key: 
+    whenToExecute: 1
   m_Transitions:
   - {fileID: 7090742331724709620}
 --- !u!114 &6064152050340346171

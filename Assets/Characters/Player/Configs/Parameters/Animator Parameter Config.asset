@@ -106,4 +106,13 @@ MonoBehaviour:
       m_FloatValue: 0
     awaitableStateTag: 
     startDelay: 0
+  - key: Idle
+    parameters:
+    - m_Name: MoveSpeed
+      m_Type: 1
+      m_BoolValue: 1
+      m_IntValue: 0
+      m_FloatValue: 0
+    awaitableStateTag: 
+    startDelay: 0
   m_Description: 
