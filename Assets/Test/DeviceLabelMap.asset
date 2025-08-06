@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a18d01284f79be9419484383e8aa0475, type: 3}
-  m_Name: NewDeviceLabelMap
+  m_Name: DeviceLabelMap
   m_EditorClassIdentifier: 
   m_StringOptions: {fileID: 11400000, guid: 0f6eb8eb544901146983bff55af916c7, type: 2}
   m_Entries:
   - <Key>k__BackingField: Interact
-    m_DefaultLabel: '[E] Talk'
+    m_DefaultLabel: '[E]'
     m_DeviceOverrides:
     - Device: 3
-      Label: '[A] Talk'
+      Label: '[A]'
     - Device: 2
-      Label: '[X] Talk'
+      Label: '[X]'

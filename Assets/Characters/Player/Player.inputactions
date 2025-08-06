@@ -345,6 +345,17 @@
                 },
                 {
                     "name": "",
+                    "id": "6a209304-cb25-449a-ad9d-b38cb981e319",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "b47e9d98-99cf-4629-84b6-01a89d650273",
                     "path": "<Keyboard>/z",
                     "interactions": "",

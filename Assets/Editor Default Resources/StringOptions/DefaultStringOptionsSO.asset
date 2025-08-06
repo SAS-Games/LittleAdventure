@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b410fbaff14c197479bdcc48d63707de, type: 3}
   m_Name: DefaultStringOptionsSO
   m_EditorClassIdentifier: 
-  <Values>k__BackingField: []
+  <Values>k__BackingField:
+  - Ab
+  - Cd

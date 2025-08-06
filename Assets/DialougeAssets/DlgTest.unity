@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &155739568 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+  m_PrefabInstance: {fileID: 208797954}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c16ebee80f1d742abea5885012c48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &208797954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -171,6 +182,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6082733856502706780, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_text
+      value: '{Value} Talk'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKey
+      value: Interact
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKey1
+      value: Cd
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKeyTest
+      value: Interact1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKeyTest1
+      value: Interact2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_StringOptions
+      value: 
+      objectReference: {fileID: 11400000, guid: 0f6eb8eb544901146983bff55af916c7, type: 2}
     - target: {fileID: 9187062788838591115, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
@@ -352,6 +387,7 @@ GameObject:
   - component: {fileID: 999613537}
   - component: {fileID: 999613536}
   - component: {fileID: 999613535}
+  - component: {fileID: 999613539}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -449,6 +485,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &999613539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999613534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a6974ee818cb884e89602d1da784076, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1156797342 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8888465880518418946, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
@@ -737,7 +785,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -762,7 +810,7 @@ PrefabInstance:
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 1958110296}
+      objectReference: {fileID: 155739568}
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -785,7 +833,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: SetPlayerInput
+      value: UpdateControlLabel
       objectReference: {fileID: 0}
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -797,7 +845,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: InputSetterTestDlg, Assembly-CSharp
+      value: PlayerInputLabelPresenter, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1355464038859746050, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnTriggerEnterAction.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
