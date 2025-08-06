@@ -7,9 +7,11 @@ public class PlatformMovementDistributor : MonoBehaviour
 {
     private readonly HashSet<IMovementVectorHandler> _characters = new();
     private Vector3 _lastPosition;
+    private Transform _transform;
 
     private void Awake()
     {
+        _transform = transform;
         _lastPosition = transform.position;
         enabled = false;
     }
@@ -36,8 +38,8 @@ public class PlatformMovementDistributor : MonoBehaviour
 
     private void Update()
     {
-        Vector3 platformVelocity = (transform.position - _lastPosition) / Time.deltaTime;
-        _lastPosition = transform.position;
+        Vector3 platformVelocity = (_transform.position - _lastPosition) / Time.deltaTime;
+        _lastPosition = _transform.position;
 
         foreach (var handler in _characters)
             handler.MovementVector += platformVelocity;
