@@ -10,8 +10,9 @@ namespace SAS.DialogueSystem
 {
     public class DialogueHandler : MonoBehaviour, IDialogueHandler
     {
-        [Header("Load Globals JSON")]
-        [SerializeField] private TextAsset m_LoadGlobalsJSON;
+        [Header("Load Globals JSON")] [SerializeField]
+        private TextAsset m_LoadGlobalsJSON;
+
         [SerializeField] private GameObject m_DialoguePanel;
 
         [SerializeField] private bool m_AutoContinueToNextLine;
@@ -21,7 +22,8 @@ namespace SAS.DialogueSystem
         public Story CurrentStory { get; private set; }
 
         private DialogueGlobalVariables _dialogueGlobalVariables;
-        private InkExternalFunctions _inkExternalFunctions;
+        private InkExternalMethodRegistry _inkExternalMethodRegistry;
+        public InkExternalMethodRegistry InkExternalMethodRegistry => _inkExternalMethodRegistry;
         public bool DialogueIsPlaying { get; private set; }
 
         private ITagProcessor[] _tagProcessors;
@@ -42,7 +44,7 @@ namespace SAS.DialogueSystem
             _nextInputAction.performed += _ => Skip();
 
             _dialogueGlobalVariables = new DialogueGlobalVariables(m_LoadGlobalsJSON);
-            _inkExternalFunctions = new InkExternalFunctions();
+            _inkExternalMethodRegistry = new InkExternalMethodRegistry();
         }
 
         private void OnEnable() => _nextInputAction.Enable();
@@ -55,7 +57,7 @@ namespace SAS.DialogueSystem
             m_DialoguePanel.SetActive(false);
         }
 
-        public void EnterDialogueMode(TextAsset inkJSON, Animator emoteAnimator)
+        public void EnterDialogueMode(TextAsset inkJSON)
         {
             _canContinueToNextLine = true;
             EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent { dialogueHandler = this });
@@ -65,8 +67,7 @@ namespace SAS.DialogueSystem
             DialogueIsPlaying = true;
             m_DialoguePanel.SetActive(true);
             _dialogueGlobalVariables.StartListening(CurrentStory);
-            if (emoteAnimator)
-                _inkExternalFunctions.Bind(CurrentStory, emoteAnimator);
+            _inkExternalMethodRegistry.Bind(CurrentStory);
             ContinueStory();
         }
 
@@ -75,8 +76,7 @@ namespace SAS.DialogueSystem
             yield return new WaitForSeconds(0.2f);
 
             _dialogueGlobalVariables.StopListening(CurrentStory);
-
-            // _inkExternalFunctions.Unbind(_currentStory); ToDo
+            _inkExternalMethodRegistry.Unbind(CurrentStory);
 
             DialogueIsPlaying = false;
             m_DialoguePanel.SetActive(false);
@@ -132,7 +132,6 @@ namespace SAS.DialogueSystem
         {
             CurrentStory.ChooseChoiceIndex(choiceIndex);
             ContinueStory();
-
         }
 
         private void Skip()

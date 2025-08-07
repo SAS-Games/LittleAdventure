@@ -3,14 +3,16 @@ using UnityEngine;
 
 public interface IDialogueHandler : IBindable
 {
-    void EnterDialogueMode(TextAsset inkJSON, Animator emoteAnimator);
+    void EnterDialogueMode(TextAsset inkJSON);
     bool DialogueIsPlaying { get; }
+    InkExternalMethodRegistry InkExternalMethodRegistry { get; }
 }
 
 public struct DialogueStartEvent : IEvent
 {
     public IDialogueHandler dialogueHandler;
 }
+
 public struct DialogueEndEvent : IEvent
 {
     public IDialogueHandler dialogueHandler;
