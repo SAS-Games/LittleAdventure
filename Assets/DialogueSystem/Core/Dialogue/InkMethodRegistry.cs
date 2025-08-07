@@ -6,44 +6,54 @@ public delegate object InkExternalMethod(params object[] args);
 
 public class InkExternalMethodRegistry
 {
-    private readonly Dictionary<string, InkExternalMethod> _methods = new();
+    private readonly Dictionary<string, Delegate> _methods = new();
 
-    public void Register(string methodName, InkExternalMethod method)
+    public void Register(string methodName, Delegate method)
     {
         _methods[methodName] = method;
     }
-
-    public void Register<T>(string methodName, Func<T> func)
-    {
-        Register(methodName, Wrap(func));
-    }
-
-    public void Register<T>(string methodName, Action<T> action)
-    {
-        Register(methodName, Wrap(action));
-    }
-
-    public void Register(string methodName, Action action)
-    {
-        Register(methodName, Wrap(action));
-    }
-
+    
     public void Bind(Story story)
     {
         foreach (var pair in _methods)
         {
-            story.BindExternalFunction(pair.Key, (object[] args) =>
+            var methodName = pair.Key;
+            var method = pair.Value;
+            var methodInfo = method.Method;
+            int paramCount = methodInfo.GetParameters().Length;
+
+            try
             {
-                try
+                switch (paramCount)
                 {
-                    return pair.Value(args);
+                    case 0:
+                        story.BindExternalFunction(methodName, () => method.DynamicInvoke());
+                        break;
+
+                    case 1:
+                        story.BindExternalFunction(methodName, (object arg1) => method.DynamicInvoke(arg1));
+                        break;
+
+                    case 2:
+                        story.BindExternalFunction(methodName,
+                            (object arg1, object arg2) => method.DynamicInvoke(arg1, arg2));
+                        break;
+                    case 3:
+                        story.BindExternalFunction(methodName,
+                            (object arg1, object arg2, object arg3) =>
+                                method.DynamicInvoke(arg1, arg2, arg3));
+                        break;
+                    case 4:
+                        story.BindExternalFunction(methodName,
+                            (object arg1, object arg2, object arg3, object arg4) =>
+                                method.DynamicInvoke(arg1, arg2, arg3, arg4));
+                        break;
                 }
-                catch (Exception e)
-                {
-                    UnityEngine.Debug.LogError($"Error invoking ink method '{pair.Key}': {e}");
-                    return null;
-                }
-            });
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError($"Error binding method '{methodName}': {e}");
+            }
         }
     }
 
@@ -54,26 +64,4 @@ public class InkExternalMethodRegistry
             story.UnbindExternalFunction(pair.Key);
         }
     }
-
-    // Wrappers
-    public static InkExternalMethod Wrap(Func<object> func)
-        => (args) => func();
-
-    public static InkExternalMethod Wrap<T>(Func<T> func)
-        => (args) => func();
-
-    public static InkExternalMethod Wrap<T1, TResult>(Func<T1, TResult> func)
-        => (args) => func((T1)args[0]);
-
-    public static InkExternalMethod Wrap<T1, T2, TResult>(Func<T1, T2, TResult> func)
-        => (args) => func((T1)args[0], (T2)args[1]);
-
-    public static InkExternalMethod Wrap(Action action)
-        => (args) => { action(); return null; };
-
-    public static InkExternalMethod Wrap<T>(Action<T> action)
-        => (args) => { action((T)args[0]); return null; };
-
-    public static InkExternalMethod Wrap<T1, T2>(Action<T1, T2> action)
-        => (args) => { action((T1)args[0], (T2)args[1]); return null; };
 }
