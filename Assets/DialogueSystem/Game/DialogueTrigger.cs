@@ -53,11 +53,11 @@ public class DialogueTrigger : MonoBehaviour
             if (!_triggered)
             {
                 _triggered = true;
-                _dialogueHandler.EnterDialogueMode(inkJSON, null);
+                _dialogueHandler.EnterDialogueMode(inkJSON);
             }
         }
         else
-            _dialogueHandler.EnterDialogueMode(inkJSON, null);
+            _dialogueHandler.EnterDialogueMode(inkJSON);
     }
 
     private void OnDialogueStart(DialogueStartEvent dialogueStartEvent)
