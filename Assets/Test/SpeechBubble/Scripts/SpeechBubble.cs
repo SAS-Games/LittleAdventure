@@ -7,7 +7,7 @@ public class SpeechBubble : MonoBehaviour
     [SerializeField] private float m_DisplayDuration = 5f;
     [SerializeField] private UnityEvent m_OnShow;
     [SerializeField] private UnityEvent m_OnHide;
-    
+
     private CountdownTimer _countdownTimer;
     private bool _isShowing;
 
@@ -33,5 +33,11 @@ public class SpeechBubble : MonoBehaviour
         _countdownTimer ??= new CountdownTimer(m_DisplayDuration);
         _countdownTimer.Start();
         _countdownTimer.OnTimerStop += () => m_OnHide?.Invoke();
+    }
+
+    public void Hide()
+    {
+        if (_countdownTimer.IsRunning)
+            _countdownTimer.Stop();
     }
 }

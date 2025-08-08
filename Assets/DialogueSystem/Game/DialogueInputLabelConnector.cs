@@ -13,7 +13,7 @@ public class DialogueInputLabelConnector : MonoBehaviour
 
     public void UpdateControlLabels(PlayerInput playerInput)
     {
-        var story = (_dialogueHandler as DialogueHandler).CurrentStory;
+        var story = ((DialogueHandler)_dialogueHandler).CurrentStory;
         InkInputLabelSetter.SetControlLabelsFromPlayerInput(playerInput, story);
     }
 }

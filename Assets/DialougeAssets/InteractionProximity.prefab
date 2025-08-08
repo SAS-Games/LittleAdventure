@@ -130,13 +130,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3808804558232930205}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.38268343, z: -0, w: -0.92387956}
-  m_LocalPosition: {x: 1.5, y: 0, z: -1.5}
+  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: -1.5, y: 0, z: -1.5}
   m_LocalScale: {x: 1.5000001, y: 1.5, z: 1.5000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3326401912638268821}
-  m_LocalEulerAnglesHint: {x: 0, y: 135, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!1 &8348861375034907059
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,7 +150,6 @@ GameObject:
   - component: {fileID: 7384771391858244707}
   - component: {fileID: 567984864853128217}
   - component: {fileID: 1355464038859746050}
-  - component: {fileID: 4342618872855799801}
   - component: {fileID: 1648742075505565504}
   - component: {fileID: 4531910029794102220}
   m_Layer: 0
@@ -176,6 +175,7 @@ Transform:
   - {fileID: 27598929343902495}
   - {fileID: 9218948611460296970}
   - {fileID: 2708487938268654964}
+  - {fileID: 5169000492048518687}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &5031856692652233928
@@ -197,7 +197,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7384771391858244707
 MonoBehaviour:
@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e99ce7fe2334e42a1b4b134602d1f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inkJSON: {fileID: 4900000, guid: 0adcdf2fcefd1ba418be8fc96f00fd49, type: 3}
+  inkJSON: {fileID: 0}
   m_AutoStart: 0
   m_TriggerOncePerSession: 1
   m_OnDialogueStart:
@@ -229,6 +229,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1648742075505565504}
+        m_TargetAssemblyTypeName: UpdatePlayerStateOnDialogueInteraction, Assembly-CSharp
+        m_MethodName: OnDialogueStart
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   m_OnDialogueEnd:
     m_PersistentCalls:
       m_Calls:
@@ -236,6 +248,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1648742075505565504}
+        m_TargetAssemblyTypeName: UpdatePlayerStateOnDialogueInteraction, Assembly-CSharp
+        m_MethodName: OnDialogueEnd
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -260,16 +284,16 @@ MonoBehaviour:
   m_OnInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4342618872855799801}
-        m_TargetAssemblyTypeName: DialogueInputLabelConnector, Assembly-CSharp
-        m_MethodName: UpdateControlLabels
-        m_Mode: 0
+      - m_Target: {fileID: 3739693328889554526}
+        m_TargetAssemblyTypeName: SpeechBubble, Assembly-CSharp
+        m_MethodName: Hide
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Talk
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1355464038859746050
@@ -301,6 +325,42 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3739693328889554526}
+        m_TargetAssemblyTypeName: SpeechBubble, Assembly-CSharp
+        m_MethodName: Show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2914218821730261418}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2695342364776279933}
+        m_TargetAssemblyTypeName: PlayerInputLabelPresenter, Assembly-CSharp
+        m_MethodName: UpdateControlLabel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   m_OnTriggerExitAction:
     m_PersistentCalls:
       m_Calls:
@@ -316,18 +376,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4342618872855799801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8348861375034907059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8752dee22443c1244ad7655025ee56bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1648742075505565504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,3 +414,126 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d736fd2454682ac48ac8c0622913d1bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &5241103532188681308
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3326401912638268821}
+    m_Modifications:
+    - target: {fileID: 309633228405838073, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_Name
+      value: PigChef
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6082733856502706780, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_text
+      value: '{Value}  Talk'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKey
+      value: Interact
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKey1
+      value: Cd
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKeyTest
+      value: Interact1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_TextKeyTest1
+      value: Interact2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_StringOptions
+      value: 
+      objectReference: {fileID: 11400000, guid: 0f6eb8eb544901146983bff55af916c7, type: 2}
+    - target: {fileID: 9187062788838591115, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+--- !u!114 &2695342364776279933 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+  m_PrefabInstance: {fileID: 5241103532188681308}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c16ebee80f1d742abea5885012c48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2914218821730261418 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6975303350813957622, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+  m_PrefabInstance: {fileID: 5241103532188681308}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceea56a14d5110944b84afe0a690a7df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3739693328889554526 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8888465880518418946, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+  m_PrefabInstance: {fileID: 5241103532188681308}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a2a541b33d3b53439c40c26c4efd19c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &5169000492048518687 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1083073290189785667, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+  m_PrefabInstance: {fileID: 5241103532188681308}
+  m_PrefabAsset: {fileID: 0}
