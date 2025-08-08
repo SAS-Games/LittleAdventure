@@ -1,3 +1,4 @@
+using System;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,8 +8,7 @@ public class DialogueTrigger : MonoBehaviour
 {
     [Inject] private IDialogueHandler _dialogueHandler;
 
-    [Header("Ink JSON")]
-    [SerializeField] private TextAsset inkJSON;
+    [Header("Ink JSON")] [SerializeField] private TextAsset inkJSON;
     [SerializeField] private bool m_AutoStart = false;
     [SerializeField] private bool m_TriggerOncePerSession = true;
     [SerializeField] private UnityEvent m_OnDialogueStart;
@@ -23,6 +23,7 @@ public class DialogueTrigger : MonoBehaviour
         _dialogueStartEventBinding = new EventBinding<DialogueStartEvent>(OnDialogueStart);
         _dialogueEndEventBinding = new EventBinding<DialogueEndEvent>(OnDialogueEnd);
     }
+
     private void OnEnable()
     {
         EventBus<DialogueStartEvent>.Register(_dialogueStartEventBinding);
@@ -45,6 +46,7 @@ public class DialogueTrigger : MonoBehaviour
 
     public void ShowDialogue()
     {
+        _dialogueHandler.InkExternalMethodRegistry.Register<string, int, int>(print_my_name);
         if (_dialogueHandler.DialogueIsPlaying)
             return;
 
@@ -68,5 +70,10 @@ public class DialogueTrigger : MonoBehaviour
     private void OnDialogueEnd(DialogueEndEvent dialogueEndEvent)
     {
         m_OnDialogueEnd?.Invoke();
+    }
+
+    void print_my_name(string newName, int arg1, int arg2)
+    {
+        Debug.Log($"my name is  + {newName} {arg1} {arg2}");
     }
 }
