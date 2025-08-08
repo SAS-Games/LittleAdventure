@@ -12,7 +12,29 @@ public class InkExternalMethodRegistry
     {
         _methods[methodName] = method;
     }
-    
+
+    public void Register(Delegate method)
+    {
+        string methodName = method.Method.Name;
+        Register(methodName, method);
+    }
+
+    public void Register<TResult>(Func<TResult> method) => Register(method.Method.Name, method);
+    public void Register<T1, TResult>(Func<T1, TResult> method) => Register(method.Method.Name, method);
+    public void Register<T1, T2, TResult>(Func<T1, T2, TResult> method) => Register(method.Method.Name, method);
+    public void Register<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> method) => Register(method.Method.Name, method);
+    public void Register<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> method) => Register(method.Method.Name, method);
+
+    public void Register<T1>(Action<T1> method) => Register(method.Method.Name, method);
+    public void Register<T1, T2>(Action<T1, T2> method) => Register(method.Method.Name, method);
+    public void Register<T1, T2, T3>(Action<T1, T2, T3> method) => Register(method.Method.Name, method);
+    public void Register<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method) => Register(method.Method.Name, method);
+
+    public void Register<T1>(string inkFunction, Action<T1> method) => _methods[inkFunction] = method;
+    public void Register<T1, T2>(string inkFunction, Action<T1, T2> method) =>_methods[inkFunction] = method;
+    public void Register<T1, T2, T3>(string inkFunction, Action<T1, T2, T3> method) => _methods[inkFunction] = method;
+    public void Register<T1, T2, T3, T4>(string inkFunction, Action<T1, T2, T3, T4> method) => _methods[inkFunction] = method;
+
     public void Bind(Story story)
     {
         foreach (var pair in _methods)
