@@ -2767,6 +2767,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToolTip_Bubble
       objectReference: {fileID: 0}
+    - target: {fileID: 5744565400893347455, guid: d5736b3144fde7d498872bafe1de8692, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6351292108816486612, guid: d5736b3144fde7d498872bafe1de8692, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
