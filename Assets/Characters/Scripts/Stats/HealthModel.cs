@@ -34,8 +34,4 @@ public class HealthModel : StatBase, IHealthModel
         base.Reset();
         _isDead = false;
     }
-
-    public void OnInstanceCreated()
-    {
-    }
 }

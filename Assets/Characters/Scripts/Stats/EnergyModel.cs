@@ -9,8 +9,4 @@ public class EnergyModel : StatBase, IEnergyModel
     public EnergyModel(IContextBinder _)
     {
     }
-
-    public void OnInstanceCreated()
-    {
-    }
 }
