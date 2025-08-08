@@ -60,7 +60,7 @@ Would you like to buy the tonic for {cost} coins?
     (You feel healthier!)
     -> END
 + [No, I’ll pass]
-    Very well.
+    Very well, maybe another time.
     -> END
 
 === OFFER_BOTH ===
@@ -81,7 +81,7 @@ Would you both like to buy the tonic for {cost} coins each?
     ({Player1_name} feels healthier!)
     -> END
 + [No, I’ll pass]
-    Very well.
+    Very well, maybe another time.
     -> END
 
 === OFFER_P2_ONLY ===
@@ -91,5 +91,5 @@ Would you both like to buy the tonic for {cost} coins each?
     ({Player2_name} feels healthier!)
     -> END
 + [No, I’ll pass]
-    Very well.
+    Very well, maybe another time.
     -> END
