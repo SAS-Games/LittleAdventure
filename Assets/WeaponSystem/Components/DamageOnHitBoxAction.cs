@@ -8,6 +8,8 @@ namespace SAS.WeaponSystem.Components
         private ActionHitBox _hitBox;
         private GameObject _root;
         private HashSet<GameObject> _hitObjects = new();
+        private IDamageModifier _damageModifier;
+
 
         private void HandleDetectCollider(List<(Collider collider, Vector3 point)> colliders)
         {
@@ -20,17 +22,29 @@ namespace SAS.WeaponSystem.Components
 
                 if (collider.TryGetComponent(out IDamageable damageable))
                 {
-                    Debug.Log($"Damage: {CurrentAttackData.Amount}");
-                    damageable.Damage(new DamageInfo(CurrentAttackData.Amount, _root));
+                    var damageValue = ApplyUpgradeModifiers(CurrentAttackData.Amount);
+                    damageable.Damage(new DamageInfo(damageValue, _root));
                     _hitObjects.Add(collider.gameObject);
                 }
             }
+        }
+
+        private float ApplyUpgradeModifiers(float baseDamage)
+        {
+            if (_damageModifier != null)
+            {
+                float multiplier = _damageModifier.GetDamageMultiplier();
+                return baseDamage * multiplier;
+            }
+
+            return baseDamage;
         }
 
         public override void Init()
         {
             base.Init();
             _hitBox = GetComponent<ActionHitBox>();
+            _damageModifier = GetComponentInParent<IDamageModifier>();
             _root = this.transform.root.gameObject;
         }
 
