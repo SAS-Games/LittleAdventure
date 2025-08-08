@@ -8,32 +8,37 @@ public class InkExternalMethodRegistry
 {
     private readonly Dictionary<string, Delegate> _methods = new();
 
-    public void Register(string methodName, Delegate method)
+    private void RegisterInternal(string name, Delegate method)
     {
-        _methods[methodName] = method;
+        _methods[name] = method;
     }
 
-    public void Register(Delegate method)
-    {
-        string methodName = method.Method.Name;
-        Register(methodName, method);
-    }
+    public void Register(Delegate method) => RegisterInternal(method.Method.Name, method);
+    public void Register(string methodName, Delegate method) => RegisterInternal(methodName, method);
 
-    public void Register<TResult>(Func<TResult> method) => Register(method.Method.Name, method);
-    public void Register<T1, TResult>(Func<T1, TResult> method) => Register(method.Method.Name, method);
-    public void Register<T1, T2, TResult>(Func<T1, T2, TResult> method) => Register(method.Method.Name, method);
-    public void Register<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> method) => Register(method.Method.Name, method);
-    public void Register<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> method) => Register(method.Method.Name, method);
+    public void Register<TResult>(Func<TResult> method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1, TResult>(Func<T1, TResult> method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1, T2, TResult>(Func<T1, T2, TResult> method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1, T2, T3, T4, TResult>(Func<T1, T2, T3, T4, TResult> method) => RegisterInternal(method.Method.Name, method);
 
-    public void Register<T1>(Action<T1> method) => Register(method.Method.Name, method);
-    public void Register<T1, T2>(Action<T1, T2> method) => Register(method.Method.Name, method);
-    public void Register<T1, T2, T3>(Action<T1, T2, T3> method) => Register(method.Method.Name, method);
-    public void Register<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method) => Register(method.Method.Name, method);
+    public void Register<TResult>(string inkFunction, Func<TResult> method) => RegisterInternal(inkFunction, method);
+    public void Register<T1, TResult>(string inkFunction, Func<T1, TResult> method) => RegisterInternal(inkFunction, method);
+    public void Register<T1, T2, TResult>(string inkFunction, Func<T1, T2, TResult> method) => RegisterInternal(inkFunction, method);
+    public void Register<T1, T2, T3, TResult>(string inkFunction, Func<T1, T2, T3, TResult> method) => RegisterInternal(inkFunction, method);
+    public void Register<T1, T2, T3, T4, TResult>(string inkFunction, Func<T1, T2, T3, T4, TResult> method) => RegisterInternal(inkFunction, method);
 
-    public void Register<T1>(string inkFunction, Action<T1> method) => _methods[inkFunction] = method;
-    public void Register<T1, T2>(string inkFunction, Action<T1, T2> method) =>_methods[inkFunction] = method;
-    public void Register<T1, T2, T3>(string inkFunction, Action<T1, T2, T3> method) => _methods[inkFunction] = method;
-    public void Register<T1, T2, T3, T4>(string inkFunction, Action<T1, T2, T3, T4> method) => _methods[inkFunction] = method;
+    public void Register(Action method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1>(Action<T1> method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1, T2>(Action<T1, T2> method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1, T2, T3>(Action<T1, T2, T3> method) => RegisterInternal(method.Method.Name, method);
+    public void Register<T1, T2, T3, T4>(Action<T1, T2, T3, T4> method) => RegisterInternal(method.Method.Name, method);
+
+    public void Register(string inkFunction, Action method) => RegisterInternal(inkFunction, method);
+    public void Register<T1>(string inkFunction, Action<T1> method) => RegisterInternal(inkFunction, method);
+    public void Register<T1, T2>(string inkFunction, Action<T1, T2> method) => RegisterInternal(inkFunction, method);
+    public void Register<T1, T2, T3>(string inkFunction, Action<T1, T2, T3> method) => RegisterInternal(inkFunction, method);
+    public void Register<T1, T2, T3, T4>(string inkFunction, Action<T1, T2, T3, T4> method) => RegisterInternal(inkFunction, method);
 
     public void Bind(Story story)
     {
