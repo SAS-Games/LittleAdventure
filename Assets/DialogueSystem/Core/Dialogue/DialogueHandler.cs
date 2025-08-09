@@ -5,17 +5,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace SAS.DialogueSystem
 {
     public class DialogueHandler : MonoBehaviour, IDialogueHandler
     {
-        [Header("Load Globals JSON")] [SerializeField]
-        private TextAsset m_LoadGlobalsJSON;
-
+        [Header("Load Globals JSON")]
+        [SerializeField] private TextAsset m_LoadGlobalsJSON;
         [SerializeField] private GameObject m_DialoguePanel;
-
-        [SerializeField] private bool m_AutoContinueToNextLine;
+        [field:SerializeField] public bool AutoContinueToNextLine { get;private set; }
         [SerializeField] private InputAction _nextInputAction;
         [FieldRequiresSelf] private IInkMetaParser _inkMetaParser;
 
@@ -34,7 +33,6 @@ namespace SAS.DialogueSystem
         public Action OnEnterDialogueMode;
         public Action OnExitDialogueMode;
         public Action OnSkipRequested;
-        private bool _canContinueToNextLine = false;
 
         private void Awake()
         {
@@ -59,7 +57,9 @@ namespace SAS.DialogueSystem
 
         public void EnterDialogueMode(TextAsset inkJSON)
         {
-            _canContinueToNextLine = true;
+            if (DialogueIsPlaying)
+                return;
+            
             EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent { dialogueHandler = this });
             OnEnterDialogueMode?.Invoke();
 
@@ -89,14 +89,6 @@ namespace SAS.DialogueSystem
 
         public void ContinueStory()
         {
-            if (!m_AutoContinueToNextLine)
-            {
-                if (_canContinueToNextLine)
-                    _canContinueToNextLine = false;
-                else
-                    return;
-            }
-
             if (CurrentStory.canContinue)
             {
                 string nextLine = CurrentStory.Continue();
@@ -130,6 +122,7 @@ namespace SAS.DialogueSystem
 
         public void MakeChoice(int choiceIndex)
         {
+            Debug.Log("Making choice " + choiceIndex, "DialogueHandler");
             CurrentStory.ChooseChoiceIndex(choiceIndex);
             ContinueStory();
         }
@@ -137,7 +130,6 @@ namespace SAS.DialogueSystem
         private void Skip()
         {
             OnSkipRequested?.Invoke();
-            _canContinueToNextLine = true;
         }
 
         private void OnApplicationQuit()
