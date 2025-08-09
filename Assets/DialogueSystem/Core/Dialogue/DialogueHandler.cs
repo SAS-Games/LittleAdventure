@@ -59,11 +59,10 @@ namespace SAS.DialogueSystem
         {
             if (DialogueIsPlaying)
                 return;
-            
+            CurrentStory = new Story(inkJSON.text);
+           
             EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent { dialogueHandler = this });
             OnEnterDialogueMode?.Invoke();
-
-            CurrentStory = new Story(inkJSON.text);
             DialogueIsPlaying = true;
             m_DialoguePanel.SetActive(true);
             _dialogueGlobalVariables.StartListening(CurrentStory);

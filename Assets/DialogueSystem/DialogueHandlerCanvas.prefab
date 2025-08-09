@@ -718,7 +718,7 @@ MonoBehaviour:
   m_CharactersPerSecond: 20
   m_InterpunctuationDelay: 0.5
   m_QuickSkip: 1
-  m_SkipSpeedup: 5
+  m_SkipSpeedup: 50
   m_SendDoneDelay: 0.1
   m_DefaultAudioInfo: {fileID: 0}
   _skipInputAction:
@@ -851,7 +851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LoadGlobalsJSON: {fileID: 4900000, guid: 3cd9c26b55e3afa4ebbbb2ebd47dca82, type: 3}
   m_DialoguePanel: {fileID: 4627647359639425192}
-  m_AutoContinueToNextLine: 0
+  <AutoContinueToNextLine>k__BackingField: 0
   _nextInputAction:
     m_Name: Next Input
     m_Type: 1

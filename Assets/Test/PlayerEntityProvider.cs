@@ -17,11 +17,9 @@ public class PlayerEntityProvider : MonoBehaviour, IEntityPresenceProvider
     {
         this.InjectFieldBindings();
     }
-    public IReadOnlyList<GameObject> GetPresentEntities()
+    
+    IReadOnlyList<GameObject> IEntityPresenceProvider.GetPresentEntities()
     {
-        return _playerSetupModel.Players
-            .Where(p => p.Character != null && p.Character.activeSelf)
-            .Select(p => p.Character)
-            .ToList();
+        return _playerSetupModel.GetPresentEntities();
     }
 }

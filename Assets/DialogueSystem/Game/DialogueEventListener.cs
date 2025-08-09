@@ -7,8 +7,8 @@ using UnityEngine.Events;
 public class DialogueEventListener : MonoBehaviour
 {
     [Inject] protected IDialogueHandler _dialogueHandler;
-    [SerializeField] private UnityEvent<IDialogueHandler> m_OnDialogueStart;
-    [SerializeField] private UnityEvent<IDialogueHandler> m_OnDialogueEnd;
+    [SerializeField] private UnityEvent<DialogueHandler> m_OnDialogueStart;
+    [SerializeField] private UnityEvent<DialogueHandler> m_OnDialogueEnd;
 
     private EventBinding<DialogueStartEvent> _dialogueStartEventBinding;
     private EventBinding<DialogueEndEvent> _dialogueEndEventBinding;
@@ -38,13 +38,13 @@ public class DialogueEventListener : MonoBehaviour
 
     private void OnDialogueStartInternal(DialogueStartEvent evt)
     {
-        m_OnDialogueStart?.Invoke(_dialogueHandler);
+        m_OnDialogueStart?.Invoke(_dialogueHandler as DialogueHandler);
         OnDialogueStart(evt);
     }
 
     private void OnDialogueEndInternal(DialogueEndEvent evt)
     {
-        m_OnDialogueEnd?.Invoke(_dialogueHandler);
+        m_OnDialogueEnd?.Invoke(_dialogueHandler as DialogueHandler);
         OnDialogueEnd(evt);
     }
 

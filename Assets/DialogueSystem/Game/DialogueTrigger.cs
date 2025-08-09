@@ -1,35 +1,15 @@
-using System;
 using SAS.Utilities.TagSystem;
 using UnityEngine;
-using UnityEngine.Events;
-
+using UnityEngine.Serialization;
 
 public class DialogueTrigger : MonoBehaviour
 {
     [Inject] private IDialogueHandler _dialogueHandler;
-
-    [Header("Ink JSON")] [SerializeField] private TextAsset inkJSON;
+    [Header("Ink JSON")] [SerializeField] private TextAsset m_InkJSON;
     [SerializeField] private bool m_AutoStart = false;
     [SerializeField] private bool m_TriggerOncePerSession = true;
-    [SerializeField] private UnityEvent m_OnDialogueStart;
-    [SerializeField] private UnityEvent m_OnDialogueEnd;
-
     private bool _triggered = false;
-    private EventBinding<DialogueStartEvent> _dialogueStartEventBinding;
-    private EventBinding<DialogueEndEvent> _dialogueEndEventBinding;
-
-    private void Awake()
-    {
-        _dialogueStartEventBinding = new EventBinding<DialogueStartEvent>(OnDialogueStart);
-        _dialogueEndEventBinding = new EventBinding<DialogueEndEvent>(OnDialogueEnd);
-    }
-
-    private void OnEnable()
-    {
-        EventBus<DialogueStartEvent>.Register(_dialogueStartEventBinding);
-        EventBus<DialogueEndEvent>.Register(_dialogueEndEventBinding);
-    }
-
+    
     private void Start()
     {
         _dialogueHandler = GetComponentInChildren<IDialogueHandler>(true);
@@ -38,15 +18,8 @@ public class DialogueTrigger : MonoBehaviour
             ShowDialogue();
     }
 
-    private void OnDisable()
-    {
-        EventBus<DialogueStartEvent>.Deregister(_dialogueStartEventBinding);
-        EventBus<DialogueEndEvent>.Deregister(_dialogueEndEventBinding);
-    }
-
     public void ShowDialogue()
     {
-        _dialogueHandler.InkExternalMethodRegistry.Register<string, int, int>(print_my_name);
         if (_dialogueHandler.DialogueIsPlaying)
             return;
 
@@ -55,25 +28,10 @@ public class DialogueTrigger : MonoBehaviour
             if (!_triggered)
             {
                 _triggered = true;
-                _dialogueHandler.EnterDialogueMode(inkJSON);
+                _dialogueHandler.EnterDialogueMode(m_InkJSON);
             }
         }
         else
-            _dialogueHandler.EnterDialogueMode(inkJSON);
-    }
-
-    private void OnDialogueStart(DialogueStartEvent dialogueStartEvent)
-    {
-        m_OnDialogueStart?.Invoke();
-    }
-
-    private void OnDialogueEnd(DialogueEndEvent dialogueEndEvent)
-    {
-        m_OnDialogueEnd?.Invoke();
-    }
-
-    void print_my_name(string newName, int arg1, int arg2)
-    {
-        Debug.Log($"my name is  + {newName} {arg1} {arg2}");
+            _dialogueHandler.EnterDialogueMode(m_InkJSON);
     }
 }

@@ -148,8 +148,9 @@ GameObject:
   - component: {fileID: 3326401912638268821}
   - component: {fileID: 5031856692652233928}
   - component: {fileID: 7384771391858244707}
-  - component: {fileID: 567984864853128217}
   - component: {fileID: 1355464038859746050}
+  - component: {fileID: -2533921595477074251}
+  - component: {fileID: 567984864853128217}
   - component: {fileID: 1648742075505565504}
   - component: {fileID: 4531910029794102220}
   m_Layer: 0
@@ -211,9 +212,101 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e99ce7fe2334e42a1b4b134602d1f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inkJSON: {fileID: 0}
+  m_InkJSON: {fileID: 0}
   m_AutoStart: 0
   m_TriggerOncePerSession: 1
+--- !u!114 &1355464038859746050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8348861375034907059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f41619b4b147dd45b738ab9dbb5ac55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CollisionTags:
+  - Player
+  m_OnTriggerEnterAction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 567984864853128217}
+        m_TargetAssemblyTypeName: ProximityInputActivator, Assembly-CSharp
+        m_MethodName: OnPlayerEntered
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3739693328889554526}
+        m_TargetAssemblyTypeName: SpeechBubble, Assembly-CSharp
+        m_MethodName: Show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2914218821730261418}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2695342364776279933}
+        m_TargetAssemblyTypeName: PlayerInputLabelPresenter, Assembly-CSharp
+        m_MethodName: UpdateControlLabel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  m_OnTriggerExitAction:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 567984864853128217}
+        m_TargetAssemblyTypeName: ProximityInputActivator, Assembly-CSharp
+        m_MethodName: OnPlayerExited
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &-2533921595477074251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8348861375034907059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 189fe43ba2489604580caca0234df96e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_OnDialogueStart:
     m_PersistentCalls:
       m_Calls:
@@ -288,86 +381,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: SpeechBubble, Assembly-CSharp
         m_MethodName: Hide
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &1355464038859746050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8348861375034907059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f41619b4b147dd45b738ab9dbb5ac55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_CollisionTags:
-  - Player
-  m_OnTriggerEnterAction:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 567984864853128217}
-        m_TargetAssemblyTypeName: ProximityInputActivator, Assembly-CSharp
-        m_MethodName: OnPlayerEntered
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3739693328889554526}
-        m_TargetAssemblyTypeName: SpeechBubble, Assembly-CSharp
-        m_MethodName: Show
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2914218821730261418}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 2695342364776279933}
-        m_TargetAssemblyTypeName: PlayerInputLabelPresenter, Assembly-CSharp
-        m_MethodName: UpdateControlLabel
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  m_OnTriggerExitAction:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 567984864853128217}
-        m_TargetAssemblyTypeName: ProximityInputActivator, Assembly-CSharp
-        m_MethodName: OnPlayerExited
-        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

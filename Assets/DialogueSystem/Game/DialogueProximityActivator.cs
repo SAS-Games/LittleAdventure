@@ -15,7 +15,7 @@ public class DialogueProximityActivator : ProximityInputActivator
 
     protected override void OnInputPerformed(InputAction.CallbackContext context, PlayerInput playerInput)
     {
-        _dialogueTrigger.ShowDialogue();
         m_OnInteract?.Invoke(playerInput);
+        _dialogueTrigger.ShowDialogue();
     }
 }

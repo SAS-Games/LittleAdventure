@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using SAS.Utilities.TagSystem;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public interface IPlayerSetupModel : IBindable
@@ -9,6 +11,9 @@ public interface IPlayerSetupModel : IBindable
     void AddPlayer(PlayerProfile playerProfile);
     void Clear();
     PlayerProfile GetPlayer(int index);
+    PlayerProfile GetPlayer(PlayerInput playerInput);
+    PlayerProfile GetOtherPlayer(PlayerInput playerInput);
+    IReadOnlyList<GameObject> GetPresentEntities();
 }
 
 public class PlayerSetupModel : IPlayerSetupModel
@@ -51,7 +56,26 @@ public class PlayerSetupModel : IPlayerSetupModel
     {
         return _players.Find(p => p.Index == index);
     }
+    
+    PlayerProfile IPlayerSetupModel.GetPlayer(PlayerInput playerInput)
+    {
+        if (playerInput == null) return null;
+        return _players.Find(p => p.Input?.playerIndex == playerInput.playerIndex);
+    }
 
+    PlayerProfile IPlayerSetupModel.GetOtherPlayer(PlayerInput playerInput)
+    {
+        if (playerInput == null) return null;
+        return _players.Find(p => p.Input?.playerIndex != playerInput.playerIndex);
+    }
+    
+    public IReadOnlyList<GameObject> GetPresentEntities()
+    {
+        return Players
+            .Where(p => p.Character != null && p.Character.activeSelf)
+            .Select(p => p.Character)
+            .ToList();
+    }
 
     void IPlayerSetupModel.Clear()
     {

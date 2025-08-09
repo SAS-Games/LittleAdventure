@@ -5,11 +5,12 @@ using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using SAS.StateMachineGraph.Utilities;
 
+
+[RequireComponent(typeof(IEntityPresenceProvider))]
 public abstract class EntityInteractionHandler : MonoBehaviour
 {
     [SerializeField] protected Transform[] m_Markers;
     [FieldRequiresSelf] protected IEntityPresenceProvider _presenceProvider;
-
     protected Collider _proximityCollider;
 
     protected virtual void Awake()

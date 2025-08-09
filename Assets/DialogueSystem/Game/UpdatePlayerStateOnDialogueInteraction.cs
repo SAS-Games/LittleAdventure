@@ -5,7 +5,7 @@ public class UpdatePlayerStateOnDialogueInteraction : EntityInteractionHandler
 {
     [SerializeField] protected Parameter m_InteractParamOn;
     [SerializeField] protected Parameter m_InteractParamOff;
-
+    
     public void OnDialogueStart()
     {
         var playersInBounds = GetEntitiesWithinBounds();
