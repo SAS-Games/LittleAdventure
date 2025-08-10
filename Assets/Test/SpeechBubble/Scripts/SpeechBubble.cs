@@ -5,16 +5,21 @@ using UnityEngine.Events;
 public class SpeechBubble : MonoBehaviour
 {
     [SerializeField] private float m_DisplayDuration = 5f;
+    [SerializeField] private bool m_ShowOnce = false;
     [SerializeField] private UnityEvent m_OnShow;
     [SerializeField] private UnityEvent m_OnHide;
 
     private CountdownTimer _countdownTimer;
     private bool _isShowing;
+    private bool _displayed = false;
 
     public void Show()
     {
         if (_isShowing)
             return;
+        if(m_ShowOnce && _displayed)
+            return;
+        _displayed = true;
         _isShowing = true;
         m_OnShow?.Invoke();
         if (m_DisplayDuration > 0)
