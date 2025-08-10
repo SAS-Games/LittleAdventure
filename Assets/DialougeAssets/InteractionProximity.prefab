@@ -323,6 +323,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 53613769134860804}
+        m_TargetAssemblyTypeName: CharacterAnimatorProcessor, Assembly-CSharp
+        m_MethodName: Register
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 1648742075505565504}
         m_TargetAssemblyTypeName: UpdatePlayerStateOnDialogueInteraction, Assembly-CSharp
         m_MethodName: OnDialogueStart
@@ -365,6 +377,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1648742075505565504}
         m_TargetAssemblyTypeName: UpdatePlayerStateOnDialogueInteraction, Assembly-CSharp
         m_MethodName: OnDialogueEnd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 53613769134860804}
+        m_TargetAssemblyTypeName: CharacterAnimatorProcessor, Assembly-CSharp
+        m_MethodName: Unregister
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -549,6 +573,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+--- !u!114 &53613769134860804 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4034562721323372968, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+  m_PrefabInstance: {fileID: 5241103532188681308}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8794f80884d56344bc2166a6fe718b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2695342364776279933 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7916171997496470305, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}

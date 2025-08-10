@@ -27,6 +27,8 @@ namespace SAS.DialogueSystem
 
         private ITagProcessor[] _tagProcessors;
         private TagProcessContext _tagProcessContext;
+        public TagProcessContext TagProcessContext => _tagProcessContext;
+
 
         public Action<Story> OnStoryMessageShown;
         public Action<String> OnStoryContinue;

@@ -8,9 +8,6 @@ namespace SAS.WeaponSystem.Components
 {
     public class ProjectileSpawner : WeaponComponent<ProjectileSpawnerData, AttackProjectileSpawner>
     {
-        // Event fired off for each projectile before we call the Init() function on that projectile to allow other components to also pass through some data
-        public event Action<Projectile> OnSpawnProjectile;
-
         [FieldRequiresParent] private ICharacter _character;
         [FieldRequiresParent] private IEventDispatcher _eventDispatcher;
         private ComponentPoolSO<Poolable> _objectPool;

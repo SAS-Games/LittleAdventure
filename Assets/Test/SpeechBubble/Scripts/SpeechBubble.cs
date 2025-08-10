@@ -37,7 +37,7 @@ public class SpeechBubble : MonoBehaviour
 
     public void Hide()
     {
-        if (_countdownTimer.IsRunning)
+        if (_countdownTimer is { IsRunning: true })
             _countdownTimer.Stop();
     }
 }

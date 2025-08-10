@@ -31,8 +31,9 @@ public class DialoguePlayerDataBinder : MonoBehaviour
 
         bool isCoop = _playerSetupModel.GetPresentEntities().Count > 1;
 
-        story.variablesState["Player1_name"] = player?.Name ?? "Player1";
-        story.variablesState["Player2_name"] = otherPlayer?.Name ?? "Player2";
+        story.variablesState["Player1_name"] = player?.Name ?? player?.IndexedName;
+        if (otherPlayer != null)
+            story.variablesState["Player2_name"] = otherPlayer.Name ?? otherPlayer?.IndexedName;
         story.variablesState["isCoop"] = isCoop;
 
         story.variablesState["player1_coins"] = GetCoins(player?.Character);

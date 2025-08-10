@@ -28,6 +28,7 @@ public class SpeakerTagProcessor : BaseTagProcessor
         var parsed = context.MetaParser.Parse(tagValue);
         if (parsed.TryGetValue("id", out var speaker))
         {
+            context.CurrentSpeakerId = speaker;
             SpeakerView speakerView = _speakersUi[speaker];
             speakerView.gameObject.SetActive(true);
             foreach (var keyValue in parsed)

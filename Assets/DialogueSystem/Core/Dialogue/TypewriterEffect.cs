@@ -50,8 +50,6 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
 
     private TMP_Text _textBox;
     private int _currentVisibleCharacterIndex;
-    private bool _readyForNewText = true;
-
     private Coroutine _typewriterCoroutine;
     private WaitForSeconds _simpleDelay;
     private WaitForSeconds _interpunctuationDelay;
@@ -104,8 +102,7 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
     private void PrepareForNewText(string text)
     {
         CurrentlySkipping = false;
-        _readyForNewText = false;
-
+        
         if (_typewriterCoroutine != null)
             StopCoroutine(_typewriterCoroutine);
 
@@ -131,7 +128,6 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
                 _textBox.maxVisibleCharacters++;
                 yield return _textboxFullEventDelay;
                 CompleteTextRevealed?.Invoke();
-                _readyForNewText = true;
                 yield break;
             }
 
@@ -174,7 +170,6 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
     {
         _textBox.maxVisibleCharacters = _textBox.textInfo.characterCount;
         yield return _immediateSkipDelay;
-        _readyForNewText = true;
         CompleteTextRevealed?.Invoke();
     }
 

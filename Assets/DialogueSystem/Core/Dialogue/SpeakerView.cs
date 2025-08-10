@@ -11,6 +11,11 @@ public class SpeakerView : MonoBehaviour
     [SerializeField] private ImageKeyMapConfig m_ImageKeyMapConfig;
     [FieldRequiresSelf] private IAnimatorProcessor _animatorProcessor;
 
+    void Awake()
+    {
+        this.Initialize();
+    }
+    
     public void SetName(string name)
     {
         if (!string.IsNullOrEmpty(name))

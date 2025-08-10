@@ -9,10 +9,12 @@ public class DialogueEventListener : MonoBehaviour
     [Inject] protected IDialogueHandler _dialogueHandler;
     [SerializeField] private UnityEvent<DialogueHandler> m_OnDialogueStart;
     [SerializeField] private UnityEvent<DialogueHandler> m_OnDialogueEnd;
+    [SerializeField] private UnityEvent<string> m_OnDialogueTextRevealed;
 
     private EventBinding<DialogueStartEvent> _dialogueStartEventBinding;
     private EventBinding<DialogueEndEvent> _dialogueEndEventBinding;
     protected Story CurrentStory => ((DialogueHandler)_dialogueHandler).CurrentStory;
+
     protected virtual void Awake()
     {
         _dialogueStartEventBinding = new EventBinding<DialogueStartEvent>(OnDialogueStartInternal);
@@ -38,23 +40,36 @@ public class DialogueEventListener : MonoBehaviour
 
     private void OnDialogueStartInternal(DialogueStartEvent evt)
     {
-        m_OnDialogueStart?.Invoke(_dialogueHandler as DialogueHandler);
+        var dialogueHandler = _dialogueHandler as DialogueHandler;
+        m_OnDialogueStart?.Invoke(dialogueHandler);
         OnDialogueStart(evt);
+        dialogueHandler.OnStoryMessageShown += OnTextRevealed;
+    }
+
+    private void OnTextRevealed(Story story)
+    {
+        m_OnDialogueTextRevealed.Invoke(((DialogueHandler)_dialogueHandler).TagProcessContext.CurrentSpeakerId);
     }
 
     private void OnDialogueEndInternal(DialogueEndEvent evt)
     {
-        m_OnDialogueEnd?.Invoke(_dialogueHandler as DialogueHandler);
+        var dialogueHandler = _dialogueHandler as DialogueHandler;
+        m_OnDialogueEnd?.Invoke(dialogueHandler);
         OnDialogueEnd(evt);
+        dialogueHandler.OnStoryMessageShown -= OnTextRevealed;
     }
 
     /// <summary>
     /// Called when a dialogue starts.
     /// </summary>
-    protected virtual void OnDialogueStart(DialogueStartEvent dialogueStartEvent){}
+    protected virtual void OnDialogueStart(DialogueStartEvent dialogueStartEvent)
+    {
+    }
 
     /// <summary>
     /// Called when a dialogue ends.
     /// </summary>
-    protected virtual void OnDialogueEnd(DialogueEndEvent dialogueEndEvent){}
+    protected virtual void OnDialogueEnd(DialogueEndEvent dialogueEndEvent)
+    {
+    }
 }
