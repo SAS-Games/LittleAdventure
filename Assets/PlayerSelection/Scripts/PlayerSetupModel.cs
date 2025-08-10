@@ -23,8 +23,13 @@ public class PlayerSetupModel : IPlayerSetupModel
     private readonly List<PlayerProfile> _players = new List<PlayerProfile>();
     public IReadOnlyList<PlayerProfile> Players => _players;
 
-    public PlayerSetupModel(IContextBinder _) { }
-    public void OnInstanceCreated() { }
+    public PlayerSetupModel(IContextBinder _)
+    {
+    }
+
+    public void OnInstanceCreated()
+    {
+    }
 
     void IPlayerSetupModel.AddPlayer(PlayerInput playerInput)
     {
@@ -58,7 +63,7 @@ public class PlayerSetupModel : IPlayerSetupModel
     {
         return _players.Find(p => p.Index == index);
     }
-    
+
     PlayerProfile IPlayerSetupModel.GetPlayer(PlayerInput playerInput)
     {
         if (playerInput == null) return null;
@@ -70,7 +75,7 @@ public class PlayerSetupModel : IPlayerSetupModel
         if (playerInput == null) return null;
         return _players.Find(p => p.Input?.playerIndex != playerInput.playerIndex);
     }
-    
+
     public IReadOnlyList<GameObject> GetPresentEntities()
     {
         return Players
@@ -78,12 +83,12 @@ public class PlayerSetupModel : IPlayerSetupModel
             .Select(p => p.Character)
             .ToList();
     }
+
     public GameObject GetEntity(string entityName)
     {
         return Players
             .Where(p => p.Character != null && p.Character.activeSelf)
-            .Select(p => p.Character)
-            .FirstOrDefault(c => c.name.Equals(entityName, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(c => c.Name.Equals(entityName))?.Character;
     }
 
 
@@ -91,6 +96,4 @@ public class PlayerSetupModel : IPlayerSetupModel
     {
         _players.Clear();
     }
-
-    
 }

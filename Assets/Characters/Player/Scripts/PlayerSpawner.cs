@@ -29,7 +29,7 @@ public class PlayerSpawner : MonoBehaviour
         foreach (var proxyView in proxyViews)
             proxyView.ProxyControlID = playerProfile.Index;
         player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
-        player.transform.GetComponent<IProxyView<string>>(Tag.Name)?.OnValueChanged(playerProfile.DisplayName);
+        player.transform.GetComponent<IProxyView<string>>(Tag.Name)?.OnValueChanged(playerProfile.Name);
         player.SetActive(true);
         Players.Add(player);
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>

@@ -18,12 +18,12 @@ public class DialoguePlayerDataBinder : MonoBehaviour
     {
         _interactedPlayerInput = playerInput;
     }
-    
+
     public void BindPlayerData(DialogueHandler dialogueHandler)
     {
         BindPlayerDataToStory(dialogueHandler.CurrentStory);
     }
-    
+
     private void BindPlayerDataToStory(Story story)
     {
         var player = _playerSetupModel.GetPlayer(_interactedPlayerInput);
@@ -31,8 +31,8 @@ public class DialoguePlayerDataBinder : MonoBehaviour
 
         bool isCoop = _playerSetupModel.GetPresentEntities().Count > 1;
 
-        story.variablesState["Player1_name"] = player?.DisplayName ?? "Player1";
-        story.variablesState["Player2_name"] = otherPlayer?.DisplayName ?? "Player2";
+        story.variablesState["Player1_name"] = player?.Name ?? "Player1";
+        story.variablesState["Player2_name"] = otherPlayer?.Name ?? "Player2";
         story.variablesState["isCoop"] = isCoop;
 
         story.variablesState["player1_coins"] = GetCoins(player?.Character);
@@ -49,16 +49,14 @@ public class DialoguePlayerDataBinder : MonoBehaviour
     {
         var playerObj = _playerSetupModel.GetEntity(playerName);
         var currencyPresenter = playerObj.GetComponent<ICurrencyPresenter>();
-        if (currencyPresenter != null)
-        {
-            currencyPresenter.SetValue(currencyPresenter.GetValue() - cost);
-            // Optionally: also update health model here if available
-        }
+        currencyPresenter.SetValue(currencyPresenter.GetValue() - cost);
+        var healthPresenter = playerObj.GetComponent<StatPresenter<IHealthModel>>();
+        healthPresenter.IncreaseMax(bonusHealth);
     }
-    
+
     public void RegisterGrantHealthMethod(DialogueHandler dialogueHandler)
     {
-        dialogueHandler.InkExternalMethodRegistry.Register<string, int, int>("grant_health",ApplyHealthBonus);
+        dialogueHandler.InkExternalMethodRegistry.Register<string, int, int>("grant_health", ApplyHealthBonus);
     }
 
     public void UnregisterGrantHealthMethod(DialogueHandler dialogueHandler)

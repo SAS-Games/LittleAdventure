@@ -64,7 +64,7 @@ public class PlayerConfigurationUI : UIScreenView
     private void OnNameChosen(int playerIndex, string selectedName)
     {
         _chosenNames[playerIndex] = selectedName;
-        _playerSetupModel.Players[playerIndex].DisplayName = selectedName;
+        _playerSetupModel.Players[playerIndex].Name = selectedName;
         UpdateAllNameDropdowns();
     }
 

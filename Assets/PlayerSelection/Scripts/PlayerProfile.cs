@@ -5,8 +5,8 @@ public class PlayerProfile
 {
     public PlayerInput Input { get; private set; }
     public int Index { get; private set; }
-    public string Name { get; private set; }
-    public string DisplayName { get; set; } = "Arclen"; 
+    public string IndexedName { get; private set; }
+    public string Name { get; set; } = "Arclen"; 
     public Color Color { get; set; } = Color.white; 
     public GameObject Character { get; set; }
 
@@ -14,7 +14,7 @@ public class PlayerProfile
     {
         Input = playerInput;
         Index = playerInput.playerIndex;
-        Name = $"Player_{Index}";
+        IndexedName = $"Player_{Index}";
     }
 
 
@@ -22,6 +22,6 @@ public class PlayerProfile
     {
         Input = playerInput;
         Index = index;
-        Name = name;
+        IndexedName = name;
     }
 }

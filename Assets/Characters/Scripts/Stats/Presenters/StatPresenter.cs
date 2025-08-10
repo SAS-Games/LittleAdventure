@@ -15,18 +15,18 @@ public abstract class StatPresenter<TModel> : MonoBehaviour where TModel : IStat
     protected virtual void Awake()
     {
         this.Initialize();
-        
+
         /*Todo:
          Need a better way. may be one can create the base class StatPresenterBase<TModel, TView>
          where TView can be either IProxyView<float> or IRangeProxyView<float>
-         then there will be two separate classes like StatPresenter<TModel, IProxyView<float>> and 
+         then there will be two separate classes like StatPresenter<TModel, IProxyView<float>> and
          RangeStatePresenter<TModel, IRangeProxyView<float>>
          */
         if (View is IRangeProxyView<float> rangeView)
             _rangeProxyView = rangeView;
         else if (View is IProxyView<float> proxyView)
             _proxyView = proxyView;
-        
+
         _model.Setup(m_MaxValue);
         _model.Current.Subscribe(OnValueChanged).AddTo(this);
         _model.Max.Subscribe(OnValueChanged).AddTo(this);
@@ -45,5 +45,10 @@ public abstract class StatPresenter<TModel> : MonoBehaviour where TModel : IStat
     public void Increase(float value)
     {
         _model.Increase(value);
+    }
+
+    public void IncreaseMax(float value)
+    {
+        _model.UpdateMax(_model.Max.Value + value);
     }
 }
