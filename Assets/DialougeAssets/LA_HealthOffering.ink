@@ -1,9 +1,8 @@
 INCLUDE LA_globals.ink
 
-VAR player1_coins = 25
-VAR player2_coins = 10
 VAR cost = 20
 VAR health_bonus = 25
+EXTERNAL grant_health(player_name, cost, healthBonus)
 
 {isCoop:
 ->NPC_EXTRA_HEALTH
@@ -56,7 +55,7 @@ Hello, brave ones! I have a special herbal tonic that will grant you +{health_bo
 === OFFER_SINGLE ===
 Would you like to buy the tonic for {cost} coins?
 + [Yes, give me the tonic]
-    ~ player1_coins = player1_coins - cost
+    ~ grant_health(Player1_name, cost, health_bonus)
     (You feel healthier!)
     -> END
 + [No, I’ll pass]
@@ -66,8 +65,8 @@ Would you like to buy the tonic for {cost} coins?
 === OFFER_BOTH ===
 Would you both like to buy the tonic for {cost} coins each?
 + [Yes, both take it]
-    ~ player1_coins = player1_coins - cost
-    ~ player2_coins = player2_coins - cost
+    ~ grant_health(Player1_name, cost, health_bonus)
+    ~ grant_health(Player2_name, cost, health_bonus)
     (Both players feel healthier!)
     -> END
 + [No, maybe later]
@@ -77,7 +76,7 @@ Would you both like to buy the tonic for {cost} coins each?
 === OFFER_P1_ONLY ===
 {Player1_name}, would you like to buy the tonic for {cost} coins?
 + [Yes, give me the tonic]
-    ~ player1_coins = player1_coins - cost
+    ~ grant_health(Player1_name, cost, health_bonus)
     ({Player1_name} feels healthier!)
     -> END
 + [No, I’ll pass]
@@ -87,7 +86,7 @@ Would you both like to buy the tonic for {cost} coins each?
 === OFFER_P2_ONLY ===
 {Player2_name}, would you like to buy the tonic for {cost} coins?
 + [Yes, give me the tonic]
-    ~ player2_coins = player2_coins - cost
+    ~ grant_health(Player2_name, cost, health_bonus)
     ({Player2_name} feels healthier!)
     -> END
 + [No, I’ll pass]

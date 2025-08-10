@@ -1,5 +1,4 @@
 INCLUDE LA_globals.ink
-EXTERNAL print_my_name(name,a,b)
 
 -> intro_section
 
@@ -38,7 +37,6 @@ Strange… the Shard remembers two.
     
 === what_happen_to_me ===
     What happened to me
-    ~ print_my_name("Sandhya", 1,2)
     ->chosen_one_solo
     === chosen_one_solo===
     You were chosen — a soul once whole. When the Shard broke, so did your past.

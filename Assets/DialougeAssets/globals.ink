@@ -1,3 +1,3 @@
-VAR instructor_name = ""
+VAR Player_name = ""
 
 EXTERNAL playEmote(emoteName)

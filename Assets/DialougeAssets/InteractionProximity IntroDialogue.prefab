@@ -10,30 +10,26 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 567984864853128217, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 567984864853128217, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
-      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 567984864853128217, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
-      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: -113023684542805450}
     - target: {fileID: 567984864853128217, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
-      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 567984864853128217, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
-      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: UpdateControlLabels
       objectReference: {fileID: 0}
     - target: {fileID: 567984864853128217, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
-      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: DialogueInputLabelConnector, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 567984864853128217, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
-      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      propertyPath: m_OnInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3326401912638268821, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
@@ -78,6 +74,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7384771391858244707, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: inkJSON
+      value: 
+      objectReference: {fileID: 4900000, guid: 0adcdf2fcefd1ba418be8fc96f00fd49, type: 3}
+    - target: {fileID: 7384771391858244707, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
+      propertyPath: m_InkJSON
       value: 
       objectReference: {fileID: 4900000, guid: 0adcdf2fcefd1ba418be8fc96f00fd49, type: 3}
     - target: {fileID: 7384771391858244707, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}

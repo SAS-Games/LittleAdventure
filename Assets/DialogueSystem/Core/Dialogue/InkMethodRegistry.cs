@@ -40,6 +40,11 @@ public class InkExternalMethodRegistry
     public void Register<T1, T2, T3>(string inkFunction, Action<T1, T2, T3> method) => RegisterInternal(inkFunction, method);
     public void Register<T1, T2, T3, T4>(string inkFunction, Action<T1, T2, T3, T4> method) => RegisterInternal(inkFunction, method);
 
+    public bool Unregister(string inkFunctionName)
+    {
+        return _methods.Remove(inkFunctionName);
+    }
+    
     public void Bind(Story story)
     {
         foreach (var pair in _methods)

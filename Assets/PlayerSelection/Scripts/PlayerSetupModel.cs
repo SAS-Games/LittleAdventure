@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SAS.Utilities.TagSystem;
@@ -14,6 +15,7 @@ public interface IPlayerSetupModel : IBindable
     PlayerProfile GetPlayer(PlayerInput playerInput);
     PlayerProfile GetOtherPlayer(PlayerInput playerInput);
     IReadOnlyList<GameObject> GetPresentEntities();
+    GameObject GetEntity(string entityName);
 }
 
 public class PlayerSetupModel : IPlayerSetupModel
@@ -76,6 +78,14 @@ public class PlayerSetupModel : IPlayerSetupModel
             .Select(p => p.Character)
             .ToList();
     }
+    public GameObject GetEntity(string entityName)
+    {
+        return Players
+            .Where(p => p.Character != null && p.Character.activeSelf)
+            .Select(p => p.Character)
+            .FirstOrDefault(c => c.name.Equals(entityName, StringComparison.OrdinalIgnoreCase));
+    }
+
 
     void IPlayerSetupModel.Clear()
     {
