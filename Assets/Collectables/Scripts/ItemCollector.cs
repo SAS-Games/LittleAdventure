@@ -5,8 +5,9 @@ using UnityEngine;
 public class ItemCollector : Collector
 {
     [FieldRequiresSelf] private ICurrencyPresenter _currencyPresenter;
+    [FieldRequiresSelf] private StatPresenter<IHealthModel> _healthPresenter;
+
     [FieldRequiresChild] private IEventDispatcher _eventDispatcher;
-    [Inject] private IHealthModel _healthModel;
     [SerializeField] private string m_HealVFX = "Heal";
 
     private void Start()
@@ -27,7 +28,7 @@ public class ItemCollector : Collector
         if (collectionEventData.collector == this)
         {
             var healer = collectionEventData.collectable;
-            _healthModel.Increase(healer.Value);
+            _healthPresenter.Increase(healer.Value);
             _eventDispatcher.TriggerEvent(m_HealVFX);
         }
     }
@@ -35,8 +36,6 @@ public class ItemCollector : Collector
     private void IncreaseCollectedCoin(CollectionEvent<Coin> collectionEventData)
     {
         if (collectionEventData.collector == this)
-        {
             _currencyPresenter.Collect();
-        }
     }
 }

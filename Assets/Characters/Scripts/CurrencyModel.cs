@@ -1,6 +1,7 @@
+using SAS.Utilities.TagSystem;
 using UniRx;
 
-public interface ICurrencyModel
+public interface ICurrencyModel: IBindable
 {
     public ReactiveDictionary<string, int> Value { get; }
 
@@ -19,4 +20,6 @@ public class CurrencyModel : ICurrencyModel
 
         return value;
     }
+    
+    public CurrencyModel(IContextBinder _){}
 }

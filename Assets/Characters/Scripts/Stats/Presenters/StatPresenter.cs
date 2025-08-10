@@ -41,4 +41,9 @@ public abstract class StatPresenter<TModel> : MonoBehaviour where TModel : IStat
         if (current <= 0)
             m_OnEmpty?.Invoke();
     }
+
+    public void Increase(float value)
+    {
+        _model.Increase(value);
+    }
 }
