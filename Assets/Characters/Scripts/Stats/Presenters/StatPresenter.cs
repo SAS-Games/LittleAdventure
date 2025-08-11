@@ -28,17 +28,18 @@ public abstract class StatPresenter<TModel> : MonoBehaviour where TModel : IStat
             _proxyView = proxyView;
 
         _model.Setup(m_MaxValue);
-        _model.Current.Subscribe(OnValueChanged).AddTo(this);
-        _model.Max.Subscribe(OnValueChanged).AddTo(this);
+        _model.Current.Subscribe(_ => OnValueChanged()).AddTo(this);
+        _model.Max.Subscribe(_ => OnValueChanged()).AddTo(this);
     }
 
-    protected virtual void OnValueChanged(float current)
+    protected virtual void OnValueChanged()
     {
         if (_rangeProxyView != null)
-            _rangeProxyView.OnValueChanged(current, _model.Max.Value);
+            _rangeProxyView.OnValueChanged(_model.Current.Value, _model.Max.Value);
         else
-            _proxyView?.OnValueChanged(current);
-        if (current <= 0)
+            _proxyView?.OnValueChanged(_model.Current.Value);
+
+        if (_model.Current.Value <= 0)
             m_OnEmpty?.Invoke();
     }
 

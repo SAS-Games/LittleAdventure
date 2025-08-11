@@ -1,6 +1,6 @@
 INCLUDE LA_globals.ink
 
-VAR cost = -1
+VAR cost = 2
 VAR health_bonus = 25
 EXTERNAL grant_health(player_name, cost, healthBonus)
 
