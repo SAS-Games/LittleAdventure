@@ -1,4 +1,4 @@
-INCLUDE LA_globals.ink
+INCLUDE LA_common.ink
 
 -> intro_section
 

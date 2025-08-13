@@ -1,4 +1,4 @@
-INCLUDE LA_globals.ink
+INCLUDE LA_common.ink
 
 VAR cost = 2
 VAR health_bonus = 25
