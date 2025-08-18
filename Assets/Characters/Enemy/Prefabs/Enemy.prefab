@@ -278,8 +278,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d84fb427bbb09419299c83266b010b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <weaponData>k__BackingField:
-  - {fileID: 11400000, guid: 4437ae8246c82bd438bf7cb6bce571d6, type: 2}
+  WeaponData:
+  - Slot: 0
+    Weapons:
+    - {fileID: 11400000, guid: 4437ae8246c82bd438bf7cb6bce571d6, type: 2}
 --- !u!114 &1975040365461661644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,21 +412,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MaxValue: 100
   m_OnEmpty:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 195983439888438717}
-        m_TargetAssemblyTypeName: EnemySystem.Enemy, Assembly-CSharp
-        m_MethodName: OnDeath
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_OnDeath:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 195983439888438717}

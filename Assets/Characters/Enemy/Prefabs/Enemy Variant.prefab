@@ -349,6 +349,10 @@ PrefabInstance:
       propertyPath: '<weaponData>k__BackingField.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: 965e138aa64dc4e4eb273fc082c8ebec, type: 2}
+    - target: {fileID: 6001012791764321214, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
+      propertyPath: 'WeaponData.Array.data[0].Weapons.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 965e138aa64dc4e4eb273fc082c8ebec, type: 2}
     - target: {fileID: 6135646720188040865, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
       propertyPath: m_MeshRenderer
       value: 
