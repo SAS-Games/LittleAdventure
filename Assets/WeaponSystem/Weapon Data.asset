@@ -18,6 +18,7 @@ MonoBehaviour:
   <AnimatorController>k__BackingField: {fileID: 0}
   <NumberOfAttacks>k__BackingField: 3
   <ComponentData>k__BackingField:
+  - rid: 1727710322173935698
   - rid: 4097107546755563520
   - rid: 4097107480356061258
   - rid: 4097107256536989767
@@ -28,6 +29,16 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 1727710322173935698
+      type: {class: SwordWeaponSetupComponenetData, ns: SAS.WeaponSystem.Components, asm: Assembly-CSharp}
+      data:
+        name: SwordWeaponSetupComponenetData
+        repeatData: 1
+        attackData: []
+        <LeftSocketPath>k__BackingField: Visual/LittleAdventurerAndie_GameRig/DEF-upper_arm.L/DEF-upper_arm.L.001/DEF-forearm.L/DEF-forearm.L.001/DEF-hand.L/WeaponHolder
+        <RightSocketPath>k__BackingField: Visual/LittleAdventurerAndie_GameRig/DEF-upper_arm.R/DEF-upper_arm.R.001/DEF-forearm.R/DEF-forearm.R.001/DEF-hand.R/WeaponHolder
+        <LeftWeapon>k__BackingField: {fileID: 919132149155446097, guid: 36d5e239ddf1c5843979b26c82f9ad52, type: 3}
+        <RightWeapon>k__BackingField: {fileID: 919132149155446097, guid: 36d5e239ddf1c5843979b26c82f9ad52, type: 3}
     - rid: 4097107256536989767
       type: {class: MovementData, ns: , asm: Assembly-CSharp}
       data:

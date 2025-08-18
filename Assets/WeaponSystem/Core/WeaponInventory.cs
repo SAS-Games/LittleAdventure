@@ -1,51 +1,69 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SAS.WeaponSystem
 {
     public class WeaponInventory : MonoBehaviour
     {
+        public enum WeaponSlot
+        {
+            Primary,
+            Secondary,
+            Tertiary,
+        }
+
+        [System.Serializable]
+        public class Weapondata
+        {
+            public WeaponSlot Slot;
+            public WeaponDataSO[] Weapons;
+        }
+
+
+        [field: SerializeField] public List<Weapondata> WeaponData;
+        private Dictionary<WeaponSlot, WeaponDataSO> _equippedWeaponData = new Dictionary<WeaponSlot, WeaponDataSO>();
         public event Action<int, WeaponDataSO> OnWeaponDataChanged;
 
-        [field: SerializeField] public WeaponDataSO[] weaponData { get; private set; }
-
-        public bool TrySetWeapon(WeaponDataSO newData, int index, out WeaponDataSO oldData)
+        public bool TrySetWeapon(WeaponSlot slot, WeaponDataSO newData, out WeaponDataSO oldData)
         {
-            if (index >= weaponData.Length)
-            {
-                oldData = null;
+            oldData = null;
+
+            var weaponData = WeaponData.Find(w => w.Slot == slot);
+            if (weaponData == null || weaponData.Weapons == null || weaponData.Weapons.Length == 0)
                 return false;
-            }
 
-            oldData = weaponData[index];
-            weaponData[index] = newData;
+            // check if weapon is valid for this slot
+            bool validWeapon = Array.Exists(weaponData.Weapons, w => w == newData);
+            if (!validWeapon)
+                return false;
 
-            OnWeaponDataChanged?.Invoke(index, newData);
+            // get old data if already equipped
+            _equippedWeaponData.TryGetValue(slot, out oldData);
 
+            // equip new weapon
+            _equippedWeaponData[slot] = newData;
+
+            OnWeaponDataChanged?.Invoke((int)slot, newData);
             return true;
         }
 
-        public bool TryGetWeapon(int index, out WeaponDataSO data)
+        public bool TryGetWeapon(WeaponSlot index, out WeaponDataSO data)
         {
-            if (index >= weaponData.Length)
-            {
-                data = null;
-                return false;
-            }
-
-            data = weaponData[index];
-            return true;
+            data = null;
+            var slot = index;
+            return _equippedWeaponData.TryGetValue(slot, out data);
         }
 
         public bool TryGetEmptyIndex(out int index)
         {
-            for (var i = 0; i < weaponData.Length; i++)
+            foreach (WeaponSlot slot in Enum.GetValues(typeof(WeaponSlot)))
             {
-                if (weaponData[i] is not null)
-                    continue;
-
-                index = i;
-                return true;
+                if (!_equippedWeaponData.ContainsKey(slot))
+                {
+                    index = (int)slot;
+                    return true;
+                }
             }
 
             index = -1;
