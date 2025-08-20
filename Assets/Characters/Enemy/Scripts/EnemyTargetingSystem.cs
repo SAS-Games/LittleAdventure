@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using EnemySystem;
 using SAS.StateMachineCharacterController;
 using SAS.Utilities.TagSystem;
@@ -7,23 +6,11 @@ using UnityEngine;
 
 public class EnemyTargetingSystem : MonoBase
 {
-    [Inject] ITargetRegistry _targetRegistry;
+    [Inject] private ITargetRegistry _targetRegistry;
+    [Inject] private IEnemyRegistry _enemyRegistry;
     [SerializeField] private TargetingProfileSO defaultProfile;
     [SerializeField] private float evaluationInterval = 1.5f;
-
-    private List<Enemy> _activeEnemies = new();
     private YieldInstruction _waitForSeconds;
-
-    public void RegisterEnemy(Enemy enemy)
-    {
-        if (!_activeEnemies.Contains(enemy))
-            _activeEnemies.Add(enemy);
-    }
-
-    public void UnregisterEnemy(Enemy enemy)
-    {
-        _activeEnemies.Remove(enemy);
-    }
 
     private void OnEnable()
     {
@@ -31,11 +18,16 @@ public class EnemyTargetingSystem : MonoBase
         StartCoroutine(EvaluateTargetsRoutine());
     }
 
+    private void OnDisable()
+    {
+        StopCoroutine(EvaluateTargetsRoutine());
+    }
+
     private IEnumerator EvaluateTargetsRoutine()
     {
         while (true)
         {
-            foreach (var enemy in _activeEnemies)
+            foreach (var enemy in _enemyRegistry.Enemies)
             {
                 var profile = enemy.TargetingProfile ?? defaultProfile;
                 var bestTarget = GetBestTargetFor(enemy, profile);
@@ -67,11 +59,5 @@ public class EnemyTargetingSystem : MonoBase
         }
 
         return bestTarget;
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        _activeEnemies.Clear();
     }
 }
