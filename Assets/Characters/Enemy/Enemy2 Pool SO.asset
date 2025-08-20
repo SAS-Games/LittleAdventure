@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b3afd2e910a2d4d8abb36eb38df812, type: 3}
   m_Name: Enemy2 Pool SO
   m_EditorClassIdentifier: 
-  _factory: {fileID: 11400000, guid: a27417bd3d169414eb397ff2fa8f2b9d, type: 2}
+  m_ID: Enemy2
+  _factory: {fileID: 11400000, guid: 55858d099e60cf340953e8fd6fd2228b, type: 2}
