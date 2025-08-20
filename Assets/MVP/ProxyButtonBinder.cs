@@ -11,15 +11,15 @@ public class ProxyButtonBinder : MonoBehaviour, MetaLocator.IHandler
 
     public void OnCoreLoaded(MetaLocator metaLocator)
     {
-        TrySubscribe(metaLocator);
+        TrySubscribe(metaLocator, isCore: true);
     }
 
     public void OnMetaLoaded(MetaLocator metaLocator)
     {
-        TrySubscribe(metaLocator);
+        TrySubscribe(metaLocator, isCore: false);
     }
 
-    private void TrySubscribe(MetaLocator metaLocator)
+    private void TrySubscribe(MetaLocator metaLocator, bool isCore)
     {
         if (_isSubscribed)
             return;
@@ -35,9 +35,11 @@ public class ProxyButtonBinder : MonoBehaviour, MetaLocator.IHandler
         }
         else
         {
-            Debug.LogWarning(
-                $"[ProxyButtonBinder<{name}>] No ProxyButton found with tag '{this.GetTag()}' on '{gameObject.name}'",
-                "ProxyButtonBinder");
+            var message = $"[ProxyButtonBinder<{name}>] No ProxyButton found with tag '{this.GetTag()}' on '{gameObject.name}'";
+            if (isCore)
+                Debug.LogError($"OnCoreLoaded : {message}", "ProxyButtonBinder");
+            else
+                Debug.LogWarning($"OnMetaLoaded : {message}", "ProxyButtonBinder");
         }
     }
 }
