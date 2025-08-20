@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace SAS.WeaponSystem
 {
@@ -20,16 +21,21 @@ namespace SAS.WeaponSystem
             public WeaponDataSO[] Weapons;
         }
 
-
-        [field: SerializeField] public List<Weapondata> WeaponData;
+        [SerializeField] private List<Weapondata> m_WeaponData;
+        [SerializeField] private WeaponDataSO m_DefaultPrimaryWeaponData;
         private Dictionary<WeaponSlot, WeaponDataSO> _equippedWeaponData = new Dictionary<WeaponSlot, WeaponDataSO>();
         public event Action<int, WeaponDataSO> OnWeaponDataChanged;
+
+        private void Awake()
+        {
+            _equippedWeaponData[WeaponSlot.Primary] = m_DefaultPrimaryWeaponData;
+        }
 
         public bool TrySetWeapon(WeaponSlot slot, WeaponDataSO newData, out WeaponDataSO oldData)
         {
             oldData = null;
 
-            var weaponData = WeaponData.Find(w => w.Slot == slot);
+            var weaponData = m_WeaponData.Find(w => w.Slot == slot);
             if (weaponData == null || weaponData.Weapons == null || weaponData.Weapons.Length == 0)
                 return false;
 
