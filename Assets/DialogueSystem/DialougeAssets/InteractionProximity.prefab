@@ -592,6 +592,10 @@ PrefabInstance:
       propertyPath: m_StringOptions
       value: 
       objectReference: {fileID: 11400000, guid: 0f6eb8eb544901146983bff55af916c7, type: 2}
+    - target: {fileID: 8888465880518418946, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
+      propertyPath: m_ShowOnce
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9187062788838591115, guid: c63afb221c1d5684eacdb1eb04028ec7, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1

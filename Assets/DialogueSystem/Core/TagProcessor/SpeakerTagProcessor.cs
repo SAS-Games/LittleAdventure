@@ -30,7 +30,6 @@ public class SpeakerTagProcessor : BaseTagProcessor
         {
             context.CurrentSpeakerId = speaker;
             SpeakerView speakerView = _speakersUi[speaker];
-            speakerView.gameObject.SetActive(true);
             foreach (var keyValue in parsed)
             {
                 switch (keyValue.Key)

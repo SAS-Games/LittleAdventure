@@ -56,6 +56,15 @@ public class DialoguePlayerDataBinder : MonoBehaviour
         healthPresenter.IncreaseMax(bonusHealth);
     }
     
+    private void UpgradeAttackDamage(string playerName, int cost, int bonusHealth)
+    {
+        var playerObj = _playerSetupModel.GetEntity(playerName);
+        var currencyPresenter = playerObj.GetComponent<ICurrencyPresenter>();
+        currencyPresenter.SetValue(currencyPresenter.GetValue() - cost);
+        //var healthPresenter = playerObj.GetComponent<StatPresenter<IHealthModel>>();
+        //healthPresenter.IncreaseMax(bonusHealth);
+    }
+    
     private void UnlockWeapon(string playerName, string weaponName)
     {
         var playerObj = _playerSetupModel.GetEntity(playerName);
@@ -82,6 +91,15 @@ public class DialoguePlayerDataBinder : MonoBehaviour
         dialogueHandler.InkExternalMethodRegistry.Unregister("grant_weapon");
     }
     
+    public void RegisterUpgradeAttackDamageMethod(DialogueHandler dialogueHandler)
+    {
+        dialogueHandler.InkExternalMethodRegistry.Register<string, int, int>("grant_damage", UpgradeAttackDamage);
+    }
+
+    public void UnregisterUpgradeAttackDamageMethod(DialogueHandler dialogueHandler)
+    {
+        dialogueHandler.InkExternalMethodRegistry.Unregister("grant_damage");
+    } 
     public void UpdateControlLabels(IDialogueHandler dialogueHandler)
     {
         var story = ((DialogueHandler)dialogueHandler).CurrentStory;

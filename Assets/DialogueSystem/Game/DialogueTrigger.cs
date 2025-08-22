@@ -12,7 +12,6 @@ public class DialogueTrigger : MonoBehaviour
     
     private void Start()
     {
-        _dialogueHandler = GetComponentInChildren<IDialogueHandler>(true);
         this.Initialize();
         if (m_AutoStart)
             ShowDialogue();
