@@ -53,6 +53,24 @@ namespace SAS.WeaponSystem
             OnWeaponDataChanged?.Invoke((int)slot, newData);
             return true;
         }
+        
+        public bool TrySetWeapon(WeaponSlot slot, string weaponName, out WeaponDataSO oldData)
+        {
+            oldData = null;
+
+            var weaponData = m_WeaponData.Find(w => w.Slot == slot);
+            if (weaponData == null || weaponData.Weapons == null || weaponData.Weapons.Length == 0)
+                return false;
+
+            var newData = Array.Find(weaponData.Weapons, w => 
+                string.Equals(w.Name, weaponName, StringComparison.OrdinalIgnoreCase));
+
+            if (newData == null)
+                return false;
+
+            return TrySetWeapon(slot, newData, out oldData);
+        }
+
 
         public bool TryGetWeapon(WeaponSlot index, out WeaponDataSO data)
         {

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9158374c9a5f6814eaa19fee24901316, type: 3}
   m_Name: Weapon Data
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
+  <Name>k__BackingField: Blade Of Dawn
   <Description>k__BackingField: 
   <View>k__BackingField: {fileID: 0}
   <AnimatorController>k__BackingField: {fileID: 0}
