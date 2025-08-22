@@ -1,6 +1,7 @@
 using Ink.Runtime;
 using SAS.DialogueSystem;
 using SAS.Utilities.TagSystem;
+using SAS.WeaponSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -54,6 +55,12 @@ public class DialoguePlayerDataBinder : MonoBehaviour
         var healthPresenter = playerObj.GetComponent<StatPresenter<IHealthModel>>();
         healthPresenter.IncreaseMax(bonusHealth);
     }
+    
+    private void UnlockWeapon(string playerName, string weaponName)
+    {
+        var playerObj = _playerSetupModel.GetEntity(playerName);
+        playerObj.GetComponent<WeaponInventory>().TrySetWeapon(WeaponInventory.WeaponSlot.Primary, weaponName, out _);
+    }
 
     public void RegisterGrantHealthMethod(DialogueHandler dialogueHandler)
     {
@@ -63,5 +70,21 @@ public class DialoguePlayerDataBinder : MonoBehaviour
     public void UnregisterGrantHealthMethod(DialogueHandler dialogueHandler)
     {
         dialogueHandler.InkExternalMethodRegistry.Unregister("grant_health");
+    }
+    
+    public void RegisterGrantWeaponMethod(DialogueHandler dialogueHandler)
+    {
+        dialogueHandler.InkExternalMethodRegistry.Register<string, string>("grant_weapon", UnlockWeapon);
+    }
+
+    public void UnregisterGrantWeaponMethod(DialogueHandler dialogueHandler)
+    {
+        dialogueHandler.InkExternalMethodRegistry.Unregister("grant_weapon");
+    }
+    
+    public void UpdateControlLabels(IDialogueHandler dialogueHandler)
+    {
+        var story = ((DialogueHandler)dialogueHandler).CurrentStory;
+        InkInputLabelSetter.SetControlLabelsFromPlayerInput(_interactedPlayerInput, story);
     }
 }

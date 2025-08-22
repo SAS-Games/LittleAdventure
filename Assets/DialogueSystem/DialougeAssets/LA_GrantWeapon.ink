@@ -11,13 +11,15 @@ EXTERNAL grant_weapon(player_name, weaponName)
 
 === NPC_UNLOCK_WEAPON ===
 Greetings, adventurers! I bestow upon you the legendary {weapon_name}.#speaker:id::npc, name::KAIROS, anim::Talk
-//~ grant_weapon(Player1_name, weapon_name)
-//~ grant_weapon(Player2_name, weapon_name)
+~ grant_weapon(Player1_name, weapon_name)
+~ grant_weapon(Player2_name, weapon_name)
 (Both players now wield the {weapon_name}!) #speaker:id::npc, name::KAIROS, anim::Talk
+To attack, press {attackButton}. #speaker:id::npc, name::KAIROS, anim::Talk
 -> END
 
 === SINGLEPLAYER_NPC_UNLOCK_WEAPON ===
 Greetings, adventurer! I bestow upon you the legendary {weapon_name}.#speaker:id::npc, name::KAIROS, anim::Talk
 ~ grant_weapon(Player1_name, weapon_name)
 (You now wield the {weapon_name}!) #speaker:id::npc, name::KAIROS, anim::Talk
+To attack, press {attackButton}. #speaker:id::npc, name::KAIROS, anim::Talk
 -> END
