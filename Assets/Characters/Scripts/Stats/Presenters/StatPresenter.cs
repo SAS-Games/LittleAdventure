@@ -32,6 +32,8 @@ public abstract class StatPresenter<TModel> : MonoBehaviour where TModel : IStat
         _model.Max.Subscribe(_ => OnValueChanged()).AddTo(this);
     }
 
+    public float Current => _model.Current.Value;
+
     protected virtual void OnValueChanged()
     {
         if (_rangeProxyView != null)
