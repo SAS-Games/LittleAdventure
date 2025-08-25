@@ -38,23 +38,27 @@ public static class InkInputLabelSetter
     {
         story.variablesState["dashButton"] = "R1";
         story.variablesState["attackButton"] = "⨉";
+        story.variablesState["ropeKey"] = "R2";
     }
 
     private static void ApplyXboxBindings(Story story)
     {
         story.variablesState["dashButton"] = "RB";
         story.variablesState["attackButton"] = "A";
+        story.variablesState["ropeKey"] = "RT";
     }
 
     private static void ApplyGenericGamepadBindings(Story story)
     {
         story.variablesState["dashButton"] = "RB";
         story.variablesState["attackButton"] = "South Button";
+        story.variablesState["ropeKey"] = "RT";
     }
 
     private static void ApplyKeyboardBindings(Story story)
     {
         story.variablesState["dashButton"] = "Shift";
         story.variablesState["attackButton"] = "Left Click";
+        story.variablesState["ropeKey"] = "R";
     }
 }

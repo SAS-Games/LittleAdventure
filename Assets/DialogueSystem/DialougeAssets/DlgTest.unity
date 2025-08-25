@@ -119,6 +119,67 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &43662058
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3437892731517705263, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232867076756611081, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_Name
+      value: InteractionProximity RopePullDialogue
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232867076756611081, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4d0d3670635dce34e8b7bd27a6ccc912, type: 3}
 --- !u!1001 &53957953
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -170,6 +231,10 @@ PrefabInstance:
     - target: {fileID: 8260911413589650595, guid: 2c83ad802e2d50940b227442f85e2a3b, type: 3}
       propertyPath: m_Name
       value: InteractionProximity AttckUpgradeDialogue
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260911413589650595, guid: 2c83ad802e2d50940b227442f85e2a3b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -958,3 +1023,4 @@ SceneRoots:
   - {fileID: 2009899117}
   - {fileID: 264183056}
   - {fileID: 53957953}
+  - {fileID: 43662058}
