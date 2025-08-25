@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -2533921595477074251, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnDialogueEnd.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: UnregisterGrantWeaponMethod
+      value: UnregisterUpgradeAttackDamageMethod
       objectReference: {fileID: 0}
     - target: {fileID: -2533921595477074251, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnDialogueStart.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
@@ -47,6 +47,10 @@ PrefabInstance:
     - target: {fileID: -2533921595477074251, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnDialogueStart.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
       value: BindPlayerData
+      objectReference: {fileID: 0}
+    - target: {fileID: -2533921595477074251, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
+      propertyPath: m_OnDialogueStart.m_PersistentCalls.m_Calls.Array.data[5].m_MethodName
+      value: RegisterUpgradeAttackDamageMethod
       objectReference: {fileID: 0}
     - target: {fileID: -2533921595477074251, guid: 140e071dc675e9146b54b776ec67aae3, type: 3}
       propertyPath: m_OnDialogueEnd.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName

@@ -15,7 +15,7 @@ public class SpeakerView : MonoBehaviour
     {
         this.Initialize();
     }
-    
+
     public void SetName(string name)
     {
         if (!string.IsNullOrEmpty(name))
@@ -27,6 +27,7 @@ public class SpeakerView : MonoBehaviour
         if (!string.IsNullOrEmpty(spriteName))
             SetImage(m_ImageKeyMapConfig.GetImage(spriteName));
     }
+
     public void SetImage(Sprite sprite)
     {
         if (sprite)
@@ -35,9 +36,10 @@ public class SpeakerView : MonoBehaviour
 
     public void SetAnimationState(string stateName)
     {
-        if (m_PortraitAnimator && !string.IsNullOrEmpty(stateName))
+        if (!string.IsNullOrEmpty(stateName))
         {
-            m_PortraitAnimator.Play(stateName);
+            if (m_PortraitAnimator)
+                m_PortraitAnimator.Play(stateName);
             _animatorProcessor?.Process(stateName);
         }
     }
