@@ -136,6 +136,7 @@ namespace SAS.StringTest
                         var entry = stringOptions.Entries[newIndex - 1];
                         guidProp.stringValue = entry.guid;
                         resolvedNameProp.stringValue = entry.name;
+                        sourceOptionsProp.objectReferenceValue = stringOptions;
                     }
                 }
             }

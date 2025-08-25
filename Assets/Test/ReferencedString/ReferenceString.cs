@@ -10,11 +10,25 @@ namespace SAS.StringTest
 #if UNITY_EDITOR
         [SerializeField] private string lastKnownName; // For missing keys in editor
 #endif
-        [SerializeField] private string resolvedName; // Baked string used at runtime
-        [SerializeField] private ReferenceStringOptions sourceOptions; // Optional custom SO reference
+        [SerializeField] private string resolvedName;
+        [SerializeField] private ReferenceStringOptions sourceOptions;
         private bool _isResolved = false;
-        public string GUID => guid;
-        public string Name => _isResolved? resolvedName:sourceOptions.GetNameByGUID(guid); // No runtime lookup needed
+        public string Name
+        {
+            get
+            {
+                if (!_isResolved)
+                {
+                    resolvedName = sourceOptions.GetNameByGUID(guid);
+                    _isResolved = true;
+                }
+                return resolvedName;
+            }
+        }
+        public override string ToString()
+        {
+            return Name;
+        }
 
 #if UNITY_EDITOR
         public void Set(string newGuid, string newName, ReferenceStringOptions sourceSO)
