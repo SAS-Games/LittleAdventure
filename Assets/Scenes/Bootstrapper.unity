@@ -333,10 +333,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1685250647, guid: 6590d4eca4ab3de42a2372b05d8cc2e2, type: 3}
       propertyPath: m_Commands.Array.size
-      value: 4
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1685250647, guid: 6590d4eca4ab3de42a2372b05d8cc2e2, type: 3}
-      propertyPath: 'm_Commands.Array.data[3]'
+      propertyPath: 'm_Commands.Array.data[6]'
       value: 
       objectReference: {fileID: 11400000, guid: cad9520ac83ef9742bd52e83592a8a91, type: 2}
     - target: {fileID: 981976114766360839, guid: 6590d4eca4ab3de42a2372b05d8cc2e2, type: 3}
