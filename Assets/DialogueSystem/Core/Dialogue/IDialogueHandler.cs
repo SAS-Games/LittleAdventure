@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IDialogueHandler : IBindable
 {
-    void EnterDialogueMode(TextAsset inkJSON);
+    void EnterDialogueMode(TextAsset inkJSON, GameObject initiator);
     bool DialogueIsPlaying { get; }
     InkExternalMethodRegistry InkExternalMethodRegistry { get; }
 }
@@ -11,9 +11,11 @@ public interface IDialogueHandler : IBindable
 public struct DialogueStartEvent : IEvent
 {
     public IDialogueHandler dialogueHandler;
+    public GameObject initiator;
 }
 
 public struct DialogueEndEvent : IEvent
 {
     public IDialogueHandler dialogueHandler;
+    public GameObject initiator;
 }

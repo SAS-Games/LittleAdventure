@@ -35,6 +35,7 @@ namespace SAS.DialogueSystem
         public Action OnEnterDialogueMode;
         public Action OnExitDialogueMode;
         public Action OnSkipRequested;
+        private GameObject _initiator;
 
         private void Awake()
         {
@@ -57,13 +58,17 @@ namespace SAS.DialogueSystem
             m_DialoguePanel.SetActive(false);
         }
 
-        public void EnterDialogueMode(TextAsset inkJSON)
+        public void EnterDialogueMode(TextAsset inkJSON, GameObject initiator)
         {
             if (DialogueIsPlaying)
                 return;
             CurrentStory = new Story(inkJSON.text);
-           
-            EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent { dialogueHandler = this });
+            _initiator = initiator;
+            EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent
+            {
+                dialogueHandler = this,
+                initiator = initiator
+            });
             OnEnterDialogueMode?.Invoke();
             DialogueIsPlaying = true;
             m_DialoguePanel.SetActive(true);
@@ -85,7 +90,12 @@ namespace SAS.DialogueSystem
             // go back to default audio
             //(_typewriterEffect as ITypewriterAudioEffect)?.SetDefaultAudioInfo();
             OnExitDialogueMode?.Invoke();
-            EventBus<DialogueEndEvent>.Raise(new DialogueEndEvent { dialogueHandler = this });
+            EventBus<DialogueEndEvent>.Raise(new DialogueEndEvent
+            {
+                dialogueHandler = this,
+                initiator = _initiator
+            });
+            _initiator = null;
         }
 
         public void ContinueStory()

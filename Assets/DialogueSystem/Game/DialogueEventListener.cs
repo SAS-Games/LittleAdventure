@@ -40,6 +40,8 @@ public class DialogueEventListener : MonoBehaviour
 
     private void OnDialogueStartInternal(DialogueStartEvent evt)
     {
+        if (evt.initiator != gameObject)
+            return;
         var dialogueHandler = _dialogueHandler as DialogueHandler;
         m_OnDialogueStart?.Invoke(dialogueHandler);
         OnDialogueStart(evt);
@@ -53,6 +55,8 @@ public class DialogueEventListener : MonoBehaviour
 
     private void OnDialogueEndInternal(DialogueEndEvent evt)
     {
+        if (evt.initiator != gameObject)
+            return;
         var dialogueHandler = _dialogueHandler as DialogueHandler;
         m_OnDialogueEnd?.Invoke(dialogueHandler);
         OnDialogueEnd(evt);

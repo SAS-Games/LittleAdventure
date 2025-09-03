@@ -27,10 +27,10 @@ public class DialogueTrigger : MonoBehaviour
             if (!_triggered)
             {
                 _triggered = true;
-                _dialogueHandler.EnterDialogueMode(m_InkJSON);
+                _dialogueHandler.EnterDialogueMode(m_InkJSON, gameObject);
             }
         }
         else
-            _dialogueHandler.EnterDialogueMode(m_InkJSON);
+            _dialogueHandler.EnterDialogueMode(m_InkJSON, gameObject);
     }
 }
