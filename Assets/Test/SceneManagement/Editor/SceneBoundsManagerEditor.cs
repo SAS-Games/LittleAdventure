@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-[CustomEditor(typeof(SceneBoundsManager))]
+[CustomEditor(typeof(RegionManager))]
 public class SceneBoundsManagerEditor : Editor
 {
     private BoxBoundsHandle boundsHandle = new BoxBoundsHandle();
@@ -21,7 +21,7 @@ public class SceneBoundsManagerEditor : Editor
     private void DuringSceneGUI(SceneView sceneView)
     {
         // Draw for all active managers in the scene, not only the selected one
-        var managers = Object.FindObjectsOfType<SceneBoundsManager>();
+        var managers = Object.FindObjectsOfType<RegionManager>();
         foreach (var manager in managers)
         {
             if (manager.Scenes == null) continue;

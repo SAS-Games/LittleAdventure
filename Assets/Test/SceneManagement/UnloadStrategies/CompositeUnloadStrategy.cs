@@ -8,7 +8,7 @@ public class CompositeUnloadStrategy : UnloadStrategy
     [SerializeField] private CombinationMode mode = CombinationMode.AND;
     [SerializeField] private UnloadStrategy[] strategies;
 
-    public override bool ShouldUnload(Bounds unloadBounds, SceneBoundsManager.SceneRef sceneRef)
+    public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
     {
         if (strategies == null || strategies.Length == 0)
             return false;
@@ -19,7 +19,7 @@ public class CompositeUnloadStrategy : UnloadStrategy
                 foreach (var strategy in strategies)
                 {
                     if (strategy == null) continue;
-                    if (!strategy.ShouldUnload(unloadBounds, sceneRef))
+                    if (!strategy.ShouldUnload(unloadBounds, region))
                         return false; // fail fast
                 }
                 return true;
@@ -28,7 +28,7 @@ public class CompositeUnloadStrategy : UnloadStrategy
                 foreach (var strategy in strategies)
                 {
                     if (strategy == null) continue;
-                    if (strategy.ShouldUnload(unloadBounds, sceneRef))
+                    if (strategy.ShouldUnload(unloadBounds, region))
                         return true; // succeed fast
                 }
                 return false;

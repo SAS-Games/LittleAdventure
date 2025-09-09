@@ -1,18 +1,17 @@
-using System;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public partial class SceneBoundsManager
+public partial class RegionManager
 {
-    public partial class SceneRef
+    public partial class Region
     {
         public SceneAsset sceneAsset;
 
         public void OnValidate()
         {
             if (sceneAsset != null)
-                sceneName = sceneAsset.name;
+                RegionName = sceneAsset.name;
         }
     }
 
@@ -28,7 +27,7 @@ public partial class SceneBoundsManager
 
             foreach (var go in scene.GetRootGameObjects())
             {
-                var sb = go.GetComponentInChildren<SceneBound>();
+                var sb = go.GetComponentInChildren<RegionBound>();
                 if (sb != null)
                 {
                     sceneRef.cachedBounds = new Bounds(
@@ -43,22 +42,22 @@ public partial class SceneBoundsManager
         }
     }
 
-    public void ApplyBoundsToScene(SceneRef sceneRef)
+    public void ApplyBoundsToScene(Region region)
     {
-        if (sceneRef.sceneAsset == null) return;
+        if (region.sceneAsset == null) return;
 
-        string scenePath = AssetDatabase.GetAssetPath(sceneRef.sceneAsset);
+        string scenePath = AssetDatabase.GetAssetPath(region.sceneAsset);
         var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
         foreach (var go in scene.GetRootGameObjects())
         {
-            var sb = go.GetComponentInChildren<SceneBound>();
+            var sb = go.GetComponentInChildren<RegionBound>();
             if (sb != null)
             {
                 Undo.RecordObject(sb, "Update Scene Bound");
                 sb.Bounds = new Bounds(
-                    sb.transform.InverseTransformPoint(sceneRef.cachedBounds.center),
-                    sceneRef.cachedBounds.size
+                    sb.transform.InverseTransformPoint(region.cachedBounds.center),
+                    region.cachedBounds.size
                 );
                 EditorUtility.SetDirty(sb);
                 break;
@@ -74,6 +73,23 @@ public partial class SceneBoundsManager
         foreach (var sceneRef in Scenes)
         {
             sceneRef.OnValidate();
+        }
+    }
+    
+    private void OnDrawGizmos()
+    {
+        foreach (var s in Scenes)
+        {
+            if (s.sceneAsset == null) continue;
+
+            bool isLoaded = _loadedSceneNames.Contains(s.sceneAsset.name);
+            Color wireColor   = isLoaded ? Color.green : Color.cyan;
+            Color fillColor   = wireColor; 
+            fillColor.a       = 0.1f; 
+            Gizmos.color = fillColor;
+            Gizmos.DrawCube(s.cachedBounds.center, s.cachedBounds.size);
+            Gizmos.color = wireColor;
+            Gizmos.DrawWireCube(s.cachedBounds.center, s.cachedBounds.size);
         }
     }
 }

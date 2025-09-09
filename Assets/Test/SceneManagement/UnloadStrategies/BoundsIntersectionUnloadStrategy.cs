@@ -3,8 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Streaming/UnloadStrategies/Bounds Intersection")]
 public class BoundsIntersectionUnloadStrategy : UnloadStrategy
 {
-    public override bool ShouldUnload(Bounds unloadBounds, SceneBoundsManager.SceneRef sceneRef)
+    public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
     {
-        return !unloadBounds.Intersects(sceneRef.cachedBounds);
+        return !unloadBounds.Intersects(region.cachedBounds);
     }
 }

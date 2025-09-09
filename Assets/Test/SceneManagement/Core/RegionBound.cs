@@ -1,14 +1,14 @@
 using UnityEngine;
 
 [ExecuteAlways]
-public class SceneBound : MonoBehaviour
+public class RegionBound : MonoBehaviour
 {
-    [SerializeField] private Bounds m_SceneBounds;
+    [SerializeField] private Bounds m_RegionBounds;
 
     public Bounds Bounds
     {
-        get => m_SceneBounds;
-        set => m_SceneBounds = value;
+        get => m_RegionBounds;
+        set => m_RegionBounds = value;
     }
 
 #if UNITY_EDITOR
@@ -16,7 +16,7 @@ public class SceneBound : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.DrawWireCube(m_SceneBounds.center, m_SceneBounds.size);
+        Gizmos.DrawWireCube(m_RegionBounds.center, m_RegionBounds.size);
     }
 #endif
 }

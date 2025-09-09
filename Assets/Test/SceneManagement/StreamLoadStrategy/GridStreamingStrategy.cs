@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridStreamingStrategy : ISceneStreamingStrategy
+[CreateAssetMenu(menuName = "Streaming/Strategies/GridStrategy")]
+public class GridStreamingStrategy : SceneStreamingStrategySO
 {
-    private readonly Dictionary<Vector3Int, List<SceneBoundsManager.SceneRef>> _grid 
-        = new Dictionary<Vector3Int, List<SceneBoundsManager.SceneRef>>();
-    private float _cellSize;
+    private readonly Dictionary<Vector3Int, List<RegionManager.Region>> _grid = new();
+    [SerializeField] private float m_CellSize = 100;
 
-    public void BuildIndex(List<SceneBoundsManager.SceneRef> scenes, float cellSize = 100f)
+    public override void Initialize(List<RegionManager.Region> sceneRefs)
     {
         _grid.Clear();
-        _cellSize = cellSize;
-
-        foreach (var scene in scenes)
+        foreach (var scene in sceneRefs)
         {
             var minCell = WorldToCell(scene.cachedBounds.min);
             var maxCell = WorldToCell(scene.cachedBounds.max);
@@ -24,17 +22,18 @@ public class GridStreamingStrategy : ISceneStreamingStrategy
                 var cell = new Vector3Int(x, y, z);
                 if (!_grid.TryGetValue(cell, out var list))
                 {
-                    list = new List<SceneBoundsManager.SceneRef>();
+                    list = new List<RegionManager.Region>();
                     _grid[cell] = list;
                 }
+
                 list.Add(scene);
             }
         }
     }
 
-    public List<SceneBoundsManager.SceneRef> GetNearbyScenes(Bounds queryBounds)
+    public override List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds)
     {
-        var result = new HashSet<SceneBoundsManager.SceneRef>(); // ensures no duplicates
+        var result = new HashSet<RegionManager.Region>(); // ensures no duplicates
 
         var minCell = WorldToCell(queryBounds.min);
         var maxCell = WorldToCell(queryBounds.max);
@@ -54,15 +53,15 @@ public class GridStreamingStrategy : ISceneStreamingStrategy
             }
         }
 
-        return new List<SceneBoundsManager.SceneRef>(result);
+        return new List<RegionManager.Region>(result);
     }
 
     private Vector3Int WorldToCell(Vector3 pos)
     {
         return new Vector3Int(
-            Mathf.FloorToInt(pos.x / _cellSize),
-            Mathf.FloorToInt(pos.y / _cellSize),
-            Mathf.FloorToInt(pos.z / _cellSize)
+            Mathf.FloorToInt(pos.x / m_CellSize),
+            Mathf.FloorToInt(pos.y / m_CellSize),
+            Mathf.FloorToInt(pos.z / m_CellSize)
         );
     }
 }

@@ -1,37 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class BruteForceStreamingStrategy : ISceneStreamingStrategy
+[CreateAssetMenu(menuName = "Streaming/Strategies/BruteForceStrategy")]
+public class BruteForceStreamingStrategy : SceneStreamingStrategySO
 {
-    private List<SceneBoundsManager.SceneRef> _allScenes;
-
-    public void BuildIndex(List<SceneBoundsManager.SceneRef> scenes, float cellSize = 100f)
+    private List<RegionManager.Region> _sceneRefs;
+    public override void Initialize(List<RegionManager.Region> sceneRefs)
     {
-        _allScenes = scenes;
+        _sceneRefs = sceneRefs;
     }
 
-    public List<SceneBoundsManager.SceneRef> GetNearbyScenes(Bounds queryBounds)
+    public override List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds)
     {
-        var result = new List<SceneBoundsManager.SceneRef>();
+        var result = new List<RegionManager.Region>();
 
-        foreach (var scene in _allScenes)
+        foreach (var scene in _sceneRefs)
         {
             if (scene.cachedBounds.Intersects(queryBounds))
-                result.Add(scene);
-        }
-
-        return result;
-    }
-
-    public List<SceneBoundsManager.SceneRef> GetNearbyScenes(Vector3 position, float range)
-    {
-        var result = new List<SceneBoundsManager.SceneRef>();
-        Bounds queryArea = new Bounds(position, new Vector3(range, range, range) * 2);
-
-        foreach (var scene in _allScenes)
-        {
-            if (scene.cachedBounds.Intersects(queryArea))
                 result.Add(scene);
         }
 

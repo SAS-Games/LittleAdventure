@@ -3,5 +3,12 @@ using UnityEngine;
 
 public interface ISceneStreamingStrategy
 {
-    List<SceneBoundsManager.SceneRef> GetNearbyScenes(Bounds queryBounds);
+    void Initialize(List<RegionManager.Region> sceneRefs);
+    List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds);
+}
+
+public abstract class SceneStreamingStrategySO : ScriptableObject, ISceneStreamingStrategy
+{
+    public abstract void Initialize(List<RegionManager.Region> sceneRefs);
+    public abstract List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds);
 }

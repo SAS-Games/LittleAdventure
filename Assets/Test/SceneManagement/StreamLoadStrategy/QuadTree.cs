@@ -7,7 +7,7 @@ public class QuadtreeNode
     private readonly int depth;
     private readonly int maxDepth;
     private readonly int maxCapacity;
-    private List<SceneBoundsManager.SceneRef> objects;
+    private List<RegionManager.Region> objects;
     private QuadtreeNode[] children;
 
     public QuadtreeNode(Bounds bounds, int depth, int maxDepth, int maxCapacity)
@@ -16,18 +16,18 @@ public class QuadtreeNode
         this.depth = depth;
         this.maxDepth = maxDepth;
         this.maxCapacity = maxCapacity;
-        objects = new List<SceneBoundsManager.SceneRef>();
+        objects = new List<RegionManager.Region>();
         children = null;
     }
 
-    public void Insert(SceneBoundsManager.SceneRef sceneRef)
+    public void Insert(RegionManager.Region region)
     {
-        if (!bounds.Intersects(sceneRef.cachedBounds))
+        if (!bounds.Intersects(region.cachedBounds))
             return;
 
         if (children == null)
         {
-            objects.Add(sceneRef);
+            objects.Add(region);
 
             if (objects.Count > maxCapacity && depth < maxDepth)
                 Subdivide();
@@ -35,11 +35,11 @@ public class QuadtreeNode
         else
         {
             foreach (var child in children)
-                child.Insert(sceneRef);
+                child.Insert(region);
         }
     }
 
-    public void Query(Bounds range, List<SceneBoundsManager.SceneRef> results)
+    public void Query(Bounds range, List<RegionManager.Region> results)
     {
         if (!bounds.Intersects(range))
             return;

@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class GridStreamingStrategy2D : ISceneStreamingStrategy
+[CreateAssetMenu(menuName = "Streaming/Strategies/GridStrategy2D")]
+public class GridStreamingStrategy2D : SceneStreamingStrategySO
 {
-    private readonly Dictionary<Vector2Int, List<SceneBoundsManager.SceneRef>> _grid = new();
-    private float _cellSize;
+    private readonly Dictionary<Vector2Int, List<RegionManager.Region>> _grid = new();
+    [SerializeField] private float m_CellSize = 100;
 
-    public void BuildIndex(List<SceneBoundsManager.SceneRef> scenes, float cellSize = 100f)
+    public override void Initialize(List<RegionManager.Region> sceneRefs)
     {
         _grid.Clear();
-        _cellSize = cellSize;
 
-        foreach (var scene in scenes)
+        foreach (var scene in sceneRefs)
         {
             var minCell = WorldToCell(scene.cachedBounds.min);
             var maxCell = WorldToCell(scene.cachedBounds.max);
@@ -22,7 +23,7 @@ public class GridStreamingStrategy2D : ISceneStreamingStrategy
                 var cell = new Vector2Int(x, y);
                 if (!_grid.TryGetValue(cell, out var list))
                 {
-                    list = new List<SceneBoundsManager.SceneRef>();
+                    list = new List<RegionManager.Region>();
                     _grid[cell] = list;
                 }
 
@@ -31,9 +32,9 @@ public class GridStreamingStrategy2D : ISceneStreamingStrategy
         }
     }
 
-    public List<SceneBoundsManager.SceneRef> GetNearbyScenes(Bounds queryBounds)
+    public override List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds)
     {
-        var result = new HashSet<SceneBoundsManager.SceneRef>();
+        var result = new HashSet<RegionManager.Region>();
 
         var minCell = WorldToCell(queryBounds.min);
         var maxCell = WorldToCell(queryBounds.max);
@@ -52,14 +53,14 @@ public class GridStreamingStrategy2D : ISceneStreamingStrategy
             }
         }
 
-        return new List<SceneBoundsManager.SceneRef>(result);
+        return new List<RegionManager.Region>(result);
     }
 
     private Vector2Int WorldToCell(Vector3 pos)
     {
         return new Vector2Int(
-            Mathf.FloorToInt(pos.x / _cellSize),
-            Mathf.FloorToInt(pos.y / _cellSize)
+            Mathf.FloorToInt(pos.x / m_CellSize),
+            Mathf.FloorToInt(pos.y / m_CellSize)
         );
     }
 }
