@@ -16,7 +16,7 @@ public class BruteForceRegionSelection : RegionSelectionStrategySO
 
         foreach (var scene in _sceneRefs)
         {
-            if (scene.cachedBounds.Intersects(queryBounds))
+            if (scene.CachedBounds.Intersects(queryBounds))
                 result.Add(scene);
         }
 

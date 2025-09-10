@@ -14,7 +14,7 @@ public class QuadtreeRegionSelection : RegionSelectionStrategySO
         // Find world bounds from scenes
         Bounds worldBounds = new Bounds(Vector3.zero, Vector3.one);
         foreach (var scene in sceneRefs)
-            worldBounds.Encapsulate(scene.cachedBounds);
+            worldBounds.Encapsulate(scene.CachedBounds);
 
         root = new QuadtreeNode(worldBounds, 0, maxDepth, maxCapacity);
 

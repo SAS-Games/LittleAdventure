@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 [RequireComponent(typeof(RegionManager)), DisallowMultipleComponent]
 public class StreamingController : MonoBehaviour
 {
-    [Header("Dependencies")] 
-    [SerializeField] private MonoBehaviour loaderComponent; // must implement IStreamingLoader<Region>
-    [SerializeField] private MonoBehaviour targetComponent; // must implement IStreamingTarget
+    const string TAG = "StreamingController";
 
-    [Header("Streaming Settings")] 
-    [SerializeField] private float m_UpdateInterval = 0.1f;
+    [Header("Dependencies")] [SerializeField]
+    private MonoBehaviour m_StreamingLoader;
+
+    [Header("Streaming Settings")] [SerializeField]
+    private float m_UpdateInterval = 0.1f;
 
     private IStreamingLoader<RegionManager.Region> _streamingLoader;
     private IRegionLoadBoundsProvider _target;
@@ -25,18 +27,10 @@ public class StreamingController : MonoBehaviour
     {
         _regionManager = GetComponent<RegionManager>();
 
-        _streamingLoader = loaderComponent as IStreamingLoader<RegionManager.Region>;
+        _streamingLoader = m_StreamingLoader as IStreamingLoader<RegionManager.Region>;
         if (_streamingLoader == null)
         {
-            Debug.LogError("[StreamingController] Loader must implement IStreamingLoader<Region>.");
-            enabled = false;
-            return;
-        }
-
-        _target = targetComponent as IRegionLoadBoundsProvider;
-        if (_target == null)
-        {
-            Debug.LogError("[StreamingController] Target must implement IStreamingTarget.");
+            Debug.LogError("Loader must implement IStreamingLoader<Region>.", this, TAG);
             enabled = false;
             return;
         }
@@ -44,6 +38,9 @@ public class StreamingController : MonoBehaviour
 
     private void Update()
     {
+        if (_target == null)
+            return;
+
         if (Time.time - _lastUpdateTime < m_UpdateInterval) return;
         _lastUpdateTime = Time.time;
 
@@ -87,17 +84,20 @@ public class StreamingController : MonoBehaviour
 
         foreach (var region in _unloadCandidates)
         {
-            if (region.unloadStrategy == null) continue;
+            if (region.UnloadStrategy == null) continue;
 
-            if (region.unloadStrategy.ShouldUnload(unloadBounds, region) && !_streamingLoader.IsLoading(region))
-            {
+            if (region.UnloadStrategy.ShouldUnload(unloadBounds, region) && !_streamingLoader.IsLoading(region))
                 _streamingLoader.Unload(region, OnUnloadComplete);
-            }
         }
     }
 
     private void OnLoadComplete(RegionManager.Region region) => _loadedRegions.Add(region);
     private void OnUnloadComplete(RegionManager.Region region) => _loadedRegions.Remove(region);
+
+    public void SetRegionLoadBoundsProvider(IRegionLoadBoundsProvider regionLoadBoundsProvider)
+    {
+        _target = regionLoadBoundsProvider;
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()

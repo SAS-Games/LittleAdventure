@@ -29,6 +29,6 @@ public class RegionStreamingLoader : MonoBehaviour, IStreamingLoader<RegionManag
 
     private IStreamingLoader<RegionManager.Region> GetLoader(RegionManager.Region region)
     {
-        return region.regionType == RegionManager.RegionType.Scene ? _sceneLoader : _prefabLoader;
+        return region.Type == RegionManager.RegionType.Scene ? _sceneLoader : _prefabLoader;
     }
 }

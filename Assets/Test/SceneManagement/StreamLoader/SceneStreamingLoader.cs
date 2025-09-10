@@ -10,7 +10,7 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
 
     public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
     {
-        if (region.regionType != RegionManager.RegionType.Scene || _loadingRegions.Contains(region))
+        if (region.Type != RegionManager.RegionType.Scene || _loadingRegions.Contains(region))
             return;
 
         _loadingRegions.Add(region);
@@ -19,7 +19,7 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
 
     private async Task LoadSceneAsync(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(region.sceneRef.ScenePath, LoadSceneMode.Additive);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(region.SceneRef.ScenePath, LoadSceneMode.Additive);
         asyncLoad.allowSceneActivation = true;
         await asyncLoad.ToTask();
 
@@ -29,13 +29,13 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
 
     public void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
     {
-        if (region.regionType != RegionManager.RegionType.Scene) return;
+        if (region.Type != RegionManager.RegionType.Scene) return;
         _ = UnloadSceneAsync(region, onUnloaded);
     }
 
     private async Task UnloadSceneAsync(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
     {
-        AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(region.sceneRef.ScenePath);
+        AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(region.SceneRef.ScenePath);
         if (asyncUnload != null)
             await asyncUnload.ToTask();
 

@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Debug = SAS.Debug;
 
 public partial class RegionManager : MonoBehaviour
 {
+    const string TAG = "RegionManager";
+
     public enum RegionType
     {
         Scene,
@@ -14,21 +17,17 @@ public partial class RegionManager : MonoBehaviour
     [Serializable]
     public partial class Region
     {
-        public RegionType regionType = RegionType.Scene;
-        public SceneReference sceneRef;
-        public AssetReferenceGameObject prefabAddress;
-        public Bounds cachedBounds;
-        public UnloadStrategy unloadStrategy;
-
-        [field: SerializeField, ReadOnly] 
-        public string RegionName { get; private set; }
+        [field: SerializeField] public RegionType Type { get; private set; } = RegionType.Scene;
+        [field: SerializeField] public SceneReference SceneRef { get; private set; }
+        [field: SerializeField] public AssetReferenceGameObject PrefabRef { get; private set; }
+        [field: SerializeField] public Bounds CachedBounds { get; set; }
+        [field: SerializeField] public UnloadStrategy UnloadStrategy { get; private set; }
+        [field: SerializeField, ReadOnly] public string RegionName { get; private set; }
     }
 
-    [field: SerializeField] 
-    public List<Region> Regions { get; private set; } = new();
+    [field: SerializeField] public List<Region> Regions { get; private set; } = new();
 
-    [SerializeField] 
-    private RegionSelectionStrategySO m_RegionSelectionStrategy;
+    [SerializeField] private RegionSelectionStrategySO m_RegionSelectionStrategy;
 
     private readonly HashSet<Region> _loadedRegions = new();
 
@@ -39,18 +38,18 @@ public partial class RegionManager : MonoBehaviour
         {
             if (string.IsNullOrEmpty(region.RegionName))
             {
-                Debug.LogWarning($"[RegionManager] Region has no valid name: {region.regionType}");
+                Debug.LogWarning($"Region has no valid name: {region.Type}", this, TAG);
                 continue;
             }
 
             if (!seenNames.Add(region.RegionName))
-                Debug.LogWarning($"[RegionManager] Duplicate region name detected: {region.RegionName}");
+                Debug.LogWarning($"Duplicate region name detected: {region.RegionName}", this, TAG);
         }
 
         if (m_RegionSelectionStrategy != null)
             m_RegionSelectionStrategy.Initialize(Regions);
         else
-            Debug.LogError("[RegionManager] No RegionSelectionStrategy assigned!");
+            Debug.LogError("No RegionSelectionStrategy assigned!", this, TAG);
     }
 
     public void UpdateLoadedRegions(HashSet<Region> loadedRegions)

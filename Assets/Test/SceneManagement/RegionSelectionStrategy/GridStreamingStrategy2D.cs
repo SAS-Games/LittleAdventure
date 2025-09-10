@@ -14,8 +14,8 @@ public class GridRegionSelection2D : RegionSelectionStrategySO
 
         foreach (var scene in sceneRefs)
         {
-            var minCell = WorldToCell(scene.cachedBounds.min);
-            var maxCell = WorldToCell(scene.cachedBounds.max);
+            var minCell = WorldToCell(scene.CachedBounds.min);
+            var maxCell = WorldToCell(scene.CachedBounds.max);
 
             for (int x = minCell.x; x <= maxCell.x; x++)
             for (int y = minCell.y; y <= maxCell.y; y++)
@@ -47,7 +47,7 @@ public class GridRegionSelection2D : RegionSelectionStrategySO
             {
                 foreach (var scene in list)
                 {
-                    if (scene.cachedBounds.Intersects(queryBounds))
+                    if (scene.CachedBounds.Intersects(queryBounds))
                         result.Add(scene);
                 }
             }

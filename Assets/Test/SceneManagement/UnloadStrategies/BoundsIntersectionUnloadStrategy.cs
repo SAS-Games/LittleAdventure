@@ -5,6 +5,6 @@ public class BoundsIntersectionUnloadStrategy : UnloadStrategy
 {
     public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
     {
-        return !unloadBounds.Intersects(region.cachedBounds);
+        return !unloadBounds.Intersects(region.CachedBounds);
     }
 }

@@ -11,7 +11,7 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
 
     public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
     {
-        if (region.regionType != RegionManager.RegionType.Prefab || _loadingRegions.Contains(region)) 
+        if (region.Type != RegionManager.RegionType.Prefab || _loadingRegions.Contains(region)) 
             return;
 
         _loadingRegions.Add(region);
@@ -20,7 +20,7 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
 
     private async Task LoadPrefabAsync(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
     {
-        var handle = region.prefabAddress.LoadAssetAsync<GameObject>();
+        var handle = region.PrefabRef.LoadAssetAsync<GameObject>();
         try
         {
             GameObject prefab = await handle.Task;
@@ -46,7 +46,7 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
             _loadedInstances.Remove(region);
         }
 
-        region.prefabAddress?.ReleaseAsset();
+        region.PrefabRef?.ReleaseAsset();
         onUnloaded?.Invoke(region);
     }
 

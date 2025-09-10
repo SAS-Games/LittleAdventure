@@ -28,9 +28,9 @@ public class SceneBoundsManagerEditor : Editor
 
             foreach (var region in manager.Regions)
             {
-                if (region.sceneRef == null) continue;
+                if (region.SceneRef == null) continue;
 
-                var bounds = region.cachedBounds;
+                var bounds = region.CachedBounds;
 
                 // Setup handle
                 boundsHandle.center = bounds.center;
@@ -41,7 +41,7 @@ public class SceneBoundsManagerEditor : Editor
                 if (EditorGUI.EndChangeCheck())
                 {
                     Undo.RecordObject(manager, "Modify Scene Bound");
-                    region.cachedBounds = new Bounds(boundsHandle.center, boundsHandle.size);
+                    region.CachedBounds = new Bounds(boundsHandle.center, boundsHandle.size);
 
                     // Push changes back into additive scene
                     manager.ApplyBounds(region);
@@ -49,8 +49,8 @@ public class SceneBoundsManagerEditor : Editor
                 }
 
                 // Draw label above bounds
-                if (region.sceneRef?.SceneAsset != null)
-                    Handles.Label(bounds.center + Vector3.up * bounds.extents.y, region.sceneRef.SceneAsset.name,
+                if (region.SceneRef?.SceneAsset != null)
+                    Handles.Label(bounds.center + Vector3.up * bounds.extents.y, region.SceneRef.SceneAsset.name,
                         EditorStyles.boldLabel);
             }
         }

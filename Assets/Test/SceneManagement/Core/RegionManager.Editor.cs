@@ -9,21 +9,21 @@ public partial class RegionManager
     {
         public void OnValidate()
         {
-            switch (regionType)
+            switch (Type)
             {
                 case RegionType.Scene:
-                    if (sceneRef != null && sceneRef.SceneAsset != null)
-                        RegionName = sceneRef.SceneAsset.name;
+                    if (SceneRef != null && SceneRef.SceneAsset != null)
+                        RegionName = SceneRef.SceneAsset.name;
                     else
                         RegionName = string.Empty;
                     break;
 
                 case RegionType.Prefab:
-                    if (prefabAddress != null)
+                    if (PrefabRef != null)
                     {
-                        RegionName = prefabAddress.editorAsset != null 
-                            ? prefabAddress.editorAsset.name 
-                            : prefabAddress.RuntimeKey.ToString();
+                        RegionName = PrefabRef.editorAsset != null 
+                            ? PrefabRef.editorAsset.name 
+                            : PrefabRef.RuntimeKey.ToString();
                     }
                     else
                         RegionName = string.Empty;
@@ -34,12 +34,12 @@ public partial class RegionManager
 
     public void ApplyBounds(Region region)
     {
-        switch (region.regionType)
+        switch (region.Type)
         {
             case RegionType.Scene:
-                if (region.sceneRef == null) return;
+                if (region.SceneRef == null) return;
 
-                string scenePath = AssetDatabase.GetAssetPath(region.sceneRef.SceneAsset);
+                string scenePath = AssetDatabase.GetAssetPath(region.SceneRef.SceneAsset);
                 var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
                 foreach (var go in scene.GetRootGameObjects())
@@ -49,8 +49,8 @@ public partial class RegionManager
                     {
                         Undo.RecordObject(sb, "Update Scene Bound");
                         sb.Bounds = new Bounds(
-                            sb.transform.InverseTransformPoint(region.cachedBounds.center),
-                            region.cachedBounds.size
+                            sb.transform.InverseTransformPoint(region.CachedBounds.center),
+                            region.CachedBounds.size
                         );
                         EditorUtility.SetDirty(sb);
                         break;
@@ -62,9 +62,9 @@ public partial class RegionManager
                 break;
 
             case RegionType.Prefab:
-                if (region.prefabAddress == null) return;
+                if (region.PrefabRef == null) return;
 
-                string prefabPath = AssetDatabase.GUIDToAssetPath(region.prefabAddress.AssetGUID);
+                string prefabPath = AssetDatabase.GUIDToAssetPath(region.PrefabRef.AssetGUID);
                 if (string.IsNullOrEmpty(prefabPath)) return;
 
                 var prefabRoot = PrefabUtility.LoadPrefabContents(prefabPath);
@@ -74,8 +74,8 @@ public partial class RegionManager
                 {
                     Undo.RecordObject(pb, "Update Prefab Bound");
                     pb.Bounds = new Bounds(
-                        pb.transform.InverseTransformPoint(region.cachedBounds.center),
-                        region.cachedBounds.size
+                        pb.transform.InverseTransformPoint(region.CachedBounds.center),
+                        region.CachedBounds.size
                     );
                     EditorUtility.SetDirty(pb);
                 }
@@ -91,11 +91,11 @@ public partial class RegionManager
     {
         foreach (var region in Regions)
         {
-            switch (region.regionType)
+            switch (region.Type)
             {
                 case RegionType.Scene:
-                    if (region.sceneRef == null) continue;
-                    string scenePath = AssetDatabase.GetAssetPath(region.sceneRef.SceneAsset);
+                    if (region.SceneRef == null) continue;
+                    string scenePath = AssetDatabase.GetAssetPath(region.SceneRef.SceneAsset);
                     var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
 
                     foreach (var go in scene.GetRootGameObjects())
@@ -103,7 +103,7 @@ public partial class RegionManager
                         var sb = go.GetComponentInChildren<RegionBound>();
                         if (sb != null)
                         {
-                            region.cachedBounds = new Bounds(
+                            region.CachedBounds = new Bounds(
                                 sb.transform.TransformPoint(sb.Bounds.center),
                                 sb.Bounds.size
                             );
@@ -115,14 +115,14 @@ public partial class RegionManager
                     break;
 
                 case RegionType.Prefab:
-                    if (region.prefabAddress == null) continue;
-                    string prefabPath = AssetDatabase.GUIDToAssetPath(region.prefabAddress.AssetGUID);
+                    if (region.PrefabRef == null) continue;
+                    string prefabPath = AssetDatabase.GUIDToAssetPath(region.PrefabRef.AssetGUID);
                     var prefabRoot = PrefabUtility.LoadPrefabContents(prefabPath);
 
                     var pb = prefabRoot.GetComponentInChildren<RegionBound>();
                     if (pb != null)
                     {
-                        region.cachedBounds = new Bounds(
+                        region.CachedBounds = new Bounds(
                             pb.transform.TransformPoint(pb.Bounds.center),
                             pb.Bounds.size
                         );
@@ -168,10 +168,10 @@ public partial class RegionManager
             fillColor.a = 0.1f;
 
             Gizmos.color = fillColor;
-            Gizmos.DrawCube(region.cachedBounds.center, region.cachedBounds.size);
+            Gizmos.DrawCube(region.CachedBounds.center, region.CachedBounds.size);
 
             Gizmos.color = wireColor;
-            Gizmos.DrawWireCube(region.cachedBounds.center, region.cachedBounds.size);
+            Gizmos.DrawWireCube(region.CachedBounds.center, region.CachedBounds.size);
         }
     }
 }

@@ -22,7 +22,7 @@ public class QuadtreeNode
 
     public void Insert(RegionManager.Region region)
     {
-        if (!bounds.Intersects(region.cachedBounds))
+        if (!bounds.Intersects(region.CachedBounds))
             return;
 
         if (children == null)
@@ -48,7 +48,7 @@ public class QuadtreeNode
         {
             foreach (var obj in objects)
             {
-                if (obj.cachedBounds.Intersects(range))
+                if (obj.CachedBounds.Intersects(range))
                     results.Add(obj);
             }
         }
