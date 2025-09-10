@@ -4,48 +4,41 @@ using UnityEngine;
 [RequireComponent(typeof(RegionManager)), DisallowMultipleComponent]
 public class StreamingController : MonoBehaviour
 {
-    [Header("Dependencies")] [SerializeField]
-    private MonoBehaviour loaderComponent; // must implement IStreamingLoader
-
+    [Header("Dependencies")] 
+    [SerializeField] private MonoBehaviour loaderComponent; // must implement IStreamingLoader<Region>
     [SerializeField] private MonoBehaviour targetComponent; // must implement IStreamingTarget
 
-    [Header("Streaming Settings")] [SerializeField]
-    private float m_UpdateInterval = 0.1f;
+    [Header("Streaming Settings")] 
+    [SerializeField] private float m_UpdateInterval = 0.1f;
 
-    private IStreamingLoader _streamingLoader;
-    private IStreamingTarget _target;
+    private IStreamingLoader<RegionManager.Region> _streamingLoader;
+    private IRegionLoadBoundsProvider _target;
     private RegionManager _regionManager;
 
-    private readonly HashSet<string> _loadedRegions = new();
-    private readonly HashSet<string> _desiredRegions = new();
-    private readonly HashSet<string> _unloadCandidates = new();
+    private readonly HashSet<RegionManager.Region> _loadedRegions = new();
+    private readonly HashSet<RegionManager.Region> _desiredRegions = new();
+    private readonly HashSet<RegionManager.Region> _unloadCandidates = new();
 
-    private Dictionary<string, RegionManager.Region> _regionLookup = new();
     private float _lastUpdateTime;
 
     private void Awake()
     {
         _regionManager = GetComponent<RegionManager>();
-        _streamingLoader = loaderComponent as IStreamingLoader;
+
+        _streamingLoader = loaderComponent as IStreamingLoader<RegionManager.Region>;
         if (_streamingLoader == null)
         {
-            Debug.LogError("[StreamingController] Loader must implement IStreamingLoader.");
+            Debug.LogError("[StreamingController] Loader must implement IStreamingLoader<Region>.");
             enabled = false;
             return;
         }
 
-        _target = targetComponent as IStreamingTarget;
+        _target = targetComponent as IRegionLoadBoundsProvider;
         if (_target == null)
         {
             Debug.LogError("[StreamingController] Target must implement IStreamingTarget.");
             enabled = false;
             return;
-        }
-
-        foreach (var region in _regionManager.Scenes)
-        {
-            if (string.IsNullOrEmpty(region.RegionName))
-                _regionLookup[region.RegionName] = region;
         }
     }
 
@@ -69,18 +62,18 @@ public class StreamingController : MonoBehaviour
         var nearby = _regionManager.FindRegionsInRange(loadBounds);
         foreach (var region in nearby)
         {
-            _desiredRegions.Add(region.RegionName);
+            _desiredRegions.Add(region);
         }
     }
 
     private void HandleLoading()
     {
-        foreach (var regionName in _desiredRegions)
+        foreach (var region in _desiredRegions)
         {
-            if (_loadedRegions.Contains(regionName) || _streamingLoader.IsLoading(regionName))
+            if (_loadedRegions.Contains(region) || _streamingLoader.IsLoading(region))
                 continue;
 
-            _streamingLoader.Load(regionName, OnLoadComplete);
+            _streamingLoader.Load(region, OnLoadComplete);
         }
     }
 
@@ -92,20 +85,19 @@ public class StreamingController : MonoBehaviour
 
         Bounds unloadBounds = _target.GetUnloadBounds();
 
-        foreach (var regionName in _unloadCandidates)
+        foreach (var region in _unloadCandidates)
         {
-            if (!_regionLookup.TryGetValue(regionName, out var region)) continue;
             if (region.unloadStrategy == null) continue;
 
-            if (region.unloadStrategy.ShouldUnload(unloadBounds, region) && !_streamingLoader.IsLoading(regionName))
+            if (region.unloadStrategy.ShouldUnload(unloadBounds, region) && !_streamingLoader.IsLoading(region))
             {
-                _streamingLoader.Unload(regionName, OnUnloadComplete);
+                _streamingLoader.Unload(region, OnUnloadComplete);
             }
         }
     }
 
-    private void OnLoadComplete(string regionName) => _loadedRegions.Add(regionName);
-    private void OnUnloadComplete(string regionName) => _loadedRegions.Remove(regionName);
+    private void OnLoadComplete(RegionManager.Region region) => _loadedRegions.Add(region);
+    private void OnUnloadComplete(RegionManager.Region region) => _loadedRegions.Remove(region);
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()

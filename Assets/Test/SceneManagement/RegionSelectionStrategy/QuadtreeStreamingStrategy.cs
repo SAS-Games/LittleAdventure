@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Streaming/Strategies/QuadtreeStrategy")]
-public class QuadtreeStreamingStrategy : SceneStreamingStrategySO
+public class QuadtreeRegionSelection : RegionSelectionStrategySO
 {
     private QuadtreeNode root;
     [SerializeField] private float worldSize = 1000f; // adjust depending on your level size
@@ -22,7 +22,7 @@ public class QuadtreeStreamingStrategy : SceneStreamingStrategySO
             root.Insert(scene);
     }
 
-    public override List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds)
+    public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
     {
         var results = new List<RegionManager.Region>();
         root.Query(queryBounds, results);

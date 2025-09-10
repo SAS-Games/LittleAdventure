@@ -1,54 +1,72 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public partial class RegionManager : MonoBehaviour
 {
+    public enum RegionType
+    {
+        Scene,
+        Prefab
+    }
+
     [Serializable]
     public partial class Region
     {
+        public RegionType regionType = RegionType.Scene;
+        public SceneReference sceneRef;
+        public AssetReferenceGameObject prefabAddress;
         public Bounds cachedBounds;
         public UnloadStrategy unloadStrategy;
-        [field: SerializeField, ReadOnly] public string RegionName { get; private set; }
+
+        [field: SerializeField, ReadOnly] 
+        public string RegionName { get; private set; }
     }
 
-    [field: SerializeField] public List<Region> Scenes { get; private set; } = new();
-    [SerializeField] private SceneStreamingStrategySO m_StreamingStrategy;
-    private readonly Dictionary<string, Region> _sceneLookup = new();
-    private readonly HashSet<string> _loadedSceneNames = new();
+    [field: SerializeField] 
+    public List<Region> Regions { get; private set; } = new();
+
+    [SerializeField] 
+    private RegionSelectionStrategySO m_RegionSelectionStrategy;
+
+    private readonly HashSet<Region> _loadedRegions = new();
 
     void Awake()
     {
-        _sceneLookup.Clear();
-        foreach (var s in Scenes)
+        var seenNames = new HashSet<string>();
+        foreach (var region in Regions)
         {
-            if (string.IsNullOrEmpty(s.RegionName))
-                _sceneLookup[s.RegionName] = s;
+            if (string.IsNullOrEmpty(region.RegionName))
+            {
+                Debug.LogWarning($"[RegionManager] Region has no valid name: {region.regionType}");
+                continue;
+            }
+
+            if (!seenNames.Add(region.RegionName))
+                Debug.LogWarning($"[RegionManager] Duplicate region name detected: {region.RegionName}");
         }
 
-        m_StreamingStrategy.Initialize(Scenes);
+        if (m_RegionSelectionStrategy != null)
+            m_RegionSelectionStrategy.Initialize(Regions);
+        else
+            Debug.LogError("[RegionManager] No RegionSelectionStrategy assigned!");
     }
 
-    public void UpdateLoadedRegions(HashSet<string> loadedScenes)
+    public void UpdateLoadedRegions(HashSet<Region> loadedRegions)
     {
-        _loadedSceneNames.Clear();
-        _loadedSceneNames.UnionWith(loadedScenes);
+        _loadedRegions.Clear();
+        _loadedRegions.UnionWith(loadedRegions);
     }
 
     public List<Region> FindRegionsInRange(Bounds queryBounds)
     {
-        if (m_StreamingStrategy == null)
+        if (m_RegionSelectionStrategy == null)
         {
-            Debug.LogError("[SceneBoundsManager] Not initialized with a strategy!");
+            Debug.LogError("[RegionManager] Not initialized with a strategy!");
             return new List<Region>();
         }
 
-        return m_StreamingStrategy.GetNearbyScenes(queryBounds);
-    }
-
-    public Region GetSceneRefByName(string sceneName)
-    {
-        _sceneLookup.TryGetValue(sceneName, out var sceneRef);
-        return sceneRef;
+        return m_RegionSelectionStrategy.GetNearbyRegions(queryBounds);
     }
 }

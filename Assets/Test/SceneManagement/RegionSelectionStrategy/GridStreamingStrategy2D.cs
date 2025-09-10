@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-[CreateAssetMenu(menuName = "Streaming/Strategies/GridStrategy")]
-public class GridStreamingStrategy : SceneStreamingStrategySO
+[CreateAssetMenu(menuName = "Streaming/Strategies/GridStrategy2D")]
+public class GridRegionSelection2D : RegionSelectionStrategySO
 {
-    private readonly Dictionary<Vector3Int, List<RegionManager.Region>> _grid = new();
+    private readonly Dictionary<Vector2Int, List<RegionManager.Region>> _grid = new();
     [SerializeField] private float m_CellSize = 100;
 
     public override void Initialize(List<RegionManager.Region> sceneRefs)
     {
         _grid.Clear();
+
         foreach (var scene in sceneRefs)
         {
             var minCell = WorldToCell(scene.cachedBounds.min);
@@ -17,9 +19,8 @@ public class GridStreamingStrategy : SceneStreamingStrategySO
 
             for (int x = minCell.x; x <= maxCell.x; x++)
             for (int y = minCell.y; y <= maxCell.y; y++)
-            for (int z = minCell.z; z <= maxCell.z; z++)
             {
-                var cell = new Vector3Int(x, y, z);
+                var cell = new Vector2Int(x, y);
                 if (!_grid.TryGetValue(cell, out var list))
                 {
                     list = new List<RegionManager.Region>();
@@ -31,18 +32,17 @@ public class GridStreamingStrategy : SceneStreamingStrategySO
         }
     }
 
-    public override List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds)
+    public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
     {
-        var result = new HashSet<RegionManager.Region>(); // ensures no duplicates
+        var result = new HashSet<RegionManager.Region>();
 
         var minCell = WorldToCell(queryBounds.min);
         var maxCell = WorldToCell(queryBounds.max);
 
         for (int x = minCell.x; x <= maxCell.x; x++)
         for (int y = minCell.y; y <= maxCell.y; y++)
-        for (int z = minCell.z; z <= maxCell.z; z++)
         {
-            var cell = new Vector3Int(x, y, z);
+            var cell = new Vector2Int(x, y);
             if (_grid.TryGetValue(cell, out var list))
             {
                 foreach (var scene in list)
@@ -56,12 +56,11 @@ public class GridStreamingStrategy : SceneStreamingStrategySO
         return new List<RegionManager.Region>(result);
     }
 
-    private Vector3Int WorldToCell(Vector3 pos)
+    private Vector2Int WorldToCell(Vector3 pos)
     {
-        return new Vector3Int(
+        return new Vector2Int(
             Mathf.FloorToInt(pos.x / m_CellSize),
-            Mathf.FloorToInt(pos.y / m_CellSize),
-            Mathf.FloorToInt(pos.z / m_CellSize)
+            Mathf.FloorToInt(pos.y / m_CellSize)
         );
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Streaming/Strategies/BruteForceStrategy")]
-public class BruteForceStreamingStrategy : SceneStreamingStrategySO
+public class BruteForceRegionSelection : RegionSelectionStrategySO
 {
     private List<RegionManager.Region> _sceneRefs;
     public override void Initialize(List<RegionManager.Region> sceneRefs)
@@ -10,7 +10,7 @@ public class BruteForceStreamingStrategy : SceneStreamingStrategySO
         _sceneRefs = sceneRefs;
     }
 
-    public override List<RegionManager.Region> GetNearbyScenes(Bounds queryBounds)
+    public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
     {
         var result = new List<RegionManager.Region>();
 
