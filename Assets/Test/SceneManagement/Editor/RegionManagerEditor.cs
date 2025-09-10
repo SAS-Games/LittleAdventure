@@ -4,7 +4,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 [CustomEditor(typeof(RegionManager))]
-public class SceneBoundsManagerEditor : Editor
+public class RegionManagerEditor : Editor
 {
     private BoxBoundsHandle boundsHandle = new BoxBoundsHandle();
 
@@ -20,7 +20,6 @@ public class SceneBoundsManagerEditor : Editor
 
     private void DuringSceneGUI(SceneView sceneView)
     {
-        // Draw for all active managers in the scene, not only the selected one
         var managers = Object.FindObjectsOfType<RegionManager>();
         foreach (var manager in managers)
         {
@@ -28,7 +27,7 @@ public class SceneBoundsManagerEditor : Editor
 
             foreach (var region in manager.Regions)
             {
-                if (region.SceneRef == null) continue;
+                if (region == null) continue;
 
                 var bounds = region.CachedBounds;
 
@@ -40,18 +39,25 @@ public class SceneBoundsManagerEditor : Editor
                 boundsHandle.DrawHandle();
                 if (EditorGUI.EndChangeCheck())
                 {
-                    Undo.RecordObject(manager, "Modify Scene Bound");
+                    Undo.RecordObject(manager, "Modify Region Bound");
                     region.CachedBounds = new Bounds(boundsHandle.center, boundsHandle.size);
 
-                    // Push changes back into additive scene
                     manager.ApplyBounds(region);
                     EditorUtility.SetDirty(manager);
                 }
 
-                // Draw label above bounds
-                if (region.SceneRef?.SceneAsset != null)
-                    Handles.Label(bounds.center + Vector3.up * bounds.extents.y, region.SceneRef.SceneAsset.name,
-                        EditorStyles.boldLabel);
+                // Label (Scene or Prefab)
+                string label = region.Type switch
+                {
+                    RegionManager.RegionType.Scene when region.SceneRef?.SceneAsset != null => region.SceneRef.SceneAsset.name,
+                    RegionManager.RegionType.Prefab when region.PrefabRef != null           => region.PrefabRef.RuntimeKey.ToString(),
+                    _ => region.RegionName
+                };
+
+                if (!string.IsNullOrEmpty(label))
+                {
+                    Handles.Label(bounds.center + Vector3.up * bounds.extents.y, label, EditorStyles.boldLabel);
+                }
             }
         }
     }

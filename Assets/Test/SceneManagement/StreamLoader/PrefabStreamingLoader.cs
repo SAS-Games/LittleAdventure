@@ -11,8 +11,12 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
 
     public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
     {
-        if (region.Type != RegionManager.RegionType.Prefab || _loadingRegions.Contains(region)) 
+        if (region.Type != RegionManager.RegionType.Prefab || 
+            _loadingRegions.Contains(region) || 
+            _loadedInstances.ContainsKey(region))
+        {
             return;
+        }
 
         _loadingRegions.Add(region);
         _ = LoadPrefabAsync(region, onLoaded);
@@ -24,13 +28,21 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
         try
         {
             GameObject prefab = await handle.Task;
+            if (prefab == null)
+            {
+                Debug.LogError($"Prefab reference is null for {region.RegionName}");
+                return;
+            }
+
             GameObject instance = Object.Instantiate(prefab);
+            instance.name = $"{region.RegionName}_Instance";
             _loadedInstances[region] = instance;
+
             onLoaded?.Invoke(region);
         }
         catch (Exception e)
         {
-            Debug.LogError($"Failed to load {region.RegionName}: {e}");
+            Debug.LogError($"Failed to load prefab for {region.RegionName}: {e}");
         }
         finally
         {
@@ -46,9 +58,13 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
             _loadedInstances.Remove(region);
         }
 
-        region.PrefabRef?.ReleaseAsset();
+        if (region.PrefabRef != null)
+            region.PrefabRef.ReleaseAsset();
+
         onUnloaded?.Invoke(region);
     }
 
     public bool IsLoading(RegionManager.Region region) => _loadingRegions.Contains(region);
+
+    public bool IsLoaded(RegionManager.Region region) => _loadedInstances.ContainsKey(region);
 }

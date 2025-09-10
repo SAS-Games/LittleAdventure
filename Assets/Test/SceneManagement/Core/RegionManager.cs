@@ -27,7 +27,7 @@ public partial class RegionManager : MonoBehaviour
 
     [field: SerializeField] public List<Region> Regions { get; private set; } = new();
 
-    [SerializeField] private RegionSelectionStrategySO m_RegionSelectionStrategy;
+    [field: SerializeField] public RegionSelectionStrategySO m_RegionSelectionStrategy;
 
     private readonly HashSet<Region> _loadedRegions = new();
 

@@ -6,8 +6,7 @@ public class RegionDrawer : PropertyDrawer
 {
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        // Calculate dynamic height based on visible fields
-        int lines = 4; // Type, CachedBounds, UnloadStrategy, RegionName
+        int lines = 4; // Type, UnloadStrategy, RegionName
         var type = (RegionManager.RegionType)property.FindPropertyRelative("<Type>k__BackingField").enumValueIndex;
 
         if (type == RegionManager.RegionType.Scene)
@@ -15,7 +14,14 @@ public class RegionDrawer : PropertyDrawer
         else if (type == RegionManager.RegionType.Prefab)
             lines++; // PrefabRef
 
-        return EditorGUIUtility.singleLineHeight * lines + EditorGUIUtility.standardVerticalSpacing * (lines - 1);
+        // Bounds is multi-line (2 Vector3s) → use proper height
+        var boundsProp = property.FindPropertyRelative("<CachedBounds>k__BackingField");
+        float boundsHeight = EditorGUI.GetPropertyHeight(boundsProp, true);
+
+        // Normal line heights
+        float lineHeight = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+        return lineHeight * (lines - 1) + boundsHeight; // replace 1 line with full bounds height
     }
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -31,7 +37,6 @@ public class RegionDrawer : PropertyDrawer
         var unloadProp = property.FindPropertyRelative("<UnloadStrategy>k__BackingField");
         var nameProp = property.FindPropertyRelative("<RegionName>k__BackingField");
 
-        // Row rect
         var rect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
 
         // Type
@@ -51,9 +56,11 @@ public class RegionDrawer : PropertyDrawer
             rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
         }
 
-        // CachedBounds
-        EditorGUI.PropertyField(rect, boundsProp);
-        rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+        // CachedBounds (multi-line with center + extents)
+        float boundsHeight = EditorGUI.GetPropertyHeight(boundsProp, true);
+        var boundsRect = new Rect(rect.x, rect.y, rect.width, boundsHeight);
+        EditorGUI.PropertyField(boundsRect, boundsProp, true);
+        rect.y += boundsHeight + EditorGUIUtility.standardVerticalSpacing;
 
         // UnloadStrategy
         EditorGUI.PropertyField(rect, unloadProp);

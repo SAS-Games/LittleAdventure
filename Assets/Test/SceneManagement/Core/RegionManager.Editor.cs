@@ -1,7 +1,6 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 public partial class RegionManager
 {
@@ -21,12 +20,13 @@ public partial class RegionManager
                 case RegionType.Prefab:
                     if (PrefabRef != null)
                     {
-                        RegionName = PrefabRef.editorAsset != null 
-                            ? PrefabRef.editorAsset.name 
+                        RegionName = PrefabRef.editorAsset != null
+                            ? PrefabRef.editorAsset.name
                             : PrefabRef.RuntimeKey.ToString();
                     }
                     else
                         RegionName = string.Empty;
+
                     break;
             }
         }
@@ -144,34 +144,32 @@ public partial class RegionManager
 
     private void OnDrawGizmos()
     {
+        if (Regions == null) return;
+
         foreach (var region in Regions)
         {
-            if (region == null) continue;
+            if (region == null)
+                continue;
 
             bool isLoaded = false;
-            //todo: need to implement this funcionality
-            // switch (region.regionType)
-            // {
-            //     case RegionType.Scene:
-            //         if (region.sceneRef == null) continue;
-            //         isLoaded = _loadedSceneNames.Contains(region.sceneRef.SceneAsset.name);
-            //         break;
-            //
-            //     case RegionType.Prefab:
-            //         if (region.prefabAddress == null) continue;
-            //         // isLoaded = _activePrefabInstances.ContainsKey(region.RegionName);
-            //         break;
-            // }
+
+            if (Application.isPlaying && TryGetComponent<IStreamingLoader<Region>>(out var loader))
+                isLoaded = loader.IsLoaded(region);
 
             Color wireColor = isLoaded ? Color.green : Color.cyan;
             Color fillColor = wireColor;
             fillColor.a = 0.1f;
 
+            var bounds = region.CachedBounds;
             Gizmos.color = fillColor;
-            Gizmos.DrawCube(region.CachedBounds.center, region.CachedBounds.size);
+            Gizmos.DrawCube(bounds.center, bounds.size);
 
             Gizmos.color = wireColor;
-            Gizmos.DrawWireCube(region.CachedBounds.center, region.CachedBounds.size);
+            Gizmos.DrawWireCube(bounds.center, bounds.size);
+
+            string label = region.RegionName ?? region.Type.ToString();
+            GUIStyle style = new GUIStyle(EditorStyles.boldLabel) { normal = { textColor = wireColor } };
+            Handles.Label(bounds.center + Vector3.up * bounds.extents.y, label, style);
         }
     }
 }
