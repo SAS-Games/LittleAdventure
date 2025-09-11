@@ -1,27 +1,28 @@
 using System;
 using UnityEngine;
 
-public class RegionStreamingLoader : MonoBehaviour, IStreamingLoader<RegionManager.Region>
+[CreateAssetMenu(menuName = "Streaming/StreamingLoader/DefaultRegionStreamingLoader")]
+public class DefaultRegionStreamingLoader : RegionStreamingLoader
 {
     private IStreamingLoader<RegionManager.Region> _sceneLoader;
     private IStreamingLoader<RegionManager.Region> _prefabLoader;
 
-    private void Awake()
+    protected override void OnInstanceCreated()
     {
         _sceneLoader = new SceneStreamingLoader();
         _prefabLoader = new PrefabStreamingLoader();
     }
 
-    public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded) =>
+    public override void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded) =>
         GetLoader(region).Load(region, onLoaded);
 
-    public void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded) =>
+    public override void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded) =>
         GetLoader(region).Unload(region, onUnloaded);
 
-    public bool IsLoading(RegionManager.Region region) =>
+    public override bool IsLoading(RegionManager.Region region) =>
         GetLoader(region).IsLoading(region);
 
-    public bool IsLoaded(RegionManager.Region region) =>
+    public override bool IsLoaded(RegionManager.Region region) =>
         GetLoader(region).IsLoaded(region);
 
     private IStreamingLoader<RegionManager.Region> GetLoader(RegionManager.Region region) =>

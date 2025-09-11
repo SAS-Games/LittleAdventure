@@ -8,26 +8,25 @@ public class StreamingController : MonoBehaviour
     const string TAG = "StreamingController";
 
     [Header("Dependencies")] [SerializeField]
-    private MonoBehaviour m_StreamingLoader;
+    private RuntimeScriptableObject<RegionStreamingLoader> m_StreamingLoader;
 
     [Header("Streaming Settings")] [SerializeField]
     private float m_UpdateInterval = 0.1f;
 
-    private IStreamingLoader<RegionManager.Region> _streamingLoader;
+    private RegionStreamingLoader _streamingLoader => m_StreamingLoader;
     private IRegionLoadBoundsProvider _target;
     private RegionManager _regionManager;
 
-    private readonly HashSet<RegionManager.Region> _loadedRegions = new();
     private readonly HashSet<RegionManager.Region> _desiredRegions = new();
+    private readonly HashSet<RegionManager.Region> _loadedRegions = new();
     private readonly HashSet<RegionManager.Region> _unloadCandidates = new();
+    private readonly HashSet<RegionManager.Region> _activeRegions = new();
 
     private float _lastUpdateTime;
 
     private void Awake()
     {
         _regionManager = GetComponent<RegionManager>();
-
-        _streamingLoader = m_StreamingLoader as IStreamingLoader<RegionManager.Region>;
         if (_streamingLoader == null)
         {
             Debug.LogError("Loader must implement IStreamingLoader<Region>.", this, TAG);
@@ -47,6 +46,7 @@ public class StreamingController : MonoBehaviour
         UpdateDesiredRegions();
         HandleLoading();
         HandleUnloading();
+        HandleActivation();
 
         _regionManager.UpdateLoadedRegions(_loadedRegions);
     }
@@ -58,16 +58,14 @@ public class StreamingController : MonoBehaviour
         Bounds loadBounds = _target.GetLoadBounds();
         var nearby = _regionManager.FindRegionsInRange(loadBounds);
         foreach (var region in nearby)
-        {
             _desiredRegions.Add(region);
-        }
     }
 
     private void HandleLoading()
     {
         foreach (var region in _desiredRegions)
         {
-            if (_loadedRegions.Contains(region) || _streamingLoader.IsLoading(region))
+            if (region.IsLoaded || region.IsLoading)
                 continue;
 
             _streamingLoader.Load(region, OnLoadComplete);
@@ -86,13 +84,75 @@ public class StreamingController : MonoBehaviour
         {
             if (region.UnloadStrategy == null) continue;
 
-            if (region.UnloadStrategy.ShouldUnload(unloadBounds, region) && !_streamingLoader.IsLoading(region))
+            if (region.UnloadStrategy.ShouldUnload(unloadBounds, region) && !region.IsLoading)
                 _streamingLoader.Unload(region, OnUnloadComplete);
         }
     }
 
-    private void OnLoadComplete(RegionManager.Region region) => _loadedRegions.Add(region);
-    private void OnUnloadComplete(RegionManager.Region region) => _loadedRegions.Remove(region);
+    private void HandleActivation()
+    {
+        Bounds activateBounds = _target.GetActivateBounds();
+
+        foreach (var region in _loadedRegions)
+        {
+            bool inside = activateBounds.Intersects(region.CachedBounds);
+
+            if (inside && !_activeRegions.Contains(region))
+            {
+                CallRegionActivatable(region, true);
+                _activeRegions.Add(region);
+            }
+            else if (!inside && _activeRegions.Contains(region))
+            {
+                CallRegionActivatable(region, false);
+                _activeRegions.Remove(region);
+            }
+        }
+    }
+
+    private void CallRegionActivatable(RegionManager.Region region, bool active)
+    {
+        if (region.Type == RegionManager.RegionType.Scene)
+        {
+            var rootObjects = UnityEngine.SceneManagement.SceneManager
+                .GetSceneByPath(region.SceneRef.ScenePath).GetRootGameObjects();
+
+            foreach (var go in rootObjects)
+            {
+                var activatable = go.GetComponent<IRegionActivatable>();
+                if (activatable != null)
+                    activatable.OnRegionActivated(active);
+            }
+        }
+        else if (region.Type == RegionManager.RegionType.Prefab && region.Instance != null)
+        {
+            var activatable = region.Instance.GetComponent<IRegionActivatable>();
+            if (activatable != null)
+                activatable.OnRegionActivated(active);
+        }
+
+        Debug.Log($"Region {region.RegionName} is in active range {active}", this, TAG);
+    }
+
+    private void OnLoadComplete(RegionManager.Region region)
+    {
+        _loadedRegions.Add(region);
+
+        if (_target != null && _target.GetActivateBounds().Intersects(region.CachedBounds))
+        {
+            CallRegionActivatable(region, true);
+            _activeRegions.Add(region);
+        }
+
+        _regionManager.UpdateLoadedRegions(_loadedRegions);
+    }
+
+    private void OnUnloadComplete(RegionManager.Region region)
+    {
+        _loadedRegions.Remove(region);
+        _activeRegions.Remove(region);
+        _regionManager.UpdateLoadedRegions(_loadedRegions);
+    }
 
     public void SetRegionLoadBoundsProvider(IRegionLoadBoundsProvider regionLoadBoundsProvider)
     {
@@ -104,25 +164,18 @@ public class StreamingController : MonoBehaviour
     {
         if (_target == null) return;
 
-        // Load bounds
-        Bounds loadBounds = _target.GetLoadBounds();
-        Color loadWire = Color.yellow;
-        Color loadFill = new Color(loadWire.r, loadWire.g, loadWire.b, 0.1f);
+        DrawBounds(_target.GetLoadBounds(), Color.yellow);
+        DrawBounds(_target.GetActivateBounds(), Color.blue);
+        DrawBounds(_target.GetUnloadBounds(), Color.red);
+    }
 
-        Gizmos.color = loadFill;
-        Gizmos.DrawCube(loadBounds.center, loadBounds.size);
-        Gizmos.color = loadWire;
-        Gizmos.DrawWireCube(loadBounds.center, loadBounds.size);
-
-        // Unload bounds
-        Bounds unloadBounds = _target.GetUnloadBounds();
-        Color unloadWire = Color.red;
-        Color unloadFill = new Color(unloadWire.r, unloadWire.g, unloadWire.b, 0.1f);
-
-        Gizmos.color = unloadFill;
-        Gizmos.DrawCube(unloadBounds.center, unloadBounds.size);
-        Gizmos.color = unloadWire;
-        Gizmos.DrawWireCube(unloadBounds.center, unloadBounds.size);
+    private void DrawBounds(Bounds b, Color c)
+    {
+        Color fill = new Color(c.r, c.g, c.b, 0.1f);
+        Gizmos.color = fill;
+        Gizmos.DrawCube(b.center, b.size);
+        Gizmos.color = c;
+        Gizmos.DrawWireCube(b.center, b.size);
     }
 #endif
 }

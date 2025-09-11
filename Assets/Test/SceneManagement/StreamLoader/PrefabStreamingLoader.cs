@@ -1,24 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
 {
-    private readonly HashSet<RegionManager.Region> _loadingRegions = new();
-    private readonly Dictionary<RegionManager.Region, GameObject> _loadedInstances = new();
-
     public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
     {
         if (region.Type != RegionManager.RegionType.Prefab || 
-            _loadingRegions.Contains(region) || 
-            _loadedInstances.ContainsKey(region))
+            region.IsLoading || 
+            region.IsLoaded)
         {
             return;
         }
 
-        _loadingRegions.Add(region);
+        region.IsLoading = true;
         _ = LoadPrefabAsync(region, onLoaded);
     }
 
@@ -36,8 +32,9 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
 
             GameObject instance = Object.Instantiate(prefab);
             instance.name = $"{region.RegionName}_Instance";
-            _loadedInstances[region] = instance;
 
+            region.Instance = instance;
+            region.IsLoaded = true;
             onLoaded?.Invoke(region);
         }
         catch (Exception e)
@@ -46,25 +43,27 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
         }
         finally
         {
-            _loadingRegions.Remove(region);
+            region.IsLoading = false;
         }
     }
 
     public void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
     {
-        if (_loadedInstances.TryGetValue(region, out var instance))
+        if (region.Instance != null)
         {
-            Object.Destroy(instance);
-            _loadedInstances.Remove(region);
+            Object.Destroy(region.Instance);
+            region.Instance = null;
         }
 
         if (region.PrefabRef != null)
             region.PrefabRef.ReleaseAsset();
 
+        region.IsLoaded = false;
+        region.IsLoading = false;
+
         onUnloaded?.Invoke(region);
     }
 
-    public bool IsLoading(RegionManager.Region region) => _loadingRegions.Contains(region);
-
-    public bool IsLoaded(RegionManager.Region region) => _loadedInstances.ContainsKey(region);
+    public bool IsLoading(RegionManager.Region region) => region.IsLoading;
+    public bool IsLoaded(RegionManager.Region region) => region.IsLoaded;
 }

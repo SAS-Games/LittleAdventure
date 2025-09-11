@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Streaming/Strategies/GridStrategy")]
+[CreateAssetMenu(menuName = "Streaming/RegionSelection/GridStrategy")]
 public class GridRegionSelection : RegionSelectionStrategySO
 {
     private readonly Dictionary<Vector3Int, List<RegionManager.Region>> _grid = new();
     [SerializeField] private float m_CellSize = 100;
 
-    public override void Initialize(List<RegionManager.Region> sceneRefs)
+    public override void Initialize(List<RegionManager.Region> regionRefs)
     {
         _grid.Clear();
-        foreach (var scene in sceneRefs)
+        foreach (var scene in regionRefs)
         {
             var minCell = WorldToCell(scene.CachedBounds.min);
             var maxCell = WorldToCell(scene.CachedBounds.max);

@@ -1,33 +1,54 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerRegionBounds : MonoBehaviour, IRegionLoadBoundsProvider
 {
     [Header("Load/Unload Settings")]
-    [SerializeField] private Vector3 loadBoundsSize = new(20, 10, 20);
-    [SerializeField] private Vector3 unloadBoundsSize = new(30, 15, 30);
+    [SerializeField] private Vector3 m_LoadBoundsSize = new(20, 10, 20);
+    [SerializeField] private Vector3 m_ActivateBoundsSize = new(10, 5, 10);
+    [SerializeField] private Vector3 m_UnloadBoundsSize = new(30, 15, 30);
+
+    // Cached bounds
+    private Bounds _loadBounds;
+    private Bounds _activateBounds;
+    private Bounds _unloadBounds;
+
+    private void Awake()
+    {
+       UpdateCachedBounds();
+    }
+
+    private void OnValidate()
+    {
+        UpdateCachedBounds();
+    }
+
+    private void UpdateCachedBounds()
+    {
+        _loadBounds.size = m_LoadBoundsSize;
+        _activateBounds.size = m_ActivateBoundsSize;
+        _unloadBounds.size = m_UnloadBoundsSize;
+
+        _loadBounds.center = transform.position;
+        _activateBounds.center = transform.position;
+        _unloadBounds.center = transform.position;
+    }
 
     public Bounds GetLoadBounds()
     {
-        return new Bounds(transform.position, loadBoundsSize);
+        _loadBounds.center = transform.position;
+        return _loadBounds;
     }
 
     public Bounds GetUnloadBounds()
     {
-        return new Bounds(transform.position, unloadBoundsSize);
+        _unloadBounds.center = transform.position;
+        return _unloadBounds;
     }
 
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+    public Bounds GetActivateBounds()
     {
-        Gizmos.color = new Color(0f, 1f, 0f, 0.2f);
-        Gizmos.DrawCube(transform.position, loadBoundsSize);
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.position, loadBoundsSize);
-
-        Gizmos.color = new Color(1f, 0f, 0f, 0.2f);
-        Gizmos.DrawCube(transform.position, unloadBoundsSize);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position, unloadBoundsSize);
+        _activateBounds.center = transform.position;
+        return _activateBounds;
     }
-#endif
 }

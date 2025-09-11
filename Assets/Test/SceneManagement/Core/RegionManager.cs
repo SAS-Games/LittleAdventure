@@ -23,7 +23,18 @@ public partial class RegionManager : MonoBehaviour
         [field: SerializeField] public Bounds CachedBounds { get; set; }
         [field: SerializeField] public UnloadStrategy UnloadStrategy { get; private set; }
         [field: SerializeField, ReadOnly] public string RegionName { get; private set; }
+
+        // --- Runtime state ---
+        public bool IsLoading { get; internal set; }
+        public bool IsLoaded { get; internal set; }
+
+        /// <summary>
+        /// If this region is prefab-based, this will store the instantiated root.
+        /// Null if not loaded or if it's a scene region.
+        /// </summary>
+        public GameObject Instance { get; internal set; }
     }
+
 
     [field: SerializeField] public List<Region> Regions { get; private set; } = new();
 

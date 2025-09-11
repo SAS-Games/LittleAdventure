@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -151,11 +152,7 @@ public partial class RegionManager
             if (region == null)
                 continue;
 
-            bool isLoaded = false;
-
-            if (Application.isPlaying && TryGetComponent<IStreamingLoader<Region>>(out var loader))
-                isLoaded = loader.IsLoaded(region);
-
+            bool isLoaded = region.IsLoaded;
             Color wireColor = isLoaded ? Color.green : Color.cyan;
             Color fillColor = wireColor;
             fillColor.a = 0.1f;
@@ -173,3 +170,4 @@ public partial class RegionManager
         }
     }
 }
+#endif

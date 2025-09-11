@@ -1,24 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
 {
-    private readonly HashSet<RegionManager.Region> _loadingRegions = new();
-    private readonly HashSet<RegionManager.Region> _loadedRegions = new();
-
     public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
     {
         if (region.Type != RegionManager.RegionType.Scene || 
-            _loadingRegions.Contains(region) || 
-            _loadedRegions.Contains(region))
+            region.IsLoading || 
+            region.IsLoaded)
         {
             return;
         }
 
-        _loadingRegions.Add(region);
+        region.IsLoading = true;
         _ = LoadSceneAsync(region, onLoaded);
     }
 
@@ -30,7 +26,7 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
         try
         {
             await asyncLoad.ToTask();
-            _loadedRegions.Add(region);
+            region.IsLoaded = true;
             onLoaded?.Invoke(region);
         }
         catch (Exception e)
@@ -39,13 +35,13 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
         }
         finally
         {
-            _loadingRegions.Remove(region);
+            region.IsLoading = false;
         }
     }
 
     public void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
     {
-        if (region.Type != RegionManager.RegionType.Scene || !_loadedRegions.Contains(region)) 
+        if (region.Type != RegionManager.RegionType.Scene || !region.IsLoaded) 
             return;
 
         _ = UnloadSceneAsync(region, onUnloaded);
@@ -59,7 +55,7 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
             try
             {
                 await asyncUnload.ToTask();
-                _loadedRegions.Remove(region);
+                region.IsLoaded = false;
                 onUnloaded?.Invoke(region);
             }
             catch (Exception e)
@@ -67,9 +63,9 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
                 Debug.LogError($"Failed to unload scene {region.RegionName}: {e}");
             }
         }
+        region.IsLoading = false;
     }
 
-    public bool IsLoading(RegionManager.Region region) => _loadingRegions.Contains(region);
-
-    public bool IsLoaded(RegionManager.Region region) => _loadedRegions.Contains(region);
+    public bool IsLoading(RegionManager.Region region) => region.IsLoading;
+    public bool IsLoaded(RegionManager.Region region) => region.IsLoaded;
 }

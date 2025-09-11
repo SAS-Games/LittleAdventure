@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-[CreateAssetMenu(menuName = "Streaming/Strategies/GridStrategy2D")]
+[CreateAssetMenu(menuName = "Streaming/RegionSelection/GridStrategy2D")]
 public class GridRegionSelection2D : RegionSelectionStrategySO
 {
     private readonly Dictionary<Vector2Int, List<RegionManager.Region>> _grid = new();
     [SerializeField] private float m_CellSize = 100;
 
-    public override void Initialize(List<RegionManager.Region> sceneRefs)
+    public override void Initialize(List<RegionManager.Region> regionRefs)
     {
         _grid.Clear();
 
-        foreach (var scene in sceneRefs)
+        foreach (var scene in regionRefs)
         {
             var minCell = WorldToCell(scene.CachedBounds.min);
             var maxCell = WorldToCell(scene.CachedBounds.max);

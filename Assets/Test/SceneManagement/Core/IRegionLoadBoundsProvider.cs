@@ -4,4 +4,6 @@ public interface IRegionLoadBoundsProvider
 {
     Bounds GetLoadBounds();
     Bounds GetUnloadBounds();
+    Bounds GetActivateBounds();
+
 }

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Streaming/Strategies/BruteForceStrategy")]
+[CreateAssetMenu(menuName = "Streaming/RegionSelection/BruteForceStrategy")]
 public class BruteForceRegionSelection : RegionSelectionStrategySO
 {
     private List<RegionManager.Region> _sceneRefs;
-    public override void Initialize(List<RegionManager.Region> sceneRefs)
+    public override void Initialize(List<RegionManager.Region> regionRefs)
     {
-        _sceneRefs = sceneRefs;
+        _sceneRefs = regionRefs;
     }
 
     public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
