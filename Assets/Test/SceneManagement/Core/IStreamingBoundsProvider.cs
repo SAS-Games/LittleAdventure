@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IRegionLoadBoundsProvider
+public interface IStreamingBoundsProvider
 {
     Bounds GetLoadBounds();
     Bounds GetUnloadBounds();

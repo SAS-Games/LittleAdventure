@@ -1,7 +1,6 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class PlayerRegionBounds : MonoBehaviour, IRegionLoadBoundsProvider
+public class DefaultStreamingBoundsProvider : MonoBehaviour, IStreamingBoundsProvider
 {
     [Header("Load/Unload Settings")]
     [SerializeField] private Vector3 m_LoadBoundsSize = new(20, 10, 20);

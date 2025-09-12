@@ -14,7 +14,7 @@ public class StreamingController : MonoBehaviour
     private float m_UpdateInterval = 0.1f;
 
     private RegionStreamingLoader _streamingLoader => m_StreamingLoader;
-    private IRegionLoadBoundsProvider _target;
+    private IStreamingBoundsProvider _target;
     private RegionManager _regionManager;
 
     private readonly HashSet<RegionManager.Region> _desiredRegions = new();
@@ -44,8 +44,8 @@ public class StreamingController : MonoBehaviour
         _lastUpdateTime = Time.time;
 
         UpdateDesiredRegions();
-        HandleLoading();
         HandleUnloading();
+        HandleLoading();
         HandleActivation();
 
         _regionManager.UpdateLoadedRegions(_loadedRegions);
@@ -154,9 +154,9 @@ public class StreamingController : MonoBehaviour
         _regionManager.UpdateLoadedRegions(_loadedRegions);
     }
 
-    public void SetRegionLoadBoundsProvider(IRegionLoadBoundsProvider regionLoadBoundsProvider)
+    public void SetRegionLoadBoundsProvider(IStreamingBoundsProvider streamingBoundsProvider)
     {
-        _target = regionLoadBoundsProvider;
+        _target = streamingBoundsProvider;
     }
 
 #if UNITY_EDITOR
