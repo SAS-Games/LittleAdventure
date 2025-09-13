@@ -59,6 +59,24 @@ public class StreamingController : MonoBehaviour
         var nearby = _regionManager.FindRegionsInRange(loadBounds);
         foreach (var region in nearby)
             _desiredRegions.Add(region);
+
+        foreach (var region in nearby)
+            CheckRegion(region);
+        foreach (var region in _loadedRegions)
+            CheckRegion(region);
+
+        void CheckRegion(RegionManager.Region region)
+        {
+            for (int i = 0; i < region.Portals.Count; i++)
+            {
+                var portalBounds = region.CachedWorldPortalBounds[i];
+                if (loadBounds.Intersects(portalBounds))
+                {
+                    if (_regionManager.RegionLookup.TryGetValue(region.Portals[i].TargetRegionName, out var target))
+                        _desiredRegions.Add(target);
+                }
+            }
+        }
     }
 
     private void HandleLoading()
@@ -144,6 +162,7 @@ public class StreamingController : MonoBehaviour
             _activeRegions.Add(region);
         }
 
+        _regionManager.MarkRegionLoaded(region);
         _regionManager.UpdateLoadedRegions(_loadedRegions);
     }
 
@@ -151,6 +170,7 @@ public class StreamingController : MonoBehaviour
     {
         _loadedRegions.Remove(region);
         _activeRegions.Remove(region);
+        _regionManager.MarkRegionUnloaded(region);
         _regionManager.UpdateLoadedRegions(_loadedRegions);
     }
 

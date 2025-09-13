@@ -32,9 +32,9 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
 
             GameObject instance = Object.Instantiate(prefab);
             instance.name = $"{region.RegionName}_Instance";
+            instance.transform.position = region.CachedBounds.center;
 
             region.Instance = instance;
-            region.IsLoaded = true;
             onLoaded?.Invoke(region);
         }
         catch (Exception e)
@@ -57,10 +57,6 @@ public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
 
         if (region.PrefabRef != null)
             region.PrefabRef.ReleaseAsset();
-
-        region.IsLoaded = false;
-        region.IsLoading = false;
-
         onUnloaded?.Invoke(region);
     }
 

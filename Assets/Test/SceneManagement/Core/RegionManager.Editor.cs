@@ -145,6 +145,7 @@ public partial class RegionManager
 
     private void OnDrawGizmos()
     {
+#if UNITY_EDITOR
         if (Regions == null) return;
 
         foreach (var region in Regions)
@@ -154,10 +155,12 @@ public partial class RegionManager
 
             bool isLoaded = region.IsLoaded;
             Color wireColor = isLoaded ? Color.green : Color.cyan;
-            Color fillColor = wireColor;
+            Color fillColor = wireColor; 
             fillColor.a = 0.1f;
 
             var bounds = region.CachedBounds;
+
+            // --- Region bounds ---
             Gizmos.color = fillColor;
             Gizmos.DrawCube(bounds.center, bounds.size);
 
@@ -165,9 +168,36 @@ public partial class RegionManager
             Gizmos.DrawWireCube(bounds.center, bounds.size);
 
             string label = region.RegionName ?? region.Type.ToString();
-            GUIStyle style = new GUIStyle(EditorStyles.boldLabel) { normal = { textColor = wireColor } };
-            Handles.Label(bounds.center + Vector3.up * bounds.extents.y, label, style);
+            GUIStyle regionLabelStyle = new GUIStyle(EditorStyles.boldLabel) { normal = { textColor = Color.black }, alignment = TextAnchor.LowerCenter };
+            Handles.Label(bounds.center + Vector3.up * bounds.extents.y, label, regionLabelStyle);
+
+            // --- Portal bounds ---
+            if (region.Portals != null)
+            {
+                for (int i = 0; i < region.Portals.Count; i++)
+                {
+                    var portal = region.Portals[i];
+                    var worldCenter = bounds.center + portal.LocalBounds.center;
+
+                    Color portalWire = Color.yellow;
+                    Color portalFill = new Color(1f, 1f, 0f, 0.1f);
+
+                    Gizmos.color = portalFill;
+                    Gizmos.DrawCube(worldCenter, portal.LocalBounds.size);
+
+                    Gizmos.color = portalWire;
+                    Gizmos.DrawWireCube(worldCenter, portal.LocalBounds.size);
+
+                    string pLabel = $"Portal {i}";
+                    if (!string.IsNullOrEmpty(portal.TargetRegionName))
+                        pLabel += $" → {portal.TargetRegionName}";
+
+                    GUIStyle portalLabelStyle = new GUIStyle(EditorStyles.miniBoldLabel) { normal = { textColor = Color.black },alignment = TextAnchor.MiddleCenter};
+                    Handles.Label(worldCenter + Vector3.up * portal.LocalBounds.extents.y, pLabel, portalLabelStyle);
+                }
+            }
         }
+#endif
     }
 }
 #endif

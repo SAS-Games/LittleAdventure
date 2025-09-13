@@ -26,7 +26,6 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
         try
         {
             await asyncLoad.ToTask();
-            region.IsLoaded = true;
             onLoaded?.Invoke(region);
         }
         catch (Exception e)
@@ -55,7 +54,6 @@ public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
             try
             {
                 await asyncUnload.ToTask();
-                region.IsLoaded = false;
                 onUnloaded?.Invoke(region);
             }
             catch (Exception e)
