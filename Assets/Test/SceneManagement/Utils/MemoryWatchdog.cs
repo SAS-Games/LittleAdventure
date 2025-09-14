@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -15,6 +16,9 @@ public class MemoryWatchdog : MonoBehaviour
 
     [Tooltip("Minimum delay between two cleanup operations (seconds)")]
     [SerializeField] private float m_CleanupCooldown = 30f;
+    
+    [Tooltip("Minimum delay between two cleanup operations (seconds)")]
+    [SerializeField] private TMP_Text m_text;
 
     private bool _isCleaning;
     private float _lastCleanupTime;
@@ -26,8 +30,8 @@ public class MemoryWatchdog : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            UpdateMemoryUsageText();
             _waitForSeconds = new WaitForSeconds(m_CheckInterval);
-
             StartCoroutine(CheckMemoryRoutine());
         }
         else
@@ -41,10 +45,20 @@ public class MemoryWatchdog : MonoBehaviour
         while (true)
         {
             yield return _waitForSeconds;
+            UpdateMemoryUsageText();
             TryCleanup();
         }
     }
-
+    
+    private void UpdateMemoryUsageText()
+    {
+        if (m_text != null)
+        {
+            long usedBytes = Profiler.GetTotalAllocatedMemoryLong();
+            float usedGB = usedBytes / (1024f * 1024f * 1024f);
+            m_text.text = $"Memory Used {usedGB:F2} GB";
+        }
+    }
     /// <summary>
     /// Request memory cleanup.
     /// Set force = true to ignore thresholds and cooldown.
