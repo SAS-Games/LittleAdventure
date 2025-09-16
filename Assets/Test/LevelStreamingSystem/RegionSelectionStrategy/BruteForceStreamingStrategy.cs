@@ -1,25 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Streaming/RegionSelection/BruteForceStrategy")]
-public class BruteForceRegionSelection : RegionSelectionStrategySO
+namespace LevelStreaming
 {
-    private List<RegionManager.Region> _sceneRefs;
-    public override void Initialize(List<RegionManager.Region> regionRefs)
+    [CreateAssetMenu(menuName = "Streaming/RegionSelection/BruteForceStrategy")]
+    public class BruteForceRegionSelection : RegionSelectionStrategySO
     {
-        _sceneRefs = regionRefs;
-    }
+        private List<RegionManager.Region> _sceneRefs;
 
-    public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
-    {
-        var result = new List<RegionManager.Region>();
-
-        foreach (var scene in _sceneRefs)
+        public override void Initialize(List<RegionManager.Region> regionRefs)
         {
-            if (scene.CachedBounds.Intersects(queryBounds))
-                result.Add(scene);
+            _sceneRefs = regionRefs;
         }
 
-        return result;
+        public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
+        {
+            var result = new List<RegionManager.Region>();
+
+            foreach (var scene in _sceneRefs)
+            {
+                if (scene.CachedBounds.Intersects(queryBounds))
+                    result.Add(scene);
+            }
+
+            return result;
+        }
     }
 }

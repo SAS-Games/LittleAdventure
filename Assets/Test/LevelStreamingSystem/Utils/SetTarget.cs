@@ -1,10 +1,14 @@
 using UnityEngine;
 
-public class SetTarget : MonoBehaviour
+namespace LevelStreaming
 {
-    [SerializeField] StreamingController streamingController;
-    void Start()
+    public class SetTarget : MonoBehaviour
     {
-        streamingController.SetRegionLoadBoundsProvider(GetComponent<DefaultStreamingBoundsProvider>());
+        [SerializeField] RegionStreamingController m_RegionStreamingController;
+
+        void Start()
+        {
+            m_RegionStreamingController.SetRegionLoadBoundsProvider(GetComponent<DefaultStreamingBoundsProvider>());
+        }
     }
 }

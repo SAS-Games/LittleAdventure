@@ -1,10 +1,13 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Streaming/UnloadStrategies/Bounds Intersection")]
-public class BoundsIntersectionUnloadStrategy : UnloadStrategy
+namespace LevelStreaming
 {
-    public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+    [CreateAssetMenu(menuName = "Streaming/UnloadStrategies/Bounds Intersection")]
+    public class BoundsIntersectionUnloadStrategy : UnloadStrategy
     {
-        return !unloadBounds.Intersects(region.CachedBounds);
+        public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+        {
+            return !unloadBounds.Intersects(region.CachedBounds);
+        }
     }
 }

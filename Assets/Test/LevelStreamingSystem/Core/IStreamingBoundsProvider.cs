@@ -1,9 +1,11 @@
 using UnityEngine;
 
-public interface IStreamingBoundsProvider
+namespace LevelStreaming
 {
-    Bounds GetLoadBounds();
-    Bounds GetUnloadBounds();
-    Bounds GetActivateBounds();
-
+    public interface IStreamingBoundsProvider
+    {
+        Bounds GetLoadBounds();
+        Bounds GetUnloadBounds();
+        Bounds GetActivateBounds();
+    }
 }

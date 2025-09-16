@@ -1,14 +1,14 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Serialization;
-
-[CreateAssetMenu(menuName = "Streaming/UnloadStrategies/TimeElapsed")]
-public class TimeElapsedStrategy : UnloadStrategy
+namespace LevelStreaming
 {
-    [SerializeField] private float m_TimeToUnload = 10;
-
-    public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+    [CreateAssetMenu(menuName = "Streaming/UnloadStrategies/TimeElapsed")]
+    public class TimeElapsedStrategy : UnloadStrategy
     {
-        return Time.time - region.LoadedTime > m_TimeToUnload;
+        [SerializeField] private float m_TimeToUnload = 10;
+
+        public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+        {
+            return Time.time - region.LoadedTime > m_TimeToUnload;
+        }
     }
 }

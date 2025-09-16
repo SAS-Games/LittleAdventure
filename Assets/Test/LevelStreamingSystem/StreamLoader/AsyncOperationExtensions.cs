@@ -1,12 +1,15 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-public static class AsyncOperationExtensions
+namespace LevelStreaming
 {
-    public static Task ToTask(this AsyncOperation op)
+    public static class AsyncOperationExtensions
     {
-        var tcs = new TaskCompletionSource<bool>();
-        op.completed += _ => tcs.SetResult(true);
-        return tcs.Task;
+        public static Task ToTask(this AsyncOperation op)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            op.completed += _ => tcs.SetResult(true);
+            return tcs.Task;
+        }
     }
 }

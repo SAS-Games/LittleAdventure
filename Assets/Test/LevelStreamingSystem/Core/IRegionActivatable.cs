@@ -1,4 +1,7 @@
-public interface IRegionActivatable
+namespace LevelStreaming
 {
-    void OnRegionActivated(bool active);
+    public interface IRegionActivatable
+    {
+        void OnRegionActivated(bool active);
+    }
 }

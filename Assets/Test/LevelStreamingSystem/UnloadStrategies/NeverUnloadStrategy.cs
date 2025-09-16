@@ -1,10 +1,13 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Streaming/UnloadStrategies/Never")]
-public class NeverUnloadStrategy : UnloadStrategy
+namespace LevelStreaming
 {
-    public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+    [CreateAssetMenu(menuName = "Streaming/UnloadStrategies/Never")]
+    public class NeverUnloadStrategy : UnloadStrategy
     {
-        return false;
+        public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+        {
+            return false;
+        }
     }
 }

@@ -1,40 +1,49 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Streaming/UnloadStrategies/Composite")]
-public class CompositeUnloadStrategy : UnloadStrategy
+namespace LevelStreaming
 {
-    public enum CombinationMode { AND, OR }
-
-    [SerializeField] private CombinationMode mode = CombinationMode.AND;
-    [SerializeField] private UnloadStrategy[] strategies;
-
-    public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+    [CreateAssetMenu(menuName = "Streaming/UnloadStrategies/Composite")]
+    public class CompositeUnloadStrategy : UnloadStrategy
     {
-        if (strategies == null || strategies.Length == 0)
-            return false;
-
-        switch (mode)
+        public enum CombinationMode
         {
-            case CombinationMode.AND:
-                foreach (var strategy in strategies)
-                {
-                    if (strategy == null) continue;
-                    if (!strategy.ShouldUnload(unloadBounds, region))
-                        return false; // fail fast
-                }
-                return true;
+            AND,
+            OR
+        }
 
-            case CombinationMode.OR:
-                foreach (var strategy in strategies)
-                {
-                    if (strategy == null) continue;
-                    if (strategy.ShouldUnload(unloadBounds, region))
-                        return true; // succeed fast
-                }
+        [SerializeField] private CombinationMode mode = CombinationMode.AND;
+        [SerializeField] private UnloadStrategy[] strategies;
+
+        public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+        {
+            if (strategies == null || strategies.Length == 0)
                 return false;
 
-            default:
-                return false;
+            switch (mode)
+            {
+                case CombinationMode.AND:
+                    foreach (var strategy in strategies)
+                    {
+                        if (strategy == null) continue;
+                        if (!strategy.ShouldUnload(unloadBounds, region))
+                            return false; // fail fast
+                    }
+
+                    return true;
+
+                case CombinationMode.OR:
+                    foreach (var strategy in strategies)
+                    {
+                        if (strategy == null) continue;
+                        if (strategy.ShouldUnload(unloadBounds, region))
+                            return true; // succeed fast
+                    }
+
+                    return false;
+
+                default:
+                    return false;
+            }
         }
     }
 }
