@@ -15,6 +15,12 @@ namespace LevelStreaming
             {
                 return;
             }
+            var scene = SceneManager.GetSceneByPath(region.SceneRef.ScenePath);
+            if (scene.isLoaded)
+            {
+                onLoaded?.Invoke(region);
+                return;
+            }
 
             region.IsLoading = true;
             _ = LoadSceneAsync(region, onLoaded);
