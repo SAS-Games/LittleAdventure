@@ -2,6 +2,6 @@ namespace LevelStreaming
 {
     public interface IRegionActivatable
     {
-        void OnRegionActivated(bool active);
+        void OnRegionActivated(RegionManager.Region region, bool active);
     }
 }

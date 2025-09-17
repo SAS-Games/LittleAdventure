@@ -30,10 +30,10 @@ namespace LevelStreaming
             [field: SerializeField] public SceneReference SceneRef { get; private set; }
             [field: SerializeField] public AssetReferenceGameObject PrefabRef { get; private set; }
             [field: SerializeField] public Bounds CachedBounds { get; set; }
-            [field: SerializeField, ReadOnly] public string RegionName { get; private set; }
+            [field: SerializeField] public string RegionName { get; private set; }
             [field: SerializeField] public List<Portal> Portals { get; private set; } = new();
             [field: SerializeField] public UnloadStrategy UnloadStrategy { get; private set; }
-
+            [NonSerialized] public List<Bounds> CachedWorldPortalBounds = new();
             // --- Runtime state ---
             public bool IsLoading { get; internal set; }
             public bool IsLoaded { get; private set; }
@@ -44,6 +44,7 @@ namespace LevelStreaming
             /// Null if not loaded or if it's a scene region.
             /// </summary>
             public GameObject Instance { get; internal set; }
+
 
             internal void MarkLoaded()
             {
@@ -59,8 +60,6 @@ namespace LevelStreaming
                 IsLoading = false;
             }
 
-
-            [NonSerialized] public List<Bounds> CachedWorldPortalBounds = new();
 
             public void RebuildPortalWorldBounds()
             {

@@ -141,14 +141,14 @@ namespace LevelStreaming
                 {
                     var activatable = go.GetComponent<IRegionActivatable>();
                     if (activatable != null)
-                        activatable.OnRegionActivated(active);
+                        activatable.OnRegionActivated(region, active);
                 }
             }
             else if (region.Type == RegionManager.RegionType.Prefab && region.Instance != null)
             {
                 var activatable = region.Instance.GetComponent<IRegionActivatable>();
                 if (activatable != null)
-                    activatable.OnRegionActivated(active);
+                    activatable.OnRegionActivated(region, active);
             }
 
             Debug.Log($"Region {region.RegionName} is in active range {active}", this, TAG);

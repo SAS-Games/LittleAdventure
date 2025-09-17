@@ -16,14 +16,15 @@ namespace LevelStreaming
                     case RegionType.Scene:
                         if (SceneRef != null)
                         {
-                            RegionName = SceneRef.SceneAsset != null
-                                ? SceneRef.SceneAsset.name
-                                : string.Empty;
+                            if (string.IsNullOrEmpty(RegionName))
+                            {
+                                RegionName = SceneRef.SceneAsset != null
+                                    ? SceneRef.SceneAsset.name
+                                    : string.Empty;
+                            }
                         }
                         else
-                        {
                             RegionName = string.Empty;
-                        }
                         break;
 
                     case RegionType.Prefab:
