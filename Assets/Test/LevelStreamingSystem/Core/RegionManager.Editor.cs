@@ -154,9 +154,7 @@ namespace LevelStreaming
                         }
 
                         if (!wasOpen)
-                        {
                             EditorSceneManager.CloseScene(targetScene, true);
-                        }
                         break;
 
                     case RegionType.Prefab:

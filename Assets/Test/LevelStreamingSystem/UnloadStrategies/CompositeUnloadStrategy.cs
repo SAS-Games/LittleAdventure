@@ -14,7 +14,7 @@ namespace LevelStreaming
         [SerializeField] private CombinationMode mode = CombinationMode.AND;
         [SerializeField] private UnloadStrategy[] strategies;
 
-        public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+        public override bool ShouldUnload(Bounds unloadBounds, RegionManager regionManager, RegionManager.Region region)
         {
             if (strategies == null || strategies.Length == 0)
                 return false;
@@ -25,7 +25,7 @@ namespace LevelStreaming
                     foreach (var strategy in strategies)
                     {
                         if (strategy == null) continue;
-                        if (!strategy.ShouldUnload(unloadBounds, region))
+                        if (!strategy.ShouldUnload(unloadBounds, regionManager, region))
                             return false; // fail fast
                     }
 
@@ -35,7 +35,7 @@ namespace LevelStreaming
                     foreach (var strategy in strategies)
                     {
                         if (strategy == null) continue;
-                        if (strategy.ShouldUnload(unloadBounds, region))
+                        if (strategy.ShouldUnload(unloadBounds, regionManager, region))
                             return true; // succeed fast
                     }
 

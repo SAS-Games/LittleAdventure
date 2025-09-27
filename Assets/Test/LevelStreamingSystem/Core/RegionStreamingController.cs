@@ -104,7 +104,7 @@ namespace LevelStreaming
             {
                 if (region.UnloadStrategy == null) continue;
 
-                if (region.UnloadStrategy.ShouldUnload(unloadBounds, region) && !region.IsLoading)
+                if (region.UnloadStrategy.ShouldUnload(unloadBounds, _regionManager, region) && !region.IsLoading)
                     _streamingLoader.Unload(region, OnUnloadComplete);
             }
         }

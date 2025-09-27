@@ -8,6 +8,9 @@ namespace LevelStreaming.Editor
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
+            if (!property.isExpanded)
+                return EditorGUIUtility.singleLineHeight; // Only show foldout
+
             int lines = 5; // Type + UnloadStrategy + RegionName (read-only)
             var type = (RegionManager.RegionType)property.FindPropertyRelative("<Type>k__BackingField").enumValueIndex;
 
@@ -24,15 +27,31 @@ namespace LevelStreaming.Editor
 
             float lineHeight = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-            // Replace 1 line with full bounds height, and add portals height
-            return lineHeight * (lines - 2) + boundsHeight + portalsHeight;
+            // Foldout + properties
+            return lineHeight * (lines - 2 + 1) + boundsHeight + portalsHeight; 
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
+
+            // Draw foldout
+            property.isExpanded = EditorGUI.Foldout(
+                new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight),
+                property.isExpanded, 
+                label, 
+                true
+            );
+
+            if (!property.isExpanded)
+            {
+                EditorGUI.EndProperty();
+                return;
+            }
+
+            // Content inside foldout
             var indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
+            EditorGUI.indentLevel++;
 
             var typeProp = property.FindPropertyRelative("<Type>k__BackingField");
             var sceneProp = property.FindPropertyRelative("<SceneRef>k__BackingField");
@@ -42,14 +61,15 @@ namespace LevelStreaming.Editor
             var unloadProp = property.FindPropertyRelative("<UnloadStrategy>k__BackingField");
             var nameProp = property.FindPropertyRelative("<RegionName>k__BackingField");
 
-            var rect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
+            var rect = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing, 
+                                position.width, EditorGUIUtility.singleLineHeight);
 
+            EditorGUI.PropertyField(rect, nameProp);
+            rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            
             EditorGUI.PropertyField(rect, typeProp);
             rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             
-            EditorGUI.PropertyField(rect, nameProp);
-            rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-
             var type = (RegionManager.RegionType)typeProp.enumValueIndex;
             if (type == RegionManager.RegionType.Scene)
             {
@@ -74,7 +94,7 @@ namespace LevelStreaming.Editor
 
             EditorGUI.PropertyField(rect, unloadProp);
             rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            
+
             EditorGUI.indentLevel = indent;
             EditorGUI.EndProperty();
         }

@@ -77,7 +77,7 @@ namespace LevelStreaming
 
         [field: SerializeField] public RegionSelectionStrategySO m_RegionSelectionStrategy;
 
-        private readonly HashSet<Region> _loadedRegions = new();
+        public readonly HashSet<Region> loadedRegions = new();
         public Dictionary<string, Region> RegionLookup { get; private set; }
 
         void Awake()
@@ -106,8 +106,8 @@ namespace LevelStreaming
 
         public void UpdateLoadedRegions(HashSet<Region> loadedRegions)
         {
-            _loadedRegions.Clear();
-            _loadedRegions.UnionWith(loadedRegions);
+            this.loadedRegions.Clear();
+            this.loadedRegions.UnionWith(loadedRegions);
         }
 
         public List<Region> FindRegionsInRange(Bounds queryBounds)

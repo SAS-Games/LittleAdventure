@@ -6,7 +6,7 @@ namespace LevelStreaming
     {
         [SerializeField] private float m_TimeToUnload = 10;
 
-        public override bool ShouldUnload(Bounds unloadBounds, RegionManager.Region region)
+        public override bool ShouldUnload(Bounds unloadBounds, RegionManager regionManager, RegionManager.Region region)
         {
             return Time.time - region.LoadedTime > m_TimeToUnload;
         }
