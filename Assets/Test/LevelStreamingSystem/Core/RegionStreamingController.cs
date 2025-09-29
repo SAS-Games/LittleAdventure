@@ -35,6 +35,8 @@ namespace LevelStreaming
                 enabled = false;
                 return;
             }
+
+            _streamingLoader.Initialize(this, _regionManager);
         }
 
         private void Update()
@@ -60,7 +62,11 @@ namespace LevelStreaming
             Bounds loadBounds = _target.GetLoadBounds();
             var nearby = _regionManager.FindRegionsInRange(loadBounds);
             foreach (var region in nearby)
+            {
                 _desiredRegions.Add(region);
+                var meta = _regionManager.GetOrCreateMeta(region);
+                meta.LastTimeDesired = Time.time;
+            }
 
             foreach (var region in nearby)
                 CheckRegion(region);
@@ -75,7 +81,11 @@ namespace LevelStreaming
                     if (loadBounds.Intersects(portalBounds))
                     {
                         if (_regionManager.RegionLookup.TryGetValue(region.Portals[i].TargetRegionName, out var target))
+                        {
                             _desiredRegions.Add(target);
+                            var meta = _regionManager.GetOrCreateMeta(region);
+                            meta.LastTimeDesired = Time.time;
+                        }
                     }
                 }
             }
@@ -85,8 +95,11 @@ namespace LevelStreaming
         {
             foreach (var region in _desiredRegions)
             {
-                if (region.IsLoaded || region.IsLoading)
-                    continue;
+                if (_regionManager.TryGetMeta(region, out var meta))
+                {
+                    if (meta.IsLoaded || meta.IsLoading)
+                        continue;
+                }
 
                 _streamingLoader.Load(region, OnLoadComplete);
             }
@@ -103,8 +116,8 @@ namespace LevelStreaming
             foreach (var region in _unloadCandidates)
             {
                 if (region.UnloadStrategy == null) continue;
-
-                if (region.UnloadStrategy.ShouldUnload(unloadBounds, _regionManager, region) && !region.IsLoading)
+                _regionManager.TryGetMeta(region, out var meta);
+                if (region.UnloadStrategy.ShouldUnload(unloadBounds, _regionManager, region) && !meta.IsLoading)
                     _streamingLoader.Unload(region, OnUnloadComplete);
             }
         }
@@ -132,6 +145,7 @@ namespace LevelStreaming
 
         private void CallRegionActivatable(RegionManager.Region region, bool active)
         {
+            var meta = _regionManager.GetOrCreateMeta(region);
             if (region.Type == RegionManager.RegionType.Scene)
             {
                 var rootObjects = UnityEngine.SceneManagement.SceneManager
@@ -144,9 +158,9 @@ namespace LevelStreaming
                         activatable.OnRegionActivated(region, active);
                 }
             }
-            else if (region.Type == RegionManager.RegionType.Prefab && region.Instance != null)
+            else if (region.Type == RegionManager.RegionType.Prefab && meta.Instance != null)
             {
-                var activatable = region.Instance.GetComponent<IRegionActivatable>();
+                var activatable = meta.Instance.GetComponent<IRegionActivatable>();
                 if (activatable != null)
                     activatable.OnRegionActivated(region, active);
             }

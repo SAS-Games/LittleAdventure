@@ -9,10 +9,11 @@ namespace LevelStreaming
         private IStreamingLoader<RegionManager.Region> _sceneLoader;
         private IStreamingLoader<RegionManager.Region> _prefabLoader;
 
-        protected override void OnInstanceCreated()
+        public override void Initialize(RegionStreamingController regionStreamingController, RegionManager regionManager)
         {
-            _sceneLoader = new SceneStreamingLoader();
-            _prefabLoader = new PrefabStreamingLoader();
+            base.Initialize(regionStreamingController, regionManager);
+            _sceneLoader = new SceneStreamingLoader(_regionManager);
+            _prefabLoader = new PrefabStreamingLoader(_regionManager);
         }
 
         public override void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded) =>

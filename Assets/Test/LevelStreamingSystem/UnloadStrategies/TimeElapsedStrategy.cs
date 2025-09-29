@@ -1,4 +1,5 @@
 using UnityEngine;
+
 namespace LevelStreaming
 {
     [CreateAssetMenu(menuName = "Streaming/UnloadStrategies/TimeElapsed")]
@@ -8,7 +9,9 @@ namespace LevelStreaming
 
         public override bool ShouldUnload(Bounds unloadBounds, RegionManager regionManager, RegionManager.Region region)
         {
-            return Time.time - region.LoadedTime > m_TimeToUnload;
+            if (regionManager.TryGetMeta(region, out var meta))
+                return Time.time - meta.LoadedTime > m_TimeToUnload;
+            return false;
         }
     }
 }

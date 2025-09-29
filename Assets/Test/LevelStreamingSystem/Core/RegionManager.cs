@@ -34,33 +34,10 @@ namespace LevelStreaming
             [field: SerializeField] public List<Portal> Portals { get; private set; } = new();
             [field: SerializeField] public UnloadStrategy UnloadStrategy { get; private set; }
             [NonSerialized] public List<Bounds> CachedWorldPortalBounds = new();
-            // --- Runtime state ---
-            public bool IsLoading { get; internal set; }
-            public bool IsLoaded { get; private set; }
-            public float LoadedTime { get; private set; }
 
             /// <summary>
-            /// If this region is prefab-based, this will store the instantiated root.
-            /// Null if not loaded or if it's a scene region.
+            /// Rebuild the portal bounds in world-space using the region's cached bounds.
             /// </summary>
-            public GameObject Instance { get; internal set; }
-
-
-            internal void MarkLoaded()
-            {
-                IsLoaded = true;
-                IsLoading = false;
-                LoadedTime = Time.time;
-            }
-
-            internal void MarkUnloaded()
-            {
-                Instance = null;
-                IsLoaded = false;
-                IsLoading = false;
-            }
-
-
             public void RebuildPortalWorldBounds()
             {
                 CachedWorldPortalBounds.Clear();
@@ -74,11 +51,10 @@ namespace LevelStreaming
         }
 
         [field: SerializeField] public List<Region> Regions { get; private set; } = new();
-
         [field: SerializeField] public RegionSelectionStrategySO m_RegionSelectionStrategy;
-
         public readonly HashSet<Region> loadedRegions = new();
         public Dictionary<string, Region> RegionLookup { get; private set; }
+        private readonly Dictionary<Region, RegionMetaData> _metaByRegion = new();
 
         void Awake()
         {
@@ -94,6 +70,9 @@ namespace LevelStreaming
                 if (!regionNames.Add(region.RegionName))
                     Debug.LogWarning($"Duplicate region name detected: {region.RegionName}", this, TAG);
 
+                GetOrCreateMeta(region);
+
+                // Precompute portal world bounds
                 region.RebuildPortalWorldBounds();
             }
 
@@ -127,15 +106,104 @@ namespace LevelStreaming
             foreach (var region in Regions)
                 RegionLookup[region.RegionName] = region;
         }
-
+        
         public void MarkRegionLoaded(Region region)
         {
-            region.MarkLoaded();
+            if (region == null) return;
+
+            var meta = GetOrCreateMeta(region);
+            meta.IsLoading = false;
+            meta.IsLoaded = true;
+            meta.LoadedTime = Time.time;
+            meta.LastTimeDesired = Time.time;
         }
 
         public void MarkRegionUnloaded(Region region)
         {
-            region.MarkUnloaded();
+            if (region == null)
+                return;
+
+            if (_metaByRegion.TryGetValue(region, out var meta))
+                meta.ResetTransient();
+        }
+
+        public class RegionMetaData
+        {
+            public bool IsLoading = false;
+            public bool IsLoaded = false;
+            public float LoadedTime = -1f;
+            public GameObject Instance = null;
+
+            public float LastTimeDesired = -1f;
+            public object UserData = null;
+
+            public void ResetTransient()
+            {
+                IsLoading = false;
+                IsLoaded = false;
+                LoadedTime = -1f;
+                Instance = null;
+                LastTimeDesired = -1f;
+                UserData = null;
+            }
+        }
+
+        /// <summary>
+        /// Return existing metadata or create a new one for the region.
+        /// </summary>
+        public RegionMetaData GetOrCreateMeta(Region region)
+        {
+            if (region == null) throw new ArgumentNullException(nameof(region));
+
+            if (!_metaByRegion.TryGetValue(region, out var meta))
+            {
+                meta = new RegionMetaData();
+                meta.LoadedTime = -1f;
+                _metaByRegion[region] = meta;
+            }
+
+            return meta;
+        }
+
+        public bool TryGetMeta(Region region, out RegionMetaData meta)
+        {
+            if (region == null)
+            {
+                meta = null;
+                return false;
+            }
+
+            return _metaByRegion.TryGetValue(region, out meta);
+        }
+
+        public void RemoveMeta(Region region)
+        {
+            if (region == null) return;
+            _metaByRegion.Remove(region);
+        }
+
+        public void ResetMeta(Region region)
+        {
+            if (region == null)
+                return;
+
+            if (_metaByRegion.TryGetValue(region, out var meta))
+                meta.ResetTransient();
+        }
+
+        public void ClearAllMeta()
+        {
+            _metaByRegion.Clear();
+        }
+
+        public bool IsRegionLoaded(Region region)
+        {
+            return TryGetMeta(region, out var meta) && meta.IsLoaded;
+        }
+
+        public bool IsRegionLoading(Region region)
+        {
+            return TryGetMeta(region, out var meta) && meta.IsLoading;
         }
     }
 }

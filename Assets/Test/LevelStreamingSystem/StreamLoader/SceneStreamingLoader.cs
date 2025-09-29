@@ -7,14 +7,19 @@ namespace LevelStreaming
 {
     public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
     {
+        private RegionManager _regionManager;
+        
+        public SceneStreamingLoader(RegionManager regionManager)
+        {
+           _regionManager = regionManager; 
+        }
+        
         public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
         {
-            if (region.Type != RegionManager.RegionType.Scene ||
-                region.IsLoading ||
-                region.IsLoaded)
-            {
+            var meta = _regionManager.GetOrCreateMeta(region);
+            if (meta.IsLoading || meta.IsLoaded) 
                 return;
-            }
+           
             var scene = SceneManager.GetSceneByPath(region.SceneRef.ScenePath);
             if (scene.isLoaded)
             {
@@ -22,12 +27,13 @@ namespace LevelStreaming
                 return;
             }
 
-            region.IsLoading = true;
+            meta.IsLoading = true;
             _ = LoadSceneAsync(region, onLoaded);
         }
 
         private async Task LoadSceneAsync(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
         {
+            var meta = _regionManager.GetOrCreateMeta(region);
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(region.SceneRef.ScenePath, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = true;
 
@@ -42,13 +48,13 @@ namespace LevelStreaming
             }
             finally
             {
-                region.IsLoading = false;
+                meta.IsLoading = false;
             }
         }
 
         public void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
         {
-            if (region.Type != RegionManager.RegionType.Scene || !region.IsLoaded)
+            if ( !IsLoaded(region))
                 return;
 
             _ = UnloadSceneAsync(region, onUnloaded);
@@ -56,6 +62,7 @@ namespace LevelStreaming
 
         private async Task UnloadSceneAsync(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
         {
+            var meta = _regionManager.GetOrCreateMeta(region);
             AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(region.SceneRef.ScenePath);
             if (asyncUnload != null)
             {
@@ -70,10 +77,10 @@ namespace LevelStreaming
                 }
             }
 
-            region.IsLoading = false;
+            meta.IsLoading = false;
         }
 
-        public bool IsLoading(RegionManager.Region region) => region.IsLoading;
-        public bool IsLoaded(RegionManager.Region region) => region.IsLoaded;
+        public bool IsLoading(RegionManager.Region region) => _regionManager.IsRegionLoading(region);
+        public bool IsLoaded(RegionManager.Region region) => _regionManager.IsRegionLoaded(region);
     }
 }

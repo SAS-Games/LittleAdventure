@@ -25,6 +25,7 @@ namespace LevelStreaming
                         }
                         else
                             RegionName = string.Empty;
+
                         break;
 
                     case RegionType.Prefab:
@@ -52,6 +53,7 @@ namespace LevelStreaming
                         {
                             RegionName = string.Empty;
                         }
+
                         break;
                 }
             }
@@ -95,6 +97,7 @@ namespace LevelStreaming
                     {
                         EditorSceneManager.MarkSceneDirty(targetScene);
                     }
+
                     break;
 
                 case RegionType.Prefab:
@@ -172,6 +175,7 @@ namespace LevelStreaming
                                 pb.Bounds.size
                             );
                         }
+
                         PrefabUtility.UnloadPrefabContents(prefabRoot);
                         break;
                 }
@@ -243,8 +247,7 @@ namespace LevelStreaming
             foreach (var region in Regions)
             {
                 if (region == null) continue;
-
-                bool isLoaded = region.IsLoaded;
+                bool isLoaded = IsRegionLoaded(region);
                 Color wireColor = isLoaded ? Color.green : Color.cyan;
                 Color fillColor = wireColor;
                 fillColor.a = 0.1f;

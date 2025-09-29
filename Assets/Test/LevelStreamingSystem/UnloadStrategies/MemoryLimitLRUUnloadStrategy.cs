@@ -33,9 +33,9 @@ namespace LevelStreaming
 
             foreach (var r in regionManager.loadedRegions)
             {
-                if (r.LoadedTime < oldestTime)
+                if (regionManager.TryGetMeta(r, out var meta) && meta.LoadedTime < oldestTime)
                 {
-                    oldestTime = r.LoadedTime;
+                    oldestTime = meta.LoadedTime;
                     lru = r;
                 }
             }
