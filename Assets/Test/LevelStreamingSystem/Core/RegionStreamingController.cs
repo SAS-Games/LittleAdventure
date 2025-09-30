@@ -9,11 +9,8 @@ namespace LevelStreaming
     {
         const string TAG = "StreamingController";
 
-        [Header("Dependencies")] [SerializeField]
-        private RuntimeScriptableObject<RegionStreamingLoader> m_StreamingLoader;
-
-        [Header("Streaming Settings")] [SerializeField]
-        private float m_UpdateInterval = 0.1f;
+        [SerializeField] private RuntimeScriptableObject<RegionStreamingLoader> m_StreamingLoader;
+        [SerializeField] private float m_UpdateInterval = 0.1f;
 
         private RegionStreamingLoader _streamingLoader => m_StreamingLoader;
         private IStreamingBoundsProvider _target;
@@ -41,10 +38,13 @@ namespace LevelStreaming
 
         private void Update()
         {
+            var timeStart = Time.realtimeSinceStartup;
             if (_target == null)
                 return;
 
-            if (Time.time - _lastUpdateTime < m_UpdateInterval) return;
+            if (Time.time - _lastUpdateTime < m_UpdateInterval)
+                return;
+
             _lastUpdateTime = Time.time;
 
             UpdateDesiredRegions();
@@ -53,6 +53,7 @@ namespace LevelStreaming
             HandleActivation();
 
             _regionManager.UpdateLoadedRegions(_loadedRegions);
+            Debug.Log((Time.realtimeSinceStartup - timeStart) * 1000f);
         }
 
         private void UpdateDesiredRegions()

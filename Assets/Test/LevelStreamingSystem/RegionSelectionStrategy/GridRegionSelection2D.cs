@@ -3,32 +3,32 @@ using UnityEngine;
 
 namespace LevelStreaming
 {
-    [CreateAssetMenu(menuName = "Streaming/RegionSelection/GridStrategy2D")]
+    [CreateAssetMenu(menuName = "Streaming/RegionSelection/GridRegionSelection2D")]
     public class GridRegionSelection2D : RegionSelectionStrategySO
     {
-        private readonly Dictionary<Vector2Int, List<RegionManager.Region>> _grid = new();
-        [SerializeField] private float m_CellSize = 100;
+        public Dictionary<Vector2Int, List<RegionManager.Region>> Grid { get; private set; } = new();
+        [field: SerializeField] public Vector2Int CellSize { get; private set; } = new(50, 50);
 
         public override void Initialize(List<RegionManager.Region> regionRefs)
         {
-            _grid.Clear();
+            Grid.Clear();
 
-            foreach (var scene in regionRefs)
+            foreach (var region in regionRefs)
             {
-                var minCell = WorldToCell(scene.CachedBounds.min);
-                var maxCell = WorldToCell(scene.CachedBounds.max);
+                var minCell = WorldToCell(region.CachedBounds.min);
+                var maxCell = WorldToCell(region.CachedBounds.max);
 
                 for (int x = minCell.x; x <= maxCell.x; x++)
                 for (int y = minCell.y; y <= maxCell.y; y++)
                 {
                     var cell = new Vector2Int(x, y);
-                    if (!_grid.TryGetValue(cell, out var list))
+                    if (!Grid.TryGetValue(cell, out var list))
                     {
                         list = new List<RegionManager.Region>();
-                        _grid[cell] = list;
+                        Grid[cell] = list;
                     }
 
-                    list.Add(scene);
+                    list.Add(region);
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace LevelStreaming
             for (int y = minCell.y; y <= maxCell.y; y++)
             {
                 var cell = new Vector2Int(x, y);
-                if (_grid.TryGetValue(cell, out var list))
+                if (Grid.TryGetValue(cell, out var list))
                 {
                     foreach (var scene in list)
                     {
@@ -60,8 +60,8 @@ namespace LevelStreaming
         private Vector2Int WorldToCell(Vector3 pos)
         {
             return new Vector2Int(
-                Mathf.FloorToInt(pos.x / m_CellSize),
-                Mathf.FloorToInt(pos.y / m_CellSize)
+                Mathf.FloorToInt(pos.x / (float)CellSize.x),
+                Mathf.FloorToInt(pos.y / (float)CellSize.y)
             );
         }
     }

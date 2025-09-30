@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace LevelStreaming
 {
@@ -11,6 +12,7 @@ namespace LevelStreaming
 
     public abstract class RegionSelectionStrategySO : ScriptableObject, IRegionSelectionStrategy
     {
+        [field: SerializeField] public bool DebugDraw { get; private set; } = false;
         public abstract void Initialize(List<RegionManager.Region> regionRefs);
         public abstract List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds);
     }

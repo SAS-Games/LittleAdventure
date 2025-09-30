@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace LevelStreaming
 {
-    [CreateAssetMenu(menuName = "Streaming/RegionSelection/GridStrategy")]
+    [CreateAssetMenu(menuName = "Streaming/RegionSelection/GridRegionSelection")]
     public class GridRegionSelection : RegionSelectionStrategySO
     {
-        private readonly Dictionary<Vector3Int, List<RegionManager.Region>> _grid = new();
-        [SerializeField] private float m_CellSize = 100;
+        public Dictionary<Vector3Int, List<RegionManager.Region>> Grid { get; private set; } = new();
+        [field: SerializeField] public Vector3Int CellSize { get; private set; } = Vector3Int.one * 100;
 
         public override void Initialize(List<RegionManager.Region> regionRefs)
         {
-            _grid.Clear();
+            Grid.Clear();
             foreach (var scene in regionRefs)
             {
                 var minCell = WorldToCell(scene.CachedBounds.min);
@@ -22,10 +23,10 @@ namespace LevelStreaming
                 for (int z = minCell.z; z <= maxCell.z; z++)
                 {
                     var cell = new Vector3Int(x, y, z);
-                    if (!_grid.TryGetValue(cell, out var list))
+                    if (!Grid.TryGetValue(cell, out var list))
                     {
                         list = new List<RegionManager.Region>();
-                        _grid[cell] = list;
+                        Grid[cell] = list;
                     }
 
                     list.Add(scene);
@@ -45,7 +46,7 @@ namespace LevelStreaming
             for (int z = minCell.z; z <= maxCell.z; z++)
             {
                 var cell = new Vector3Int(x, y, z);
-                if (_grid.TryGetValue(cell, out var list))
+                if (Grid.TryGetValue(cell, out var list))
                 {
                     foreach (var scene in list)
                     {
@@ -61,9 +62,9 @@ namespace LevelStreaming
         private Vector3Int WorldToCell(Vector3 pos)
         {
             return new Vector3Int(
-                Mathf.FloorToInt(pos.x / m_CellSize),
-                Mathf.FloorToInt(pos.y / m_CellSize),
-                Mathf.FloorToInt(pos.z / m_CellSize)
+                Mathf.FloorToInt(pos.x / CellSize.x),
+                Mathf.FloorToInt(pos.y / CellSize.y),
+                Mathf.FloorToInt(pos.z / CellSize.z)
             );
         }
     }

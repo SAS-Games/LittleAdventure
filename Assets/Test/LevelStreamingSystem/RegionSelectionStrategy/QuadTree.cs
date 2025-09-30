@@ -70,8 +70,8 @@ namespace LevelStreaming
 
             children[0] = new QuadtreeNode(new Bounds(center + new Vector3(-size.x / 2, size.y / 2, 0), size),
                 depth + 1, maxDepth, maxCapacity);
-            children[1] = new QuadtreeNode(new Bounds(center + new Vector3(size.x / 2, size.y / 2, 0), size), depth + 1,
-                maxDepth, maxCapacity);
+            children[1] = new QuadtreeNode(new Bounds(center + new Vector3(size.x / 2, size.y / 2, 0), size),
+                depth + 1, maxDepth, maxCapacity);
             children[2] = new QuadtreeNode(new Bounds(center + new Vector3(-size.x / 2, -size.y / 2, 0), size),
                 depth + 1, maxDepth, maxCapacity);
             children[3] = new QuadtreeNode(new Bounds(center + new Vector3(size.x / 2, -size.y / 2, 0), size),
@@ -85,5 +85,11 @@ namespace LevelStreaming
 
             objects.Clear();
         }
+
+        // 🔹 Public read-only access for visualization
+        public Bounds Bounds => bounds;
+        public int Depth => depth;
+        public QuadtreeNode[] Children => children;
+        public IReadOnlyList<RegionManager.Region> Objects => objects;
     }
 }

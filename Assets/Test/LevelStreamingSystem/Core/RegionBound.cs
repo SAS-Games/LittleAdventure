@@ -16,7 +16,7 @@ namespace LevelStreaming
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.yellow;
+            Gizmos.color = Color.red;
             Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.DrawWireCube(m_RegionBounds.center, m_RegionBounds.size);
         }

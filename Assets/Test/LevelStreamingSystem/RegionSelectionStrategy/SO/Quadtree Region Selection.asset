@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51e7f9738cc7f624f81545e432d79620, type: 3}
   m_Name: Quadtree Region Selection
   m_EditorClassIdentifier: 
-  maxDepth: 6
-  maxCapacity: 4
+  <DebugDraw>k__BackingField: 1
+  m_MaxDepth: 6
+  m_MaxCapacity: 4

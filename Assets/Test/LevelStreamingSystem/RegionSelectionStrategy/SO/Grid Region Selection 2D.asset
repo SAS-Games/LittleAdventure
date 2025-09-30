@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9184fe01d5c33e44ab7d9aed64749ce, type: 3}
   m_Name: Grid Region Selection 2D
   m_EditorClassIdentifier: 
-  m_CellSize: 100
+  <DebugDraw>k__BackingField: 1
+  <CellSize>k__BackingField: {x: 20, y: 25}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Serialization;
 using Debug = SAS.Debug;
 
 namespace LevelStreaming
@@ -51,7 +52,7 @@ namespace LevelStreaming
         }
 
         [field: SerializeField] public List<Region> Regions { get; private set; } = new();
-        [field: SerializeField] public RegionSelectionStrategySO m_RegionSelectionStrategy;
+        [field: SerializeField] public RegionSelectionStrategySO RegionSelectionStrategy{get; private set;}
         public readonly HashSet<Region> loadedRegions = new();
         public Dictionary<string, Region> RegionLookup { get; private set; }
         private readonly Dictionary<Region, RegionMetaData> _metaByRegion = new();
@@ -77,8 +78,8 @@ namespace LevelStreaming
             }
 
             BuildLookup();
-            if (m_RegionSelectionStrategy != null)
-                m_RegionSelectionStrategy.Initialize(Regions);
+            if (RegionSelectionStrategy != null)
+                RegionSelectionStrategy.Initialize(Regions);
             else
                 Debug.LogError("No RegionSelectionStrategy assigned!", this, TAG);
         }
@@ -91,13 +92,13 @@ namespace LevelStreaming
 
         public List<Region> FindRegionsInRange(Bounds queryBounds)
         {
-            if (m_RegionSelectionStrategy == null)
+            if (RegionSelectionStrategy == null)
             {
                 Debug.LogError("[RegionManager] Not initialized with a strategy!");
                 return new List<Region>();
             }
 
-            return m_RegionSelectionStrategy.GetNearbyRegions(queryBounds);
+            return RegionSelectionStrategy.GetNearbyRegions(queryBounds);
         }
 
         private void BuildLookup()
