@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Grid Region Selection 2D
   m_EditorClassIdentifier: 
   <DebugDraw>k__BackingField: 1
-  <CellSize>k__BackingField: {x: 20, y: 25}
+  <CellSize>k__BackingField: {x: 50, y: 50}

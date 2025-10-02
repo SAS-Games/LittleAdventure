@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Quadtree Region Selection
   m_EditorClassIdentifier: 
   <DebugDraw>k__BackingField: 1
-  m_MaxDepth: 6
-  m_MaxCapacity: 4
+  m_MaxDepth: 3
+  m_MaxCapacity: 2

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace LevelStreaming
 {
@@ -36,7 +35,7 @@ namespace LevelStreaming
 
         public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
         {
-            var result = new HashSet<RegionManager.Region>(); // ensures no duplicates
+            var result = new HashSet<RegionManager.Region>(); 
 
             var minCell = WorldToCell(queryBounds.min);
             var maxCell = WorldToCell(queryBounds.max);

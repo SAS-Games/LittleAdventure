@@ -38,7 +38,6 @@ namespace LevelStreaming
 
         private void Update()
         {
-            var timeStart = Time.realtimeSinceStartup;
             if (_target == null)
                 return;
 
@@ -53,7 +52,6 @@ namespace LevelStreaming
             HandleActivation();
 
             _regionManager.UpdateLoadedRegions(_loadedRegions);
-            Debug.Log((Time.realtimeSinceStartup - timeStart) * 1000f);
         }
 
         private void UpdateDesiredRegions()
@@ -116,9 +114,11 @@ namespace LevelStreaming
 
             foreach (var region in _unloadCandidates)
             {
-                if (region.UnloadStrategy == null) continue;
-                _regionManager.TryGetMeta(region, out var meta);
-                if (region.UnloadStrategy.ShouldUnload(unloadBounds, _regionManager, region) && !meta.IsLoading)
+                if (region.UnloadStrategy == null) 
+                    continue;
+                
+                if (region.UnloadStrategy.ShouldUnload(unloadBounds, _regionManager, region) &&
+                    _regionManager.TryGetMeta(region, out var meta) && !meta.IsLoading)
                     _streamingLoader.Unload(region, OnUnloadComplete);
             }
         }

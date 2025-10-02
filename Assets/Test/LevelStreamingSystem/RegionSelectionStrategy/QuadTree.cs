@@ -9,7 +9,7 @@ namespace LevelStreaming
         private readonly int depth;
         private readonly int maxDepth;
         private readonly int maxCapacity;
-        private List<RegionManager.Region> objects;
+        private List<RegionManager.Region> regions;
         private QuadtreeNode[] children;
 
         public QuadtreeNode(Bounds bounds, int depth, int maxDepth, int maxCapacity)
@@ -18,7 +18,7 @@ namespace LevelStreaming
             this.depth = depth;
             this.maxDepth = maxDepth;
             this.maxCapacity = maxCapacity;
-            objects = new List<RegionManager.Region>();
+            regions = new List<RegionManager.Region>();
             children = null;
         }
 
@@ -29,9 +29,9 @@ namespace LevelStreaming
 
             if (children == null)
             {
-                objects.Add(region);
+                regions.Add(region);
 
-                if (objects.Count > maxCapacity && depth < maxDepth)
+                if (regions.Count > maxCapacity && depth < maxDepth)
                     Subdivide();
             }
             else
@@ -48,10 +48,10 @@ namespace LevelStreaming
 
             if (children == null)
             {
-                foreach (var obj in objects)
+                foreach (var region in regions)
                 {
-                    if (obj.CachedBounds.Intersects(range))
-                        results.Add(obj);
+                    if (region.CachedBounds.Intersects(range))
+                        results.Add(region);
                 }
             }
             else
@@ -77,19 +77,19 @@ namespace LevelStreaming
             children[3] = new QuadtreeNode(new Bounds(center + new Vector3(size.x / 2, -size.y / 2, 0), size),
                 depth + 1, maxDepth, maxCapacity);
 
-            foreach (var obj in objects)
+            foreach (var region in regions)
             {
                 foreach (var child in children)
-                    child.Insert(obj);
+                    child.Insert(region);
             }
 
-            objects.Clear();
+            regions.Clear();
         }
 
         // 🔹 Public read-only access for visualization
         public Bounds Bounds => bounds;
         public int Depth => depth;
         public QuadtreeNode[] Children => children;
-        public IReadOnlyList<RegionManager.Region> Objects => objects;
+        public IReadOnlyList<RegionManager.Region> Regions => regions;
     }
 }
