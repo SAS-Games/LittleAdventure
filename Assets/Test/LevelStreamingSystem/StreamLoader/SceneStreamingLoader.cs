@@ -8,18 +8,18 @@ namespace LevelStreaming
     public class SceneStreamingLoader : IStreamingLoader<RegionManager.Region>
     {
         private RegionManager _regionManager;
-        
+
         public SceneStreamingLoader(RegionManager regionManager)
         {
-           _regionManager = regionManager; 
+            _regionManager = regionManager;
         }
-        
+
         public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
         {
             var meta = _regionManager.GetOrCreateMeta(region);
-            if (meta.IsLoading || meta.IsLoaded) 
+            if (meta.IsLoading || meta.IsLoaded)
                 return;
-           
+
             var scene = SceneManager.GetSceneByPath(region.SceneRef.ScenePath);
             if (scene.isLoaded)
             {
@@ -28,12 +28,12 @@ namespace LevelStreaming
             }
 
             meta.IsLoading = true;
-            _ = LoadSceneAsync(region, onLoaded);
+            _ = LoadSceneAsync(region, meta, onLoaded);
         }
 
-        private async Task LoadSceneAsync(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
+        private async Task LoadSceneAsync(RegionManager.Region region, RegionManager.RegionMetaData meta,
+            Action<RegionManager.Region> onLoaded)
         {
-            var meta = _regionManager.GetOrCreateMeta(region);
             AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(region.SceneRef.ScenePath, LoadSceneMode.Additive);
             asyncLoad.allowSceneActivation = true;
 
@@ -54,7 +54,7 @@ namespace LevelStreaming
 
         public void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
         {
-            if ( !IsLoaded(region))
+            if (!IsLoaded(region))
                 return;
 
             _ = UnloadSceneAsync(region, onUnloaded);
@@ -62,7 +62,6 @@ namespace LevelStreaming
 
         private async Task UnloadSceneAsync(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
         {
-            var meta = _regionManager.GetOrCreateMeta(region);
             AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(region.SceneRef.ScenePath);
             if (asyncUnload != null)
             {
@@ -77,6 +76,7 @@ namespace LevelStreaming
                 }
             }
 
+            _regionManager.TryGetMeta(region, out var meta);
             meta.IsLoading = false;
         }
 

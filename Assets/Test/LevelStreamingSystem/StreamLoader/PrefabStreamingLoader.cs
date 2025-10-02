@@ -13,20 +13,20 @@ namespace LevelStreaming
         {
             _regionManager = regionManager;
         }
-        
+
         public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
         {
             var meta = _regionManager.GetOrCreateMeta(region);
-            if (meta.IsLoading || meta.IsLoaded) 
+            if (meta.IsLoading || meta.IsLoaded)
                 return;
-            
+
             meta.IsLoading = true;
-            _ = LoadPrefabAsync(region, onLoaded);
+            _ = LoadPrefabAsync(region, meta, onLoaded);
         }
 
-        private async Task LoadPrefabAsync(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
+        private async Task LoadPrefabAsync(RegionManager.Region region, RegionManager.RegionMetaData meta,
+            Action<RegionManager.Region> onLoaded)
         {
-            var meta = _regionManager.GetOrCreateMeta(region);
             var handle = region.PrefabRef.LoadAssetAsync<GameObject>();
             try
             {
@@ -55,9 +55,7 @@ namespace LevelStreaming
 
         public void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
         {
-            var meta = _regionManager.GetOrCreateMeta(region);
-
-            if (meta.Instance != null)
+            if (_regionManager.TryGetMeta(region, out var meta) && meta.Instance != null)
             {
                 Object.Destroy(meta.Instance);
                 meta.Instance = null;
