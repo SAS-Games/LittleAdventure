@@ -99,7 +99,7 @@ namespace LevelStreaming
                     if (meta.IsLoaded || meta.IsLoading)
                         continue;
                 }
-
+                
                 _streamingLoader.Load(region, OnLoadComplete);
             }
         }

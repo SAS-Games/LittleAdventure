@@ -51,7 +51,7 @@ namespace LevelStreaming
         }
 
         [field: SerializeField] public List<Region> Regions { get; private set; } = new();
-        [field: SerializeField] public RegionSelectionStrategySO RegionSelectionStrategy{get; private set;}
+        [field: SerializeField] public RegionSelectionStrategySO RegionSelectionStrategy { get; private set; }
         public readonly HashSet<Region> loadedRegions = new();
         public Dictionary<string, Region> RegionLookup { get; private set; }
         private readonly Dictionary<Region, RegionMetaData> _metaByRegion = new();
@@ -106,7 +106,7 @@ namespace LevelStreaming
             foreach (var region in Regions)
                 RegionLookup[region.RegionName] = region;
         }
-        
+
         public void MarkRegionLoaded(Region region)
         {
             if (region == null) return;
@@ -153,7 +153,8 @@ namespace LevelStreaming
         /// </summary>
         public RegionMetaData GetOrCreateMeta(Region region)
         {
-            if (region == null) throw new ArgumentNullException(nameof(region));
+            if (region == null)
+                throw new ArgumentNullException(nameof(region));
 
             if (!_metaByRegion.TryGetValue(region, out var meta))
             {
