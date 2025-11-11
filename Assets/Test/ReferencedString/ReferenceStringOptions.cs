@@ -10,8 +10,8 @@ namespace SAS.StringTest
         [Serializable]
         public class Entry
         {
-            public string guid;
             public string name;
+            [ReadOnly] public string guid;
         }
 
         [SerializeField] private List<Entry> entries = new();
