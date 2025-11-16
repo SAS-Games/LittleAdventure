@@ -48,7 +48,13 @@ public class PlayerConfigurationUI : UIScreenView
         _playerSetupModel.Players[playerIndex].Character = m_Players[playerIndex];
 
         string defaultName = GetAvailableNames(playerIndex).FirstOrDefault();
+        var selectedName = FlexPrefs.Get<string>(playerIndex, "playerName", defaultName, FlexPrefsConfig.FileName);
+        defaultName = selectedName;
+        
         string defaultColor = GetAvailableColors(playerIndex).FirstOrDefault();
+        var selectedColor = FlexPrefs.Get<string>(playerIndex, "playerColor", defaultColor, FlexPrefsConfig.FileName);
+        defaultColor = selectedColor;
+        
         OnNameChosen(playerIndex, defaultName);
         OnColorChosen(playerIndex, defaultColor);
 
@@ -65,6 +71,8 @@ public class PlayerConfigurationUI : UIScreenView
     {
         _chosenNames[playerIndex] = selectedName;
         _playerSetupModel.Players[playerIndex].Name = selectedName;
+        FlexPrefs.Set(playerIndex, "playerName", selectedName, FlexPrefsConfig.FileName);
+
         UpdateAllNameDropdowns();
     }
 
@@ -73,6 +81,8 @@ public class PlayerConfigurationUI : UIScreenView
         _chosenColors[playerIndex] = color;
         Color selectedColor = m_ColorConfig.GetColor(color);
         _playerSetupModel.Players[playerIndex].Color = selectedColor;
+        FlexPrefs.Set(playerIndex, "playerColor", color, FlexPrefsConfig.FileName);
+
         var character = _playerSetupModel.Players[playerIndex].Character;
         SkinnedMeshRenderer skinnedRenderer = character.GetComponentInChildren<SkinnedMeshRenderer>();
         Material material = skinnedRenderer.material;
