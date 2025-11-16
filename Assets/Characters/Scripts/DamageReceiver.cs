@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-public class DamageReciever : MonoBehaviour, IDamageable
+public class DamageReceiver : MonoBehaviour, IDamageable
 {
     [FieldRequiresParent] private IEventDispatcher _eventDispatcher;
     [SerializeField] private string m_EffectEventName = "BeingHit";
