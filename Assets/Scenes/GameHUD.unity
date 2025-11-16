@@ -414,7 +414,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8894668223357280794, guid: 483d4723f9d2d954dba1a546aa00a77a, type: 3}
       propertyPath: _proxyControlID
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2767669643814859873, guid: 483d4723f9d2d954dba1a546aa00a77a, type: 3}
       propertyPath: m_Name
