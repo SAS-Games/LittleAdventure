@@ -131,6 +131,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: DialogueHandlerCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2995104060214822055, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995104060214822055, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995104060214822055, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995104060214822055, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6686228553510837643, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6686228553510837643, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6686228553510837643, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6686228553510837643, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7016907492029386284, guid: 2377593ced00fd148b2dd057ffc62a8a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -635,7 +667,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3492246449791135575, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_FadeInDuration
-      value: 0.5
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_LoadOnStart

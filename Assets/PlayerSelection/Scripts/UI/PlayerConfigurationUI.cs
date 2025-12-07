@@ -4,13 +4,14 @@ using SAS.Utilities.TagSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.Serialization;
 
 public class PlayerConfigurationUI : UIScreenView
 {
     [SerializeField] private GameObject[] m_Players;
     [SerializeField] private PlayerSetupMenu m_PlayerConfigScreen;
     [SerializeField] private RectTransform m_Content;
-    [SerializeField] private SceneGroupLoader m_SceneGroupLoader;
+    [FormerlySerializedAs("m_SceneGroupLoader")] [SerializeField] private SceneGroupLoadConfig mSceneGroupLoadConfig;
     [SerializeField] private PlayerNamesConfig m_AvailableNamesConfig;
     [SerializeField] private ColorConfig m_ColorConfig;
     private IReadOnlyList<string> _nameOptions;
@@ -149,6 +150,6 @@ public class PlayerConfigurationUI : UIScreenView
     {
         _readyPlayerIndices.Add(playerIndex);
         if (_readyPlayerIndices.Count == PlayerSetupController.Instance.MaxPlayers)
-            m_SceneGroupLoader.Load();
+            mSceneGroupLoadConfig.Load();
     }
 }

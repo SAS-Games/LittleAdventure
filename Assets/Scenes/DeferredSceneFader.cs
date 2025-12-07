@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DeferredSceneFader : SceneFader
 {
-    [Inject] private ISceneLoader _sceneLoader;
     [SerializeField] private string m_SceneName;
 
     protected override void Awake()

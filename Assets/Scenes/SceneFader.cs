@@ -16,9 +16,11 @@ namespace SAS.SceneManagement
     [Serializable]
     public class SpriteArrayWrapper
     {
-        [ConditionalField("FadeType", FadeType.GradientTexture)]
-        [SerializeField] private Sprite[] m_Sprites;
+        [ConditionalField("FadeType", FadeType.GradientTexture)] [SerializeField]
+        private Sprite[] m_Sprites;
+
         public int Length => m_Sprites.Length;
+
         public Texture GetRandomTexture()
         {
             return m_Sprites[UnityEngine.Random.Range(0, m_Sprites.Length)].texture;
@@ -28,8 +30,10 @@ namespace SAS.SceneManagement
     public class SceneFader : MonoBehaviour, ILoadingScreen
     {
         [SerializeField] private FadeType m_FadeType;
-        [ConditionalField(nameof(m_FadeType), FadeType.GradientTexture)]
-        [SerializeField] private SpriteArrayWrapper m_FadePattern;
+
+        [ConditionalField(nameof(m_FadeType), FadeType.GradientTexture)] [SerializeField]
+        private SpriteArrayWrapper m_FadePattern;
+
         [SerializeField] private Image m_Image;
         [SerializeField] private float m_FadeInDuration = 1f;
         [SerializeField] private float m_FadeOutDuration = 1f;
@@ -45,6 +49,7 @@ namespace SAS.SceneManagement
         private TweenConfig _fadeInTweenConfig;
         private TweenConfig _fadeOutTweenConfig;
         private Material _material;
+        private TaskQueue _fadeQueue = new();
 
         protected virtual void Awake()
         {
@@ -65,17 +70,24 @@ namespace SAS.SceneManagement
 
         public virtual void SetActive(bool active)
         {
+            _fadeQueue.Enqueue(done => { StartFade(active, done); });
+        }
+
+        private void StartFade(bool active, Action done)
+        {
             if (active)
                 gameObject.SetActive(true);
 
-            FaderSetup(m_FadeType);
+            _fadeTween?.Stop(false);
 
-            _fadeTween?.Stop(true);
-            _fadeTween = active
-                ? Tween.CreateTween(0f, 1f, FadeTween, ref _fadeInTweenConfig)
-                : Tween.CreateTween(1f, 0f, FadeTween, ref _fadeOutTweenConfig);
+            var cfg = active ? _fadeInTweenConfig : _fadeOutTweenConfig;
+            cfg.TweenCompleteCallback(_ => { done?.Invoke(); });
+            _fadeTween = Tween.CreateTween(active ? 0f : 1f, active ? 1f : 0f, FadeTween, ref cfg);
+
+            FaderSetup(m_FadeType);
             _fadeTween.Run();
         }
+
 
         private void FaderSetup(FadeType fadeType)
         {
@@ -97,7 +109,6 @@ namespace SAS.SceneManagement
                     SwitchEffect(_useGradientTexture);
                     break;
             }
-
         }
 
         private void SwitchEffect(int effectToTurnOn)

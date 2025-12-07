@@ -1,10 +1,10 @@
 using UnityEngine;
 
-[RequireComponent(typeof(SceneGroupLoader))]
+[RequireComponent(typeof(SceneGroupLoadConfig))]
 public class SceneGroupTrigger : AllPlayersInTriggerHandler
 {
     protected override void OnAllPlayersInside()
     {
-        GetComponent<SceneGroupLoader>().Load();
+        GetComponent<SceneGroupLoadConfig>().Load();
     }
 }
