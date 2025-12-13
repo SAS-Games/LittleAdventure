@@ -5,7 +5,7 @@ using UnityEngine.Localization.Components;
 
 namespace SAS.DialogueSystem
 {
-    [RequireComponent(typeof(LocaleTextTagProcessor))]
+    [RequireComponent(typeof(LocaleTextTagProcessor)), DisallowMultipleComponent]
     public class DialogueLocaleTextPresenter : DialogueTextPresenter
     {
         [FieldRequiresSelf] LocaleTextTagProcessor _tagProcessor;
