@@ -10,14 +10,13 @@ using UnityEngine.Localization.Tables;
 using UnityEditor.Localization;
 using SAS.Localization.AI;
 using System.Linq;
+using System.Globalization;
 
 public class GPTLocalizationWindow : EditorWindow
 {
     [Header("OpenAI")]
     private string _apiKey;
     private string _model = "gpt-4o-mini";
-    private string _sourceLanguageName = "English";
-    private string _targetLanguageName = "French";
 
     [Header("Localization")]
     private Locale _sourceLocale;
@@ -64,8 +63,6 @@ public class GPTLocalizationWindow : EditorWindow
         EditorGUILayout.LabelField("OpenAI Settings", EditorStyles.boldLabel);
         _apiKey = EditorGUILayout.PasswordField("API Key", _apiKey);
         _model = EditorGUILayout.TextField("Model", _model);
-        _sourceLanguageName = EditorGUILayout.TextField("Source Language Name", _sourceLanguageName);
-        _targetLanguageName = EditorGUILayout.TextField("Target Language Name", _targetLanguageName);
         _requestsPerMinute = EditorGUILayout.IntField("Requests / Minute", _requestsPerMinute);
         _mock = EditorGUILayout.Toggle("Mock (no API calls)", _mock);
     }
@@ -122,7 +119,7 @@ public class GPTLocalizationWindow : EditorWindow
             }
             if (GUILayout.Button("Quick Translate") && !_isTranslating)
                 QuickTranslate(e);
-            
+
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
         }
@@ -216,11 +213,13 @@ public class GPTLocalizationWindow : EditorWindow
 
         try
         {
+            var sourceLanguageName = GetLanguageName(_sourceLocale);
+            var targetLanguageName = GetLanguageName(_targetLocale);
             var service = new OpenAITranslationService(
                 _apiKey,
                 _model,
-                _sourceLanguageName,
-                _targetLanguageName);
+                sourceLanguageName,
+                targetLanguageName);
 
             float delayMs = _requestsPerMinute > 0 ? (60_000f / _requestsPerMinute) : 0f;
 
@@ -281,7 +280,9 @@ public class GPTLocalizationWindow : EditorWindow
             return;
         }
 
-        var service = new OpenAITranslationService(_apiKey, _model, _sourceLanguageName, _targetLanguageName);
+        var sourceLanguageName = GetLanguageName(_sourceLocale);
+        var targetLanguageName = GetLanguageName(_targetLocale);
+        var service = new OpenAITranslationService(_apiKey, _model, sourceLanguageName, targetLanguageName);
 
         StringTable targetTable = _collection.GetTable(_targetLocale.Identifier) as StringTable;
 
@@ -325,6 +326,20 @@ public class GPTLocalizationWindow : EditorWindow
         public string SourceText;
         public string Feeling;
         public string CharacterContext;
+    }
+
+    private static string GetLanguageName(Locale locale)
+    {
+        if (locale?.Identifier.CultureInfo != null)
+        {
+            CultureInfo ci = locale.Identifier.CultureInfo;
+            return ci.EnglishName; // e.g. "French (France)"
+        }
+
+        if (!string.IsNullOrEmpty(locale?.LocaleName))
+            return locale.LocaleName;
+
+        return "Unknown language";
     }
 }
 #endif
