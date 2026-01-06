@@ -8,7 +8,6 @@ namespace SAS.WeaponSystem
 {
     public class Weapon : MonoBehaviour, IWeapon
     {
-        public const string TAG = "Weapon";
         public event Action<bool> OnCurrentInputChange;
 
         [field: SerializeField] public float AttackCounterResetCooldown { get; set; }
@@ -57,7 +56,7 @@ namespace SAS.WeaponSystem
 
         void IWeapon.Enter()
         {
-            Debug.Log($"Weapon Enter {Time.frameCount} {CurrentAttackCounter}", TAG);
+            Debug.Log($"Weapon Enter {Time.frameCount} {CurrentAttackCounter}");
             attackCounterResetTimer.Pause();
             IsInUse = true;
             WaitForAttackAnimFinish(Animator);
@@ -66,7 +65,7 @@ namespace SAS.WeaponSystem
 
         void IWeapon.Exit()
         {
-            Debug.Log($"Weapon Exit {Time.frameCount}", TAG);
+            Debug.Log($"Weapon Exit {Time.frameCount}");
             CurrentAttackCounter++;
             IsInUse = false;
             OnExit?.Invoke();
@@ -86,7 +85,7 @@ namespace SAS.WeaponSystem
 
         private void ResetAttackCounter()
         {
-            Debug.Log("Reset Attack Counter", TAG);
+            Debug.Log("Reset Attack Counter");
             CurrentAttackCounter = 0;
             AttackEndTime = Time.time;
         }

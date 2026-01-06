@@ -5,7 +5,6 @@ namespace SAS.WeaponSystem.Components
 {
     public class ComboAttack : WeaponComponent<ComboComponentData, ComboAttackData>
     {
-        private const string TAG = "Combo";
         private float _lastInputTime = -Mathf.Infinity;
         private bool _playNextAttack = false;
         private Actor _actor;
@@ -31,7 +30,7 @@ namespace SAS.WeaponSystem.Components
 
             if (timeSinceLastInput < Data.InputDelay)
             {
-                Debug.Log($"Input ignored. Delay not met: {timeSinceLastInput:F2}s", TAG);
+                Debug.Log($"Input ignored. Delay not met: {timeSinceLastInput:F2}s");
                 return;
             }
 
@@ -41,7 +40,7 @@ namespace SAS.WeaponSystem.Components
                 _playNextAttack = true;
                 if (animState.normalizedTime < CurrentAttackData.RequiredAnimationProgress)
                 {
-                    Debug.Log($"Input ignored. Animation at {animState.normalizedTime * 100:F1}%", TAG);
+                    Debug.Log($"Input ignored. Animation at {animState.normalizedTime * 100:F1}%");
                     return;
                 }
 
@@ -62,7 +61,7 @@ namespace SAS.WeaponSystem.Components
             base.HandleExit();
             if (_playNextAttack)
             {
-                Debug.Log("Queued input detected — triggering the next animation in sequence.", TAG);
+                Debug.Log("Queued input detected — triggering the next animation in sequence.");
                 _playNextAttack = false;
                 await Awaitable.NextFrameAsync(); // delay by 1 frame
                 _actor.SetBool("Attack", true);
