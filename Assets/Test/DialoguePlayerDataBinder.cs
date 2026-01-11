@@ -1,6 +1,6 @@
 using Ink.Runtime;
 using SAS.DialogueSystem;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using SAS.WeaponSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;

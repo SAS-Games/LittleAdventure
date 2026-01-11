@@ -625,9 +625,6 @@ MonoBehaviour:
   m_WeaponsContainer:
   - {fileID: 1982184288523303653}
   - {fileID: 5867608038117725257}
-  m_Weapons:
-  - {fileID: 0}
-  - {fileID: 0}
   m_weaponDropAnimEventName: DropWeapon
 --- !u!114 &1392526365081547643
 MonoBehaviour:
@@ -797,7 +794,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d905186e11f22d44ebd81a5abcb6fc4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ProxyViewTag: 4
+  m_ProxyViewTag:
+    guid: -236015508
+    resolvedName: Coin
+    sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+    lastKnownName: Coin
   _currencyType: Coins
 --- !u!114 &550901977605995055
 MonoBehaviour:
@@ -894,15 +895,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tags:
   - m_Component: {fileID: 2261841214966393158}
-    m_Value: 1
+    m_Value:
+      guid: -662547106
+      resolvedName: Activable
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Activable
   - m_Component: {fileID: 550901977605995055}
-    m_Value: 4
+    m_Value:
+      guid: -236015508
+      resolvedName: Coin
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Coin
   - m_Component: {fileID: 832196968613378172}
-    m_Value: 5
-  - m_Component: {fileID: -7446980885018579133}
-    m_Value: 6
+    m_Value:
+      guid: 5
+      resolvedName: Energy
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Energy
   - m_Component: {fileID: -1740501171196459933}
-    m_Value: 2
+    m_Value:
+      guid: 2
+      resolvedName: Health
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Health
+  - m_Component: {fileID: -7446980885018579133}
+    m_Value:
+      guid: 1792460456
+      resolvedName: PlayerName
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: PlayerName
 --- !u!1 &5867608038117725257
 GameObject:
   m_ObjectHideFlags: 0

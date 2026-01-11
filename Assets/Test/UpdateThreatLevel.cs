@@ -1,6 +1,6 @@
 using EnemySystem;
 using SAS.StateMachineGraph;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 public abstract class UpdateThreatLevel : IStateAction

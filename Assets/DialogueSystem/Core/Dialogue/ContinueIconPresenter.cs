@@ -1,5 +1,5 @@
 using Ink.Runtime;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 namespace SAS.DialogueSystem

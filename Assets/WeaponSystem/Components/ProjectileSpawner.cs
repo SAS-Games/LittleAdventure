@@ -3,7 +3,7 @@ using UnityEngine;
 using SAS.WeaponSystem;
 using SAS.StateMachineCharacterController;
 using SAS.Pool;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 namespace SAS.WeaponSystem.Components
 {
     public class ProjectileSpawner : WeaponComponent<ProjectileSpawnerData, AttackProjectileSpawner>

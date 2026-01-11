@@ -1,4 +1,4 @@
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine.UI;
 
 public class SliderBinder : ProxyViewBinder<float>

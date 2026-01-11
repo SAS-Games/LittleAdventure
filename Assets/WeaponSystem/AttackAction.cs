@@ -1,5 +1,5 @@
 using SAS.StateMachineGraph;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using SAS.WeaponSystem;
 using UnityEngine;
 

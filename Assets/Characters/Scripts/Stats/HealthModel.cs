@@ -1,6 +1,6 @@
 using System;
 using UniRx;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 
 public interface IHealthModel : IStatModel, IBindable
 {

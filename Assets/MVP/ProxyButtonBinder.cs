@@ -1,6 +1,6 @@
 using UnityEngine;
 using UniRx;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine.UI;
 using Debug = SAS.Debug;
 

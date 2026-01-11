@@ -1,7 +1,7 @@
 using EnemySystem;
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
-using SAS.Utilities.BlackboardSystem;
+using SAS.Core.BlackboardSystem;
 using UnityEngine;
 
 namespace EnemySystem

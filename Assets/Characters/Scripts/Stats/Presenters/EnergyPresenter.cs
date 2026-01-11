@@ -1,5 +1,5 @@
 using SAS.TimerSystem;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 public class EnergyPresenter : StatPresenter<IEnergyModel>

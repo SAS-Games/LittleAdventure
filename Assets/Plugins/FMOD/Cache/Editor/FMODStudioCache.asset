@@ -77,7 +77,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: 6428136582363532634}
   cacheVersion: 131847
-  cacheTime: 639003469567639956
+  cacheTime: 638823397006978225
   SerializableEventsDict:
   - key: event:/SFX/Player/Attack
     index: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   Path: LittleAdventureFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639003469567629980
+  lastModified: 638823397006952166
   FileSizes:
   - Name: Desktop
     Value: 12785824
@@ -200,7 +200,7 @@ MonoBehaviour:
   Path: LittleAdventureFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639003469567639956
+  lastModified: 638823397006978225
   FileSizes:
   - Name: Desktop
     Value: 1090

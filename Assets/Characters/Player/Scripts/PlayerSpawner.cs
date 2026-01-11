@@ -1,5 +1,5 @@
 using SAS.StateMachineCharacterController;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject m_PlayerPrefab;
+    [SerializeField] private Tag m_PlayerNamrTag;
     public List<GameObject> Players { get; } = new();
     private EventBinding<CharacterDiedEvent> _OnPlayerDiedEventBinding;
     private int _activePlayersCount;
@@ -29,7 +30,7 @@ public class PlayerSpawner : MonoBehaviour
         foreach (var proxyView in proxyViews)
             proxyView.ProxyControlID = playerProfile.Index;
         player.GetComponent<IInputHandler>().PlayerInput = playerProfile.Input;
-        player.transform.GetComponent<IProxyView<string>>(Tag.Name)?.OnValueChanged(playerProfile.Name);
+        player.transform.GetComponent<IProxyView<string>>(m_PlayerNamrTag)?.OnValueChanged(playerProfile.Name);
         player.SetActive(true);
         Players.Add(player);
         player.GetComponent<IThreatLevel>().Value.Subscribe(val =>

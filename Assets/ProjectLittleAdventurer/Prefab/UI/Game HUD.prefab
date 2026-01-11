@@ -712,6 +712,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -773,7 +774,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tags:
   - m_Component: {fileID: 3377715505285277964}
-    m_Value: 4
+    m_Value:
+      guid: -236015508
+      resolvedName: Coin
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Coin
 --- !u!1 &2767669644870789646
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +899,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tags:
   - m_Component: {fileID: 4761626998546089471}
-    m_Value: 2
+    m_Value:
+      guid: 2
+      resolvedName: Health
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Health
 --- !u!1 &2767669645094469241
 GameObject:
   m_ObjectHideFlags: 0
@@ -1446,6 +1455,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1598,7 +1608,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tags:
   - m_Component: {fileID: 4865654313882707991}
-    m_Value: 5
+    m_Value:
+      guid: 5
+      resolvedName: Energy
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Energy
 --- !u!1 &7419649712950029226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1704,6 +1718,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1765,7 +1780,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tags:
   - m_Component: {fileID: 7558769137688823177}
-    m_Value: 6
+    m_Value:
+      guid: 1792460456
+      resolvedName: PlayerName
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: PlayerName
 --- !u!1 &7496557079748331625
 GameObject:
   m_ObjectHideFlags: 0

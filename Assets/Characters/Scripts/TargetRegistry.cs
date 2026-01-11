@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using SAS.StateMachineCharacterController;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 
 public interface ITargetRegistry : IBindable, IInitializable
 {

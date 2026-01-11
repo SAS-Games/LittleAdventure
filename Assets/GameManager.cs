@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using SAS.SceneManagement;
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 using Debug = SAS.Debug;

@@ -1,6 +1,6 @@
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 using UnityEngine.AI;
 

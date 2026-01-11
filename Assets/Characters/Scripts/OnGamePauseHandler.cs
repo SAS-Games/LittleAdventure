@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using SAS.StateMachineGraph.Utilities;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 public class OnGamePauseHandler : MonoBehaviour

@@ -1,7 +1,7 @@
 using System;
 using FMOD.Studio;
 using FMODUnity;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 public interface IBGMPlayer : IBindable

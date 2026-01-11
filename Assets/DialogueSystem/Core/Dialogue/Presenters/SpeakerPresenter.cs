@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SAS.DialogueSystem;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 [RequireComponent(typeof(SpeakerTagProcessor)), DisallowMultipleComponent]

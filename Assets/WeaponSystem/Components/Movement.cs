@@ -1,5 +1,5 @@
 using SAS.StateMachineCharacterController;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 namespace SAS.WeaponSystem.Components

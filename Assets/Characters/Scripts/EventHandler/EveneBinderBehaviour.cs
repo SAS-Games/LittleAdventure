@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 public sealed class EventBinderBehaviour : MonoBehaviour

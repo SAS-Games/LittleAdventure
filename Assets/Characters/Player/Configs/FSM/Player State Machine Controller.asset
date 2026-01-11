@@ -82,12 +82,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Climb
   m_EditorClassIdentifier: 
-  m_Position: {x: 834, y: 273, z: 0}
+  m_Position: {x: 1412, y: 76, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.ClimbNavigation, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: ClimbSpeed
     whenToExecute: 4
   m_Transitions:
@@ -158,32 +162,56 @@ MonoBehaviour:
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.DownwardMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 5
   - fullName: SAS.StateMachineCharacterController.AerialMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 4
   - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: TurnSmoothTime
     whenToExecute: 4
   - fullName: SAS.StateMachineCharacterController.DecreaseCoyoteTimerCounter, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: CoyoteTime
     whenToExecute: 4
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Fall
     whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Land
     whenToExecute: 16
   m_Transitions:
@@ -234,11 +262,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: 
-  m_Position: {x: 271, y: 442, z: 0}
+  m_Position: {x: 849, y: 245, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: AttackAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   m_Transitions:
@@ -397,17 +429,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Dizzy
   m_EditorClassIdentifier: 
-  m_Position: {x: 272, y: 345, z: 0}
+  m_Position: {x: 850, y: 148, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.StopMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineCharacterController.DownwardMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 5
   m_Transitions:
@@ -525,22 +565,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Dead
   m_EditorClassIdentifier: 
-  m_Position: {x: 269, y: 539, z: 0}
+  m_Position: {x: 847, y: 342, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineGraph.Utilities.DeactivateCached, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 1
+    tag:
+      guid: -662547106
+      resolvedName: Activable
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Activable
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Dead
     whenToExecute: 1
   - fullName: DissolveEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 2
   m_Transitions:
@@ -638,27 +690,47 @@ MonoBehaviour:
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.ConsumeRemainingJumpCount, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineCharacterController.UpwardMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 5
   - fullName: SAS.StateMachineCharacterController.AerialMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 4
   - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: TurnSmoothTime
     whenToExecute: 4
   - fullName: SAS.StateMachineCharacterController.DecreaseCoyoteTimerCounter, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: CoyoteTime
     whenToExecute: 4
   m_Transitions:
@@ -681,7 +753,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Position: {x: 300, y: 50, z: 0}
   m_PositionAsUpNode: {x: 561, y: 343, z: 0}
-  m_AnyStatePosition: {x: 4, y: 550, z: 0}
+  m_AnyStatePosition: {x: 582, y: 353, z: 0}
   m_ParentStateMachine: {fileID: 0}
   m_ChildStateMachines:
   - {fileID: 822233229310876646}
@@ -841,12 +913,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: RespawnWait
   m_EditorClassIdentifier: 
-  m_Position: {x: 268, y: 635, z: 0}
+  m_Position: {x: 846, y: 438, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.InvokeCharacterDiedEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   m_Transitions: []
@@ -886,7 +962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ed43b1bea1e69d49a73ea66f6732994, type: 3}
   m_Name: InAir
   m_EditorClassIdentifier: 
-  m_Position: {x: 825, y: 370, z: 0}
+  m_Position: {x: 1403, y: 173, z: 0}
   m_PositionAsUpNode: {x: 700, y: 100, z: 0}
   m_AnyStatePosition: {x: 300, y: 50, z: 0}
   m_ParentStateMachine: {fileID: -1294538683894811666}
@@ -976,17 +1052,29 @@ MonoBehaviour:
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.ConsumeRemainingJumpCount, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineCharacterController.WallJump, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 5
   - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: TurnSmoothTime
     whenToExecute: 4
   m_Transitions:
@@ -1126,22 +1214,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Interact
   m_EditorClassIdentifier: 
-  m_Position: {x: 545, y: 269, z: 0}
+  m_Position: {x: 1123, y: 72, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.VerticalPull, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: VerticalPull
     whenToExecute: 4
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Idle
     whenToExecute: 1
   - fullName: SAS.StateMachineCharacterController.StopMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   m_Transitions:
@@ -1158,17 +1258,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Slide
   m_EditorClassIdentifier: 
-  m_Position: {x: 829, y: 508, z: 0}
+  m_Position: {x: 1407, y: 311, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.Slide, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: SlideSpeed
     whenToExecute: 4
   - fullName: SAS.StateMachineCharacterController.VerticalPull, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: VerticalPull
     whenToExecute: 0
   m_Transitions:
@@ -1232,47 +1340,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: LocoMotion
   m_EditorClassIdentifier: 
-  m_Position: {x: 545, y: 372, z: 0}
+  m_Position: {x: 1123, y: 175, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.ResetDashing, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: NewTag (1)
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: NewTag (1)
     key: 
     whenToExecute: 1
-  - fullName: SAS.StateMachineCharacterController.HorizontalMovementSideWays, AssemblyStateMachineCharacterController,
+  - fullName: SAS.StateMachineCharacterController.HorizontalMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: MoveSpeed
     whenToExecute: 4
   - fullName: SAS.StateMachineCharacterController.VerticalPull, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: VerticalPull
     whenToExecute: 4
-  - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
+  - fullName: SAS.StateMachineCharacterController.ApplyRotation, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: TurnSmoothTime
     whenToExecute: 4
   - fullName: SAS.StateMachineCharacterController.ResetCoyoteTimerCounter, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: CoyoteTime
     whenToExecute: 1
   - fullName: SAS.StateMachineCharacterController.ResetRemainingJumpCount, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: MaxJumpCount
     whenToExecute: 1
   - fullName: SAS.StateMachineCharacterController.AnimatorMoveSpeed, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: MoveSpeed
     whenToExecute: 4
   - fullName: SAS.StateMachineGraph.Utilities.ApplyActorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Descending
     whenToExecute: 1
   m_Transitions:
@@ -1296,7 +1436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Any State
   m_EditorClassIdentifier: 
-  m_Position: {x: 4, y: 550, z: 0}
+  m_Position: {x: 582, y: 353, z: 0}
   m_Tag: 
   m_StateActions: []
   m_Transitions:
@@ -1331,42 +1471,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Dash
   m_EditorClassIdentifier: 
-  m_Position: {x: 545, y: 508, z: 0}
+  m_Position: {x: 1123, y: 311, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.DashMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: DashSpeed
     whenToExecute: 5
   - fullName: SAS.StateMachineCharacterController.HorizontalMovementSideWays, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 16
   - fullName: SAS.StateMachineCharacterController.StopUpwardMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 16
   - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: TurnSmoothTime
     whenToExecute: 4
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Dash
     whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: DashExit
     whenToExecute: 16
   - fullName: EnergyConsumer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   m_Transitions:
@@ -1384,7 +1552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: ClimbOnTop
   m_EditorClassIdentifier: 
-  m_Position: {x: 836, y: 185, z: 0}
+  m_Position: {x: 1414, y: -12, z: 0}
   m_Tag: 
   m_StateActions: []
   m_Transitions: []

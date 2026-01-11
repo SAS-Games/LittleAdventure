@@ -1,7 +1,7 @@
 using System.Collections;
 using EnemySystem;
 using SAS.StateMachineCharacterController;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 
 public class EnemyTargetingSystem : MonoBase

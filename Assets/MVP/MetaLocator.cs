@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SAS.StateMachineGraph.Utilities;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using ZLinq;
@@ -120,7 +120,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
         return false;
     }
 
-    public bool TryGet<T>(out T instance, Tag tag = Tag.None)
+    public bool TryGet<T>(out T instance, Tag tag = default)
     {
         if (_core as Object == null || !_core.TryGet(out instance, tag))
         {
@@ -142,7 +142,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
         return true;
     }
 
-    public IEnumerable<T> GetAll<T>(Tag tag = Tag.None)
+    public IEnumerable<T> GetAll<T>(Tag tag = default)
     {
         if (_core as Object != null)
         {
@@ -168,7 +168,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
         }
     }
 
-    public void Add<T>(T service, Tag tag = Tag.None)
+    public void Add<T>(T service, Tag tag = default)
     {
         AddToLocal(typeof(T), service, tag);
         if (_core as Object != null)
@@ -177,7 +177,7 @@ public partial class MetaLocator : MonoBehaviour, IMetaLocator, IActivatable
         }
     }
 
-    private void AddToLocal(Type type, object service, Tag tag = Tag.None)
+    private void AddToLocal(Type type, object service, Tag tag = default)
     {
         var key = GetKey(type, tag);
         if (!_localMeta.TryGetValue(key, out var instanceList))

@@ -17,27 +17,44 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
     m_Type: SAS.SceneManagement.SceneLoader, AssemblySceneManagement, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 
   - m_Interface: IMetaLocator, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     m_Type: MetaLocator, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 
   - m_Interface: IPlayerSetupModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     m_Type: PlayerSetupModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    m_Tag: 0
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 
-  - m_Interface: ISaveSystem, AssemblyUtilities, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    m_Type: JsonFileSaveSystem, AssemblyUtilities, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    m_Tag: 0
+  - m_Interface: ISaveSystem, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_Type: JsonFileSaveSystem, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 0500000006000000
-  - m_Interface: IUserModel, AssemblyUtilities, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    m_Type: UserModel, AssemblyUtilities, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
+  - m_Interface: IUserModel, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_Type: DummyUserModel, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 0500000006000000

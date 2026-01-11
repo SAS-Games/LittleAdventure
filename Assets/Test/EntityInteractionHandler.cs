@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using SAS.Utilities.TagSystem;
+using SAS.Core.TagSystem;
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using SAS.StateMachineGraph.Utilities;
