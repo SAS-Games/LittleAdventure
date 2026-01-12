@@ -38,25 +38,36 @@
       "dependencies": {},
       "hash": "c945515ad3b8904372aa4079baccea95019f9651"
     },
-    "com.sas.dev-utilities": {
-      "version": "file:SASPackage-DevUtilities",
+    "com.sas.core": {
+      "version": "https://github.com/SAS-Games/SASPackages-Core.git",
       "depth": 0,
-      "source": "embedded",
+      "source": "git",
+      "dependencies": {},
+      "hash": "11ce6ca8e43b54f965a918e3460e8eeb630c9677"
+    },
+    "com.sas.dev-utilities": {
+      "version": "https://github.com/SAS-Games/SASPackage-DevUtilities.git",
+      "depth": 0,
+      "source": "git",
       "dependencies": {
         "com.unity.textmeshpro": "3.0.6",
         "com.unity.inputsystem": "1.6.3"
-      }
+      },
+      "hash": "a092b6490b08ffd8d6dd07924663ef05ef6d557e"
     },
     "com.sas.fsmcharactercontroller": {
-      "version": "file:StateMachineCharacterController",
+      "version": "https://github.com/SAS-Games/StateMachineCharacterController.git#master-platformer",
       "depth": 0,
-      "source": "embedded",
+      "source": "git",
       "dependencies": {
         "com.sas.statemachine": "1.2.2",
-        "com.sas.utilities": "1.0.0",
+        "com.sas.core": "1.0.0",
         "com.unity.inputsystem": "1.5.0",
-        "com.unity.cinemachine": "2.8.9"
-      }
+        "com.unity.cinemachine": "2.8.9",
+        "com.sas.save": "1.1.0",
+        "com.sas.dev-utilities": "1.3.4"
+      },
+      "hash": "edbdff2f21c11129a289349756a0a48ab0d9b900"
     },
     "com.sas.library.unirx": {
       "version": "https://github.com/SAS-Games/UniRx.git",
@@ -65,36 +76,51 @@
       "dependencies": {},
       "hash": "f8ff4db73464bd543cce8acc25ac6d5c267b71c5"
     },
-    "com.sas.scene-management": {
-      "version": "file:SASPackage-SceneManagement",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.unity.addressables": "2.4.4"
-      }
-    },
-    "com.sas.statemachine": {
-      "version": "https://github.com/SAS-Games/SASPackages-StateMachine.git#master-platformer",
+    "com.sas.pooling": {
+      "version": "https://github.com/SAS-Games/Pool_Sysytem.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.sas.utilities": "1.0.0"
+        "com.sas.core": "1.0.0"
       },
-      "hash": "938900de8c84aced1c28e5b78b1522443c24956d"
+      "hash": "c294603565dde2352455da1c80a2a1d2373e43ed"
+    },
+    "com.sas.save": {
+      "version": "https://github.com/SAS-Games/SASPackages-SaveSystem.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.1.0",
+        "com.sas.core": "1.0.0"
+      },
+      "hash": "b25094da3e6785f031a69873a047ab3b33860253"
+    },
+    "com.sas.scene-management": {
+      "version": "https://github.com/SAS-Games/SASPackage-SceneManagement.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.addressables": "2.4.4",
+        "com.sas.dev-utilities": "1.3.4",
+        "com.sas.core": "1.1.0"
+      },
+      "hash": "64561146ef4136b41837c7fc31cd86267a2c3fb7"
+    },
+    "com.sas.statemachine": {
+      "version": "https://github.com/SAS-Games/SASPackages-StateMachine.git#refactoring",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.sas.core": "1.0.0"
+      },
+      "hash": "61cca3f7669d920805ad40864ae74b82d980352e"
     },
     "com.sas.tweenmanagement": {
-      "version": "file:SASPackages-Tween",
+      "version": "https://github.com/SAS-Games/SASPackages-Tween.git#master-platformer",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
-    "com.sas.utilities": {
-      "version": "file:SASPackages-Utilities",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.1.0"
-      }
+      "source": "git",
+      "dependencies": {},
+      "hash": "e52365327918c861983f877a061291bea565818f"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
