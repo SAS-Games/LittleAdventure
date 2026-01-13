@@ -380,7 +380,7 @@ PrefabInstance:
     - target: {fileID: 8062570761865048911, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 11400000, guid: d05a130b330a2854cbcb4879024e0102, type: 2}
+      objectReference: {fileID: 11400000, guid: 4ec0e336a9504fb49bf5eae9c2938078, type: 2}
     - target: {fileID: 8062570761865048911, guid: e2c89a6670e9c37498fad155563f98fc, type: 3}
       propertyPath: m_BlackboardData
       value: 

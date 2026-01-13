@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Spawn
   m_EditorClassIdentifier: 
-  m_Position: {x: 565, y: 159, z: 0}
+  m_Position: {x: 565, y: 158, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: AppearEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   m_Transitions:
@@ -38,21 +42,37 @@ MonoBehaviour:
   m_StateActions:
   - fullName: EnemySystem.SetTargetSelf, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: AttackAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: EnemySystem.LookAtTarget, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Idle
     whenToExecute: 1
   m_Transitions:
@@ -100,22 +120,38 @@ MonoBehaviour:
   m_StateActions:
   - fullName: SAS.StateMachineGraph.Utilities.DeactivateCached, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 1
+    tag:
+      guid: -662547106
+      resolvedName: Activable
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Activable
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Dead
     whenToExecute: 1
   - fullName: DissolveEffect, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 2
   - fullName: DecreaseThreatLevel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   m_Transitions:
@@ -243,12 +279,20 @@ MonoBehaviour:
   m_Tag: 
   m_StateActions:
   - fullName: SpawnHealer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 1
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ActivateChached, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 1
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 16
   m_Transitions:
@@ -368,12 +412,20 @@ MonoBehaviour:
   m_StateActions:
   - fullName: EnemySystem.Follow, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 2
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Chase
     whenToExecute: 1
   m_Transitions:
@@ -444,22 +496,38 @@ MonoBehaviour:
   m_StateActions:
   - fullName: EnemySystem.SetTargetSelf, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: Idle
     whenToExecute: 1
   - fullName: DecreaseThreatLevel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 1
   - fullName: IncreaseThreatLevel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    tag: 0
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     key: 
     whenToExecute: 16
   m_Transitions:

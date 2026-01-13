@@ -475,7 +475,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tags:
   - m_Component: {fileID: 2668216528024146678}
-    m_Value: 1
+    m_Value:
+      guid: -662547106
+      resolvedName: Activable
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Activable
 --- !u!114 &-7481611239061601693
 MonoBehaviour:
   m_ObjectHideFlags: 0

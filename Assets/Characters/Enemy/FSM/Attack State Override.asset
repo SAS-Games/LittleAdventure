@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
+  m_Name: Attack State Override
+  m_EditorClassIdentifier: 
+  m_Position: {x: 0, y: 0, z: 0}
+  m_Tag: 
+  m_StateActions:
+  - fullName: EnemySystem.SetTargetSelf, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
+    key: 
+    whenToExecute: 1
+  - fullName: AttackAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
+    key: 
+    whenToExecute: 1
+  - fullName: EnemySystem.LookAtTarget, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
+    key: 
+    whenToExecute: 5
+  - fullName: SAS.StateMachineGraph.Utilities.ApplyAnimatorParameter, AssemblyStateMachine,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
+    key: Idle
+    whenToExecute: 1
+  m_Transitions: []
