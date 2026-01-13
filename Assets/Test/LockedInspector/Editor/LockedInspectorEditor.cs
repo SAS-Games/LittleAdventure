@@ -1,6 +1,12 @@
-using System.Collections.Generic;
+using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+
+[AttributeUsage(AttributeTargets.Field)]
+public sealed class AlwaysEditableAttribute : Attribute
+{
+}
 
 public abstract class LockedInspectorEditor<T> : Editor where T : MonoBehaviour
 {
@@ -14,11 +20,13 @@ public abstract class LockedInspectorEditor<T> : Editor where T : MonoBehaviour
         _instanceId = target.GetInstanceID();
         _isEditing = false;
         Selection.selectionChanged += OnSelectionChanged;
+        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
     }
 
     protected virtual void OnDisable()
     {
         Selection.selectionChanged -= OnSelectionChanged;
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
 
         if (_isEditing)
             SetEditMode(false);
@@ -70,8 +78,6 @@ public abstract class LockedInspectorEditor<T> : Editor where T : MonoBehaviour
         SerializedProperty iterator = serializedObject.GetIterator();
         bool enterChildren = true;
 
-        var alwaysEditable = GetAlwaysEditableProperties();
-
         while (iterator.NextVisible(enterChildren))
         {
             enterChildren = false;
@@ -83,17 +89,56 @@ public abstract class LockedInspectorEditor<T> : Editor where T : MonoBehaviour
                 continue;
             }
 
-            bool editable = _isEditing || alwaysEditable.Contains(iterator.name);
+            bool editable = _isEditing || IsAlwaysEditable(iterator);
 
             using (new EditorGUI.DisabledScope(!editable))
+            {
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(iterator, true);
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    serializedObject.ApplyModifiedProperties();
+                    OnPropertyValueChanged(iterator);
+                }
+            }
         }
     }
 
-    protected virtual HashSet<string> GetAlwaysEditableProperties()
+    private bool IsAlwaysEditable(SerializedProperty property)
     {
-        return new HashSet<string>();
+        FieldInfo field = GetFieldInfo(property);
+        return field != null && Attribute.IsDefined(field, typeof(AlwaysEditableAttribute));
     }
+
+    private static FieldInfo GetFieldInfo(SerializedProperty property)
+    {
+        Type type = property.serializedObject.targetObject.GetType();
+        FieldInfo field = null;
+
+        foreach (string part in property.propertyPath.Split('.'))
+        {
+            field = type.GetField(part, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (field == null)
+                return null;
+
+            type = field.FieldType;
+        }
+
+        return field;
+    }
+
+    protected virtual void OnPlayModeStateChanged(PlayModeStateChange state)
+    {
+        if (state == PlayModeStateChange.ExitingEditMode && _isEditing)
+        {
+            SetEditMode(false);
+        }
+    }
+
+
+    protected virtual void OnPropertyValueChanged(SerializedProperty property) { }
 
     protected virtual void OnEditModeChanged(bool isEditing) { }
 }
