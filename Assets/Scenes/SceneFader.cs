@@ -53,15 +53,8 @@ namespace SAS.SceneManagement
 
         protected virtual void Awake()
         {
-            _fadeInTweenConfig = new TweenConfig().Duration(m_FadeInDuration)
-                .AddCallback(() => OnFadeInComplete?.Invoke());
-            _fadeOutTweenConfig = new TweenConfig().Duration(m_FadeOutDuration)
-                .AddCallback(() =>
-                    {
-                        OnFadeOutComplete?.Invoke();
-                        gameObject.SetActive(false);
-                    }
-                );
+            _fadeInTweenConfig = new TweenConfig().Duration(m_FadeInDuration);
+            _fadeOutTweenConfig = new TweenConfig().Duration(m_FadeOutDuration);
 
             var material = m_Image.material;
             m_Image.material = new Material(material);
@@ -81,8 +74,19 @@ namespace SAS.SceneManagement
             _fadeTween?.Stop(false);
 
             var cfg = active ? _fadeInTweenConfig : _fadeOutTweenConfig;
-            cfg.AddCallback(() => { done?.Invoke(); });
             _fadeTween = Tween.CreateTween(active ? 0f : 1f, active ? 1f : 0f, FadeTween,  cfg);
+            _fadeTween.AddCallback(() =>
+            {
+                if (active)
+                    OnFadeInComplete?.Invoke();
+                else
+                {
+                    OnFadeOutComplete?.Invoke();
+                    gameObject.SetActive(false);
+                }
+
+                done?.Invoke();
+            });
 
             FaderSetup(m_FadeType);
             _fadeTween.Run();
