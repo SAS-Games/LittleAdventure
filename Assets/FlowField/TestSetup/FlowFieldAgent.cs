@@ -10,11 +10,9 @@ public class FlowFieldAgent : MonoBehaviour
         if (FlowFieldTestBootstrap.Sampler == null)
             return;
 
-        float2 dir = FlowFieldTestBootstrap.Sampler
-            .SampleDirection(transform.position);
+        float2 dir = FlowFieldTestBootstrap.Sampler.SampleDirection(transform.position);
 
-        Vector3 move =
-            new Vector3(dir.x, 0f, dir.y) * speed * Time.deltaTime;
+        Vector3 move = new Vector3(dir.x, 0f, dir.y) * speed * Time.deltaTime;
 
         transform.position += move;
     }

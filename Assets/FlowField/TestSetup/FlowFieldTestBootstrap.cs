@@ -5,7 +5,7 @@ public class FlowFieldTestBootstrap : MonoBehaviour
 {
     public static FlowFieldSampler Sampler;
 
-    FlowField flowField;
+   public FlowField flowField;
 
     [Header("Grid Settings")]
     public int width = 32;
