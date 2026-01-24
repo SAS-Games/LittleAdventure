@@ -155,7 +155,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -358,6 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 680555297}
   - component: {fileID: 680555296}
+  - component: {fileID: 680555298}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -386,7 +387,7 @@ MonoBehaviour:
     m_DurationOrSpeed: 0.625
     m_Delay: 0
     m_LoopCount: 0
-    m_PingPong: 1
+    m_PingPong: 0
     m_Type: 11
     m_UseAnimationCurve: 0
     m_AnimationCurve:
@@ -411,7 +412,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_Tick: 1
-  randomPickCount: 200
+  randomPickCount: 2000
   inputAction:
     m_Name: Input
     m_Type: 0
@@ -444,6 +445,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &680555298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680555295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1c51c32b44869b4db7936e3d3e51154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0

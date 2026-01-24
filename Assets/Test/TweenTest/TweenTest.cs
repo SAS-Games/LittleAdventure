@@ -5,24 +5,20 @@ using UnityEngine.InputSystem;
 
 public class TweenTest : MonoBehaviour
 {
-    [Header("Grid")]
-    public GameObject cubePrefab;
+    [Header("Grid")] public GameObject cubePrefab;
     public int gridX = 10;
     public int gridZ = 10;
     public float spacing = 1.2f;
 
-    [Header("Tween")]
-    public TweenConfig config;
+    [Header("Tween")] public TweenConfig config;
     public TweenConfig configBack;
     public int randomPickCount = 10;
 
-    [Header("Input")]
-    public InputAction inputAction;
+    [Header("Input")] public InputAction inputAction;
 
     private readonly List<Transform> _cubes = new();
     private readonly HashSet<Transform> _activeTweens = new();
 
-    // ------------------------------------------------------
 
     void OnEnable()
     {
@@ -42,21 +38,19 @@ public class TweenTest : MonoBehaviour
         }
     }
 
-    // ------------------------------------------------------
 
     private void OnActionPerformed(InputAction.CallbackContext ctx)
     {
-        PlayRandomTweens(randomPickCount);
+        // PlayRandomTweens(randomPickCount);
+        PlayDeformationTest(randomPickCount);
     }
 
-    // ------------------------------------------------------
 
     void Start()
     {
         CreateGrid();
     }
 
-    // ------------------------------------------------------
 
     void PlayRandomTweens(int count)
     {
@@ -92,86 +86,52 @@ public class TweenTest : MonoBehaviour
         Quaternion targetRot = startRot * Quaternion.Euler(0f, 180f, 0f);
 
         // forward tweens
-        ITween move = Tween.Move(cube, targetPos, config);
-        ITween rot = Tween.Rotation(cube, targetRot, config);
+        var move = Tween.SetPositionAndRotation(cube, targetPos, targetRot, config);
+
+        // var move = Tween.Move(cube, targetPos, config);
+        // var rot = Tween.Rotation(cube, targetRot, config);
 
         await move;
+        var moveBack = Tween.SetPositionAndRotation(cube, startPos, startRot, configBack);
 
-        ITween moveBack = Tween.Move(cube, startPos, configBack);
-        ITween rotBack = Tween.Rotation(cube, startRot, configBack);
+        // var moveBack = Tween.Move(cube, startPos, configBack);
+        // var rotBack = Tween.Rotation(cube, startRot, configBack);
 
         await moveBack;
         _activeTweens.Remove(cube);
     }
 
-    //async void OnForwardComplete(ITween tween)
-    //{
-    //    Transform cube = (Transform)tween.UserData;
-
-    //    Vector3 startPos = cube.position - Vector3.up;
-    //    Quaternion startRot = cube.rotation * Quaternion.Euler(0f, -180f, 0f);
-
-    //    // backward tweens
-    //    ITween moveBack = Tween.Move(cube, startPos, configBack);
-    //    ITween rotBack = Tween.Rotation(cube, startRot, configBack);
-
-    //    moveBack.UserData = cube;
-    //    await moveBack;
-    //    OnBackwardComplete(moveBack);
-    //}
-
-    //void OnBackwardComplete(ITween tween)
-    //{
-    //    Transform cube = (Transform)tween.UserData;
-    //    _activeTweens.Remove(cube);
-    //}
-
-
-
-
-    // ------------------------------------------------------
-
-    //void PlayTween(Transform cube)
-    //{
-    //    _activeTweens.Add(cube);
-
-    //    Vector3 startPos = cube.position;
-    //    Vector3 targetPos = startPos + Vector3.up;
-
-    //    Quaternion startRot = cube.rotation;
-    //    Quaternion targetRot = startRot * Quaternion.Euler(0f, 180f, 0f);
-
-
-    //    Tween.Rotation(cube, targetRot, config);
-    //    Tween.Move(cube, targetPos, config)
-    //    .AddCallback(() =>
-    //    {
-    //        Tween.Rotation(cube, startRot, configBack);
-    //        Tween.Move(cube, startPos, configBack).AddCallback(() => _activeTweens.Remove(cube));
-    //    });
-    //}
-
-    //ITween tween = Tween.CreateTween(0f, 1f, val => SetPositionAndRotation(cube, startPos, targetPos, startRot, targetRot, val), config);
-
-    //tween.AddCallback(() =>
-    //{
-    //    ITween tweenBack = Tween.CreateTween(0f, 1f, val => SetPositionAndRotation(cube, targetPos, startPos, targetRot, startRot, val), configBack);
-    //    tweenBack.AddCallback(() =>
-    //    {
-    //        _activeTweens.Remove(cube);
-    //    });
-    //    tweenBack.Run();
-    //});
-
-    //tween.Run();
-
-    void SetPositionAndRotation(Transform transform, Vector3 startPos, Vector3 targetPos, Quaternion startRot, Quaternion targetRot, float t)
+    void PlayDeformationTest(int count)
     {
-        transform.position = Vector3.Lerp(startPos, targetPos, t);
-        transform.rotation = Quaternion.Lerp(startRot, targetRot, t);
+        if (_cubes.Count == 0)
+            return;
+
+        int attempts = 0;
+        int played = 0;
+
+        while (played < count && attempts < _cubes.Count * 2)
+        {
+            attempts++;
+
+            Transform cube = _cubes[Random.Range(0, _cubes.Count)];
+
+            // avoid double registration
+            if (TransformMotionSystem.Instance.IsActive(cube))
+                continue;
+
+            Vector3 startPos = cube.position;
+            Quaternion startRot = cube.rotation;
+
+            Vector3 targetPos = startPos + Vector3.up;
+            Quaternion targetRot = startRot * Quaternion.Euler(0f, 180f, 0f);
+
+            TransformMotionSystem.Instance.RegisterCube(cube, targetPos, targetRot, 1, 0, 1, 1, EaseType.EaseOutQuad);
+
+            played++;
+        }
     }
 
-    // ------------------------------------------------------
+
 
     void CreateGrid()
     {
