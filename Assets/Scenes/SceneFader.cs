@@ -45,7 +45,7 @@ namespace SAS.SceneManagement
         private int _mainTex = Shader.PropertyToID("_MainTex");
 
         private int? _lastEffect;
-        private ITween _fadeTween;
+        private TweenBase _fadeTween;
         private TweenConfig _fadeInTweenConfig;
         private TweenConfig _fadeOutTweenConfig;
         private Material _material;
