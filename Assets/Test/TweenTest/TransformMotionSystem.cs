@@ -10,27 +10,41 @@ public sealed class TransformMotionSystem : MonoBehaviour
     public static TransformMotionSystem Instance;
 
     private readonly List<Transform> _transforms = new();
+    private readonly Dictionary<Transform, int> _indexMap = new();
+
     private TransformAccessArray _transformAccess;
 
     private NativeArray<TransformMotionState> _states;
     private NativeArray<float3> _outPos;
     private NativeArray<quaternion> _outRot;
-    
+    private NativeQueue<int> _completedIndices = new();
+    private int _nextHandleId = 1;
+
     private void Awake()
     {
         Instance = this;
         _transformAccess = new TransformAccessArray(64);
+        _completedIndices = new NativeQueue<int>(Allocator.Persistent);
     }
 
-    public void RegisterCube(Transform cube, Vector3 endPos, Quaternion endRot, float deformTime, float delay, float restoreTime, float restoreDelay, EaseType easeType)
+    public void RegisterCube(Transform cube, Vector3 endPos, Quaternion endRot, float deformTime, float delay,
+        float restoreTime, float restoreDelay, EaseType easeType)
     {
-        RegisterCube(cube, cube.position, endPos, cube.rotation, endRot, deformTime, delay, restoreTime, restoreDelay, easeType);
+        RegisterCube(cube, cube.position, endPos, cube.rotation, endRot, deformTime, delay, restoreTime, restoreDelay,
+            easeType);
     }
 
-    public void RegisterCube(Transform cube, Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot, float deformTime, float delay, float restoreTime, float restoreDelay, EaseType easeType)
+    public void RegisterCube(Transform cube, Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot,
+        float deformTime, float delay, float restoreTime, float restoreDelay, EaseType easeType)
     {
+        if (_indexMap.ContainsKey(cube))
+            return;
+
+        int handleId = _nextHandleId++;
+
         var s = new TransformMotionState
         {
+            handleId = handleId,
             startPos = startPos,
             endPos = endPos,
             startRot = startRot,
@@ -50,6 +64,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
             currentRot = startRot
         };
 
+        _indexMap[cube] = _transforms.Count;
         _transforms.Add(cube);
         _transformAccess.Add(cube);
 
@@ -68,7 +83,8 @@ public sealed class TransformMotionSystem : MonoBehaviour
 
         int newSize = math.max(count, _states.IsCreated ? _states.Length * 2 : 64);
 
-        NativeArray<TransformMotionState> newStates = new NativeArray<TransformMotionState>(newSize, Allocator.Persistent);
+        NativeArray<TransformMotionState> newStates =
+            new NativeArray<TransformMotionState>(newSize, Allocator.Persistent);
         NativeArray<float3> newOutPos = new NativeArray<float3>(newSize, Allocator.Persistent);
         NativeArray<quaternion> newOutRot = new NativeArray<quaternion>(newSize, Allocator.Persistent);
 
@@ -91,13 +107,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
 
     public bool IsActive(Transform cube)
     {
-        for (int i = 0; i < _transforms.Count; i++)
-        {
-            if (_transforms[i] == cube)
-                return true;
-        }
-
-        return false;
+        return _indexMap.ContainsKey(cube);
     }
 
 
@@ -111,11 +121,12 @@ public sealed class TransformMotionSystem : MonoBehaviour
             deltaTime = Time.fixedDeltaTime,
             states = _states,
             outPos = _outPos,
-            outRot = _outRot
+            outRot = _outRot,
+            completed = _completedIndices.AsParallelWriter()
         };
 
         var updateJobHandle = updateJob.Schedule(_transforms.Count, 64);
-        
+
         var applyJob = new TransformMotionApplyJob
         {
             pos = _outPos,
@@ -127,12 +138,18 @@ public sealed class TransformMotionSystem : MonoBehaviour
         applyJobHandle.Complete();
 
 
-        for (int i = _transforms.Count - 1; i >= 0; i--)
+        // for (int i = _transforms.Count - 1; i >= 0; i--)
+        // {
+        //     if (_states[i].phase == MotionPhase.Completed)
+        //     {
+        //         RemoveAtSwapBack(i);
+        //     }
+        // }
+
+        while (_completedIndices.TryDequeue(out int index))
         {
-            if (_states[i].phase == MotionPhase.Completed)
-            {
-                RemoveAtSwapBack(i);
-            }
+            if (index < _transforms.Count)
+                RemoveAtSwapBack(index);
         }
     }
 
@@ -140,18 +157,40 @@ public sealed class TransformMotionSystem : MonoBehaviour
     {
         int last = _transforms.Count - 1;
 
-        _transforms[index] = _transforms[last];
+        Transform removed = _transforms[index];
+        Transform lastTransform = _transforms[last];
+
+        int removedHandle = _states[index].handleId;
+        int lastHandle = _states[last].handleId;
+
+        _transforms[index] = lastTransform;
         _states[index] = _states[last];
+
+        _indexMap[lastTransform] = index;
+        _indexMap.Remove(removed);
 
         _transformAccess.RemoveAtSwapBack(index);
         _transforms.RemoveAt(last);
     }
 
+
+    public void Unregister(Transform t)
+    {
+        if (Instance == null)
+            return;
+        
+        if (!_indexMap.TryGetValue(t, out int index))
+            return;
+
+        RemoveAtSwapBack(index);
+    }
+
     private void OnDestroy()
     {
+        Instance = null;
         if (_states.IsCreated) _states.Dispose();
         if (_outPos.IsCreated) _outPos.Dispose();
         if (_outRot.IsCreated) _outRot.Dispose();
-        if(_transformAccess.isCreated) _transformAccess.Dispose();
+        if (_transformAccess.isCreated) _transformAccess.Dispose();
     }
 }

@@ -10,6 +10,7 @@ public struct TransformMotionUpdateJob : IJobParallelFor
     public NativeArray<TransformMotionState> states;
     public NativeArray<float3> outPos;
     public NativeArray<quaternion> outRot;
+    public NativeQueue<int>.ParallelWriter completed;
 
     public void Execute(int index)
     {
@@ -85,9 +86,18 @@ public struct TransformMotionUpdateJob : IJobParallelFor
                     pos = s.startPos;
                     rot = s.startRot;
                     s.phase = MotionPhase.Completed;
+                    completed.Enqueue(index);
                 }
                 break;
             }
+            case MotionPhase.Completed:
+            {
+                outPos[index] = s.currentPos;
+                outRot[index] = s.currentRot;
+                states[index] = s;
+                return;
+            }
+
         }
 
         s.currentPos = pos;

@@ -1,7 +1,9 @@
+using System;
 using SAS.TweenManagement;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class TweenTest : MonoBehaviour
 {
@@ -36,6 +38,11 @@ public class TweenTest : MonoBehaviour
             inputAction.performed += OnActionPerformed;
             inputAction.Disable();
         }
+    }
+
+    private void FixedUpdate()
+    {
+        PlayDeformationTest(20);
     }
 
 
@@ -116,9 +123,12 @@ public class TweenTest : MonoBehaviour
             Transform cube = _cubes[Random.Range(0, _cubes.Count)];
 
             // avoid double registration
+            if (cube == null)
+                continue;
+            
             if (TransformMotionSystem.Instance.IsActive(cube))
                 continue;
-
+           
             Vector3 startPos = cube.position;
             Quaternion startRot = cube.rotation;
 
@@ -130,7 +140,6 @@ public class TweenTest : MonoBehaviour
             played++;
         }
     }
-
 
 
     void CreateGrid()
