@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
 
@@ -10,7 +11,7 @@ public struct InstanceRenderData
 }
 
 public sealed class GPUInstancedRenderSystem : MonoBehaviour
-{ 
+{
     public static GPUInstancedRenderSystem Instance { get; private set; }
 
     [SerializeField] private Mesh m_Mesh;
@@ -18,18 +19,21 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
     [SerializeField] private Bounds m_WorldBounds = new Bounds(Vector3.zero, Vector3.one * 100f);
 
     private readonly List<Transform> _instanceTransforms = new();
+    private readonly Dictionary<Transform, int> _indexMap = new();
 
     private TransformAccessArray _transformAccess;
     private NativeArray<InstanceRenderData> _instanceData;
-
     private ComputeBuffer _instanceBuffer;
-    private RenderParams _renderParams;
 
-    private bool _dirty;
+    private RenderParams _renderParams;
+    private int _count;
+
 
     void Awake()
     {
         Instance = this;
+
+        _transformAccess = new TransformAccessArray(64);
 
         _renderParams = new RenderParams(m_Material)
         {
@@ -39,64 +43,121 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
 
     void Update()
     {
-        if (_dirty)
-            Rebuild();
-
-        if (!_transformAccess.isCreated || _transformAccess.length == 0)
+        if (_count == 0)
             return;
 
         var job = new ExtractInstanceDataJob
         {
-            instanceData = _instanceData,
+            instanceData = _instanceData
         };
 
         JobHandle handle = job.Schedule(_transformAccess);
         handle.Complete();
 
-        _instanceBuffer.SetData(_instanceData);
+        _instanceBuffer.SetData(_instanceData, 0, 0, _count);
         m_Material.SetBuffer("_InstanceDataBuffer", _instanceBuffer);
 
-        Graphics.RenderMeshPrimitives(_renderParams, m_Mesh, 0, _instanceData.Length);
+        Graphics.RenderMeshPrimitives(_renderParams, m_Mesh, 0, _count);
     }
 
+    void OnDestroy()
+    {
+        DisposeNative();
+        Instance = null;
+    }
+
+    
     public void Register(Transform t)
     {
-        if (t == null)
+        if (t == null || _indexMap.ContainsKey(t))
             return;
 
+        int index = _count;
+
+        _indexMap[t] = index;
         _instanceTransforms.Add(t);
-        _dirty = true;
+
+        if (_count >= _transformAccess.capacity)
+            _transformAccess.capacity = math.max(64, _transformAccess.capacity * 2);
+
+        _transformAccess.Add(t);
+
+        ResizeInstanceDataIfNeeded(_count + 1);
+        ResizeBufferIfNeeded(_count + 1);
+
+        _count++;
     }
 
     public void Unregister(Transform t)
     {
-        if (t == null)
+        if (!_indexMap.TryGetValue(t, out int index))
             return;
 
-        int index = _instanceTransforms.IndexOf(t);
-        if (index < 0)
-            return;
-
-        _instanceTransforms.RemoveAt(index);
-        _dirty = true;
+        RemoveAtSwapBack(index);
     }
-
-    void Rebuild()
+    
+    private void RemoveAtSwapBack(int index)
     {
-        DisposeNative();
+        int last = _count - 1;
 
-        int count = _instanceTransforms.Count;
-        if (count == 0)
+        Transform removed = _instanceTransforms[index];
+
+        if (index != last)
+        {
+            Transform lastTransform = _instanceTransforms[last];
+
+            _instanceTransforms[index] = lastTransform;
+            _indexMap[lastTransform] = index;
+
+            _instanceData[index] = _instanceData[last];
+        }
+
+        _indexMap.Remove(removed);
+
+        _transformAccess.RemoveAtSwapBack(index);
+        _instanceTransforms.RemoveAt(last);
+
+        _count--;
+    }
+    
+    private void ResizeInstanceDataIfNeeded(int needed)
+    {
+        if (_instanceData.IsCreated && _instanceData.Length >= needed)
             return;
 
-        _instanceData = new NativeArray<InstanceRenderData>(count, Allocator.Persistent);
-        _transformAccess = new TransformAccessArray(_instanceTransforms.ToArray());
+        int oldLength = _instanceData.IsCreated ? _instanceData.Length : 0;
+        int newSize = math.max(needed, oldLength > 0 ? oldLength * 2 : 64);
 
-        _instanceBuffer = new ComputeBuffer(count, sizeof(float) * 16);
-        _dirty = false;
+        var newArray = new NativeArray<InstanceRenderData>(newSize, Allocator.Persistent);
+
+        if (_instanceData.IsCreated)
+        {
+            NativeArray<InstanceRenderData>.Copy(_instanceData, newArray, oldLength);
+            _instanceData.Dispose();
+        }
+
+        _instanceData = newArray;
     }
 
-    void DisposeNative()
+    private void ResizeBufferIfNeeded(int needed)
+    {
+        int oldCapacity = _instanceBuffer != null ? _instanceBuffer.count : 0;
+
+        if (_instanceBuffer != null && oldCapacity >= needed)
+            return;
+
+        if (_instanceBuffer != null)
+        {
+            _instanceBuffer.Release();
+            _instanceBuffer = null;
+        }
+
+        int newSize = math.max(needed, oldCapacity > 0 ? oldCapacity * 2 : 64);
+
+        _instanceBuffer = new ComputeBuffer(newSize, sizeof(float) * 16);
+    }
+    
+    private void DisposeNative()
     {
         if (_transformAccess.isCreated)
             _transformAccess.Dispose();
@@ -105,13 +166,9 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
             _instanceData.Dispose();
 
         if (_instanceBuffer != null)
+        {
             _instanceBuffer.Release();
-    }
-
-    void OnDestroy()
-    {
-        DisposeNative();
-        Instance = null;
-        _dirty = false;
+            _instanceBuffer = null;
+        }
     }
 }

@@ -2,7 +2,6 @@ using Unity.Mathematics;
 
 public struct TransformMotionState
 {
-    public int handleId;
     public float3 startPos;
     public float3 endPos;
 
