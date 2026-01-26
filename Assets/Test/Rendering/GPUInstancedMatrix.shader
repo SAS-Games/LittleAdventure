@@ -21,6 +21,7 @@ Shader "Custom/GPUInstancedMatrix"
             struct InstanceData
             {
                 float4x4 objectToWorld;
+                float4 color;
             };
 
             StructuredBuffer<InstanceData> _InstanceDataBuffer;
@@ -34,23 +35,24 @@ Shader "Custom/GPUInstancedMatrix"
             struct Varyings
             {
                 float4 positionCS : SV_POSITION;
+                float4 color : COLOR;
             };
 
             Varyings vert (Attributes v)
             {
                 Varyings o;
-
-                float4x4 m = _InstanceDataBuffer[v.instanceID].objectToWorld;
+                InstanceData data = _InstanceDataBuffer[v.instanceID];
+                float4x4 m = data.objectToWorld;
 
                 float4 worldPos = mul(m, float4(v.positionOS, 1));
                 o.positionCS = TransformWorldToHClip(worldPos.xyz);
-
+                o.color = data.color;
                 return o;
             }
 
-            half4 frag () : SV_Target
+            half4 frag (Varyings i) : SV_Target
             {
-                return half4(1,1,1,1);
+               return i.color;
             }
 
             ENDHLSL

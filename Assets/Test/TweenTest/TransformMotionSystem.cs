@@ -7,6 +7,7 @@ using UnityEngine.Jobs;
 
 public sealed class TransformMotionSystem : MonoBehaviour
 {
+    public System.Action<Transform> OnTweenCompleted;
     public static TransformMotionSystem Instance;
 
     private readonly List<Transform> _transforms = new();
@@ -25,7 +26,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
         _transformAccess = new TransformAccessArray(64);
         _completedIndices = new NativeQueue<int>(Allocator.Persistent);
     }
-    
+
     private void FixedUpdate()
     {
         if (_transforms.Count == 0)
@@ -51,14 +52,16 @@ public sealed class TransformMotionSystem : MonoBehaviour
         JobHandle applyJobHandle = applyJob.Schedule(_transformAccess, updateJobHandle);
 
         applyJobHandle.Complete();
-        
+
 
         while (_completedIndices.TryDequeue(out int index))
         {
             if (index >= 0 && index < _transforms.Count)
+            {
+                OnTweenCompleted?.Invoke(_transforms[index]);
                 RemoveAtSwapBack(index);
+            }
         }
-
     }
 
     private void OnDestroy()
@@ -69,19 +72,21 @@ public sealed class TransformMotionSystem : MonoBehaviour
         if (_outRot.IsCreated) _outRot.Dispose();
         if (_transformAccess.isCreated) _transformAccess.Dispose();
         if (_completedIndices.IsCreated) _completedIndices.Dispose();
-
     }
 
-    public void RegisterCube(Transform cube, Vector3 endPos, Quaternion endRot, float deformTime, float delay, float restoreTime, float restoreDelay, EaseType easeType)
+    public void RegisterCube(Transform cube, Vector3 endPos, Quaternion endRot, float deformTime, float delay,
+        float restoreTime, float restoreDelay, EaseType easeType)
     {
-        RegisterCube(cube, cube.position, endPos, cube.rotation, endRot, deformTime, delay, restoreTime, restoreDelay, easeType);
+        RegisterCube(cube, cube.position, endPos, cube.rotation, endRot, deformTime, delay, restoreTime, restoreDelay,
+            easeType);
     }
 
-    public void RegisterCube(Transform cube, Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot, float deformTime, float delay, float restoreTime, float restoreDelay, EaseType easeType)
+    public void RegisterCube(Transform cube, Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot,
+        float deformTime, float delay, float restoreTime, float restoreDelay, EaseType easeType)
     {
         if (_indexMap.ContainsKey(cube))
             return;
-        
+
         var s = new TransformMotionState
         {
             startPos = startPos,
@@ -112,18 +117,18 @@ public sealed class TransformMotionSystem : MonoBehaviour
         int i = _transforms.Count - 1;
         _states[i] = s;
     }
-    
+
     public void Unregister(Transform t)
     {
         if (Instance == null)
             return;
-        
+
         if (!_indexMap.TryGetValue(t, out int index))
             return;
 
         RemoveAtSwapBack(index);
     }
-    
+
     public bool IsActive(Transform cube)
     {
         return _indexMap.ContainsKey(cube);
@@ -134,7 +139,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
         int last = _transforms.Count - 1;
 
         Transform removed = _transforms[index];
-        
+
         if (last != index)
         {
             Transform lastTransform = _transforms[last];
@@ -149,7 +154,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
         _transformAccess.RemoveAtSwapBack(index);
         _transforms.RemoveAt(last);
     }
-    
+
     private void ResizeArraysIfNeeded()
     {
         int count = _transforms.Count;
@@ -159,7 +164,8 @@ public sealed class TransformMotionSystem : MonoBehaviour
 
         int newSize = math.max(count, _states.IsCreated ? _states.Length * 2 : 64);
 
-        NativeArray<TransformMotionState> newStates = new NativeArray<TransformMotionState>(newSize, Allocator.Persistent);
+        NativeArray<TransformMotionState> newStates =
+            new NativeArray<TransformMotionState>(newSize, Allocator.Persistent);
         NativeArray<float3> newOutPos = new NativeArray<float3>(newSize, Allocator.Persistent);
         NativeArray<quaternion> newOutRot = new NativeArray<quaternion>(newSize, Allocator.Persistent);
 

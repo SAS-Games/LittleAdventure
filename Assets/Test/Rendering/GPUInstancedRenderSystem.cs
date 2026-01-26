@@ -4,10 +4,12 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
+using Random = UnityEngine.Random;
 
 public struct InstanceRenderData
 {
     public Matrix4x4 objectToWorld;
+    public float4 color;
 }
 
 public sealed class GPUInstancedRenderSystem : MonoBehaviour
@@ -66,8 +68,12 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
         Instance = null;
     }
 
-    
     public void Register(Transform t)
+    {
+        Register(t, Color.white);
+    }
+
+    public void Register(Transform t, Color color)
     {
         if (t == null || _indexMap.ContainsKey(t))
             return;
@@ -85,6 +91,8 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
         ResizeInstanceDataIfNeeded(_count + 1);
         ResizeBufferIfNeeded(_count + 1);
 
+        SetColor(t, color);
+
         _count++;
     }
 
@@ -95,7 +103,18 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
 
         RemoveAtSwapBack(index);
     }
-    
+
+    public void SetColor(Transform t, Color color)
+    {
+        if (!_indexMap.TryGetValue(t, out int index))
+            return;
+
+        InstanceRenderData data = _instanceData[index];
+        data.color = new float4(color.r, color.g, color.b, color.a);
+        _instanceData[index] = data;
+    }
+
+
     private void RemoveAtSwapBack(int index)
     {
         int last = _count - 1;
@@ -119,7 +138,7 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
 
         _count--;
     }
-    
+
     private void ResizeInstanceDataIfNeeded(int needed)
     {
         if (_instanceData.IsCreated && _instanceData.Length >= needed)
@@ -154,9 +173,9 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
 
         int newSize = math.max(needed, oldCapacity > 0 ? oldCapacity * 2 : 64);
 
-        _instanceBuffer = new ComputeBuffer(newSize, sizeof(float) * 16);
+        _instanceBuffer = new ComputeBuffer(newSize, sizeof(float) * (16 + 4));
     }
-    
+
     private void DisposeNative()
     {
         if (_transformAccess.isCreated)

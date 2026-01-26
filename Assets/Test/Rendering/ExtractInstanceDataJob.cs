@@ -9,9 +9,8 @@ public struct ExtractInstanceDataJob : IJobParallelForTransform
     
     public void Execute(int index, TransformAccess transform)
     {
-        instanceData[index] = new InstanceRenderData
-        {
-            objectToWorld = transform.localToWorldMatrix,
-        };
+        InstanceRenderData data = instanceData[index];
+        data.objectToWorld = transform.localToWorldMatrix;
+        instanceData[index] = data;
     }
 }
