@@ -42,8 +42,8 @@ public class TweenTest : MonoBehaviour
 
     private void FixedUpdate()
     {
-         PlayRandomTweens(randomPickCount);
-        //PlayDeformationTest(randomPickCount);
+         //PlayRandomTweens(randomPickCount);
+        PlayDeformationTest(randomPickCount);
     }
 
 
