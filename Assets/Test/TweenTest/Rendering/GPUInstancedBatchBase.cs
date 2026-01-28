@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Unity.Collections;
-using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
@@ -84,7 +83,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
         ResizeBufferIfNeeded(_count + 1);
 
         SetColor(t, color);
-
+        SetFromTransform(t);
         _count++;
     }
 
@@ -96,6 +95,59 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
         RemoveAtSwapBack(index);
     }
 
+    public void SetPosition(Transform t, Vector3 position)
+    {
+        if (!_indexMap.TryGetValue(t, out int index))
+            return;
+
+        InstanceRenderData data = _instanceData[index];
+
+        Matrix4x4 m = data.objectToWorld;
+        m.m03 = position.x;
+        m.m13 = position.y;
+        m.m23 = position.z;
+
+        data.objectToWorld = m;
+        _instanceData[index] = data;
+    }
+
+    public void SetRotation(Transform t, Quaternion rotation)
+    {
+        if (!_indexMap.TryGetValue(t, out int index))
+            return;
+
+        InstanceRenderData data = _instanceData[index];
+
+        Vector3 pos = data.objectToWorld.GetColumn(3);
+        Vector3 scale = Vector3.one;
+
+        data.objectToWorld = Matrix4x4.TRS(pos, rotation, scale);
+        _instanceData[index] = data;
+    }
+
+
+    public void SetFromTransform(Transform t)
+    {
+        if (!_indexMap.TryGetValue(t, out int index))
+            return;
+
+        InstanceRenderData data = _instanceData[index];
+        data.objectToWorld = t.localToWorldMatrix;
+        _instanceData[index] = data;
+    }
+
+
+    public void SetTRS(Transform t, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        if (!_indexMap.TryGetValue(t, out int index))
+            return;
+
+        InstanceRenderData data = _instanceData[index];
+        data.objectToWorld = Matrix4x4.TRS(position, rotation, scale);
+        _instanceData[index] = data;
+    }
+
+
     public void SetColor(Transform t, Color color)
     {
         if (!_indexMap.TryGetValue(t, out int index))
@@ -105,7 +157,6 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
         data.color = new float4(color.r, color.g, color.b, color.a);
         _instanceData[index] = data;
     }
-
 
     private void RemoveAtSwapBack(int index)
     {

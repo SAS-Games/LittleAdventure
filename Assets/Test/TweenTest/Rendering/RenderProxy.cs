@@ -12,13 +12,13 @@ public sealed class RenderProxy : MonoBehaviour
         if (m_MeshRenderer != null)
         {
             m_MeshRenderer.enabled = false;
-            DynamicInstancedBatch.Instance?.Register(transform);
+            TweenedBatch.Instance?.Register(transform);
         }
     }
 
     private void OnDisable()
     {
         if (m_MeshRenderer != null)
-            DynamicInstancedBatch.Instance?.Unregister(transform);
+            TweenedBatch.Instance?.Unregister(transform);
     }
 }
