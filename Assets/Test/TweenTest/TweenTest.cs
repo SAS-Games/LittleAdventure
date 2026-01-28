@@ -86,7 +86,7 @@ public class TweenTest : MonoBehaviour
 
     async void PlayTween(Transform cube)
     {
-        GPUInstancedRenderSystem.Instance.SetColor(cube, GetRandomColor());
+        DynamicInstancedBatch.Instance.SetColor(cube, GetRandomColor());
         _activeTweens.Add(cube);
 
         Vector3 startPos = cube.position;
@@ -108,7 +108,7 @@ public class TweenTest : MonoBehaviour
         // var rotBack = Tween.Rotation(cube, startRot, configBack);
 
         await moveBack;
-        GPUInstancedRenderSystem.Instance.SetColor(cube, Color.white);
+        DynamicInstancedBatch.Instance.SetColor(cube, Color.white);
         _activeTweens.Remove(cube);
     }
 
@@ -140,7 +140,7 @@ public class TweenTest : MonoBehaviour
             Quaternion targetRot = startRot * Quaternion.Euler(0f, 180f, 0f);
 
             TransformMotionSystem.Instance.RegisterCube(cube, targetPos, targetRot, config.DurationOrSpeed, config.Delay, configBack.DurationOrSpeed, configBack.Delay, EaseType.EaseOutQuad);
-            GPUInstancedRenderSystem.Instance.SetColor(cube, GetRandomColor());
+            DynamicInstancedBatch.Instance.SetColor(cube, GetRandomColor());
 
             played++;
         }
@@ -180,6 +180,6 @@ public class TweenTest : MonoBehaviour
 
     private void OnTweenCompleted(Transform tween)
     {
-        GPUInstancedRenderSystem.Instance.SetColor(tween, Color.white);
+        DynamicInstancedBatch.Instance.SetColor(tween, Color.white);
     }
 }

@@ -4,7 +4,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Jobs;
-using Random = UnityEngine.Random;
 
 public struct InstanceRenderData
 {
@@ -12,10 +11,8 @@ public struct InstanceRenderData
     public float4 color;
 }
 
-public sealed class GPUInstancedRenderSystem : MonoBehaviour
+public abstract class GPUInstancedBatchBase : MonoBehaviour
 {
-    public static GPUInstancedRenderSystem Instance { get; private set; }
-
     [SerializeField] private Mesh m_Mesh;
     [SerializeField] private Material m_Material;
     [SerializeField] private Bounds m_WorldBounds = new Bounds(Vector3.zero, Vector3.one * 100f);
@@ -23,18 +20,17 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
     private readonly List<Transform> _instanceTransforms = new();
     private readonly Dictionary<Transform, int> _indexMap = new();
 
-    private TransformAccessArray _transformAccess;
-    private NativeArray<InstanceRenderData> _instanceData;
+    protected TransformAccessArray _transformAccess;
+    protected NativeArray<InstanceRenderData> _instanceData;
     private ComputeBuffer _instanceBuffer;
 
     private RenderParams _renderParams;
     private int _count;
+    protected virtual bool RequiresTransformAccess => true;
+    protected virtual bool RequiresPerFrameUpload => true;
 
-
-    void Awake()
+    protected virtual void Awake()
     {
-        Instance = this;
-
         _transformAccess = new TransformAccessArray(64);
 
         _renderParams = new RenderParams(m_Material)
@@ -48,26 +44,22 @@ public sealed class GPUInstancedRenderSystem : MonoBehaviour
         if (_count == 0)
             return;
 
-        var job = new ExtractInstanceDataJob
-        {
-            instanceData = _instanceData
-        };
+        if (RequiresTransformAccess)
+            UpdateInstanceData();
 
-        JobHandle handle = job.Schedule(_transformAccess);
-        handle.Complete();
+        if (RequiresPerFrameUpload)
+            _instanceBuffer.SetData(_instanceData, 0, 0, _count);
 
-        _instanceBuffer.SetData(_instanceData, 0, 0, _count);
         m_Material.SetBuffer("_InstanceDataBuffer", _instanceBuffer);
-
         Graphics.RenderMeshPrimitives(_renderParams, m_Mesh, 0, _count);
     }
 
-    void OnDestroy()
+    protected virtual void OnDestroy()
     {
         DisposeNative();
-        Instance = null;
     }
 
+    protected abstract void UpdateInstanceData();
     public void Register(Transform t)
     {
         Register(t, Color.white);
