@@ -11,7 +11,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
     public static TransformMotionSystem Instance;
 
     private readonly List<Transform> _transforms = new();
-    private readonly Dictionary<Transform, int> _indexMap = new();
+    private readonly Dictionary<int, int> _indexMap = new();
 
     private TransformAccessArray _transformAccess;
 
@@ -74,17 +74,19 @@ public sealed class TransformMotionSystem : MonoBehaviour
         if (_completedIndices.IsCreated) _completedIndices.Dispose();
     }
 
-    public void RegisterCube(Transform cube, Vector3 endPos, Quaternion endRot, float deformTime, float delay,
+    public void Register(Transform cube, Vector3 endPos, Quaternion endRot, float deformTime, float delay,
         float restoreTime, float restoreDelay, EaseType easeType)
     {
-        RegisterCube(cube, cube.position, endPos, cube.rotation, endRot, deformTime, delay, restoreTime, restoreDelay,
+        Register(cube, cube.position, endPos, cube.rotation, endRot, deformTime, delay, restoreTime, restoreDelay,
             easeType);
     }
 
-    public void RegisterCube(Transform cube, Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot,
+    public void Register(Transform t, Vector3 startPos, Vector3 endPos, Quaternion startRot, Quaternion endRot,
         float deformTime, float delay, float restoreTime, float restoreDelay, EaseType easeType)
     {
-        if (_indexMap.ContainsKey(cube))
+        int id = t.GetInstanceID();
+
+        if (_indexMap.TryGetValue(id, out int index))
             return;
 
         var s = new TransformMotionState
@@ -108,9 +110,9 @@ public sealed class TransformMotionSystem : MonoBehaviour
             currentRot = startRot
         };
 
-        _indexMap[cube] = _transforms.Count;
-        _transforms.Add(cube);
-        _transformAccess.Add(cube);
+        _indexMap[id] = _transforms.Count;
+        _transforms.Add(t);
+        _transformAccess.Add(t);
 
         ResizeArraysIfNeeded();
 
@@ -123,7 +125,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
         if (Instance == null)
             return;
 
-        if (!_indexMap.TryGetValue(t, out int index))
+        if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
             return;
 
         RemoveAtSwapBack(index);
@@ -131,7 +133,7 @@ public sealed class TransformMotionSystem : MonoBehaviour
 
     public bool IsActive(Transform cube)
     {
-        return _indexMap.ContainsKey(cube);
+        return _indexMap.ContainsKey(cube.GetInstanceID());
     }
 
     private void RemoveAtSwapBack(int index)
@@ -146,11 +148,11 @@ public sealed class TransformMotionSystem : MonoBehaviour
             _transforms[index] = lastTransform;
 
             _states[index] = _states[last];
-            _indexMap[lastTransform] = index;
+            _indexMap[lastTransform.GetInstanceID()] = index;
         }
 
         _states[last] = default;
-        _indexMap.Remove(removed);
+        _indexMap.Remove(removed.GetInstanceID());
         _transformAccess.RemoveAtSwapBack(index);
         _transforms.RemoveAt(last);
     }

@@ -17,7 +17,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
     [SerializeField] private Bounds m_WorldBounds = new Bounds(Vector3.zero, Vector3.one * 100f);
 
     private readonly List<Transform> _instanceTransforms = new();
-    private readonly Dictionary<Transform, int> _indexMap = new();
+    private readonly Dictionary<int, int> _indexMap = new();
 
     protected TransformAccessArray _transformAccess;
     protected NativeArray<InstanceRenderData> _instanceData;
@@ -66,12 +66,17 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
 
     public void Register(Transform t, Color color)
     {
-        if (t == null || _indexMap.ContainsKey(t))
+        if (t == null)
+            return;
+
+        int id = t.GetInstanceID();
+
+        if (_indexMap.ContainsKey(id))
             return;
 
         int index = _count;
 
-        _indexMap[t] = index;
+        _indexMap[id] = index;
         _instanceTransforms.Add(t);
 
         if (_count >= _transformAccess.capacity)
@@ -89,7 +94,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
 
     public void Unregister(Transform t)
     {
-        if (!_indexMap.TryGetValue(t, out int index))
+        if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
             return;
 
         RemoveAtSwapBack(index);
@@ -97,7 +102,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
 
     public void SetPosition(Transform t, Vector3 position)
     {
-        if (!_indexMap.TryGetValue(t, out int index))
+        if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
             return;
 
         InstanceRenderData data = _instanceData[index];
@@ -113,7 +118,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
 
     public void SetRotation(Transform t, Quaternion rotation)
     {
-        if (!_indexMap.TryGetValue(t, out int index))
+        if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
             return;
 
         InstanceRenderData data = _instanceData[index];
@@ -128,7 +133,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
 
     public void SetFromTransform(Transform t)
     {
-        if (!_indexMap.TryGetValue(t, out int index))
+        if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
             return;
 
         InstanceRenderData data = _instanceData[index];
@@ -139,7 +144,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
 
     public void SetTRS(Transform t, Vector3 position, Quaternion rotation, Vector3 scale)
     {
-        if (!_indexMap.TryGetValue(t, out int index))
+        if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
             return;
 
         InstanceRenderData data = _instanceData[index];
@@ -150,7 +155,7 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
 
     public void SetColor(Transform t, Color color)
     {
-        if (!_indexMap.TryGetValue(t, out int index))
+        if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
             return;
 
         InstanceRenderData data = _instanceData[index];
@@ -169,12 +174,12 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
             Transform lastTransform = _instanceTransforms[last];
 
             _instanceTransforms[index] = lastTransform;
-            _indexMap[lastTransform] = index;
+            _indexMap[lastTransform.GetInstanceID()] = index;
 
             _instanceData[index] = _instanceData[last];
         }
 
-        _indexMap.Remove(removed);
+        _indexMap.Remove(removed.GetInstanceID());
 
         _transformAccess.RemoveAtSwapBack(index);
         _instanceTransforms.RemoveAt(last);
@@ -232,5 +237,10 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
             _instanceBuffer.Release();
             _instanceBuffer = null;
         }
+    }
+
+    protected bool TryGetRenderIndex(int instanceId, out int index)
+    {
+        return _indexMap.TryGetValue(instanceId, out index);
     }
 }

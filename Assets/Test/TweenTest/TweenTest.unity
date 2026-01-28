@@ -317,6 +317,7 @@ GameObject:
   - component: {fileID: 680555296}
   - component: {fileID: 680555298}
   - component: {fileID: 680555299}
+  - component: {fileID: 680555300}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -425,6 +426,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f255cd92ed778754485f945f32dc8694, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Material: {fileID: 2100000, guid: 8d03330a45ddb5c4b8e9eb0f428d1804, type: 2}
+  m_WorldBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 50, y: 50, z: 50}
+--- !u!114 &680555300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680555295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ade9156e45c62a458e73e8c7804746d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}

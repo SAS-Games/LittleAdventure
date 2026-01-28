@@ -42,7 +42,7 @@ public class TweenTest : MonoBehaviour
 
     private void FixedUpdate()
     {
-         //PlayRandomTweens(randomPickCount);
+        //PlayRandomTweens(randomPickCount);
         PlayDeformationTest(randomPickCount);
     }
 
@@ -129,19 +129,19 @@ public class TweenTest : MonoBehaviour
             // avoid double registration
             if (cube == null)
                 continue;
-            
-            if (TransformMotionSystem.Instance.IsActive(cube))
-                continue;
-           
+
+             if (TransformMotionSystem.Instance.IsActive(cube))
+                 continue;
+
             Vector3 startPos = cube.position;
             Quaternion startRot = cube.rotation;
 
             Vector3 targetPos = startPos + Vector3.up;
             Quaternion targetRot = startRot * Quaternion.Euler(0f, 180f, 0f);
 
-            TransformMotionSystem.Instance.RegisterCube(cube, targetPos, targetRot, config.DurationOrSpeed, config.Delay, configBack.DurationOrSpeed, configBack.Delay, EaseType.EaseOutQuad);
-            DynamicInstancedBatch.Instance.SetColor(cube, GetRandomColor());
-
+            TransformMotionSystem.Instance.Register(cube, targetPos, targetRot, config.DurationOrSpeed, config.Delay, configBack.DurationOrSpeed, configBack.Delay, EaseType.EaseOutQuad);
+            TweenedBatch.Instance.SetColor(cube, GetRandomColor());
+            TweenedBatch.Instance.SetDirty(cube, true);
             played++;
         }
     }
@@ -172,7 +172,7 @@ public class TweenTest : MonoBehaviour
             }
         }
     }
-    
+
     public static Color GetRandomColor()
     {
         return new Color(Random.value, Random.value, Random.value, 1f);
@@ -180,6 +180,7 @@ public class TweenTest : MonoBehaviour
 
     private void OnTweenCompleted(Transform tween)
     {
-        DynamicInstancedBatch.Instance.SetColor(tween, Color.white);
+        TweenedBatch.Instance.SetColor(tween, Color.white);
+        TweenedBatch.Instance.SetDirty(tween, false);
     }
 }
