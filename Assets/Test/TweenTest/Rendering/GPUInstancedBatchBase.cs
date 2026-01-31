@@ -162,6 +162,17 @@ public abstract class GPUInstancedBatchBase : MonoBehaviour
         data.color = new float4(color.r, color.g, color.b, color.a);
         _instanceData[index] = data;
     }
+    
+    public void SetIndex(Transform t, int newIndex)
+    {
+        // if (!_indexMap.TryGetValue(t.GetInstanceID(), out int index))
+        //     return;
+        //
+        // InstanceRenderData data = _instanceData[index];
+        // data.index = newIndex;
+        // _instanceData[index] = data;
+    }
+
 
     private void RemoveAtSwapBack(int index)
     {
