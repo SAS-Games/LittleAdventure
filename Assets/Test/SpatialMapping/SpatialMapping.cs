@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-public struct CubeSpatialData
+public struct SpatialAABB
 {
     public float3 Center;
     public float3 HalfExtents;
@@ -16,37 +17,39 @@ public partial class SpatialMapping : MonoBehaviour
 {
     [SerializeField] private Vector3Int cellSize = Vector3Int.one * 9;
 
-    private NativeArray<CubeSpatialData> _cubes;
+    private NativeArray<SpatialAABB> _spatialDatas;
     private NativeParallelMultiHashMap<int3, int> _grid;
 
-    private NativeArray<byte> _inside;        // 0 / 1
+    private NativeArray<byte> _inside; // 0 / 1
     private NativeArray<byte> _seenThisQuery; // 0 / 1
+    private Transform[] _transformLookup;
+    public int Capacity => _spatialDatas.Length;
 
     public void Build(List<Transform> cubes)
     {
         DisposeNativeData();
         int count = cubes.Count;
 
-        _cubes = new NativeArray<CubeSpatialData>(count, Allocator.Persistent);
+        _spatialDatas = new NativeArray<SpatialAABB>(count, Allocator.Persistent);
         _grid = new NativeParallelMultiHashMap<int3, int>(count * 2, Allocator.Persistent);
         _inside = new NativeArray<byte>(count, Allocator.Persistent);
         _seenThisQuery = new NativeArray<byte>(count, Allocator.Persistent);
+        _transformLookup = new Transform[cubes.Count];
 
         for (int i = 0; i < count; i++)
         {
-            Vector3 scale = cubes[i].localScale;
-
-            _cubes[i] = new CubeSpatialData
+            _transformLookup[i] = cubes[i];
+            _spatialDatas[i] = new SpatialAABB
             {
                 Center = cubes[i].position,
-                HalfExtents = scale * 0.5f,
+                HalfExtents = cubes[i].localScale * 0.5f,
                 Handle = i
             };
         }
 
         new BuildGridJob
         {
-            Cubes = _cubes,
+            Cubes = _spatialDatas,
             Grid = _grid.AsParallelWriter(),
             CellSize = new int3(cellSize.x, cellSize.y, cellSize.z)
         }.Schedule(count, 64).Complete();
@@ -57,13 +60,14 @@ public partial class SpatialMapping : MonoBehaviour
         entered.Clear();
         exited.Clear();
 
-        entered.Capacity = math.max(entered.Capacity, _cubes.Length);
-        exited.Capacity = math.max(exited.Capacity, _cubes.Length);
+        entered.Capacity = math.max(entered.Capacity, _spatialDatas.Length);
+        exited.Capacity = math.max(exited.Capacity, _spatialDatas.Length);
 
-        new ClearSeenJob
+        unsafe
         {
-            Seen = _seenThisQuery
-        }.Schedule(_seenThisQuery.Length, 64).Complete();
+            UnsafeUtility.MemClear(NativeArrayUnsafeUtility.GetUnsafePtr(_seenThisQuery), _seenThisQuery.Length * sizeof(byte));
+        }
+
 
         int3 minCell = WorldToCell(bounds.min, new int3(cellSize.x, cellSize.y, cellSize.z));
         int3 maxCell = WorldToCell(bounds.max, new int3(cellSize.x, cellSize.y, cellSize.z));
@@ -72,11 +76,11 @@ public partial class SpatialMapping : MonoBehaviour
         if (size.x <= 0 || size.y <= 0 || size.z <= 0)
             return;
 
-        // Phase 1 — grid query (single-threaded, safe random access)
+        // Phase 1 ï¿½ grid query (single-threaded, safe random access)
         new QueryGridJob
         {
             Grid = _grid,
-            Cubes = _cubes,
+            Cubes = _spatialDatas,
             QueryMin = bounds.min,
             QueryMax = bounds.max,
             Seen = _seenThisQuery,
@@ -84,15 +88,15 @@ public partial class SpatialMapping : MonoBehaviour
             Size = size
         }.Run();
 
-        // Phase 2 — delta detection (parallel, per-cube)
+        // Phase 2 ï¿½ delta detection (parallel, per-cube)
         new DeltaDetectionJob
         {
             Seen = _seenThisQuery,
             Inside = _inside,
-            Cubes = _cubes,
+            Cubes = _spatialDatas,
             Entered = entered.AsParallelWriter(),
             Exited = exited.AsParallelWriter()
-        }.Schedule(_cubes.Length, 64).Complete();
+        }.Schedule(_spatialDatas.Length, 64).Complete();
     }
 
     public void QueryDeltaMultipleBounds(IReadOnlyList<Bounds> boundsList, NativeList<int> entered, NativeList<int> exited)
@@ -100,14 +104,14 @@ public partial class SpatialMapping : MonoBehaviour
         entered.Clear();
         exited.Clear();
 
-        entered.Capacity = math.max(entered.Capacity, _cubes.Length);
-        exited.Capacity = math.max(exited.Capacity, _cubes.Length);
+        entered.Capacity = math.max(entered.Capacity, _spatialDatas.Length);
+        exited.Capacity = math.max(exited.Capacity, _spatialDatas.Length);
 
-        new ClearSeenJob
+        unsafe
         {
-            Seen = _seenThisQuery
-        }.Schedule(_seenThisQuery.Length, 64).Complete();
-
+            UnsafeUtility.MemClear(NativeArrayUnsafeUtility.GetUnsafePtr(_seenThisQuery), _seenThisQuery.Length * sizeof(byte));
+        }
+        
         int3 cellSize3 = new int3(cellSize.x, cellSize.y, cellSize.z);
 
         foreach (var bounds in boundsList)
@@ -123,7 +127,7 @@ public partial class SpatialMapping : MonoBehaviour
             new QueryGridJob
             {
                 Grid = _grid,
-                Cubes = _cubes,
+                Cubes = _spatialDatas,
                 QueryMin = bounds.min,
                 QueryMax = bounds.max,
                 Seen = _seenThisQuery,
@@ -135,61 +139,63 @@ public partial class SpatialMapping : MonoBehaviour
         new DeltaDetectionJob
         {
             Seen = _seenThisQuery, // current global
-            Inside = _inside,      // previous global
-            Cubes = _cubes,
+            Inside = _inside, // previous global
+            Cubes = _spatialDatas,
             Entered = entered.AsParallelWriter(),
             Exited = exited.AsParallelWriter()
-        }.Schedule(_cubes.Length, 64).Complete();
+        }.Schedule(_spatialDatas.Length, 64).Complete();
     }
 
-    public void QueryAllInBounds(Bounds bounds,NativeList<int> results)
+    public int QueryAllInBoundsNonAlloc(Bounds bounds, NativeArray<byte> seen, Transform[] results)
     {
-        results.Clear();
-
-        if (!_cubes.IsCreated || _cubes.Length == 0)
-            return;
-
-        results.Capacity = math.max(results.Capacity, _cubes.Length);
-
-        // Clear seen
-        new ClearSeenJob
+        if (!_spatialDatas.IsCreated || results == null || results.Length == 0)
+            return 0;
+        
+        if (seen.Length < _spatialDatas.Length)
         {
-            Seen = _seenThisQuery
-        }.Schedule(_seenThisQuery.Length, 64).Complete();
+            Debug.LogError($"Seen buffer too small. Required {_spatialDatas.Length}, got {seen.Length}");
+            return 0;
+        }
 
+        unsafe
+        {
+            UnsafeUtility.MemClear(NativeArrayUnsafeUtility.GetUnsafePtr(seen), seen.Length * sizeof(byte));
+        }
+        
         int3 cellSize3 = new int3(cellSize.x, cellSize.y, cellSize.z);
-
         int3 minCell = WorldToCell(bounds.min, cellSize3);
         int3 maxCell = WorldToCell(bounds.max, cellSize3);
         int3 size = maxCell - minCell + 1;
 
         if (size.x <= 0 || size.y <= 0 || size.z <= 0)
-            return;
+            return 0;
 
-        // Grid query (same as delta phase 1)
         new QueryGridJob
         {
             Grid = _grid,
-            Cubes = _cubes,
+            Cubes = _spatialDatas,
             QueryMin = bounds.min,
             QueryMax = bounds.max,
-            Seen = _seenThisQuery,
+            Seen = seen,
             MinCell = minCell,
             Size = size
         }.Run();
 
-        // Collect results
-        for (int i = 0; i < _seenThisQuery.Length; i++)
+        int count = 0;
+
+        for (int i = 0; i < seen.Length && count < results.Length; i++)
         {
-            if (_seenThisQuery[i] == 1)
-                results.Add(_cubes[i].Handle);
+            if (seen[i] == 1)
+                results[count++] = _transformLookup[i];
         }
+
+        return count;
     }
 
     [BurstCompile]
     private struct BuildGridJob : IJobParallelFor
     {
-        [ReadOnly] public NativeArray<CubeSpatialData> Cubes;
+        [ReadOnly] public NativeArray<SpatialAABB> Cubes;
         public NativeParallelMultiHashMap<int3, int>.ParallelWriter Grid;
         public int3 CellSize;
 
@@ -200,23 +206,12 @@ public partial class SpatialMapping : MonoBehaviour
         }
     }
 
-    [BurstCompile]
-    private struct ClearSeenJob : IJobParallelFor
-    {
-        public NativeArray<byte> Seen;
-
-        public void Execute(int index)
-        {
-            Seen[index] = 0;
-        }
-    }
-
-    // Phase 1 — SAFE grid traversal
+    // Phase 1 ï¿½ SAFE grid traversal
     [BurstCompile]
     private struct QueryGridJob : IJob
     {
         [ReadOnly] public NativeParallelMultiHashMap<int3, int> Grid;
-        [ReadOnly] public NativeArray<CubeSpatialData> Cubes;
+        [ReadOnly] public NativeArray<SpatialAABB> Cubes;
 
         public float3 QueryMin;
         public float3 QueryMax;
@@ -229,40 +224,39 @@ public partial class SpatialMapping : MonoBehaviour
         public void Execute()
         {
             for (int x = 0; x < Size.x; x++)
-                for (int y = 0; y < Size.y; y++)
-                    for (int z = 0; z < Size.z; z++)
+            for (int y = 0; y < Size.y; y++)
+            for (int z = 0; z < Size.z; z++)
+            {
+                int3 cell = MinCell + new int3(x, y, z);
+
+                if (!Grid.TryGetFirstValue(cell, out int cubeIndex, out var it))
+                    continue;
+
+                do
+                {
+                    SpatialAABB cube = Cubes[cubeIndex];
+
+                    if (AABBOverlap(
+                            cube.Center,
+                            cube.HalfExtents,
+                            QueryMin,
+                            QueryMax))
                     {
-                        int3 cell = MinCell + new int3(x, y, z);
-
-                        if (!Grid.TryGetFirstValue(cell, out int cubeIndex, out var it))
-                            continue;
-
-                        do
-                        {
-                            CubeSpatialData cube = Cubes[cubeIndex];
-
-                            if (AABBOverlap(
-                                    cube.Center,
-                                    cube.HalfExtents,
-                                    QueryMin,
-                                    QueryMax))
-                            {
-                                Seen[cubeIndex] = 1;
-                            }
-
-                        } while (Grid.TryGetNextValue(out cubeIndex, ref it));
+                        Seen[cubeIndex] = 1;
                     }
+                } while (Grid.TryGetNextValue(out cubeIndex, ref it));
+            }
         }
     }
 
-    // Phase 2 — SAFE delta detection
+    // Phase 2 ï¿½ SAFE delta detection
     [BurstCompile]
     private struct DeltaDetectionJob : IJobParallelFor
     {
         public NativeArray<byte> Seen;
         public NativeArray<byte> Inside;
 
-        [ReadOnly] public NativeArray<CubeSpatialData> Cubes;
+        [ReadOnly] public NativeArray<SpatialAABB> Cubes;
 
         public NativeList<int>.ParallelWriter Entered;
         public NativeList<int>.ParallelWriter Exited;
@@ -282,7 +276,7 @@ public partial class SpatialMapping : MonoBehaviour
         }
     }
 
-    public static int3 WorldToCell(float3 pos, int3 cellSize)
+    private static int3 WorldToCell(float3 pos, int3 cellSize)
     {
         return new int3(
             (int)math.floor(pos.x / cellSize.x),
@@ -303,7 +297,7 @@ public partial class SpatialMapping : MonoBehaviour
 
     private void DisposeNativeData()
     {
-        if (_cubes.IsCreated) _cubes.Dispose();
+        if (_spatialDatas.IsCreated) _spatialDatas.Dispose();
         if (_grid.IsCreated) _grid.Dispose();
         if (_inside.IsCreated) _inside.Dispose();
         if (_seenThisQuery.IsCreated) _seenThisQuery.Dispose();
