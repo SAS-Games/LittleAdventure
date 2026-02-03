@@ -19,6 +19,8 @@ public sealed class TransformMotionSystem : MonoBehaviour
     private NativeArray<float3> _outPos;
     private NativeArray<quaternion> _outRot;
     private NativeQueue<int> _completedIndices;
+    private readonly List<int> _completionBuffer = new();
+
 
     private void Awake()
     {
@@ -50,19 +52,35 @@ public sealed class TransformMotionSystem : MonoBehaviour
         };
 
         JobHandle applyJobHandle = applyJob.Schedule(_transformAccess, updateJobHandle);
-
         applyJobHandle.Complete();
 
+        ProcessCompletions();
+    }
+
+    private void ProcessCompletions()
+    {
+        if (_completedIndices.IsEmpty())
+            return;
+
+        _completionBuffer.Clear();
 
         while (_completedIndices.TryDequeue(out int index))
+            _completionBuffer.Add(index);
+
+        _completionBuffer.Sort((a, b) => b.CompareTo(a));
+
+        foreach (int i in _completionBuffer)
         {
-            if (index >= 0 && index < _transforms.Count)
+            if (i >= 0 && i < _transforms.Count)
             {
-                OnTweenCompleted?.Invoke(_transforms[index]);
-                RemoveAtSwapBack(index);
+                OnTweenCompleted?.Invoke(_transforms[i]);
+                RemoveAtSwapBack(i);
             }
         }
+
+        _completedIndices.Clear();
     }
+
 
     private void OnDestroy()
     {
