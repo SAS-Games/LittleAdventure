@@ -9,7 +9,7 @@ namespace LevelStreaming
         public Dictionary<Vector2Int, List<RegionManager.Region>> Grid { get; private set; } = new();
         [field: SerializeField] public Vector2Int CellSize { get; private set; } = new(50, 50);
 
-        public override void Initialize(List<RegionManager.Region> regionRefs)
+        public override void Initialize(IReadOnlyList<RegionManager.Region> regionRefs)
         {
             Grid.Clear();
 

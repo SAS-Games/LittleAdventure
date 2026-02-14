@@ -9,39 +9,48 @@ namespace LevelStreaming.Editor
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (!property.isExpanded)
-                return EditorGUIUtility.singleLineHeight; // Only show foldout
+                return EditorGUIUtility.singleLineHeight;
 
-            int lines = 5; // Type + UnloadStrategy + RegionName (read-only)
-            var type = (RegionManager.RegionType)property.FindPropertyRelative("<Type>k__BackingField").enumValueIndex;
+            var boundsProp = property.FindPropertyRelative("cachedBounds");
+            var portalsProp = property.FindPropertyRelative("portals");
 
-            if (type == RegionManager.RegionType.Scene)
-                lines++;
-            else if (type == RegionManager.RegionType.Prefab)
-                lines++;
+            float line = EditorGUIUtility.singleLineHeight;
+            float space = EditorGUIUtility.standardVerticalSpacing;
 
-            var boundsProp = property.FindPropertyRelative("<CachedBounds>k__BackingField");
-            var portalsProp = property.FindPropertyRelative("<Portals>k__BackingField");
+            float height = 0;
 
-            float boundsHeight = EditorGUI.GetPropertyHeight(boundsProp, true);
-            float portalsHeight = EditorGUI.GetPropertyHeight(portalsProp, true);
+            // Foldout
+            height += line + space;
 
-            float lineHeight = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            // Name + Type
+            height += (line + space) * 2;
 
-            // Foldout + properties
-            return lineHeight * (lines - 2 + 1) + boundsHeight + portalsHeight; 
+            // Scene or Prefab field
+            height += line + space;
+
+            // Bounds
+            height += EditorGUI.GetPropertyHeight(boundsProp, true) + space;
+
+            // Portals
+            height += EditorGUI.GetPropertyHeight(portalsProp, true) + space;
+
+            // UnloadStrategy
+            height += line + space;
+
+            return height;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
 
-            // Draw foldout
-            property.isExpanded = EditorGUI.Foldout(
-                new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight),
-                property.isExpanded, 
-                label, 
-                true
-            );
+            float line = EditorGUIUtility.singleLineHeight;
+            float space = EditorGUIUtility.standardVerticalSpacing;
+
+            Rect rect = new Rect(position.x, position.y, position.width, line);
+
+            // Foldout
+            property.isExpanded = EditorGUI.Foldout(rect, property.isExpanded, label, true);
 
             if (!property.isExpanded)
             {
@@ -49,53 +58,60 @@ namespace LevelStreaming.Editor
                 return;
             }
 
-            // Content inside foldout
-            var indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel++;
 
-            var typeProp = property.FindPropertyRelative("<Type>k__BackingField");
-            var sceneProp = property.FindPropertyRelative("<SceneRef>k__BackingField");
-            var prefabProp = property.FindPropertyRelative("<PrefabRef>k__BackingField");
-            var boundsProp = property.FindPropertyRelative("<CachedBounds>k__BackingField");
-            var portalsProp = property.FindPropertyRelative("<Portals>k__BackingField");
-            var unloadProp = property.FindPropertyRelative("<UnloadStrategy>k__BackingField");
-            var nameProp = property.FindPropertyRelative("<RegionName>k__BackingField");
+            rect.y += line + space;
 
-            var rect = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing, 
-                                position.width, EditorGUIUtility.singleLineHeight);
+            var nameProp = property.FindPropertyRelative("regionName");
+            var typeProp = property.FindPropertyRelative("type");
+            var sceneProp = property.FindPropertyRelative("sceneRef");
+            var prefabProp = property.FindPropertyRelative("prefabRef");
+            var boundsProp = property.FindPropertyRelative("cachedBounds");
+            var portalsProp = property.FindPropertyRelative("portals");
+            var unloadProp = property.FindPropertyRelative("unloadStrategy");
 
+            // Region Name
             EditorGUI.PropertyField(rect, nameProp);
-            rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            
+            rect.y += line + space;
+
+            // Type
             EditorGUI.PropertyField(rect, typeProp);
-            rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            
+            rect.y += line + space;
+
             var type = (RegionManager.RegionType)typeProp.enumValueIndex;
+
+            // Scene or Prefab
             if (type == RegionManager.RegionType.Scene)
             {
                 EditorGUI.PropertyField(rect, sceneProp);
-                rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                rect.y += line + space;
             }
             else if (type == RegionManager.RegionType.Prefab)
             {
                 EditorGUI.PropertyField(rect, prefabProp);
-                rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                rect.y += line + space;
             }
 
+            // Cached Bounds
             float boundsHeight = EditorGUI.GetPropertyHeight(boundsProp, true);
-            var boundsRect = new Rect(rect.x, rect.y, rect.width, boundsHeight);
-            EditorGUI.PropertyField(boundsRect, boundsProp, true);
-            rect.y += boundsHeight + EditorGUIUtility.standardVerticalSpacing;
+            EditorGUI.PropertyField(
+                new Rect(rect.x, rect.y, rect.width, boundsHeight),
+                boundsProp,
+                true);
+            rect.y += boundsHeight + space;
 
+            // Portals
             float portalsHeight = EditorGUI.GetPropertyHeight(portalsProp, true);
-            var portalsRect = new Rect(rect.x, rect.y, rect.width, portalsHeight);
-            EditorGUI.PropertyField(portalsRect, portalsProp, true);
-            rect.y += portalsHeight + EditorGUIUtility.standardVerticalSpacing;
+            EditorGUI.PropertyField(
+                new Rect(rect.x, rect.y, rect.width, portalsHeight),
+                portalsProp,
+                true);
+            rect.y += portalsHeight + space;
 
+            // Unload Strategy
             EditorGUI.PropertyField(rect, unloadProp);
-            rect.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
-            EditorGUI.indentLevel = indent;
+            EditorGUI.indentLevel--;
             EditorGUI.EndProperty();
         }
     }

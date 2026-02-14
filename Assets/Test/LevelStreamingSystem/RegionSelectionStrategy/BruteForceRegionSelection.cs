@@ -6,9 +6,9 @@ namespace LevelStreaming
     [CreateAssetMenu(menuName = "Streaming/RegionSelection/BruteForceStrategy")]
     public class BruteForceRegionSelection : RegionSelectionStrategySO
     {
-        private List<RegionManager.Region> _sceneRefs;
+        private IReadOnlyList<RegionManager.Region> _sceneRefs;
 
-        public override void Initialize(List<RegionManager.Region> regionRefs)
+        public override void Initialize(IReadOnlyList<RegionManager.Region> regionRefs)
         {
             _sceneRefs = regionRefs;
         }

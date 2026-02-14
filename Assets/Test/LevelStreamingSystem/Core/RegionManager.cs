@@ -14,7 +14,7 @@ namespace LevelStreaming
         public class Portal
         {
             [field: SerializeField] public string TargetRegionName { get; private set; }
-            [field: SerializeField] public Bounds LocalBounds { get; set; }
+            [field: SerializeField] public Bounds LocalBounds { get; set; }=new Bounds(Vector3.zero, Vector3.one);
         }
 
         public enum RegionType
@@ -26,13 +26,21 @@ namespace LevelStreaming
         [Serializable]
         public partial class Region
         {
-            [field: SerializeField] public RegionType Type { get; private set; } = RegionType.Scene;
-            [field: SerializeField] public SceneReference SceneRef { get; private set; }
-            [field: SerializeField] public AssetReferenceGameObject PrefabRef { get; private set; }
-            [field: SerializeField] public Bounds CachedBounds { get; set; }
-            [field: SerializeField] public string RegionName { get; private set; }
-            [field: SerializeField] public List<Portal> Portals { get; private set; } = new();
-            [field: SerializeField] public UnloadStrategy UnloadStrategy { get; private set; }
+            [SerializeField] private SceneReference sceneRef;
+            [SerializeField] private AssetReferenceGameObject prefabRef;
+            [SerializeField] private string regionName;
+            [SerializeField] private RegionType type;
+            [SerializeField] private Bounds cachedBounds = new Bounds(Vector3.zero, Vector3.one*2);
+            [SerializeField] private List<Portal> portals = new();
+            [SerializeField] private UnloadStrategy unloadStrategy;
+
+            public SceneReference SceneRef => sceneRef;
+            public AssetReferenceGameObject PrefabRef => prefabRef;
+            public string RegionName => regionName;
+            public RegionType Type => type;
+            public Bounds CachedBounds { get => cachedBounds; set => cachedBounds = value; }
+            public List<Portal> Portals => portals;
+            public UnloadStrategy UnloadStrategy => unloadStrategy;
             [NonSerialized] public List<Bounds> CachedWorldPortalBounds = new();
 
             /// <summary>
@@ -50,7 +58,8 @@ namespace LevelStreaming
             }
         }
 
-        [field: SerializeField] public List<Region> Regions { get; private set; } = new();
+        [SerializeField] private List<Region> regions = new();
+        public IReadOnlyList<Region> Regions => regions;
         [field: SerializeField] public RegionSelectionStrategySO RegionSelectionStrategy { get; private set; }
         public readonly HashSet<Region> loadedRegions = new();
         public Dictionary<string, Region> RegionLookup { get; private set; }
@@ -78,7 +87,7 @@ namespace LevelStreaming
 
             BuildLookup();
             if (RegionSelectionStrategy != null)
-                RegionSelectionStrategy.Initialize(Regions);
+                RegionSelectionStrategy.Initialize(regions);
             else
                 Debug.LogError("No RegionSelectionStrategy assigned!", this, TAG);
         }

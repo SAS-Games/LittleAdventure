@@ -10,7 +10,7 @@ namespace LevelStreaming
         [SerializeField] private int m_MaxDepth = 6;
         [SerializeField] private int m_MaxCapacity = 4;
 
-        public override void Initialize(List<RegionManager.Region> regionRefs)
+        public override void Initialize(IReadOnlyList<RegionManager.Region> regionRefs)
         {
             Bounds worldBounds = new Bounds(Vector3.zero, Vector3.one);
             foreach (var region in regionRefs)

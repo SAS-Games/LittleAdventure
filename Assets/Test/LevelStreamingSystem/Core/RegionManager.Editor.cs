@@ -16,15 +16,15 @@ namespace LevelStreaming
                     case RegionType.Scene:
                         if (SceneRef != null)
                         {
-                            if (string.IsNullOrEmpty(RegionName))
+                            if (string.IsNullOrEmpty(regionName))
                             {
-                                RegionName = SceneRef.SceneAsset != null
+                                regionName = SceneRef.SceneAsset != null
                                     ? SceneRef.SceneAsset.name
                                     : string.Empty;
                             }
                         }
                         else
-                            RegionName = string.Empty;
+                            regionName = string.Empty;
 
                         break;
 
@@ -37,25 +37,26 @@ namespace LevelStreaming
                                 string path = AssetDatabase.GUIDToAssetPath(PrefabRef.AssetGUID);
                                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                                RegionName = prefab != null
+                                regionName = prefab != null
                                     ? prefab.name
                                     : PrefabRef.RuntimeKey.ToString();
                             }
                             else
                             {
                                 // Fall back to editorAsset if GUID missing
-                                RegionName = PrefabRef.editorAsset != null
+                                regionName = PrefabRef.editorAsset != null
                                     ? PrefabRef.editorAsset.name
                                     : string.Empty;
                             }
                         }
                         else
-                        {
-                            RegionName = string.Empty;
-                        }
+                            regionName = string.Empty;
 
                         break;
                 }
+
+                if (CachedBounds.size == Vector3.zero)
+                    CachedBounds = new Bounds(Vector3.zero, Vector3.one * 2);
             }
         }
 
@@ -94,10 +95,7 @@ namespace LevelStreaming
                         EditorSceneManager.CloseScene(targetScene, true);
                     }
                     else
-                    {
                         EditorSceneManager.MarkSceneDirty(targetScene);
-                    }
-
                     break;
 
                 case RegionType.Prefab:
@@ -181,11 +179,8 @@ namespace LevelStreaming
                 }
             }
         }
-
-        /// <summary>
-        /// Apply bounds for all regions in the active RegionManager
-        /// </summary>
-        [MenuItem("Tools/LevelStreaming/Apply Bounds For All Regions")]
+        
+        [MenuItem("Tools/Streaming/Apply Bounds For All Regions")]
         private static void ApplyBoundsForAllRegions()
         {
             var manager = Object.FindFirstObjectByType<RegionManager>();
@@ -208,11 +203,8 @@ namespace LevelStreaming
 
             Debug.Log("Applied bounds for all regions.");
         }
-
-        /// <summary>
-        /// Refresh cached bounds for all regions
-        /// </summary>
-        [MenuItem("Tools/LevelStreaming/Refresh Bounds From Assets")]
+        
+        [MenuItem("Tools/Streaming/Refresh Bounds From Assets")]
         private static void RefreshBoundsMenu()
         {
             var manager = Object.FindFirstObjectByType<RegionManager>();
