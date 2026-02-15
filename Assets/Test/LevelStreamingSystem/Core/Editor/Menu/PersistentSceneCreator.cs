@@ -1,3 +1,4 @@
+using LevelStreaming;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -15,6 +16,17 @@ public static class PersistentSceneCreator
             return;
 
         Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
+        Camera cam = Camera.main;
+
+        if (cam == null)
+        {
+            var camGO = new GameObject("Main Camera");
+            cam = camGO.AddComponent<Camera>();
+            cam.tag = "MainCamera";
+        }
+
+        if (cam.GetComponent<CameraFrustumStreamingBoundsProvider>() == null)
+            Undo.AddComponent<CameraFrustumStreamingBoundsProvider>(cam.gameObject);
 
         GameObject prefab = LoadStreamingManagerPrefab();
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace LevelStreaming
 {
@@ -6,6 +7,16 @@ namespace LevelStreaming
     [RequireComponent(typeof(RegionBound))]
     public class RegionBoundCalculator : MonoBehaviour
     {
+        public enum BoundsSource
+        {
+            ChildrenOnly,
+            EntireScene
+        }
+
+        [Header("Source")]
+        [SerializeField] private BoundsSource m_Source = BoundsSource.ChildrenOnly;
+
+        [Header("Options")]
         [SerializeField] private bool m_IncludeInactive = true;
         [SerializeField] private bool m_UseRenderers = true;
         [SerializeField] private bool m_UseColliders = true;
@@ -17,77 +28,113 @@ namespace LevelStreaming
             m_RegionBound = GetComponent<RegionBound>();
         }
 
-        /// <summary>
-        /// Calculate bounds from children and update RegionBound.
-        /// </summary>
+        // -----------------------------------------------------
+
         [ContextMenu("Recalculate Bounds")]
         public void RecalculateBounds()
         {
-            var bounds = new Bounds(transform.position, Vector3.zero);
+            if (m_RegionBound == null)
+                m_RegionBound = GetComponent<RegionBound>();
+
             bool hasBounds = false;
+            Bounds worldBounds = default;
 
-            // Collect bounds from renderers
-            if (m_UseRenderers)
+            if (m_Source == BoundsSource.ChildrenOnly)
             {
-                foreach (var renderer in GetComponentsInChildren<Renderer>(m_IncludeInactive))
-                {
-                    if (!hasBounds)
-                    {
-                        bounds = renderer.bounds;
-                        hasBounds = true;
-                    }
-                    else
-                    {
-                        bounds.Encapsulate(renderer.bounds);
-                    }
-                }
+                CollectFromChildren(ref worldBounds, ref hasBounds);
             }
-
-            // Collect bounds from colliders
-            if (m_UseColliders)
+            else
             {
-                foreach (var col in GetComponentsInChildren<Collider>(m_IncludeInactive))
-                {
-                    if (!hasBounds)
-                    {
-                        bounds = col.bounds;
-                        hasBounds = true;
-                    }
-                    else
-                    {
-                        bounds.Encapsulate(col.bounds);
-                    }
-                }
-
-                foreach (var col2D in GetComponentsInChildren<Collider2D>(m_IncludeInactive))
-                {
-                    if (!hasBounds)
-                    {
-                        bounds = new Bounds(col2D.bounds.center, col2D.bounds.size);
-                        hasBounds = true;
-                    }
-                    else
-                    {
-                        bounds.Encapsulate(col2D.bounds);
-                    }
-                }
+                CollectFromScene(ref worldBounds, ref hasBounds);
             }
 
             if (!hasBounds)
             {
-                Debug.LogWarning($"[{name}] No Renderers/Colliders found to calculate bounds.");
+                Debug.LogWarning($"[{name}] No Renderers/Colliders found.");
                 return;
             }
 
-            // Convert world-space bounds to local space
-            var localCenter = transform.InverseTransformPoint(bounds.center);
-            var localSize = transform.InverseTransformVector(bounds.size);
+            // ✅ Correct world → local conversion
+            var localCenter = transform.InverseTransformPoint(worldBounds.center);
+
+            // IMPORTANT: size must ignore rotation scaling issues
+            Vector3 localSize = worldBounds.size;
+            localSize = new Vector3(
+                localSize.x / transform.lossyScale.x,
+                localSize.y / transform.lossyScale.y,
+                localSize.z / transform.lossyScale.z
+            );
 
             m_RegionBound.Bounds = new Bounds(localCenter, localSize);
 
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(m_RegionBound);
 #endif
+        }
+
+        // -----------------------------------------------------
+        // CHILD COLLECTION
+        // -----------------------------------------------------
+
+        private void CollectFromChildren(ref Bounds bounds, ref bool hasBounds)
+        {
+            if (m_UseRenderers)
+            {
+                foreach (var r in GetComponentsInChildren<Renderer>(m_IncludeInactive))
+                    Encapsulate(ref bounds, ref hasBounds, r.bounds);
+            }
+
+            if (m_UseColliders)
+            {
+                foreach (var c in GetComponentsInChildren<Collider>(m_IncludeInactive))
+                    Encapsulate(ref bounds, ref hasBounds, c.bounds);
+
+                foreach (var c2d in GetComponentsInChildren<Collider2D>(m_IncludeInactive))
+                    Encapsulate(ref bounds, ref hasBounds, c2d.bounds);
+            }
+        }
+
+        // -----------------------------------------------------
+        // SCENE COLLECTION
+        // -----------------------------------------------------
+
+        private void CollectFromScene(ref Bounds bounds, ref bool hasBounds)
+        {
+            Scene scene = gameObject.scene;
+            var roots = scene.GetRootGameObjects();
+
+            foreach (var root in roots)
+            {
+                if (m_UseRenderers)
+                {
+                    foreach (var r in root.GetComponentsInChildren<Renderer>(m_IncludeInactive))
+                        Encapsulate(ref bounds, ref hasBounds, r.bounds);
+                }
+
+                if (m_UseColliders)
+                {
+                    foreach (var c in root.GetComponentsInChildren<Collider>(m_IncludeInactive))
+                        Encapsulate(ref bounds, ref hasBounds, c.bounds);
+
+                    foreach (var c2d in root.GetComponentsInChildren<Collider2D>(m_IncludeInactive))
+                        Encapsulate(ref bounds, ref hasBounds, c2d.bounds);
+                }
+            }
+        }
+
+        // -----------------------------------------------------
+
+        private void Encapsulate(ref Bounds total, ref bool hasBounds, Bounds add)
+        {
+            if (!hasBounds)
+            {
+                total = add;
+                hasBounds = true;
+            }
+            else
+            {
+                total.Encapsulate(add);
+            }
         }
     }
 }

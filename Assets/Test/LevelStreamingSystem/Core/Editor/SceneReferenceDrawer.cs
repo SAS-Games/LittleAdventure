@@ -14,9 +14,7 @@ namespace LevelStreaming.Editor
             SerializedProperty scenePathProp = property.FindPropertyRelative("scenePath");
 
             EditorGUI.BeginChangeCheck();
-            var newScene =
-                EditorGUI.ObjectField(position, label, sceneAssetProp.objectReferenceValue, typeof(SceneAsset),
-                    false) as SceneAsset;
+            var newScene = EditorGUI.ObjectField(position, label, sceneAssetProp.objectReferenceValue, typeof(SceneAsset), false) as SceneAsset;
             if (EditorGUI.EndChangeCheck())
             {
                 sceneAssetProp.objectReferenceValue = newScene;

@@ -18,9 +18,7 @@ namespace LevelStreaming
                         {
                             if (string.IsNullOrEmpty(regionName))
                             {
-                                regionName = SceneRef.SceneAsset != null
-                                    ? SceneRef.SceneAsset.name
-                                    : string.Empty;
+                                regionName = SceneRef.SceneAsset != null ? SceneRef.SceneAsset.name : string.Empty;
                             }
                         }
                         else
@@ -37,16 +35,12 @@ namespace LevelStreaming
                                 string path = AssetDatabase.GUIDToAssetPath(PrefabRef.AssetGUID);
                                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-                                regionName = prefab != null
-                                    ? prefab.name
-                                    : PrefabRef.RuntimeKey.ToString();
+                                regionName = prefab != null ? prefab.name : PrefabRef.RuntimeKey.ToString();
                             }
                             else
                             {
                                 // Fall back to editorAsset if GUID missing
-                                regionName = PrefabRef.editorAsset != null
-                                    ? PrefabRef.editorAsset.name
-                                    : string.Empty;
+                                regionName = PrefabRef.editorAsset != null ? PrefabRef.editorAsset.name : string.Empty;
                             }
                         }
                         else
@@ -80,10 +74,8 @@ namespace LevelStreaming
                         if (sb != null)
                         {
                             Undo.RecordObject(sb, "Update Scene Bound");
-                            sb.Bounds = new Bounds(
-                                sb.transform.InverseTransformPoint(region.CachedBounds.center),
-                                region.CachedBounds.size
-                            );
+                            sb.Bounds = new Bounds(sb.transform.InverseTransformPoint(region.CachedBounds.center),
+                                region.CachedBounds.size);
                             EditorUtility.SetDirty(sb);
                             break;
                         }
@@ -96,6 +88,7 @@ namespace LevelStreaming
                     }
                     else
                         EditorSceneManager.MarkSceneDirty(targetScene);
+
                     break;
 
                 case RegionType.Prefab:
@@ -109,8 +102,7 @@ namespace LevelStreaming
                     if (pb != null)
                     {
                         Undo.RecordObject(pb, "Update Prefab Bound");
-                        pb.Bounds = new Bounds(
-                            pb.transform.InverseTransformPoint(region.CachedBounds.center),
+                        pb.Bounds = new Bounds(pb.transform.InverseTransformPoint(region.CachedBounds.center),
                             region.CachedBounds.size
                         );
                         EditorUtility.SetDirty(pb);
@@ -127,59 +119,87 @@ namespace LevelStreaming
         {
             foreach (var region in Regions)
             {
-                region?.OnValidate(); // <-- auto-fix paths and names
-
-                switch (region.Type)
-                {
-                    case RegionType.Scene:
-                        if (region.SceneRef == null || region.SceneRef.SceneAsset == null) continue;
-
-                        string scenePath = AssetDatabase.GetAssetPath(region.SceneRef.SceneAsset);
-                        var targetScene = EditorSceneManager.GetSceneByPath(scenePath);
-
-                        bool wasOpen = targetScene.isLoaded;
-                        if (!wasOpen)
-                            targetScene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-
-                        foreach (var go in targetScene.GetRootGameObjects())
-                        {
-                            var sb = go.GetComponentInChildren<RegionBound>();
-                            if (sb != null)
-                            {
-                                region.CachedBounds = new Bounds(
-                                    sb.transform.TransformPoint(sb.Bounds.center),
-                                    sb.Bounds.size
-                                );
-                                break;
-                            }
-                        }
-
-                        if (!wasOpen)
-                            EditorSceneManager.CloseScene(targetScene, true);
-                        break;
-
-                    case RegionType.Prefab:
-                        if (region.PrefabRef == null || string.IsNullOrEmpty(region.PrefabRef.AssetGUID)) continue;
-
-                        string prefabPath = AssetDatabase.GUIDToAssetPath(region.PrefabRef.AssetGUID);
-                        if (string.IsNullOrEmpty(prefabPath)) continue;
-
-                        var prefabRoot = PrefabUtility.LoadPrefabContents(prefabPath);
-                        var pb = prefabRoot.GetComponentInChildren<RegionBound>();
-                        if (pb != null)
-                        {
-                            region.CachedBounds = new Bounds(
-                                pb.transform.TransformPoint(pb.Bounds.center),
-                                pb.Bounds.size
-                            );
-                        }
-
-                        PrefabUtility.UnloadPrefabContents(prefabRoot);
-                        break;
-                }
+                RefreshBounds(region);
             }
         }
-        
+
+        public void RefreshBounds(Region region)
+        {
+            if (region == null)
+                return;
+
+            region.OnValidate();
+
+            switch (region.Type)
+            {
+                case RegionType.Scene:
+                {
+                    if (region.SceneRef == null ||
+                        region.SceneRef.SceneAsset == null)
+                        return;
+
+                    string scenePath =
+                        AssetDatabase.GetAssetPath(region.SceneRef.SceneAsset);
+
+                    var targetScene =
+                        EditorSceneManager.GetSceneByPath(scenePath);
+
+                    bool wasOpen = targetScene.isLoaded;
+
+                    if (!wasOpen)
+                        targetScene = EditorSceneManager.OpenScene(
+                            scenePath,
+                            OpenSceneMode.Additive);
+
+                    foreach (var go in targetScene.GetRootGameObjects())
+                    {
+                        var sb = go.GetComponentInChildren<RegionBound>();
+                        if (sb != null)
+                        {
+                            region.CachedBounds =
+                                new Bounds(
+                                    sb.transform.TransformPoint(sb.Bounds.center),
+                                    sb.Bounds.size);
+                            break;
+                        }
+                    }
+
+                    if (!wasOpen)
+                        EditorSceneManager.CloseScene(targetScene, true);
+
+                    break;
+                }
+
+                case RegionType.Prefab:
+                {
+                    if (region.PrefabRef == null ||
+                        string.IsNullOrEmpty(region.PrefabRef.AssetGUID))
+                        return;
+
+                    string prefabPath =
+                        AssetDatabase.GUIDToAssetPath(region.PrefabRef.AssetGUID);
+
+                    var prefabRoot =
+                        PrefabUtility.LoadPrefabContents(prefabPath);
+
+                    var pb = prefabRoot.GetComponentInChildren<RegionBound>();
+
+                    if (pb != null)
+                    {
+                        region.CachedBounds =
+                            new Bounds(
+                                pb.transform.TransformPoint(pb.Bounds.center),
+                                pb.Bounds.size);
+                    }
+
+                    PrefabUtility.UnloadPrefabContents(prefabRoot);
+                    break;
+                }
+            }
+
+            EditorUtility.SetDirty(this);
+        }
+
         [MenuItem("Tools/Streaming/Apply Bounds For All Regions")]
         private static void ApplyBoundsForAllRegions()
         {
@@ -203,7 +223,7 @@ namespace LevelStreaming
 
             Debug.Log("Applied bounds for all regions.");
         }
-        
+
         [MenuItem("Tools/Streaming/Refresh Bounds From Assets")]
         private static void RefreshBoundsMenu()
         {

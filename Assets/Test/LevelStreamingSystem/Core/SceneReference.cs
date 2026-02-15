@@ -23,9 +23,7 @@ namespace LevelStreaming
             set
             {
                 sceneAsset = value;
-                scenePath = sceneAsset != null
-                    ? AssetDatabase.GetAssetPath(sceneAsset)
-                    : string.Empty;
+                scenePath = sceneAsset != null ? AssetDatabase.GetAssetPath(sceneAsset) : string.Empty;
             }
         }
 #endif
