@@ -7,15 +7,10 @@ using System.IO;
 
 public static class StreamingHierarchyMenu
 {
-    private const string CreateMenuPath =
-        "GameObject/Streaming/Create Streaming Level";
+    private const string CreateMenuPath = "GameObject/Streaming/Create Streaming Level";
+    private const string AddExistingMenuPath = "GameObject/Streaming/Add Existing Streaming Level";
 
-    private const string AddExistingMenuPath =
-        "GameObject/Streaming/Add Existing Streaming Level";
-
-    // =========================================================
-    // CREATE NEW STREAMING LEVEL
-    // =========================================================
+  
     [MenuItem(CreateMenuPath, false, 0)]
     private static void CreateStreamingLevel(MenuCommand command)
     {
@@ -24,26 +19,17 @@ public static class StreamingHierarchyMenu
 
         if (regionManager == null)
         {
-            EditorUtility.DisplayDialog(
-                "Missing RegionManager",
-                "No RegionManager found in the active scene.",
-                "OK");
+            EditorUtility.DisplayDialog("Missing RegionManager", "No RegionManager found in the active scene.", "OK");
             return;
         }
 
-        string scenePath = EditorUtility.SaveFilePanelInProject(
-            "Create Streaming Scene",
-            "StreamingLevel",
-            "unity",
-            "Select location for new streaming level");
+        string scenePath = EditorUtility.SaveFilePanelInProject("Create Streaming Scene", "StreamingLevel", "unity", "Select location for new streaming level");
 
         if (string.IsNullOrEmpty(scenePath))
             return;
 
         // Create additive empty scene
-        Scene newScene = EditorSceneManager.NewScene(
-            NewSceneSetup.EmptyScene,
-            NewSceneMode.Additive);
+        Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
 
         if (!EditorSceneManager.SaveScene(newScene, scenePath))
         {
@@ -51,8 +37,7 @@ public static class StreamingHierarchyMenu
             return;
         }
 
-        SceneAsset sceneAsset =
-            AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
+        SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
 
         if (sceneAsset == null)
         {
@@ -69,28 +54,18 @@ public static class StreamingHierarchyMenu
         return Object.FindFirstObjectByType<RegionManager>() != null;
     }
 
-    // =========================================================
-    // ADD EXISTING STREAMING LEVEL
-    // =========================================================
     [MenuItem(AddExistingMenuPath, false, 1)]
     private static void AddExistingStreamingLevel(MenuCommand command)
     {
-        RegionManager regionManager =
-            Object.FindFirstObjectByType<RegionManager>();
+        RegionManager regionManager = Object.FindFirstObjectByType<RegionManager>();
 
         if (regionManager == null)
         {
-            EditorUtility.DisplayDialog(
-                "Missing RegionManager",
-                "No RegionManager found in the active scene.",
-                "OK");
+            EditorUtility.DisplayDialog("Missing RegionManager", "No RegionManager found in the active scene.", "OK");
             return;
         }
 
-        string absolutePath = EditorUtility.OpenFilePanel(
-            "Select Streaming Scene",
-            Application.dataPath,
-            "unity");
+        string absolutePath = EditorUtility.OpenFilePanel("Select Streaming Scene", Application.dataPath, "unity");
 
         if (string.IsNullOrEmpty(absolutePath))
             return;
@@ -101,11 +76,9 @@ public static class StreamingHierarchyMenu
             return;
         }
 
-        string scenePath =
-            "Assets" + absolutePath.Substring(Application.dataPath.Length);
+        string scenePath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
 
-        SceneAsset sceneAsset =
-            AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
+        SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
 
         if (sceneAsset == null)
         {
@@ -122,12 +95,7 @@ public static class StreamingHierarchyMenu
         return Object.FindFirstObjectByType<RegionManager>() != null;
     }
 
-    // =========================================================
-    // SHARED REGISTRATION LOGIC (FIXED)
-    // =========================================================
-    private static void RegisterScene(
-        RegionManager regionManager,
-        SceneAsset sceneAsset)
+    private static void RegisterScene(RegionManager regionManager, SceneAsset sceneAsset)
     {
         string scenePath = AssetDatabase.GetAssetPath(sceneAsset);
 
@@ -142,49 +110,40 @@ public static class StreamingHierarchyMenu
 
         so.Update();
 
-        // Prevent duplicates
         for (int i = 0; i < regionsProp.arraySize; i++)
         {
             var regionProp = regionsProp.GetArrayElementAtIndex(i);
-            var existingPath =
-                regionProp.FindPropertyRelative("scenePath").stringValue;
+
+            var sceneRefProp = regionProp.FindPropertyRelative("sceneRef");
+            if (sceneRefProp == null)
+                continue;
+
+            var scenePathProp = sceneRefProp.FindPropertyRelative("scenePath");
+            if (scenePathProp == null)
+                continue;
+
+            var existingPath = scenePathProp.stringValue;
 
             if (existingPath == scenePath)
             {
-                EditorUtility.DisplayDialog(
-                    "Already Added",
-                    "This streaming level is already registered.",
-                    "OK");
-                return;
+                Debug.LogWarning($"Scene '{scenePath}' already used by another region. " + "This is allowed but ensure bounds differ.");
             }
         }
 
         // Add new region entry
         regionsProp.arraySize++;
 
-        SerializedProperty newRegion =
-            regionsProp.GetArrayElementAtIndex(regionsProp.arraySize - 1);
-
-        newRegion.FindPropertyRelative("type").enumValueIndex =
-            (int)RegionManager.RegionType.Scene;
-
-        newRegion.FindPropertyRelative("regionName").stringValue =
-            Path.GetFileNameWithoutExtension(scenePath);
+        SerializedProperty newRegion = regionsProp.GetArrayElementAtIndex(regionsProp.arraySize - 1);
+        newRegion.FindPropertyRelative("type").enumValueIndex = (int)RegionManager.RegionType.Scene;
+        newRegion.FindPropertyRelative("regionName").stringValue = Path.GetFileNameWithoutExtension(scenePath);
 
         var defaultStrategy = FindDefaultUnloadStrategy();
         if (defaultStrategy != null)
-        {
-            newRegion.FindPropertyRelative("unloadStrategy")
-                .objectReferenceValue = defaultStrategy;
-        }
+            newRegion.FindPropertyRelative("unloadStrategy").objectReferenceValue = defaultStrategy;
 
         so.ApplyModifiedProperties();
-
-        // -----------------------------------------------------
-        // SAFE ASSIGNMENT USING SceneReference API (FIX)
-        // -----------------------------------------------------
-        var region =
-            regionManager.Regions[regionManager.Regions.Count - 1];
+        
+        var region = regionManager.Regions[regionManager.Regions.Count - 1];
 
 #if UNITY_EDITOR
         region.SceneRef.SceneAsset = sceneAsset;
@@ -194,14 +153,10 @@ public static class StreamingHierarchyMenu
 
         Debug.Log($"[Streaming] Registered region: {scenePath}");
     }
-
-    // =========================================================
-    // DEFAULT UNLOAD STRATEGY FINDER
-    // =========================================================
+    
     private static UnloadStrategy FindDefaultUnloadStrategy()
     {
-        string[] guids =
-            AssetDatabase.FindAssets("t:BoundsIntersectionUnloadStrategy");
+        string[] guids = AssetDatabase.FindAssets("t:BoundsIntersectionUnloadStrategy");
 
         foreach (var guid in guids)
         {
@@ -210,8 +165,7 @@ public static class StreamingHierarchyMenu
             if (!path.Contains("LevelStreaming"))
                 continue;
 
-            var strategy =
-                AssetDatabase.LoadAssetAtPath<UnloadStrategy>(path);
+            var strategy = AssetDatabase.LoadAssetAtPath<UnloadStrategy>(path);
 
             if (strategy != null)
                 return strategy;

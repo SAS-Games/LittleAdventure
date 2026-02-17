@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace LevelStreaming
@@ -19,32 +18,36 @@ namespace LevelStreaming
             var meta = _regionManager.GetOrCreateMeta(region);
             if (meta.IsLoading || meta.IsLoaded)
                 return;
-
-            var scene = SceneManager.GetSceneByPath(region.SceneRef.ScenePath);
-            if (scene.isLoaded)
-            {
-                onLoaded?.Invoke(region);
-                return;
-            }
-
+            
             meta.IsLoading = true;
             _ = LoadSceneAsync(region, meta, onLoaded);
         }
 
-        private async Task LoadSceneAsync(RegionManager.Region region, RegionManager.RegionMetaData meta,
-            Action<RegionManager.Region> onLoaded)
+        private async Task LoadSceneAsync(RegionManager.Region region, RegionManager.RegionMetaData meta, Action<RegionManager.Region> onLoaded)
         {
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(region.SceneRef.ScenePath, LoadSceneMode.Additive);
-            asyncLoad.allowSceneActivation = true;
+            string key = region.SceneRef.ScenePath;
 
             try
             {
-                await asyncLoad.ToTask();
+                await _regionManager.Registry.Acquire(
+                    key,
+                    async () =>
+                    {
+                        var scene = SceneManager.GetSceneByPath(key);
+                        if (!scene.isLoaded)
+                            await SceneManager
+                                .LoadSceneAsync(key, LoadSceneMode.Additive)
+                                .ToTask();
+                    },
+                    async () =>
+                    {
+                        await SceneManager.UnloadSceneAsync(key).ToTask();
+                    });
+
+              await UnityAsync.NextFrame();
+
+                meta.IsLoaded = true;
                 onLoaded?.Invoke(region);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to load scene {region.RegionName}: {e}");
             }
             finally
             {
@@ -62,22 +65,16 @@ namespace LevelStreaming
 
         private async Task UnloadSceneAsync(RegionManager.Region region, Action<RegionManager.Region> onUnloaded)
         {
-            AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(region.SceneRef.ScenePath);
-            if (asyncUnload != null)
+            try
             {
-                try
-                {
-                    await asyncUnload.ToTask();
-                    onUnloaded?.Invoke(region);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"Failed to unload scene {region.RegionName}: {e}");
-                }
+                await _regionManager.Registry.Release(region.SceneRef.ScenePath);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
             }
 
-            _regionManager.TryGetMeta(region, out var meta);
-            meta.IsLoading = false;
+            onUnloaded?.Invoke(region);
         }
 
         public bool IsLoading(RegionManager.Region region) => _regionManager.IsRegionLoading(region);

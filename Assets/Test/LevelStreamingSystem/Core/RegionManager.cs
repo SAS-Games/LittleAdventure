@@ -64,10 +64,12 @@ namespace LevelStreaming
         public readonly HashSet<Region> loadedRegions = new();
         public Dictionary<string, Region> RegionLookup { get; private set; }
         private readonly Dictionary<Region, RegionMetaData> _metaByRegion = new();
+        public SharedStreamingRegistry Registry { get; private set; }
 
         void Awake()
         {
             var regionNames = new HashSet<string>();
+            Registry = new SharedStreamingRegistry();
             foreach (var region in Regions)
             {
                 if (string.IsNullOrEmpty(region.RegionName))

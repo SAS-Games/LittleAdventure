@@ -7,16 +7,18 @@ namespace LevelStreaming
 {
     public class PrefabStreamingLoader : IStreamingLoader<RegionManager.Region>
     {
-        private RegionManager _regionManager;
+        private readonly RegionManager _regionManager;
 
         public PrefabStreamingLoader(RegionManager regionManager)
         {
             _regionManager = regionManager;
         }
 
-        public void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded)
+        public void Load(RegionManager.Region region,
+            Action<RegionManager.Region> onLoaded)
         {
             var meta = _regionManager.GetOrCreateMeta(region);
+
             if (meta.IsLoading || meta.IsLoaded)
                 return;
 
@@ -24,23 +26,34 @@ namespace LevelStreaming
             _ = LoadPrefabAsync(region, meta, onLoaded);
         }
 
-        private async Task LoadPrefabAsync(RegionManager.Region region, RegionManager.RegionMetaData meta,
-            Action<RegionManager.Region> onLoaded)
+        private async Task LoadPrefabAsync(RegionManager.Region region, RegionManager.RegionMetaData meta, Action<RegionManager.Region> onLoaded)
         {
-            var handle = region.PrefabRef.LoadAssetAsync<GameObject>();
+            string key = region.PrefabRef.RuntimeKey.ToString();
+
             try
             {
-                GameObject prefab = await handle.Task;
-                if (prefab == null)
-                {
-                    Debug.LogError($"Prefab reference is null for {region.RegionName}");
-                    return;
-                }
+                GameObject prefab = await _regionManager.Registry.Acquire<GameObject>(key,
+                        async () =>
+                        {
+                            var handle =
+                                region.PrefabRef.LoadAssetAsync<GameObject>();
+                            return await handle.Task;
+                        },
+                        async () =>
+                        {
+                            region.PrefabRef.ReleaseAsset();
+                            await Task.CompletedTask;
+                        });
 
-                GameObject instance = Object.Instantiate(prefab);
+                var instance = Object.Instantiate(prefab);
                 instance.name = $"{region.RegionName}_Instance";
                 instance.transform.position = region.CachedBounds.center;
+
                 meta.Instance = instance;
+
+                await UnityAsync.NextFrame();
+
+                meta.IsLoaded = true;
                 onLoaded?.Invoke(region);
             }
             catch (Exception e)
@@ -61,12 +74,13 @@ namespace LevelStreaming
                 meta.Instance = null;
             }
 
-            if (region.PrefabRef != null)
-                region.PrefabRef.ReleaseAsset();
+            _ = _regionManager.Registry.Release(region.PrefabRef.RuntimeKey.ToString());
+
             onUnloaded?.Invoke(region);
         }
 
         public bool IsLoading(RegionManager.Region region) => _regionManager.IsRegionLoading(region);
+
         public bool IsLoaded(RegionManager.Region region) => _regionManager.IsRegionLoaded(region);
     }
 }
