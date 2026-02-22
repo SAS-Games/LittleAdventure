@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f75893d3c6a875e499d1d1dd4462d7db, type: 3}
+  m_Name: Flipbook Data
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: 1227331652, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  - {fileID: 849904134, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  - {fileID: -1883763703, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  - {fileID: -850040969, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  - {fileID: 180185764, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  - {fileID: 1091782796, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  - {fileID: 927951048, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  - {fileID: -729391764, guid: 837342bc78028c24997d4392893995a0, type: 3}
+  defaultSpeed: 8
