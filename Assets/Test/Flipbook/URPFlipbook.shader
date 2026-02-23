@@ -1,4 +1,4 @@
-Shader "Custom/URPFlipbookAtlas"
+Shader "Custom/URPFlipbookAtlas_Optimized"
 {
     Properties
     {
@@ -32,8 +32,6 @@ Shader "Custom/URPFlipbookAtlas"
 
             float4 _FrameUVs[64];
             float4 _FrameInfo[64];
-            // xy = size scale
-            // zw = pivot offset
 
             struct Attributes
             {
@@ -44,57 +42,50 @@ Shader "Custom/URPFlipbookAtlas"
             struct Varyings
             {
                 float4 positionHCS : SV_POSITION;
-                float2 uv : TEXCOORD0;
+                float2 atlasUV : TEXCOORD0;
             };
-
-            Varyings vert (Attributes v)
-            {
-                Varyings o;
-                o.positionHCS = TransformObjectToHClip(v.positionOS.xyz);
-                o.uv = v.uv;
-                return o;
-            }
 
             float2 ApplyAspectAndPivot(float2 uv, float4 info)
             {
                 float2 scale = info.xy;
                 float2 pivotOffset = info.zw;
 
-                // center UV
                 uv -= 0.5;
-
-                // aspect correction (NO stretching)
                 uv /= scale;
-
-                // pivot stabilization
                 uv -= pivotOffset;
-
-                // restore
                 uv += 0.5;
 
                 return uv;
             }
 
-            half4 frag (Varyings i) : SV_Target
+            Varyings vert (Attributes v)
             {
-                if (_FrameCount <= 0)
-                    return 0;
+                Varyings o;
 
+                o.positionHCS =
+                    TransformObjectToHClip(v.positionOS.xyz);
+
+                // ---- Frame selection (NOW PER VERTEX) ----
                 float time = _Time.y * _Speed;
                 int frame = (int)floor(fmod(time, _FrameCount));
 
                 float4 uvRect = _FrameUVs[frame];
                 float4 info   = _FrameInfo[frame];
 
-                float2 uv = ApplyAspectAndPivot(i.uv, info);
+                float2 uv = ApplyAspectAndPivot(v.uv, info);
 
-                // discard outside sprite region
-                if (uv.x < 0 || uv.x > 1 || uv.y < 0 || uv.y > 1)
-                    discard;
+                // atlas mapping
+                o.atlasUV = lerp(uvRect.xy, uvRect.zw, uv);
 
-                float2 atlasUV = lerp(uvRect.xy, uvRect.zw, uv);
+                return o;
+            }
 
-                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, atlasUV);
+            half4 frag (Varyings i) : SV_Target
+            {
+                return SAMPLE_TEXTURE2D(
+                    _MainTex,
+                    sampler_MainTex,
+                    i.atlasUV);
             }
 
             ENDHLSL
