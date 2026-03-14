@@ -1483,7 +1483,7 @@ MonoBehaviour:
       lastKnownName: 
     key: DashSpeed
     whenToExecute: 5
-  - fullName: SAS.StateMachineCharacterController.HorizontalMovementSideWays, AssemblyStateMachineCharacterController,
+  - fullName: SAS.StateMachineCharacterController.HorizontalMovement, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     tag:
       guid: 0
@@ -1501,7 +1501,7 @@ MonoBehaviour:
       lastKnownName: 
     key: 
     whenToExecute: 16
-  - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
+  - fullName: SAS.StateMachineCharacterController.ApplyRotation, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     tag:
       guid: 0
