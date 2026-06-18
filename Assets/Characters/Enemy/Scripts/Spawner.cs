@@ -3,6 +3,7 @@ using SAS.Core.TagSystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 public struct SpawnData
 {

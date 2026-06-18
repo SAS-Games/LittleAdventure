@@ -178,7 +178,7 @@ MonoBehaviour:
       lastKnownName: 
     key: 
     whenToExecute: 4
-  - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
+  - fullName: SAS.StateMachineCharacterController.ApplyRotation, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     tag:
       guid: 0
@@ -715,7 +715,7 @@ MonoBehaviour:
       lastKnownName: 
     key: 
     whenToExecute: 4
-  - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
+  - fullName: SAS.StateMachineCharacterController.ApplyRotation, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     tag:
       guid: 0
@@ -1068,7 +1068,7 @@ MonoBehaviour:
       lastKnownName: 
     key: 
     whenToExecute: 5
-  - fullName: SAS.StateMachineCharacterController.ApplyRotationSideWays, AssemblyStateMachineCharacterController,
+  - fullName: SAS.StateMachineCharacterController.ApplyRotation, AssemblyStateMachineCharacterController,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     tag:
       guid: 0

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Debug = SAS.Debug;
 
 namespace SAS.DialogueSystem
 {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Debug = SAS.Debug;
 
 namespace UnityLibrary
 {

@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
+using Debug = SAS.Debug;
 
 public interface ITypewriterEffect
 {

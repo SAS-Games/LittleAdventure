@@ -4,6 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
+using Debug = SAS.Debug;
 
 [InitializeOnLoad]
 public static class PlayLoadedScene

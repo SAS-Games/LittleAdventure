@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 namespace SAS.WeaponSystem.Components
 {

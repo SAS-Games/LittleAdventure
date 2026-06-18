@@ -79,7 +79,7 @@ namespace SAS.StringTest
                 {
                     // Duplicate check
                     if (stringOptions.Entries.Exists(e =>
-                        e.name == renameBuffer && e.guid != currentGUID))
+                            e.name == renameBuffer && e.guid != currentGUID))
                     {
                         EditorUtility.DisplayDialog("Duplicate Key Name",
                             $"A key with the name '{renameBuffer}' already exists.\nPlease choose a unique name.",
@@ -90,7 +90,9 @@ namespace SAS.StringTest
                     // Apply rename
                     Undo.RecordObject(stringOptions, "Rename String Option");
                     var entry = stringOptions.Entries.Find(e => e.guid == currentGUID);
-                    if (entry != null) entry.name = renameBuffer;
+                    if (entry != null)
+                        entry.name = renameBuffer;
+                    stringOptions.RebuildCache();
                     EditorUtility.SetDirty(stringOptions);
                     AssetDatabase.SaveAssets();
                     isRenaming = false;
@@ -154,8 +156,8 @@ namespace SAS.StringTest
             // Add button
             if (GUI.Button(addRect, "+"))
             {
-                string newKeyName = ObjectNames.GetUniqueName(
-                    stringOptions.Entries.ConvertAll(e => e.name).ToArray(), "NewKey");
+                string newKeyName =
+                    ObjectNames.GetUniqueName(stringOptions.Entries.ConvertAll(e => e.name).ToArray(), "NewKey");
 
                 Undo.RecordObject(stringOptions, "Add String Option");
                 stringOptions.AddEntry(newKeyName);

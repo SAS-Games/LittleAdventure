@@ -1,5 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
+using Debug = SAS.Debug;
 
 namespace SAS.StateMachineGraph.Utilities
 {

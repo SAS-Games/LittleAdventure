@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Camera: {fileID: 0}
 --- !u!96 &260459085985770416
 TrailRenderer:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -199,6 +199,8 @@ TrailRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -220,9 +222,11 @@ TrailRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Time: 0.5
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -281,7 +285,6 @@ TrailRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 0.1
-  m_MaskInteraction: 0
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
@@ -332,14 +335,13 @@ MonoBehaviour:
   m_FreezeZAxis: 1
   m_StateMachineControllers:
   - {fileID: 11400000, guid: f15cd9968dbf8bc4b8bb8387504d92b1, type: 2}
-  - {fileID: 11400000, guid: 98d6369dc3ea35a4e89ccb11530f7851, type: 2}
   m_GroundDetection: {fileID: 11400000, guid: 6fa4b6cf2d244444c9cb2b3e7d9ee462, type: 2}
   <WallLayer>k__BackingField:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   <ClimbableLayer>k__BackingField:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   m_GroundLayer:
     serializedVersion: 2
     m_Bits: 1

@@ -2,6 +2,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Debug = SAS.Debug;
 
 public class MemoryWatchdog : MonoBehaviour
 {

@@ -1,8 +1,7 @@
+using System.Linq;
 using UnityEngine;
 using UniRx;
 using SAS.Core.TagSystem;
-using Debug = SAS.Debug;
-using ZLinq;
 
 public abstract class ProxyViewBinderBase<TView> : MonoBehaviour, MetaLocator.IHandler where TView : class, IProxyView
 {
@@ -20,14 +19,13 @@ public abstract class ProxyViewBinderBase<TView> : MonoBehaviour, MetaLocator.IH
         else
         {
             var views = metaLocator.GetAll<TView>(this.GetTag());
-            matchedView = views.AsValueEnumerable()
-                .FirstOrDefault(p => p.ProxyControlID == _proxyControlID);
+            matchedView = views.FirstOrDefault(p => p.ProxyControlID == _proxyControlID);
         }
 
         if (matchedView != null)
             Bind(matchedView, _disposable);
         else
-            Debug.LogWarning($"[{nameof(ProxyViewBinderBase<TView>)}<{typeof(TView).Name}>] No view found with tag '{this.GetTag()}' and ControlID '{_proxyControlID}' on '{gameObject.name}'", "ProxyViewBinder");
+            Debug.LogWarning($"[{nameof(ProxyViewBinderBase<TView>)}<{typeof(TView).Name}>] No view found with tag '{this.GetTag()}' and ControlID '{_proxyControlID}' on '{gameObject.name}'");
     }
 
     public void OnMetaLoaded(MetaLocator metaLocator) { }

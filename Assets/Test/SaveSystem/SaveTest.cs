@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 public class SaveTest : MonoBehaviour
 {

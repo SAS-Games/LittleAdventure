@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using ZLinq;
 
 public interface IReady
 {
@@ -33,7 +33,7 @@ public class ReadyDependencyGroup : MonoBehaviour, IReady
     {
         while (true)
         {
-            if (_dependencies.AsValueEnumerable().All(dep => dep is { IsReady: true }))
+            if (_dependencies.All(dep => dep is { IsReady: true }))
             {
                 if (!_readyTCS.Task.IsCompleted)
                     _readyTCS.SetResult(true);

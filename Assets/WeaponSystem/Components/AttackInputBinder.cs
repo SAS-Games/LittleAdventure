@@ -9,7 +9,7 @@ namespace SAS.WeaponSystem
         {
             base.Init();
             var fireCommand = new FireCommand(Data.AttackInputKey, _weapon, GetComponentInParent<FSMCharacterController>());
-            GetComponentInParent<InputHandler>().CreateInputCommand(Data.AttackInputKey, fireCommand, true);
+            GetComponentInParent<InputHandler>().RegisterInputCommand(Data.AttackInputKey, fireCommand, true);
         }
     }
 }

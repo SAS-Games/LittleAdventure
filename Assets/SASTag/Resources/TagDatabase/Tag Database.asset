@@ -23,3 +23,7 @@ MonoBehaviour:
     guid: -236015508
   - name: Activable
     guid: -662547106
+  - name: Player
+    guid: 1001
+  - name: CameraTarget
+    guid: 1003

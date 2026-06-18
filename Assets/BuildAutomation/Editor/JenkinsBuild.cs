@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using UnityEditor.Build.Reporting;
+using Debug = SAS.Debug;
 
 public class JenkinsBuild
 {

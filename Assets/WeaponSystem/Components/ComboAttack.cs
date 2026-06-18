@@ -1,5 +1,6 @@
 using SAS.StateMachineGraph;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 namespace SAS.WeaponSystem.Components
 {

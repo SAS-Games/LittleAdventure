@@ -1,8 +1,9 @@
-﻿using SAS.Core;
+using SAS.Core;
 using SAS.Core.TagSystem;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Debug = SAS.Debug;
 
 public class PlayerSetupController : Singleton<PlayerSetupController>
 {

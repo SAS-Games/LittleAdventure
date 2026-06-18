@@ -17,7 +17,7 @@ namespace SAS.StringTest
 
         [NonSerialized] private bool _isResolved;
 
-        public string Name
+        public string Value
         {
             get
             {
@@ -53,7 +53,7 @@ namespace SAS.StringTest
 
         public override string ToString()
         {
-            return Name ?? string.Empty;
+            return Value ?? string.Empty;
         }
 
 #if UNITY_EDITOR

@@ -1,5 +1,6 @@
 using SAS.WeaponSystem.Components;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 namespace SAS.WeaponSystem
 {

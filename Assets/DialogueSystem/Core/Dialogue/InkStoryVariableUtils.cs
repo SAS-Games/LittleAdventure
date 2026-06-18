@@ -1,5 +1,6 @@
 using System;
 using Ink.Runtime;
+using Debug = SAS.Debug;
 
 namespace SAS.DialogueSystem
 {

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feab4214f3708d14d9777d5d8488b166, type: 3}
+  m_Name: Jump Start Animation Action Config
+  m_EditorClassIdentifier: 
+  actionId:
+    guid: 17832147-6ea7-43fa-97ea-5125c2d933c9
+    lastKnownName: 
+    resolvedName: Jump
+    sourceOptions: {fileID: 11400000, guid: 9318125a550f7bc4094e241ff75c45fa, type: 2}
+  animatorStateName: Jump_Start
+  blendTime: 0.08
+  layer: 0
+  category: 1
+  canBeInterrupted: 1
+  isLooping: 0
+  lockDuration: 1

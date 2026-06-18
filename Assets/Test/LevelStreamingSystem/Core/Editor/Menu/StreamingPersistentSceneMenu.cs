@@ -3,6 +3,7 @@ using LevelStreaming;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 public static class StreamingPersistentSceneMenu
 {

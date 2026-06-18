@@ -4,6 +4,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
+using Debug = SAS.Debug;
 
 [CustomEditor(typeof(TimelineCrossSceneBinder))]
 public class TimelineCrossSceneBinderEditor : Editor

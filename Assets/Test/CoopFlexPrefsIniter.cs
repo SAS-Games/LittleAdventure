@@ -1,5 +1,6 @@
 using SAS.Core.TagSystem;
 using UnityEngine;
+using Debug = SAS.Debug;
 
 public static class FlexPrefsConfig
 {
