@@ -1,4 +1,3 @@
-using System;
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph;
 using UnityEngine;

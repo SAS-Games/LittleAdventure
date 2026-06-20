@@ -12,12 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a18d01284f79be9419484383e8aa0475, type: 3}
   m_Name: DeviceLabelMap
   m_EditorClassIdentifier: 
-  m_StringOptions: {fileID: 11400000, guid: 0f6eb8eb544901146983bff55af916c7, type: 2}
+  m_StringOptions: {fileID: 0}
   m_Entries:
-  - <Key>k__BackingField: Interact
-    m_DefaultLabel: '[E]'
+  - m_Key:
+      guid: 9ad38df1-1fc8-4362-a396-7c83bba7c8cf
+      lastKnownName: 
+      resolvedName: '[I]'
+      sourceOptions: {fileID: 11400000, guid: e0145872231401148a241ea86ef0870b, type: 2}
+    m_DefaultLabel:
+      guid: 9ad38df1-1fc8-4362-a396-7c83bba7c8cf
+      lastKnownName: 
+      resolvedName: '[I]'
+      sourceOptions: {fileID: 11400000, guid: e0145872231401148a241ea86ef0870b, type: 2}
     m_DeviceOverrides:
     - Device: 3
-      Label: '[A]'
+      Label:
+        guid: df169a92-0a5b-4dd4-a756-1803a73ec233
+        lastKnownName: 
+        resolvedName: '[X]'
+        sourceOptions: {fileID: 11400000, guid: e0145872231401148a241ea86ef0870b, type: 2}
     - Device: 2
-      Label: '[X]'
+      Label:
+        guid: df169a92-0a5b-4dd4-a756-1803a73ec233
+        lastKnownName: 
+        resolvedName: '[X]'
+        sourceOptions: {fileID: 11400000, guid: e0145872231401148a241ea86ef0870b, type: 2}

@@ -61,7 +61,6 @@ GameObject:
   - component: {fileID: 4242162623136758871}
   - component: {fileID: 982385090900151853}
   - component: {fileID: -5799533150554955070}
-  - component: {fileID: -1448693804168666403}
   - component: {fileID: -8360673312945006277}
   - component: {fileID: -4054211711262245944}
   - component: {fileID: 5115065603554025157}
@@ -75,6 +74,8 @@ GameObject:
   - component: {fileID: -5229356649627402190}
   - component: {fileID: -5665429994897890304}
   - component: {fileID: 324327762719006952}
+  - component: {fileID: -3184010990059081921}
+  - component: {fileID: -1448693804168666403}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -692,21 +693,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b59101962b2a847bacbccffa3a7018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-1448693804168666403
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4622055182962459638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddd3c3a7ce805f743bc34bbd0358ce34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_DashStateName: Dash
-  m_AttackStateName: Attack
-  m_DashInputName: Dash
 --- !u!114 &-8360673312945006277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -926,6 +912,33 @@ MonoBehaviour:
       resolvedName: PlayerName
       sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
       lastKnownName: PlayerName
+--- !u!114 &-3184010990059081921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f7b8fa43c9be245b1baee197975717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AssemblyStateMachineCharacterController::SAS.StateMachineCharacterController.DashInputBinding
+--- !u!114 &-1448693804168666403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4622055182962459638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddd3c3a7ce805f743bc34bbd0358ce34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DashStateName: Dash
+  m_AttackStateName: Attack
+  m_DashInputName: Dash
 --- !u!1 &5867608038117725257
 GameObject:
   m_ObjectHideFlags: 0

@@ -440,5 +440,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c16ebee80f1d742abea5885012c48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TextKey: Interact
+  m_TextKey:
+    guid: 9ad38df1-1fc8-4362-a396-7c83bba7c8cf
+    lastKnownName: 
+    resolvedName: '[I]'
+    sourceOptions: {fileID: 11400000, guid: e0145872231401148a241ea86ef0870b, type: 2}
   m_DeviceInputLabelMap: {fileID: 11400000, guid: 961d5df124533914c969ecf2975d5000, type: 2}

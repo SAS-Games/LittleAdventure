@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b410fbaff14c197479bdcc48d63707de, type: 3}
-  m_Name: DeviceInputLabelMapOptions
-  m_EditorClassIdentifier: 
-  <Values>k__BackingField:
-  - Interact
+  m_Script: {fileID: 11500000, guid: d6e26ab91d424f246a3126d532580446, type: 3}
+  m_Name: DebugRuntimeConfig
+  m_EditorClassIdentifier: DevUtilities::DebugRuntimeConfig
+  pauseOnEnable: 0
+  logLevel: -1
+  allowedTags: []

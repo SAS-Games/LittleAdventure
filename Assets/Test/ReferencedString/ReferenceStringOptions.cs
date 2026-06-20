@@ -5,6 +5,7 @@ using UnityEngine;
 namespace SAS.StringTest
 {
     [CreateAssetMenu(menuName = "SAS/ReferenceString List")]
+    [LockedInspector]
     public class ReferenceStringOptions : ScriptableObject
     {
         [Serializable]

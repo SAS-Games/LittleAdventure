@@ -1,5 +1,6 @@
 using SAS.StateMachineCharacterController;
 using SAS.Core.TagSystem;
+using SAS.StringTest;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,7 +8,7 @@ using UnityEngine.InputSystem;
 public class PlayerInputLabelPresenter : MonoBehaviour
 {
     [FieldRequiresSelf] private TMP_Text _tmp_Text;
-    [SerializeField, StringDropdown("DeviceInputLabelMapOptions")] private string m_TextKey;
+    [SerializeField] private ReferenceString m_TextKey;
     [SerializeField] private DeviceInputLabelMap m_DeviceInputLabelMap;
     private string _text;
     private void Awake()

@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(MonoBehaviour), true)]
+[CustomEditor(typeof(UnityEngine.Object), true)]
 [CanEditMultipleObjects]
 public class LockedInspectorEditor : Editor
 {

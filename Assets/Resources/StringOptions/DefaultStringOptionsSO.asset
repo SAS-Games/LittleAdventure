@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b410fbaff14c197479bdcc48d63707de, type: 3}
+  m_Script: {fileID: 11500000, guid: 50a3c2995cc6edf46a9d3b6a73a5fb4d, type: 3}
   m_Name: DefaultStringOptionsSO
-  m_EditorClassIdentifier: 
-  <Values>k__BackingField:
-  - Ab
-  - Cd
+  m_EditorClassIdentifier: Assembly-CSharp::SAS.StringTest.ReferenceStringOptions
+  entries:
+  - name: '[E]'
+    guid: 9ad38df1-1fc8-4362-a396-7c83bba7c8cf
+  - name: '[X]'
+    guid: df169a92-0a5b-4dd4-a756-1803a73ec233

@@ -30,6 +30,8 @@ namespace SAS.StringTest
                 return resolvedName;
             }
         }
+        
+        public string Guid => guid;
 
         private string ResolveName()
         {
