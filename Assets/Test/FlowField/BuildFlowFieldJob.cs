@@ -4,7 +4,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 
 [BurstCompile]
-public struct FlowDirectionJob : IJobParallelFor
+public struct BuildFlowFieldJob : IJobParallelFor
 {
     public int width;
     public int height;
