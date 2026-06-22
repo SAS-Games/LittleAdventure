@@ -9,15 +9,15 @@ public struct FlowDirectionJob : IJobParallelFor
     public int width;
     public int height;
 
-    [ReadOnly] 
-    [NativeDisableParallelForRestriction] public NativeArray<ushort> integration;
-    public NativeArray<float2> flow;
+    [ReadOnly] [NativeDisableParallelForRestriction] public NativeArray<ushort> integration;
+    [ReadOnly] [NativeDisableParallelForRestriction] public NativeArray<byte> cost;
+    [WriteOnly] public NativeArray<float2> flow;
 
     public void Execute(int index)
     {
-        ushort currentCost = integration[index];
+        ushort currentIntegration = integration[index];
 
-        if (currentCost == ushort.MaxValue)
+        if (currentIntegration == ushort.MaxValue)
         {
             flow[index] = float2.zero;
             return;
@@ -26,7 +26,7 @@ public struct FlowDirectionJob : IJobParallelFor
         int x = index % width;
         int y = index / width;
 
-        ushort bestCost = currentCost;
+        ushort bestIntegration = currentIntegration;
         float2 bestDir = float2.zero;
 
         for (int j = -1; j <= 1; j++)
@@ -42,20 +42,28 @@ public struct FlowDirectionJob : IJobParallelFor
                 if ((uint)nx >= (uint)width || (uint)ny >= (uint)height)
                     continue;
 
-                int nIndex = nx + ny * width;
-                ushort nCost = integration[nIndex];
+                int neighborIndex = nx + ny * width;
+                if (cost[neighborIndex] == byte.MaxValue)
+                    continue;
 
-                if (nCost < bestCost)
+                if (i != 0 && j != 0)
                 {
-                    bestCost = nCost;
+                    int sideA = (x + i) + y * width;
+                    int sideB = x + (y + j) * width;
+
+                    if (cost[sideA] == byte.MaxValue || cost[sideB] == byte.MaxValue)
+                        continue;
+                }
+
+                ushort neighborIntegration = integration[neighborIndex];
+                if (neighborIntegration < bestIntegration)
+                {
+                    bestIntegration = neighborIntegration;
                     bestDir = new float2(i, j);
                 }
             }
         }
 
-        if (math.lengthsq(bestDir) > 0f)
-            flow[index] = math.normalize(bestDir);
-        else
-            flow[index] = float2.zero;
+        flow[index] = math.normalizesafe(bestDir);
     }
 }

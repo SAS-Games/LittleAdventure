@@ -1,16 +1,12 @@
-using UnityEngine;
+using Unity.Mathematics;
 
-public class FlowFieldBuilder : MonoBehaviour
+public static class FlowFieldBuilder
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public static FlowField Build(FlowFieldAsset asset, int2 targetCell)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        FlowFieldGrid grid = FlowFieldGridFactory.Create(asset);
+        FlowField flowField = new FlowField(grid);
+        flowField.Build(targetCell);
+        return flowField;
     }
 }
