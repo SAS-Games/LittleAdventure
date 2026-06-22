@@ -41,7 +41,7 @@ public sealed class FlowField
 
     private void BuildFlowDirections()
     {
-        var job = new FlowDirectionJob
+        var job = new BuildFlowFieldJob
         {
             width = Grid.Width,
             height = Grid.Height,
