@@ -19,7 +19,7 @@ public class TargetRegistry : ITargetRegistry
     {
     }
 
-    void IInitializable.OnCreated()
+    void IInitializable.OnCreated(IContextBinder contextBinder)
     {
         _targets = new HashSet<ITarget>();
     }

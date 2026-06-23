@@ -36,6 +36,7 @@ namespace SAS.DialogueSystem
         public Action OnExitDialogueMode;
         public Action OnSkipRequested;
         private GameObject _initiator;
+        private IContextBinder _contextBinder;
 
         private void Awake()
         {
@@ -146,6 +147,16 @@ namespace SAS.DialogueSystem
         private void OnApplicationQuit()
         {
             _dialogueGlobalVariables?.SaveVariables();
+        }
+
+        public void OnCreated(IContextBinder contextBinder)
+        {
+            _contextBinder = contextBinder;
+        }
+
+        private void OnDestroy()
+        {
+            _contextBinder.Remove(this);
         }
     }
 }

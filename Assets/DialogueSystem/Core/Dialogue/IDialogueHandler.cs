@@ -1,7 +1,7 @@
 ﻿using SAS.Core.TagSystem;
 using UnityEngine;
 
-public interface IDialogueHandler : IBindable
+public interface IDialogueHandler : IBindable, IInitializable
 {
     void EnterDialogueMode(TextAsset inkJSON, GameObject initiator);
     bool DialogueIsPlaying { get; }

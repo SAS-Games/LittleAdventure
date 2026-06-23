@@ -70,13 +70,13 @@ public class PlayerCheckpointManager : ICheckpointManager
         (contextBinder as Component).Initialize(this);
     }
 
-    void IInitializable.OnCreated()
+    void IInitializable.OnCreated(IContextBinder contextBinder)
     {
         _sceneGroupLoadedEventBinding = new EventBinding<SceneGroupLoadedEvent>(OnSceneGroupLoaded);
         EventBus<SceneGroupLoadedEvent>.Register(_sceneGroupLoadedEventBinding);
     }
 
-    void IDestroyable.OnDestroyed()
+    void IDestroyable.OnDestroyed(IContextBinder contextBinder)
     {
         EventBus<SceneGroupLoadedEvent>.Deregister(_sceneGroupLoadedEventBinding);
     }
