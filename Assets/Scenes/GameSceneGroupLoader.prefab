@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 3284700038415705425}
     - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_SceneGroupName
-      value: GameScene
+      value: BattleArena
       objectReference: {fileID: 0}
     - target: {fileID: 6947727001977348924, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_SetActiveScene
@@ -42,15 +42,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -12.62053
       objectReference: {fileID: 0}
     - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 6.80986
       objectReference: {fileID: 0}
     - target: {fileID: 8404058838502239354, guid: 0dc15f9804bb51044b59dfd315ee6efb, type: 3}
       propertyPath: m_LocalRotation.w

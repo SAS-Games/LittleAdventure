@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Attack->To->LocoMotion
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -6736576259512663916}
   m_TargetState: {fileID: 7383936760125653877}
   m_HasExitTime: 0
@@ -35,6 +37,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 0
@@ -59,6 +63,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Climb->To->Jump Ascending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -8002722094428037949}
   m_TargetState: {fileID: -1404876738358820697}
   m_HasExitTime: 0
@@ -82,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Climb
   m_EditorClassIdentifier: 
-  m_Position: {x: 1412, y: 76, z: 0}
+  m_Position: {x: 1423, y: 234, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.ClimbNavigation, AssemblyStateMachineCharacterController,
@@ -111,6 +117,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Any State->To->Dead
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7687902253306019718}
   m_TargetState: {fileID: -2937460947493084407}
   m_HasExitTime: 0
@@ -134,6 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Attack
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: -6736576259512663916}
   m_HasExitTime: 0
@@ -233,6 +243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Descending->To->Dash
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7614610658286386800}
   m_TargetState: {fileID: 8166284527128004876}
   m_HasExitTime: 0
@@ -262,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: 
-  m_Position: {x: 849, y: 245, z: 0}
+  m_Position: {x: 860, y: 403, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: AttackAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -288,6 +300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Jump Ascending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: -1404876738358820697}
   m_HasExitTime: 0
@@ -318,6 +332,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Slide
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: 6064152050340346171}
   m_HasExitTime: 0
@@ -342,6 +358,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Descending->To->Climb
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7614610658286386800}
   m_TargetState: {fileID: -8002722094428037949}
   m_HasExitTime: 0
@@ -371,6 +389,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Descending->To->Wall Jump
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7614610658286386800}
   m_TargetState: {fileID: 2214813629074919176}
   m_HasExitTime: 0
@@ -400,6 +420,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Ascending->To->Climb
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -1404876738358820697}
   m_TargetState: {fileID: -8002722094428037949}
   m_HasExitTime: 0
@@ -429,7 +451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Dizzy
   m_EditorClassIdentifier: 
-  m_Position: {x: 850, y: 148, z: 0}
+  m_Position: {x: 861, y: 306, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.StopMovement, AssemblyStateMachineCharacterController,
@@ -464,6 +486,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Climb->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -8002722094428037949}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 0
@@ -488,6 +512,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Slide->To->LocoMotion
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 6064152050340346171}
   m_TargetState: {fileID: 7383936760125653877}
   m_HasExitTime: 0
@@ -512,6 +538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: SpikeHit->To->LocoMotion
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -5089230356892214570}
   m_TargetState: {fileID: 7383936760125653877}
   m_HasExitTime: 0
@@ -536,6 +564,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Attack->To->Dash
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -6736576259512663916}
   m_TargetState: {fileID: 8166284527128004876}
   m_HasExitTime: 0
@@ -565,7 +595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Dead
   m_EditorClassIdentifier: 
-  m_Position: {x: 847, y: 342, z: 0}
+  m_Position: {x: 858, y: 500, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineGraph.Utilities.DeactivateCached, AssemblyStateMachine,
@@ -609,6 +639,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Ascending->To->Dash
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -1404876738358820697}
   m_TargetState: {fileID: 8166284527128004876}
   m_HasExitTime: 0
@@ -638,6 +670,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Climb->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -8002722094428037949}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 0
@@ -661,6 +695,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Dash->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 8166284527128004876}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 1
@@ -753,7 +789,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Position: {x: 300, y: 50, z: 0}
   m_PositionAsUpNode: {x: 561, y: 343, z: 0}
-  m_AnyStatePosition: {x: 582, y: 353, z: 0}
+  m_AnyStatePosition: {x: 593, y: 511, z: 0}
   m_ParentStateMachine: {fileID: 0}
   m_ChildStateMachines:
   - {fileID: 822233229310876646}
@@ -768,6 +804,9 @@ MonoBehaviour:
   - {fileID: -2937460947493084407}
   - {fileID: 383630611520043951}
   - {fileID: 5723879210972037197}
+  m_EntryNode: {fileID: -6574788272434096790, guid: 00000000000002000000000000000000, type: 1081346}
+  m_ExitNode: {fileID: -117545137482040287, guid: 00000000000002000000000000000000, type: 1081346}
+  m_Transitions: []
 --- !u!114 &-249183701446816079
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -780,6 +819,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Descending->To->Jump Ascending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7614610658286386800}
   m_TargetState: {fileID: -1404876738358820697}
   m_HasExitTime: 0
@@ -871,6 +912,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Descending->To->LocoMotion
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7614610658286386800}
   m_TargetState: {fileID: 7383936760125653877}
   m_HasExitTime: 0
@@ -895,6 +938,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Wall Jump->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 2214813629074919176}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 1
@@ -913,7 +958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: RespawnWait
   m_EditorClassIdentifier: 
-  m_Position: {x: 846, y: 438, z: 0}
+  m_Position: {x: 857, y: 596, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.InvokeCharacterDiedEvent, Assembly-CSharp,
@@ -938,6 +983,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Dash->To->LocoMotion
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 8166284527128004876}
   m_TargetState: {fileID: 7383936760125653877}
   m_HasExitTime: 1
@@ -962,7 +1009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ed43b1bea1e69d49a73ea66f6732994, type: 3}
   m_Name: InAir
   m_EditorClassIdentifier: 
-  m_Position: {x: 1403, y: 173, z: 0}
+  m_Position: {x: 1414, y: 331, z: 0}
   m_PositionAsUpNode: {x: 700, y: 100, z: 0}
   m_AnyStatePosition: {x: 300, y: 50, z: 0}
   m_ParentStateMachine: {fileID: -1294538683894811666}
@@ -971,6 +1018,9 @@ MonoBehaviour:
   - {fileID: -1404876738358820697}
   - {fileID: -7614610658286386800}
   - {fileID: 2214813629074919176}
+  m_EntryNode: {fileID: 1703707672350306559, guid: 00000000000002000000000000000000, type: 1081346}
+  m_ExitNode: {fileID: 7571063821402726987, guid: 00000000000002000000000000000000, type: 1081346}
+  m_Transitions: []
 --- !u!114 &1639039243066888369
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -983,6 +1033,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Climb
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: -8002722094428037949}
   m_HasExitTime: 0
@@ -1012,6 +1064,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Descending->To->Jump Ascending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7614610658286386800}
   m_TargetState: {fileID: -1404876738358820697}
   m_HasExitTime: 0
@@ -1091,6 +1145,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Dead->To->RespawnWait
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -2937460947493084407}
   m_TargetState: {fileID: 383630611520043951}
   m_HasExitTime: 0
@@ -1109,6 +1165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Interact
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: 5723879210972037197}
   m_HasExitTime: 0
@@ -1132,6 +1190,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Dash
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: 8166284527128004876}
   m_HasExitTime: 0
@@ -1161,6 +1221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: LocoMotion->To->Wall Jump
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7383936760125653877}
   m_TargetState: {fileID: 2214813629074919176}
   m_HasExitTime: 0
@@ -1190,6 +1252,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Ascending->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -1404876738358820697}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 0
@@ -1214,7 +1278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Interact
   m_EditorClassIdentifier: 
-  m_Position: {x: 1123, y: 72, z: 0}
+  m_Position: {x: 1134, y: 230, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.VerticalPull, AssemblyStateMachineCharacterController,
@@ -1258,7 +1322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Slide
   m_EditorClassIdentifier: 
-  m_Position: {x: 1407, y: 311, z: 0}
+  m_Position: {x: 1418, y: 469, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.Slide, AssemblyStateMachineCharacterController,
@@ -1293,6 +1357,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Interact->To->LocoMotion
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 5723879210972037197}
   m_TargetState: {fileID: 7383936760125653877}
   m_HasExitTime: 0
@@ -1316,6 +1382,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Climb->To->New State
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -8002722094428037949}
   m_TargetState: {fileID: 8439081178952667331}
   m_HasExitTime: 0
@@ -1340,7 +1408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: LocoMotion
   m_EditorClassIdentifier: 
-  m_Position: {x: 1123, y: 175, z: 0}
+  m_Position: {x: 1134, y: 333, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.ResetDashing, AssemblyStateMachineCharacterController,
@@ -1436,7 +1504,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Any State
   m_EditorClassIdentifier: 
-  m_Position: {x: 582, y: 353, z: 0}
+  m_Position: {x: 593, y: 511, z: 0}
   m_Tag: 
   m_StateActions: []
   m_Transitions:
@@ -1453,6 +1521,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Ascending->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -1404876738358820697}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 1
@@ -1471,7 +1541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: Dash
   m_EditorClassIdentifier: 
-  m_Position: {x: 1123, y: 311, z: 0}
+  m_Position: {x: 1134, y: 469, z: 0}
   m_Tag: 
   m_StateActions:
   - fullName: SAS.StateMachineCharacterController.DashMovement, AssemblyStateMachineCharacterController,
@@ -1552,7 +1622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7557f759ffd418e4bab479f7b35953ed, type: 3}
   m_Name: ClimbOnTop
   m_EditorClassIdentifier: 
-  m_Position: {x: 1414, y: -12, z: 0}
+  m_Position: {x: 1425, y: 146, z: 0}
   m_Tag: 
   m_StateActions: []
   m_Transitions: []
@@ -1568,6 +1638,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Jump Ascending->To->Jump Descending
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -1404876738358820697}
   m_TargetState: {fileID: -7614610658286386800}
   m_HasExitTime: 0

@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9201150582241018908
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e8e5e4f8dad46dcba4340a6fa36aca3, type: 3}
+  m_Name: Entry
+  m_EditorClassIdentifier: AssemblyStateMachine::SAS.StateMachineGraph.EntryStateModel
+  m_Position: {x: 406, y: 151, z: 0}
+  m_Transitions:
+  - {fileID: 3078806028862194424}
 --- !u!114 &-8336790706424586432
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -91,6 +106,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Attack->To->Attack
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7844268869418787031}
   m_TargetState: {fileID: -7844268869418787031}
   m_HasExitTime: 0
@@ -168,6 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Dead->To->RespawnWait
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7533454229699255719}
   m_TargetState: {fileID: -2791052933752531847}
   m_HasExitTime: 0
@@ -186,12 +205,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Spawn->To->Idle
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -8336790706424586432}
   m_TargetState: {fileID: 7052276408839107754}
   m_HasExitTime: 0
   m_ExitTime: 0
   m_WaitForAwaitableActionsToComplete: 1
   m_Conditions: []
+--- !u!114 &-5116381843343637844
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b300d3da8982460aa2a88cd5ea42a681, type: 3}
+  m_Name: Exit
+  m_EditorClassIdentifier: AssemblyStateMachine::SAS.StateMachineGraph.ExitStateModel
+  m_Position: {x: 1085, y: 359, z: 0}
+  m_Transitions: []
 --- !u!114 &-4580879690024210489
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -204,6 +239,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Chase->To->Idle
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 2377262099474163529}
   m_TargetState: {fileID: 7052276408839107754}
   m_HasExitTime: 0
@@ -228,6 +265,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: RespawnWait->To->Spawn
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -2791052933752531847}
   m_TargetState: {fileID: -8336790706424586432}
   m_HasExitTime: 0
@@ -251,6 +290,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Idle->To->Attack
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7052276408839107754}
   m_TargetState: {fileID: -7844268869418787031}
   m_HasExitTime: 0
@@ -309,6 +350,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Attack->To->Idle
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7844268869418787031}
   m_TargetState: {fileID: 7052276408839107754}
   m_HasExitTime: 0
@@ -359,6 +402,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Idle->To->Chase
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7052276408839107754}
   m_TargetState: {fileID: 2377262099474163529}
   m_HasExitTime: 0
@@ -395,6 +440,9 @@ MonoBehaviour:
   - {fileID: -7533454229699255719}
   - {fileID: -2791052933752531847}
   - {fileID: -8336790706424586432}
+  m_EntryNode: {fileID: -9201150582241018908}
+  m_ExitNode: {fileID: -5116381843343637844}
+  m_Transitions: []
 --- !u!114 &2377262099474163529
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -431,6 +479,26 @@ MonoBehaviour:
   m_Transitions:
   - {fileID: -4580879690024210489}
   - {fileID: 5920975138336599626}
+--- !u!114 &3078806028862194424
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
+  m_Name: Entry->To->Spawn
+  m_EditorClassIdentifier: AssemblyStateMachine::SAS.StateMachineGraph.StateTransitionModel
+  m_SourceNode: {fileID: -9201150582241018908}
+  m_TargetNode: {fileID: -8336790706424586432}
+  m_SourceState: {fileID: 0}
+  m_TargetState: {fileID: -8336790706424586432}
+  m_HasExitTime: 0
+  m_ExitTime: 0
+  m_WaitForAwaitableActionsToComplete: 1
+  m_Conditions: []
 --- !u!114 &3312572487452506603
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -443,6 +511,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Attack->To->Chase
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: -7844268869418787031}
   m_TargetState: {fileID: 2377262099474163529}
   m_HasExitTime: 0
@@ -467,6 +537,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Chase->To->Attack
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 2377262099474163529}
   m_TargetState: {fileID: -7844268869418787031}
   m_HasExitTime: 0
@@ -562,6 +634,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9f0dc7669bda5a4eb7472cb2dc10cb7, type: 3}
   m_Name: Any State->To->Dead
   m_EditorClassIdentifier: 
+  m_SourceNode: {fileID: 0}
+  m_TargetNode: {fileID: 0}
   m_SourceState: {fileID: 7862282023899092741}
   m_TargetState: {fileID: -7533454229699255719}
   m_HasExitTime: 0
