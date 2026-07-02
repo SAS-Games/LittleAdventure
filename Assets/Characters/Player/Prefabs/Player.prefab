@@ -1047,8 +1047,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1313455854671708372}
-  - component: {fileID: 6678000430069629453}
-  - component: {fileID: 3812062728938002290}
+  - component: {fileID: 2898853996549791247}
   m_Layer: 7
   m_Name: Weapon
   m_TagString: Untagged
@@ -1071,7 +1070,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3124140825413488083}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6678000430069629453
+--- !u!114 &2898853996549791247
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1080,22 +1079,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8959276541058109044}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df270c9561b2f974e94b3c14f054574a, type: 3}
+  m_Script: {fileID: 11500000, guid: 802dba6026e71d94fac4fbd0575e1d39, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  <AttackCounterResetCooldown>k__BackingField: 0.5
---- !u!114 &3812062728938002290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8959276541058109044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5caf14a85dc7844894d96ac717d7d4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::ActionGraphPlayerWeapon
+  comboGraphConfig: {fileID: 11400000, guid: 76febde36f961e24196026e68e867894, type: 2}
+  animator: {fileID: 3865977400440925724}
+  hitOrigin: {fileID: 3124140825413488083}
+  registerInput: 1
+  attackInputKey: Attack
+  forwardInputToFsmController: 0
 --- !u!1001 &521306257226346229
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -646,7 +646,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5801843580254565798}
   - component: {fileID: 2900963362514375763}
-  - component: {fileID: 1958770342302133497}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -678,22 +677,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8867314203936595930}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df270c9561b2f974e94b3c14f054574a, type: 3}
+  m_Script: {fileID: 11500000, guid: 802dba6026e71d94fac4fbd0575e1d39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <AttackCounterResetCooldown>k__BackingField: 0
---- !u!114 &1958770342302133497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8867314203936595930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5caf14a85dc7844894d96ac717d7d4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  comboGraphConfig: {fileID: 11400000, guid: c9f3f664f5a94634b8bf021f08a06c4d, type: 2}
+  animator: {fileID: 3116689710209305241}
+  hitOrigin: {fileID: 5801843580254565798}
+  registerInput: 0
+  attackInputKey: Attack
+  forwardInputToFsmController: 0
 --- !u!1001 &2207844396437546306
 PrefabInstance:
   m_ObjectHideFlags: 0

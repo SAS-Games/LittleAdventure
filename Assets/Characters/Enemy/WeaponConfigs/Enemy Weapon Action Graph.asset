@@ -1,0 +1,194 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89528923cf4cf4f48843187ab98866ca, type: 3}
+  m_Name: Enemy Weapon Action Graph
+  m_EditorClassIdentifier: Assembly-CSharp::ActionGraphAsset
+  root:
+    rid: 7100000000000000001
+  references:
+    version: 2
+    RefIds:
+    - rid: 7100000000000000001
+      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 240, y: 240}
+        editorSize: {x: 260, y: 220}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        type: 0
+        children:
+        - rid: 7100000000000000002
+        - rid: 7100000000000000003
+        - rid: 7100000000000000010
+        - rid: 7100000000000000011
+    - rid: 7100000000000000002
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 580, y: 240}
+        editorSize: {x: 260, y: 140}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000012
+    - rid: 7100000000000000003
+      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 900, y: 240}
+        editorSize: {x: 270, y: 180}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        type: 1
+        children:
+        - rid: 7100000000000000004
+        - rid: 7100000000000000009
+    - rid: 7100000000000000004
+      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1170.6666, y: -112}
+        editorSize: {x: 248.66675, y: 212}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        type: 0
+        children:
+        - rid: 7100000000000000005
+        - rid: 7100000000000000006
+        - rid: 7100000000000000007
+        - rid: 7100000000000000008
+    - rid: 7100000000000000005
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1460.6666, y: -112}
+        editorSize: {x: 220, y: 175.33333}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000014
+    - rid: 7100000000000000006
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1712.6666, y: -112}
+        editorSize: {x: 220, y: 215.33334}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000015
+    - rid: 7100000000000000007
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1965.3334, y: -112}
+        editorSize: {x: 220, y: 175.33333}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000016
+    - rid: 7100000000000000008
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 2212.6667, y: -112}
+        editorSize: {x: 220, y: 235.33334}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000017
+    - rid: 7100000000000000009
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1170.6666, y: 534.6667}
+        editorSize: {x: 220, y: 175.33331}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000018
+    - rid: 7100000000000000010
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1460.6666, y: 242.66667}
+        editorSize: {x: 220, y: 195.33334}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000013
+    - rid: 7100000000000000011
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1712.6666, y: 242.66667}
+        editorSize: {x: 224.66675, y: 145.33334}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7100000000000000019
+    - rid: 7100000000000000012
+      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - parameterName: Attack
+          value: 1
+    - rid: 7100000000000000013
+      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - parameterName: Attack
+          value: 0
+    - rid: 7100000000000000014
+      type: {class: WeaponTimedHitBoxProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - hitBox:
+            m_Center: {x: 0, y: 0.5, z: 0.85}
+            m_Extent: {x: 0.7, y: 0.5, z: 0.85}
+          layers:
+            serializedVersion: 2
+            m_Bits: 128
+          startTime: 0.46
+          endTime: 0.49
+          stateTag: Attack
+          layer: 0
+          maxHits: 10
+          ignoreOwner: 1
+          groupHitsByRoot: 0
+          triggerInteraction: 0
+    - rid: 7100000000000000015
+      type: {class: WeaponApplyDamageToHitsProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - amount: 25
+          useOwnerDamageModifier: 1
+    - rid: 7100000000000000016
+      type: {class: WeaponTriggerHitEffectProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - eventName: PlaySlash
+          onlyIfDamageable: 1
+    - rid: 7100000000000000017
+      type: {class: WeaponApplyKnockbackToHitsProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - angle: {x: 0, y: 0, z: 0}
+          strength: 2
+    - rid: 7100000000000000018
+      type: {class: WeaponWaitAnimationExitProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - layer: 0
+          stateTag: Attack
+    - rid: 7100000000000000019
+      type: {class: ComboResetProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data: []
