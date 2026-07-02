@@ -1,0 +1,152 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89528923cf4cf4f48843187ab98866ca, type: 3}
+  m_Name: Enemy Projectile Weapon Action Graph
+  m_EditorClassIdentifier: Assembly-CSharp::ActionGraphAsset
+  root:
+    rid: 7200000000000000001
+  references:
+    version: 2
+    RefIds:
+    - rid: 1668481461043331177
+      type: {class: WaitForEventProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - eventName: OnAttackAction
+          timeoutSeconds: 2
+          throwOnTimeout: 0
+    - rid: 7200000000000000001
+      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 240, y: 240}
+        editorSize: {x: 260, y: 220}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        type: 0
+        children:
+        - rid: 7200000000000000002
+        - rid: 7200000000000000003
+        - rid: 7200000000000000008
+        - rid: 7200000000000000009
+    - rid: 7200000000000000002
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 580, y: 240}
+        editorSize: {x: 260, y: 140}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7200000000000000010
+    - rid: 7200000000000000003
+      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 900.6667, y: 240.00002}
+        editorSize: {x: 248.66669, y: 170}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        type: 1
+        children:
+        - rid: 7200000000000000004
+        - rid: 7200000000000000007
+    - rid: 7200000000000000004
+      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1220, y: 9.333336}
+        editorSize: {x: 248.66663, y: 170}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        type: 0
+        children:
+        - rid: 7200000000000000005
+        - rid: 7200000000000000006
+    - rid: 7200000000000000005
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1535.3334, y: 9.333336}
+        editorSize: {x: 220, y: 255.33333}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 1668481461043331177
+    - rid: 7200000000000000006
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1820.6666, y: 9.333336}
+        editorSize: {x: 220, y: 180.66666}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7200000000000000013
+    - rid: 7200000000000000007
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 1220, y: 420}
+        editorSize: {x: 290, y: 150}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7200000000000000014
+    - rid: 7200000000000000008
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 2095.3333, y: 240.00002}
+        editorSize: {x: 220, y: 195.33331}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7200000000000000011
+    - rid: 7200000000000000009
+      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      data:
+        editorPosition: {x: 2371.3333, y: 240.00002}
+        editorSize: {x: 224.66675, y: 145.33331}
+        editorCollapsed: 0
+        editorChildrenListCollapsed: 0
+        dataProvider:
+          rid: 7200000000000000015
+    - rid: 7200000000000000010
+      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - parameterName: Attack
+          value: 1
+    - rid: 7200000000000000011
+      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - parameterName: Attack
+          value: 0
+    - rid: 7200000000000000013
+      type: {class: WeaponPooledProjectileProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - objectPool: {fileID: 11400000, guid: 7af90d2ccce03e143a12fd2ce938e72b, type: 2}
+          spawnInfos:
+          - <Offset>k__BackingField: {x: -0.31, y: 1.14, z: 1.3}
+            <Direction>k__BackingField: {x: 0, y: 0, z: 0}
+          prewarmCount: 4
+    - rid: 7200000000000000014
+      type: {class: WeaponWaitAnimationExitProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - layer: 0
+          stateTag: Attack
+    - rid: 7200000000000000015
+      type: {class: ComboResetProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data: []
