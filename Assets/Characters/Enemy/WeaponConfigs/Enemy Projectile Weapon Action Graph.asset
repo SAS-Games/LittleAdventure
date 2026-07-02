@@ -82,7 +82,7 @@ MonoBehaviour:
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
         editorPosition: {x: 1820.6666, y: 9.333336}
-        editorSize: {x: 220, y: 180.66666}
+        editorSize: {x: 309.33337, y: 235.33333}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -117,7 +117,7 @@ MonoBehaviour:
     - rid: 7200000000000000010
       type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
       data:
-        useSingleValue: 1
+        useSingleValue: 0
         data:
         - parameterName: Attack
           value: 1

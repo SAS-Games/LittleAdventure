@@ -261,8 +261,9 @@ public partial class ActionGraphView
 
         if (EditorGUI.EndChangeCheck())
         {
-            serializedConfig.ApplyModifiedProperties();
-            MarkDirty();
+            Undo.RecordObject(_config, "Edit Action Node Data");
+            if (serializedConfig.ApplyModifiedProperties())
+                MarkDirty();
         }
     }
 
@@ -280,19 +281,17 @@ public partial class ActionGraphView
         dataProperty.isExpanded = true;
         EditorGUILayout.PropertyField(dataProperty, new GUIContent("Data"), true);
 
-        EditorGUILayout.PropertyField(useSingleValueProperty, new GUIContent("Use First Data Only"));
+        var useFirstLabel = new GUIContent(
+            "Use First Data Only",
+            usesIndexedData
+                ? "On: always use Data[0]. Off: use CurrentAttackIndex and clamp to the last data item."
+                : "On: always use Data[0]. Off: advance through the data array with the generic selector.");
+        EditorGUILayout.PropertyField(useSingleValueProperty, useFirstLabel);
 
-        if (usesIndexedData)
-        {
-            if (useSingleValueProperty.boolValue)
-                EditorGUILayout.HelpBox("This indexed node will use Data[0] for every execution.", MessageType.Info);
-            else
-                EditorGUILayout.HelpBox("This indexed node will use the current attack index. If the index is outside the Data array, the last item is reused.", MessageType.Info);
-        }
-        else if (useSingleValueProperty.boolValue && dataProperty.arraySize > 1)
-        {
-            EditorGUILayout.HelpBox("This node will use only Data[0]. Disable this to let the generic selector advance through the Data array.", MessageType.Info);
-        }
+        string selectionMode = useSingleValueProperty.boolValue
+            ? "Data[0]"
+            : usesIndexedData ? "Current Attack Index" : "Sequential";
+        EditorGUILayout.LabelField("Selection", selectionMode, EditorStyles.miniLabel);
 
         return true;
     }

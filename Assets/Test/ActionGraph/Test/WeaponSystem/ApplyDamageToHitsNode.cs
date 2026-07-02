@@ -49,6 +49,7 @@ public class ApplyDamageToHitsNode : ActionNode<WeaponApplyDamageToHitsData>
                 continue;
 
             IDamageable damageable = collider.GetComponent<IDamageable>() ?? collider.GetComponentInParent<IDamageable>();
+            UnityEngine.Debug.Log(amount);
             if (damageable != null)
                 damageable.Damage(new DamageInfo(amount, weaponContext.Owner != null ? weaponContext.Owner.transform.root.gameObject : null));
         }

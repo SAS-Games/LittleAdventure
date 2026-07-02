@@ -76,7 +76,7 @@ MonoBehaviour:
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
         editorPosition: {x: 1712.6666, y: -112}
-        editorSize: {x: 220, y: 215.33334}
+        editorSize: {x: 309.33337, y: 235.33334}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:

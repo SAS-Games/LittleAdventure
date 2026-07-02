@@ -131,7 +131,7 @@ MonoBehaviour:
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
         editorPosition: {x: 2427.3333, y: -1019.3333}
-        editorSize: {x: 346, y: 237.33331}
+        editorSize: {x: 220, y: 335.3333}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -168,7 +168,7 @@ MonoBehaviour:
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
         editorPosition: {x: 2774, y: -636}
-        editorSize: {x: 358.66675, y: 260.6667}
+        editorSize: {x: 334, y: 268.00003}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -176,8 +176,8 @@ MonoBehaviour:
     - rid: 1668481441099677824
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 3180.6667, y: -652}
-        editorSize: {x: 288, y: 276.6667}
+        editorPosition: {x: 3188, y: -653.3333}
+        editorSize: {x: 292, y: 340}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -214,42 +214,14 @@ MonoBehaviour:
     - rid: 1668481441099677833
       type: {class: WeaponTimedHitBoxProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
       data:
-        useSingleValue: 0
+        useSingleValue: 1
         data:
         - hitBox:
             m_Center: {x: 0, y: 0.75, z: 0.5}
             m_Extent: {x: 0.6, y: 0.75, z: 0.5}
           layers:
             serializedVersion: 2
-            m_Bits: 65
-          startTime: 0.17
-          endTime: 0.35
-          stateTag: Attack
-          layer: 0
-          maxHits: 10
-          ignoreOwner: 1
-          groupHitsByRoot: 0
-          triggerInteraction: 0
-        - hitBox:
-            m_Center: {x: 0, y: 0.75, z: 0.5}
-            m_Extent: {x: 0.6, y: 0.75, z: 0.5}
-          layers:
-            serializedVersion: 2
-            m_Bits: 65
-          startTime: 0.17
-          endTime: 0.35
-          stateTag: Attack
-          layer: 0
-          maxHits: 10
-          ignoreOwner: 1
-          groupHitsByRoot: 0
-          triggerInteraction: 0
-        - hitBox:
-            m_Center: {x: 0, y: 0.75, z: 0.5}
-            m_Extent: {x: 0.6, y: 0.75, z: 0.5}
-          layers:
-            serializedVersion: 2
-            m_Bits: 65
+            m_Bits: 64
           startTime: 0.17
           endTime: 0.35
           stateTag: Attack
@@ -308,6 +280,6 @@ MonoBehaviour:
         data:
         - localDirection: {x: 0, y: 0, z: 1}
           speed: 1
-          duration: 0.5
+          duration: 0.15
           velocityContributionMode: 0
           velocityContributionPriority: 100
