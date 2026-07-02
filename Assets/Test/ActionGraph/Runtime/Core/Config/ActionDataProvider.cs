@@ -25,6 +25,8 @@ public abstract class ActionDataProvider<T> : ActionDataProvider
     [SerializeField] private bool useSingleValue;
     [SerializeField] private T[] data;
 
+    public bool UseSingleValue => useSingleValue;
+
     public override bool HasConfigurableData => HasSerializableDataFields();
 
     public override IDataSelector CreateSelector()

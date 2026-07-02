@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!114 &11400000
 MonoBehaviour:
@@ -29,36 +29,6 @@ MonoBehaviour:
         - rid: 1668481441099677853
         - rid: 1668481441099677790
         - rid: 1668481441099677798
-    - rid: 1668481441099677787
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 910, y: 296.66666}
-        editorSize: {x: 235.33337, y: 125.33334}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677791
-    - rid: 1668481441099677788
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1172, y: 296.66666}
-        editorSize: {x: 256, y: 125.33334}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677792
-    - rid: 1668481441099677789
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1454, y: 296.66666}
-        editorSize: {x: 248.66663, y: 191.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        type: 1
-        children:
-        - rid: 1668481441099677793
-        - rid: 1668481441099677794
-        - rid: 1668481441099677795
     - rid: 1668481441099677790
       type: {class: LoopNodeConfig, ns: , asm: Assembly-CSharp}
       data:
@@ -72,53 +42,6 @@ MonoBehaviour:
           rid: 1668481441099677796
         child:
           rid: 1668481441099677797
-    - rid: 1668481441099677791
-      type: {class: ComboSetAttackIndexProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - attackIndex: 0
-    - rid: 1668481441099677792
-      type: {class: WeaponIndexedAnimationProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - statePrefix: Attack
-          layer: 0
-          crossFade: 0
-          transitionDuration: 0.05
-          normalizedStartTime: 0
-    - rid: 1668481441099677793
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1731.3334, y: 462}
-        editorSize: {x: 260.66663, y: 255.33334}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677799
-    - rid: 1668481441099677794
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1738.6666, y: 708.6667}
-        editorSize: {x: 220, y: 128}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 1
-        type: 0
-        children:
-        - rid: 1668481441099677800
-        - rid: 1668481441099677801
-        - rid: 1668481441099677802
-        - rid: 1668481441099677803
-    - rid: 1668481441099677795
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1738.6666, y: 844.6667}
-        editorSize: {x: 220, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677804
     - rid: 1668481441099677796
       type: {class: ComboInputAcceptedCondition, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
       data:
@@ -126,8 +49,8 @@ MonoBehaviour:
     - rid: 1668481441099677797
       type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 1250, y: 296.66666}
-        editorSize: {x: 270, y: 220}
+        editorPosition: {x: 1207.3334, y: -65.33333}
+        editorSize: {x: 248.66663, y: 212}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         type: 0
@@ -139,72 +62,17 @@ MonoBehaviour:
     - rid: 1668481441099677798
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 3860, y: 296.66666}
-        editorSize: {x: 260, y: 140}
+        editorPosition: {x: 4332.6665, y: 296.66666}
+        editorSize: {x: 224.66699, y: 145.33334}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481441099677809
-    - rid: 1668481441099677799
-      type: {class: WeaponForwardMovementProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - velocity: 5
-          duration: 0.05
-          velocityContributionMode: 0
-          velocityContributionPriority: 100
-    - rid: 1668481441099677800
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2030, y: 607.3334}
-        editorSize: {x: 226.66675, y: 215.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677810
-    - rid: 1668481441099677801
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2294.6667, y: 607.3334}
-        editorSize: {x: 269.33325, y: 165.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677811
-    - rid: 1668481441099677802
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2591.3333, y: 607.3334}
-        editorSize: {x: 244, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677812
-    - rid: 1668481441099677803
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2867.3333, y: 607.3334}
-        editorSize: {x: 284.66675, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677813
-    - rid: 1668481441099677804
-      type: {class: ComboWaitInputProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - layer: 0
-          inputDelay: 0.1
-          requiredAnimationProgress: 0.35
-          stateTag: Attack
-          bufferEarlyInput: 1
     - rid: 1668481441099677805
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 1590, y: 156.66666}
-        editorSize: {x: 260, y: 140}
+        editorPosition: {x: 1496.6666, y: -65.33333}
+        editorSize: {x: 240, y: 145.33334}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -212,8 +80,8 @@ MonoBehaviour:
     - rid: 1668481441099677806
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 1590, y: 316.66666}
-        editorSize: {x: 260, y: 180}
+        editorPosition: {x: 1774, y: -65.33333}
+        editorSize: {x: 309.33325, y: 235.33333}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -221,8 +89,8 @@ MonoBehaviour:
     - rid: 1668481441099677807
       type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 1930, y: 296.66666}
-        editorSize: {x: 270, y: 240}
+        editorPosition: {x: 2160.6667, y: -65.33333}
+        editorSize: {x: 248.6665, y: 191.33333}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         type: 1
@@ -233,8 +101,8 @@ MonoBehaviour:
     - rid: 1668481441099677808
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 3520, y: 296.66666}
-        editorSize: {x: 300, y: 160}
+        editorPosition: {x: 2776, y: -69.33333}
+        editorSize: {x: 272.66675, y: 195.33333}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -244,46 +112,6 @@ MonoBehaviour:
       data:
         useSingleValue: 1
         data: []
-    - rid: 1668481441099677810
-      type: {class: WeaponTimedHitBoxProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - hitBox:
-            m_Center: {x: 0, y: 0.75, z: 0.5}
-            m_Extent: {x: 0.6, y: 0.75, z: 0.5}
-          layers:
-            serializedVersion: 2
-            m_Bits: 65
-          startTime: 0.17
-          endTime: 0.35
-          stateTag: Attack
-          layer: 0
-          maxHits: 10
-          ignoreOwner: 1
-          groupHitsByRoot: 0
-          triggerInteraction: 0
-    - rid: 1668481441099677811
-      type: {class: WeaponApplyDamageToHitsProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - amount: 10
-          useOwnerDamageModifier: 1
-    - rid: 1668481441099677812
-      type: {class: WeaponTriggerHitEffectProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - eventName: PlaySlash
-          onlyIfDamageable: 1
-    - rid: 1668481441099677813
-      type: {class: WeaponApplyKnockbackToHitsProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - angle: {x: 1, y: 0, z: 0.5}
-          strength: 2
     - rid: 1668481441099677814
       type: {class: ComboBeginCurrentAttackProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
       data:
@@ -302,17 +130,17 @@ MonoBehaviour:
     - rid: 1668481441099677816
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 2270, y: 56.66666}
-        editorSize: {x: 300, y: 260}
+        editorPosition: {x: 2427.3333, y: -1019.3333}
+        editorSize: {x: 346, y: 237.33331}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
-          rid: 1668481441099677822
+          rid: 1668481468307603549
     - rid: 1668481441099677817
       type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 2270, y: 356.66666}
-        editorSize: {x: 270, y: 220}
+        editorPosition: {x: 2427.3333, y: -652}
+        editorSize: {x: 248.66675, y: 212.00003}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         type: 0
@@ -324,8 +152,8 @@ MonoBehaviour:
     - rid: 1668481441099677818
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 2270, y: 616.6667}
-        editorSize: {x: 300, y: 260}
+        editorPosition: {x: 2432, y: -332.6667}
+        editorSize: {x: 309.33325, y: 235.33334}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -336,50 +164,11 @@ MonoBehaviour:
         useSingleValue: 1
         data:
         - comboCount: 3
-    - rid: 1668481441099677820
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 336, y: -1218}
-        editorSize: {x: 220, y: 128}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 1
-        type: 0
-        children:
-        - rid: 1668481441099677828
-        - rid: 1668481441099677829
-        - rid: 1668481441099677830
-        - rid: 1668481441099677831
-    - rid: 1668481441099677821
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2071.3333, y: -427.33334}
-        editorSize: {x: 339.3335, y: 165.33333}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677832
-    - rid: 1668481441099677822
-      type: {class: WeaponForwardMovementProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 0
-        data:
-        - velocity: 5
-          duration: 0.05
-          velocityContributionMode: 0
-          velocityContributionPriority: 100
-        - velocity: 5
-          duration: 0.05
-          velocityContributionMode: 0
-          velocityContributionPriority: 100
-        - velocity: 5
-          duration: 0.05
-          velocityContributionMode: 0
-          velocityContributionPriority: 100
     - rid: 1668481441099677823
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 2610, y: 356.66666}
-        editorSize: {x: 320, y: 320}
+        editorPosition: {x: 2774, y: -636}
+        editorSize: {x: 358.66675, y: 260.6667}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -387,8 +176,8 @@ MonoBehaviour:
     - rid: 1668481441099677824
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 2970, y: 356.66666}
-        editorSize: {x: 300, y: 220}
+        editorPosition: {x: 3180.6667, y: -652}
+        editorSize: {x: 288, y: 276.6667}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -396,8 +185,8 @@ MonoBehaviour:
     - rid: 1668481441099677825
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 3330, y: 356.66666}
-        editorSize: {x: 300, y: 160}
+        editorPosition: {x: 3514.6667, y: -652}
+        editorSize: {x: 309.33325, y: 235.33334}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -405,8 +194,8 @@ MonoBehaviour:
     - rid: 1668481441099677826
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 3690, y: 356.66666}
-        editorSize: {x: 300, y: 220}
+        editorPosition: {x: 3884.6667, y: -652}
+        editorSize: {x: 309.33325, y: 235.33334}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -414,7 +203,7 @@ MonoBehaviour:
     - rid: 1668481441099677827
       type: {class: ComboWaitInputProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
       data:
-        useSingleValue: 0
+        useSingleValue: 1
         data:
         - layer: 0
           comboCount: 3
@@ -422,62 +211,6 @@ MonoBehaviour:
           requiredAnimationProgress: 0.35
           stateTag: Attack
           bufferEarlyInput: 1
-        - layer: 0
-          comboCount: 3
-          inputDelay: 0.1
-          requiredAnimationProgress: 0.35
-          stateTag: Attack
-          bufferEarlyInput: 1
-        - layer: 0
-          comboCount: 3
-          inputDelay: 0.1
-          requiredAnimationProgress: 0.35
-          stateTag: Attack
-          bufferEarlyInput: 1
-    - rid: 1668481441099677828
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 910, y: -1218}
-        editorSize: {x: 235.33337, y: 125.33325}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677837
-    - rid: 1668481441099677829
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1172, y: -1218}
-        editorSize: {x: 256, y: 125.33325}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677838
-    - rid: 1668481441099677830
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1454, y: -1218}
-        editorSize: {x: 248.66663, y: 191.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        type: 1
-        children:
-        - rid: 1668481441099677839
-        - rid: 1668481441099677840
-        - rid: 1668481441099677841
-    - rid: 1668481441099677831
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1732, y: -1218}
-        editorSize: {x: 339.33325, y: 165.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677842
-    - rid: 1668481441099677832
-      type: {class: ComboResetProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data: []
     - rid: 1668481441099677833
       type: {class: WeaponTimedHitBoxProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
       data:
@@ -546,154 +279,6 @@ MonoBehaviour:
     - rid: 1668481441099677836
       type: {class: WeaponApplyKnockbackToHitsProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
       data:
-        useSingleValue: 0
-        data:
-        - angle: {x: 1, y: 0, z: 0.5}
-          strength: 2
-        - angle: {x: 1, y: 0, z: 0.5}
-          strength: 2
-        - angle: {x: 1, y: 0, z: 0.5}
-          strength: 2
-    - rid: 1668481441099677837
-      type: {class: ComboSetAttackIndexProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - attackIndex: 2
-    - rid: 1668481441099677838
-      type: {class: WeaponIndexedAnimationProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - statePrefix: Attack
-          layer: 0
-          crossFade: 0
-          transitionDuration: 0.05
-          normalizedStartTime: 0
-    - rid: 1668481441099677839
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1724, y: -1026.6666}
-        editorSize: {x: 260.66663, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677843
-    - rid: 1668481441099677840
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1724, y: -901.3333}
-        editorSize: {x: 248.66663, y: 212}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        type: 0
-        children:
-        - rid: 1668481441099677844
-        - rid: 1668481441099677845
-        - rid: 1668481441099677846
-        - rid: 1668481441099677847
-    - rid: 1668481441099677841
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 1724, y: -689.3333}
-        editorSize: {x: 256, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677848
-    - rid: 1668481441099677842
-      type: {class: ComboResetProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data: []
-    - rid: 1668481441099677843
-      type: {class: WeaponForwardMovementProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - velocity: 5
-          duration: 0.05
-          velocityContributionMode: 0
-          velocityContributionPriority: 100
-    - rid: 1668481441099677844
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2052, y: -901.3333}
-        editorSize: {x: 226.66675, y: 165.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677849
-    - rid: 1668481441099677845
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2317.3333, y: -901.3333}
-        editorSize: {x: 269.3335, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677850
-    - rid: 1668481441099677846
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2614, y: -901.3333}
-        editorSize: {x: 244, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677851
-    - rid: 1668481441099677847
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
-      data:
-        editorPosition: {x: 2883.3333, y: -901.3333}
-        editorSize: {x: 284.66675, y: 125.33331}
-        editorCollapsed: 0
-        editorChildrenListCollapsed: 0
-        dataProvider:
-          rid: 1668481441099677852
-    - rid: 1668481441099677848
-      type: {class: WeaponWaitAnimationExitProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - layer: 0
-          stateTag: Attack
-    - rid: 1668481441099677849
-      type: {class: WeaponTimedHitBoxProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - hitBox:
-            m_Center: {x: 0, y: 0.75, z: 0.5}
-            m_Extent: {x: 0.6, y: 0.75, z: 0.5}
-          layers:
-            serializedVersion: 2
-            m_Bits: 65
-          startTime: 0.17
-          endTime: 0.35
-          stateTag: Attack
-          layer: 0
-          maxHits: 10
-          ignoreOwner: 1
-          groupHitsByRoot: 0
-          triggerInteraction: 0
-    - rid: 1668481441099677850
-      type: {class: WeaponApplyDamageToHitsProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - amount: 20
-          useOwnerDamageModifier: 1
-    - rid: 1668481441099677851
-      type: {class: WeaponTriggerHitEffectProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
-        useSingleValue: 1
-        data:
-        - eventName: PlaySlash
-          onlyIfDamageable: 1
-    - rid: 1668481441099677852
-      type: {class: WeaponApplyKnockbackToHitsProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
-      data:
         useSingleValue: 1
         data:
         - angle: {x: 1, y: 0, z: 0.5}
@@ -716,5 +301,13 @@ MonoBehaviour:
           rightSocketPath: Visual/LittleAdventurerAndie_GameRig/DEF-upper_arm.R/DEF-upper_arm.R.001/DEF-forearm.R/DEF-forearm.R.001/DEF-hand.R/WeaponHolder
           leftWeapon: {fileID: 919132149155446097, guid: 36d5e239ddf1c5843979b26c82f9ad52, type: 3}
           rightWeapon: {fileID: 919132149155446097, guid: 36d5e239ddf1c5843979b26c82f9ad52, type: 3}
-
-
+    - rid: 1668481468307603549
+      type: {class: WeaponMovementProvider, ns: SAS.ActionGraph.WeaponSystem, asm: Assembly-CSharp}
+      data:
+        useSingleValue: 1
+        data:
+        - localDirection: {x: 0, y: 0, z: 1}
+          speed: 1
+          duration: 0.5
+          velocityContributionMode: 0
+          velocityContributionPriority: 100

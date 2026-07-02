@@ -11,7 +11,11 @@ public static class WeaponNodeUtility
 {
     public static T GetAttackData<T>(ActionDataProvider<T> dataProvider, WeaponContext context)
     {
-        return WeaponAttackDataSelector.GetForAttack(dataProvider?.GetAllData(), context != null ? context.CurrentAttackIndex : 0);
+        if (dataProvider == null)
+            return default;
+
+        int attackIndex = dataProvider.UseSingleValue || context == null ? 0 : context.CurrentAttackIndex;
+        return WeaponAttackDataSelector.GetForAttack(dataProvider.GetAllData(), attackIndex);
     }
 
     public static WeaponContext RequireWeaponContext(ActionContext context)
