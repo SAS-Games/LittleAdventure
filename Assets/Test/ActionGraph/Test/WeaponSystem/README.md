@@ -8,8 +8,8 @@ Create a starter config from:
 
 The old package is component/data driven. This sample keeps the useful ideas but moves attack execution into an `ActionGraphAsset` graph:
 
-1. `Weapon` owns an `ExecutionGraph` and exposes `Attack()`.
-2. `WeaponInput` is a tiny test input binder.
+1. `ActionGraphExecutor` owns the reusable graph build/execute/cancel lifecycle.
+2. `ComboWeapon` owns weapon context, combo input, and exposes `Attack()`.
 3. Weapon action nodes configure animation, wait windows, movement, hitbox detection, damage, knockback, projectile spawning, and combo advancement.
 4. `WeaponDamageReceiver` and `SimpleProjectile` are simple test components so the graph can be exercised without the old pool/FSM/event systems.
 

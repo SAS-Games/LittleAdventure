@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 593053555975310370}
   - component: {fileID: 2692624127554016520}
   - component: {fileID: 4122251656121210604}
+  - component: {fileID: 6194125030495347980}
   m_Layer: 0
   m_Name: DamageOrb
   m_TagString: Untagged
@@ -63,10 +64,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 648287644590617012}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -100,6 +101,21 @@ MonoBehaviour:
   m_CollisionTags:
   - Player
   m_HitVFXPool: {fileID: 11400000, guid: bb80130937624834bb6b8bd9333f221c, type: 2}
+--- !u!114 &6194125030495347980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648287644590617012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00801d66c661d9340bc513470a9115e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelfDespawnable
+  m_Auto: 1
+  m_DespawnTime: 10
+  m_Pool: {fileID: 0}
 --- !u!1001 &4957757569907263952
 PrefabInstance:
   m_ObjectHideFlags: 0

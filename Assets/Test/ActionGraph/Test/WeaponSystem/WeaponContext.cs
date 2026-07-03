@@ -7,7 +7,6 @@ public class WeaponContext : ActionContext
 {
     private readonly HashSet<GameObject> _hitObjects = new HashSet<GameObject>();
 
-    public ComboWeapon ComboWeapon { get; internal set; }
     public Animator Animator { get; internal set; }
     public Transform FirePoint { get; internal set; }
     public Transform HitOrigin { get; internal set; }

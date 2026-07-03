@@ -44,7 +44,6 @@ public class ComboAdvanceIfInputAcceptedNode : ActionNode<ComboAdvanceIfInputAcc
         }
 
         weaponContext.CurrentAttackIndex = nextIndex;
-        weaponContext.ComboWeapon?.SetCurrentAttackIndex(nextIndex);
         return Task.CompletedTask;
     }
 }

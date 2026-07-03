@@ -30,7 +30,6 @@ public class ComboResetNode : ActionNode<ComboResetData>
         token.ThrowIfCancellationRequested();
 
         var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-        weaponContext.ComboWeapon?.NotifyAttackStepEnded();
         weaponContext.ResetCombo();
         return Task.CompletedTask;
     }

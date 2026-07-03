@@ -31,7 +31,6 @@ public class ComboBeginCurrentAttackNode : ActionNode<ComboBeginCurrentAttackDat
 
         var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
         int index = Mathf.Max(0, weaponContext.CurrentAttackIndex);
-        weaponContext.ComboWeapon?.SetCurrentAttackIndex(index);
         weaponContext.BeginAttack(index);
         return Task.CompletedTask;
     }
