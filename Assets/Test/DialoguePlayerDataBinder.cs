@@ -68,7 +68,7 @@ public class DialoguePlayerDataBinder : MonoBehaviour
     private void UnlockWeapon(string playerName, string weaponName)
     {
         var playerObj = _playerSetupModel.GetEntity(playerName);
-        playerObj.GetComponent<WeaponInventory>().TrySetWeapon(WeaponInventory.WeaponSlot.Primary, weaponName, out _);
+        //playerObj.GetComponent<WeaponInventory>().TrySetWeapon(WeaponInventory.WeaponSlot.Primary, weaponName, out _);
     }
 
     public void RegisterGrantHealthMethod(DialogueHandler dialogueHandler)

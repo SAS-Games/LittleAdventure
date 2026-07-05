@@ -5,12 +5,19 @@ public class SelfDespawnable : MonoBehaviour, ISpawnable
 {
     [SerializeField] private bool m_Auto = true;
     [SerializeField] private float m_DespawnTime = 3f; // Time before despawning
-    [SerializeField] private ComponentPoolSO<Component> m_Pool;
+    private Poolable _poolable;
+
+    private void OnEnable()
+    {
+        if (_poolable == null)
+            _poolable = GetComponent<Poolable>();
+    }
 
     public void StartDespawnTimer()
     {
         Invoke(nameof(Despawn), m_DespawnTime);
     }
+
     public void StartDespawnTimer(float time)
     {
         Invoke(nameof(Despawn), time);
@@ -18,14 +25,16 @@ public class SelfDespawnable : MonoBehaviour, ISpawnable
 
     protected void Despawn()
     {
-        if (m_Pool != null)
-            m_Pool.Despawn(GetComponent<Component>());
-        else
-            GetComponent<Poolable>()?.Despawn();
+        _poolable?.Despawn();
     }
 
-    protected virtual void OnSpawn(object data) { }
-    protected virtual void OnDespawn() { }
+    protected virtual void OnSpawn(object data)
+    {
+    }
+
+    protected virtual void OnDespawn()
+    {
+    }
 
     void ISpawnable.OnSpawn(object data)
     {
