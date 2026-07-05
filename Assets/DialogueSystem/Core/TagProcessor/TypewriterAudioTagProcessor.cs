@@ -2,9 +2,13 @@ using UnityEngine;
 
 public class TypewriterAudioTagProcessor : BaseTagProcessor
 {
-    [SerializeField] private ITypewriterAudioEffect _typewriterAudioEffect;
+    public override bool CanHandle(string tagKey)
+    {
+        return KeyEquals(tagKey, "audio") || base.CanHandle(tagKey);
+    }
+
     public override void Process(string tagValue, TagProcessContext context)
     {
-        _typewriterAudioEffect.SetCurrentAudioInfo(tagValue);
+        context.CurrentLine.SetAudioInfo(tagValue);
     }
 }

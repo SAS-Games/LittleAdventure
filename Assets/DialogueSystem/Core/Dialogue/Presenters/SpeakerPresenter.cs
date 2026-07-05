@@ -18,7 +18,6 @@ public class SpeakerPresenter : MonoBehaviour
     [SerializeField] private List<Speaker> m_Speakers;
 
     [FieldRequiresParent] protected DialogueHandler _dialogueHandler;
-    [FieldRequiresSelf] private SpeakerTagProcessor _processor;
 
     private readonly Dictionary<string, SpeakerView> _views = new();
 
@@ -27,7 +26,16 @@ public class SpeakerPresenter : MonoBehaviour
         this.Initialize();
 
         if (_dialogueHandler != null)
-            _dialogueHandler.OnStoryContinue += OnStoryContinue;
+            _dialogueHandler.OnLineReady += OnLineReady;
+
+        RegisterConfiguredSpeakers();
+        RegisterChildSpeakerViews();
+    }
+
+    private void RegisterConfiguredSpeakers()
+    {
+        if (m_Speakers == null)
+            return;
 
         foreach (var speaker in m_Speakers)
         {
@@ -38,18 +46,34 @@ public class SpeakerPresenter : MonoBehaviour
         }
     }
 
+    private void RegisterChildSpeakerViews()
+    {
+        foreach (var view in GetComponentsInChildren<SpeakerView>(true))
+        {
+            var animatorProcessor = view.GetComponent<IAnimatorProcessor>();
+            if (animatorProcessor == null || string.IsNullOrEmpty(animatorProcessor.Tag))
+                continue;
+
+            if (!_views.ContainsKey(animatorProcessor.Tag))
+                _views.Add(animatorProcessor.Tag, view);
+        }
+    }
+
     void OnDestroy()
     {
         if (_dialogueHandler != null)
-            _dialogueHandler.OnStoryContinue -= OnStoryContinue;
+            _dialogueHandler.OnLineReady -= OnLineReady;
     }
 
-    void OnStoryContinue(string value)
+    void OnLineReady(DialogueLineContext lineContext)
     {
+        if (lineContext == null)
+            return;
+
         foreach (var view in _views.Values)
             view.gameObject.SetActive(false);
 
-        foreach (var kvp in _processor.Speakers)
+        foreach (var kvp in lineContext.Speakers)
         {
             var speakerId = kvp.Key;
             var state = kvp.Value;

@@ -8,27 +8,42 @@ namespace SAS.DialogueSystem
     [RequireComponent(typeof(LocaleTextTagProcessor)), DisallowMultipleComponent]
     public class DialogueLocaleTextPresenter : DialogueTextPresenter
     {
-        [FieldRequiresSelf] LocaleTextTagProcessor _tagProcessor;
         [SerializeField] private LocalizeStringEvent m_LocalizedStringEvent;
         [SerializeField] private string m_LocalizedTableName = "DialogueTextTable";
 
         protected override void OnEnterDialogueMode()
         {
-            m_LocalizedStringEvent.OnUpdateString.AddListener(_typewriterEffect.StartTyping);
+            if (m_LocalizedStringEvent != null && _typewriterEffect != null)
+                m_LocalizedStringEvent.OnUpdateString.AddListener(_typewriterEffect.StartTyping);
         }
 
         protected override void ExitDialogueMode()
         {
             base.ExitDialogueMode();
-            m_LocalizedStringEvent.OnUpdateString.RemoveListener(_typewriterEffect.StartTyping);
+            if (m_LocalizedStringEvent != null && _typewriterEffect != null)
+                m_LocalizedStringEvent.OnUpdateString.RemoveListener(_typewriterEffect.StartTyping);
         }
 
-        protected override void OnStoryContinue(string textToDisplay)
+        protected override void OnDestroy()
         {
-            if (!string.IsNullOrEmpty(_tagProcessor.Locale))
-                m_LocalizedStringEvent.StringReference = new LocalizedString(m_LocalizedTableName, _tagProcessor.Locale);
+            if (m_LocalizedStringEvent != null && _typewriterEffect != null)
+                m_LocalizedStringEvent.OnUpdateString.RemoveListener(_typewriterEffect.StartTyping);
+
+            base.OnDestroy();
+        }
+
+        protected override void OnLineReady(DialogueLineContext lineContext)
+        {
+            if (lineContext == null)
+                return;
+
+            if (!string.IsNullOrEmpty(lineContext.Locale) && m_LocalizedStringEvent != null)
+            {
+                ApplyLineAudio(lineContext);
+                m_LocalizedStringEvent.StringReference = new LocalizedString(m_LocalizedTableName, lineContext.Locale);
+            }
             else
-                base.OnStoryContinue(textToDisplay);
+                base.OnLineReady(lineContext);
         }
     }
 }

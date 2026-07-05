@@ -26,17 +26,22 @@ namespace SAS.DialogueSystem
         private void Awake()
         {
             this.Initialize();
-            _dialogueHandler.OnStoryMessageShown += OnTextRevealed;
+            if (_dialogueHandler != null)
+                _dialogueHandler.OnLineMessageShown += OnTextRevealed;
         }
 
         private void OnDestroy()
         {
-            _dialogueHandler.OnStoryMessageShown -= OnTextRevealed;
+            if (_dialogueHandler != null)
+                _dialogueHandler.OnLineMessageShown -= OnTextRevealed;
         }
 
-        private void OnTextRevealed(Story story)
+        private void OnTextRevealed(Story story, DialogueLineContext lineContext)
         {
-            if (_dialogueHandler.TagProcessContext.CurrentSpeakerId == m_Tag)
+            if (lineContext == null)
+                return;
+
+            if (lineContext.CurrentSpeakerId == m_Tag)
             {
                 if (!string.IsNullOrEmpty(m_IdleAnimState))
                     _animatorState.Value = m_IdleAnimState;

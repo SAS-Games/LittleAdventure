@@ -19,7 +19,14 @@ public class CharacterAnimatorProcessor : MonoBehaviour
 
     public void Register()
     {
-        var animatorProcessors = (_dialogueHandler as Component).GetComponentsInChildren<IAnimatorProcessor>(true);
+        var dialogueHandlerComponent = _dialogueHandler as Component;
+        if (dialogueHandlerComponent == null)
+        {
+            Debug.LogWarning("Cannot register character animator because the dialogue handler is not a Unity component.", "DialogueHandler");
+            return;
+        }
+
+        var animatorProcessors = dialogueHandlerComponent.GetComponentsInChildren<IAnimatorProcessor>(true);
         var animatorProcessor = animatorProcessors.FirstOrDefault(p => p.Tag == m_Tag);
 
         if (animatorProcessor == null)

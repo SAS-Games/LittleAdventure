@@ -19,16 +19,30 @@ namespace SAS.DialogueSystem
 
         public static bool GetTagKeyValue(string tag, out string tagKey, out string tagValue)
         {
-            string[] splitTag = tag.Split(new char[] { ':' }, 2);
-            if (splitTag.Length != 2)
-            {
-                Debug.LogError("Tag could not be appropriately parsed: " + tag);
-                tagKey = string.Empty;
-                tagValue = string.Empty;   
+            tagKey = string.Empty;
+            tagValue = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(tag))
                 return false;
+
+            tag = tag.Trim();
+            if (tag.StartsWith("#"))
+                tag = tag.Substring(1).Trim();
+
+            if (string.IsNullOrWhiteSpace(tag))
+                return false;
+
+            string[] splitTag = tag.Split(new char[] { ':' }, 2);
+            tagKey = splitTag[0].Trim();
+            if (string.IsNullOrWhiteSpace(tagKey))
+                return false;
+
+            if (splitTag.Length == 1)
+            {
+                tagValue = string.Empty;
+                return true;
             }
 
-             tagKey = splitTag[0].Trim();
              tagValue = splitTag[1].Trim();
             return true;
         }

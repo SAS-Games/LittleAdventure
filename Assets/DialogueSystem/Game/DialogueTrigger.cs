@@ -5,7 +5,9 @@ using UnityEngine.Serialization;
 public class DialogueTrigger : MonoBehaviour
 {
     [Inject] private IDialogueHandler _dialogueHandler;
-    [Header("Ink JSON")] [SerializeField] private TextAsset m_InkJSON;
+    [Header("Ink JSON")]
+    [FormerlySerializedAs("inkJSON")]
+    [SerializeField] private TextAsset m_InkJSON;
     [SerializeField] private bool m_AutoStart = false;
     [SerializeField] private bool m_TriggerOncePerSession = true;
     private bool _triggered = false;
@@ -19,6 +21,18 @@ public class DialogueTrigger : MonoBehaviour
 
     public void ShowDialogue()
     {
+        if (_dialogueHandler == null)
+        {
+            Debug.LogWarning("DialogueTrigger cannot show dialogue because no dialogue handler is bound.", this);
+            return;
+        }
+
+        if (m_InkJSON == null)
+        {
+            Debug.LogWarning("DialogueTrigger cannot show dialogue because Ink JSON is not assigned.", this);
+            return;
+        }
+
         if (_dialogueHandler.DialogueIsPlaying)
             return;
 

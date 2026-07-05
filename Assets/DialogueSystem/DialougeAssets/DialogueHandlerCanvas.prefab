@@ -850,7 +850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73bffb575d8cdcf42ba34ef7f5c34fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LoadGlobalsJSON: {fileID: 4900000, guid: 3cd9c26b55e3afa4ebbbb2ebd47dca82, type: 3}
+  m_LoadGlobalsJSON: {fileID: 4900000, guid: 79f780b0969c0534e92c3481f5f8b558, type: 3}
   m_DialoguePanel: {fileID: 4627647359639425192}
   <AutoContinueToNextLine>k__BackingField: 0
   _nextInputAction:
@@ -938,7 +938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <SupportedKeys>k__BackingField:
-  - s
+  - speaker
 --- !u!114 &7604528857672369803
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,23 +14,52 @@ public class ChoiceView : MonoBehaviour
 
     private void Awake()
     {
-       // m_LocalizedStringEvent.OnUpdateString.AddListener(SetText);
+        if (m_LocalizedStringEvent != null)
+            m_LocalizedStringEvent.OnUpdateString.AddListener(SetText);
+    }
 
+    private void OnDestroy()
+    {
+        if (m_LocalizedStringEvent != null)
+            m_LocalizedStringEvent.OnUpdateString.RemoveListener(SetText);
     }
 
     public void SetText(string text)
     {
-        m_Text.text = text; 
+        if (m_Text != null)
+            m_Text.text = text; 
     }
 
     public void SetLocalText(string id)
     {
+        SetLocalText(id, string.Empty);
+    }
+
+    public void SetLocalText(string id, string fallbackText)
+    {
+        if (m_LocalizedStringEvent == null || string.IsNullOrEmpty(id))
+        {
+            SetText(fallbackText);
+            return;
+        }
+
+        SetText(fallbackText);
         m_LocalizedStringEvent.StringReference = new LocalizedString(m_LocalizedTableName, id);
     }
 
     public void BindSelectedEvent(UnityAction<int> action, int parameter)
     {
+        if (m_Button == null)
+            return;
+
+        m_Button.onClick.RemoveAllListeners();
         m_Button.onClick.AddListener(() => action(parameter));
+    }
+
+    public void ClearSelectedEvents()
+    {
+        if (m_Button != null)
+            m_Button.onClick.RemoveAllListeners();
     }
 
 }

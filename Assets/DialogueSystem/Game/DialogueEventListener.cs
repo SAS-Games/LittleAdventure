@@ -13,7 +13,8 @@ public class DialogueEventListener : MonoBehaviour
 
     private EventBinding<DialogueStartEvent> _dialogueStartEventBinding;
     private EventBinding<DialogueEndEvent> _dialogueEndEventBinding;
-    protected Story CurrentStory => ((DialogueHandler)_dialogueHandler).CurrentStory;
+    private DialogueHandler _subscribedDialogueHandler;
+    protected Story CurrentStory => (_dialogueHandler as DialogueHandler)?.CurrentStory;
 
     protected virtual void Awake()
     {
@@ -36,31 +37,51 @@ public class DialogueEventListener : MonoBehaviour
     {
         EventBus<DialogueStartEvent>.Deregister(_dialogueStartEventBinding);
         EventBus<DialogueEndEvent>.Deregister(_dialogueEndEventBinding);
+        UnsubscribeFromStoryMessages();
     }
 
     private void OnDialogueStartInternal(DialogueStartEvent evt)
     {
         if (evt.initiator != gameObject)
             return;
-        var dialogueHandler = _dialogueHandler as DialogueHandler;
+
+        var dialogueHandler = evt.dialogueHandler as DialogueHandler;
+        if (dialogueHandler == null)
+            return;
+
         m_OnDialogueStart?.Invoke(dialogueHandler);
         OnDialogueStart(evt);
-        dialogueHandler.OnStoryMessageShown += OnTextRevealed;
+        UnsubscribeFromStoryMessages();
+        dialogueHandler.OnLineMessageShown += OnTextRevealed;
+        _subscribedDialogueHandler = dialogueHandler;
     }
 
-    private void OnTextRevealed(Story story)
+    private void OnTextRevealed(Story story, DialogueLineContext lineContext)
     {
-        m_OnDialogueTextRevealed.Invoke(((DialogueHandler)_dialogueHandler).TagProcessContext.CurrentSpeakerId);
+        if (lineContext == null)
+            return;
+
+        m_OnDialogueTextRevealed?.Invoke(lineContext.CurrentSpeakerId);
     }
 
     private void OnDialogueEndInternal(DialogueEndEvent evt)
     {
         if (evt.initiator != gameObject)
             return;
-        var dialogueHandler = _dialogueHandler as DialogueHandler;
+
+        var dialogueHandler = evt.dialogueHandler as DialogueHandler;
         m_OnDialogueEnd?.Invoke(dialogueHandler);
         OnDialogueEnd(evt);
-        dialogueHandler.OnStoryMessageShown -= OnTextRevealed;
+        UnsubscribeFromStoryMessages();
+    }
+
+    private void UnsubscribeFromStoryMessages()
+    {
+        if (_subscribedDialogueHandler == null)
+            return;
+
+        _subscribedDialogueHandler.OnLineMessageShown -= OnTextRevealed;
+        _subscribedDialogueHandler = null;
     }
 
     /// <summary>

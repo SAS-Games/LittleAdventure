@@ -12,11 +12,29 @@ namespace SAS.DialogueSystem
         protected virtual void Awake()
         {
             this.Initialize();
-            _dialogueHandler.OnStoryContinue += OnStoryContinue;
-            _dialogueHandler.OnStoryMessageShown += OnStoryMessageShown;
+            _dialogueHandler.OnLineReady += OnLineReady;
+            _dialogueHandler.OnLineMessageShown += OnLineMessageShown;
         }
 
-        private void OnStoryMessageShown(Story story) => m_ContinueIcon.SetActive(story.currentChoices.Count == 0);
-        private void OnStoryContinue(string textToDisplay) => m_ContinueIcon.SetActive(false);
+        private void OnDestroy()
+        {
+            if (_dialogueHandler == null)
+                return;
+
+            _dialogueHandler.OnLineReady -= OnLineReady;
+            _dialogueHandler.OnLineMessageShown -= OnLineMessageShown;
+        }
+
+        private void OnLineMessageShown(Story story, DialogueLineContext lineContext)
+        {
+            if (story != null && m_ContinueIcon != null)
+                m_ContinueIcon.SetActive(story.currentChoices.Count == 0);
+        }
+
+        private void OnLineReady(DialogueLineContext lineContext)
+        {
+            if (m_ContinueIcon != null)
+                m_ContinueIcon.SetActive(false);
+        }
     }
 }

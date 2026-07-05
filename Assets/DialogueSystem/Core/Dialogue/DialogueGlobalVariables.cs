@@ -8,25 +8,43 @@ public class DialogueGlobalVariables
     public Dictionary<string, Ink.Runtime.Object> GlobalVariables { get; private set; }
 
     private Story _globalVariablesStory;
-    private const string SaveVariablesKey = "INK_VARIABLES";
+    private const string DefaultSaveVariablesKey = "INK_VARIABLES";
+    private readonly string _saveVariablesKey;
 
-    public DialogueGlobalVariables(TextAsset loadGlobalsJSON) 
+    public DialogueGlobalVariables(TextAsset loadGlobalsJSON, string saveVariablesKey = DefaultSaveVariablesKey) 
     {
+        _saveVariablesKey = string.IsNullOrWhiteSpace(saveVariablesKey)
+            ? DefaultSaveVariablesKey
+            : saveVariablesKey.Trim();
+        GlobalVariables = new Dictionary<string, Ink.Runtime.Object>();
+
+        if (loadGlobalsJSON == null || string.IsNullOrEmpty(loadGlobalsJSON.text))
+        {
+            Debug.LogWarning("No Ink globals JSON assigned. Dialogue globals will not be persisted.");
+            return;
+        }
+
         // create the story
         _globalVariablesStory = new Story(loadGlobalsJSON.text);
         // if we have saved data, load it
-         if (PlayerPrefs.HasKey(SaveVariablesKey))
+         if (PlayerPrefs.HasKey(_saveVariablesKey))
          {
-             string jsonState = PlayerPrefs.GetString(SaveVariablesKey);
-            _globalVariablesStory.state.LoadJson(jsonState);
+            string jsonState = PlayerPrefs.GetString(_saveVariablesKey);
+            try
+            {
+                _globalVariablesStory.state.LoadJson(jsonState);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Failed to load dialogue globals from PlayerPrefs: {ex.Message}");
+            }
          }
 
         // initialize the dictionary
-        GlobalVariables = new Dictionary<string, Ink.Runtime.Object>();
         foreach (string name in _globalVariablesStory.variablesState)
         {
             Ink.Runtime.Object value = _globalVariablesStory.variablesState.GetVariableWithName(name);
-            GlobalVariables.Add(name, value);
+            GlobalVariables[name] = value;
             Debug.Log("Initialized global dialogue variable: " + name + " = " + value);
         }
     }
@@ -39,12 +57,16 @@ public class DialogueGlobalVariables
             VariablesToStory(_globalVariablesStory);
             // NOTE: eventually, you'd want to replace this with an actual save/load method
             // rather than using PlayerPrefs.
-            PlayerPrefs.SetString(SaveVariablesKey, _globalVariablesStory.state.ToJson());
+            PlayerPrefs.SetString(_saveVariablesKey, _globalVariablesStory.state.ToJson());
+            PlayerPrefs.Save();
         }
     }
 
     public void StartListening(Story story) 
     {
+        if (story == null)
+            return;
+
         // it's important that VariablesToStory is before assigning the listener!
         VariablesToStory(story);
         story.variablesState.variableChangedEvent += VariableChanged;
@@ -52,6 +74,9 @@ public class DialogueGlobalVariables
 
     public void StopListening(Story story) 
     {
+        if (story == null)
+            return;
+
         story.variablesState.variableChangedEvent -= VariableChanged;
     }
 
@@ -60,16 +85,28 @@ public class DialogueGlobalVariables
         // only maintain variables that were initialized from the globals ink file
         if (GlobalVariables.ContainsKey(name)) 
         {
-            GlobalVariables.Remove(name);
-            GlobalVariables.Add(name, value);
+            GlobalVariables[name] = value;
         }
     }
 
     private void VariablesToStory(Story story) 
     {
+        if (story == null)
+            return;
+
         foreach(KeyValuePair<string, Ink.Runtime.Object> variable in GlobalVariables) 
         {
-            story.variablesState.SetGlobal(variable.Key, variable.Value);
+            if (story.variablesState.GetVariableWithName(variable.Key) == null)
+                continue;
+
+            try
+            {
+                story.variablesState.SetGlobal(variable.Key, variable.Value);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Failed to copy dialogue global '{variable.Key}' into story: {ex.Message}");
+            }
         }
     }
 

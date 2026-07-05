@@ -12,14 +12,17 @@ public class SpeakerTagProcessor : BaseTagProcessor
     private readonly Dictionary<string, SpeakerState> _speakers = new();
     public IReadOnlyDictionary<string, SpeakerState> Speakers => _speakers;
 
+    public override bool CanHandle(string tagKey)
+    {
+        return KeyEquals(tagKey, "speaker") || base.CanHandle(tagKey);
+    }
+
     public override void Process(string tagValue, TagProcessContext context)
     {
         var parsed = context.MetaParser.Parse(tagValue);
 
         if (!parsed.TryGetValue("id", out var speakerId))
             return;
-
-        context.CurrentSpeakerId = speakerId;
 
         var state = new SpeakerState
         {
@@ -29,6 +32,7 @@ public class SpeakerTagProcessor : BaseTagProcessor
         };
 
         _speakers[speakerId] = state;
+        context.CurrentLine.SetSpeaker(speakerId, state);
     }
 
 

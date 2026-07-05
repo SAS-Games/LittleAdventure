@@ -175,7 +175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3e99ce7fe2334e42a1b4b134602d1f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inkJSON: {fileID: 4900000, guid: ca1de1d3cfeb3fb4c9766504bef1a50c, type: 3}
+  m_InkJSON: {fileID: 4900000, guid: ca1de1d3cfeb3fb4c9766504bef1a50c, type: 3}
+  m_AutoStart: 0
   m_TriggerOncePerSession: 0
 --- !u!114 &2764124220871382723
 MonoBehaviour:

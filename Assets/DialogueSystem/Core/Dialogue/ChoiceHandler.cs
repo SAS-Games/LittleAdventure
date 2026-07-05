@@ -9,13 +9,19 @@ namespace SAS.DialogueSystem
     public struct ChoiceContext
     {
         public IReadOnlyList<Choice> Choices;
+        public IReadOnlyList<ChoiceOptionContext> Options;
+    }
+
+    public struct ChoiceOptionContext
+    {
+        public Choice Choice;
+        public int ChoiceIndex;
+        public DialogueLineContext LineContext;
     }
 
     public class ChoiceHandler : MonoBehaviour
     {
         [FieldRequiresParent] private DialogueHandler _dialogueHandler;
-
-        private ITagProcessor[] _tagProcessors;
 
         public event Action<ChoiceContext> OnChoicesPrepared;
         public event Action OnChoicesHidden;
@@ -23,55 +29,65 @@ namespace SAS.DialogueSystem
         private void Awake()
         {
             this.Initialize();
-            _tagProcessors = GetComponentsInChildren<ITagProcessor>();
         }
 
         private void OnEnable()
         {
-            _dialogueHandler.OnStoryContinue += HandleStoryContinue;
-            _dialogueHandler.OnStoryMessageShown += HandleStoryMessageShown;
+            if (_dialogueHandler == null)
+                return;
+
+            _dialogueHandler.OnLineReady += HandleLineReady;
+            _dialogueHandler.OnLineMessageShown += HandleLineMessageShown;
         }
 
         private void OnDisable()
         {
-            _dialogueHandler.OnStoryContinue -= HandleStoryContinue;
-            _dialogueHandler.OnStoryMessageShown -= HandleStoryMessageShown;
+            if (_dialogueHandler == null)
+                return;
+
+            _dialogueHandler.OnLineReady -= HandleLineReady;
+            _dialogueHandler.OnLineMessageShown -= HandleLineMessageShown;
         }
 
-        private void HandleStoryContinue(string _)
+        private void HandleLineReady(DialogueLineContext _)
         {
             OnChoicesHidden?.Invoke();
         }
 
-        private void HandleStoryMessageShown(Story story)
+        private void HandleLineMessageShown(Story story, DialogueLineContext _)
         {
-            var choices = story.currentChoices;
-
-            foreach (var choice in choices)
+            if (story == null)
             {
-                if (choice.tags == null)
-                    continue;
+                OnChoicesHidden?.Invoke();
+                return;
+            }
 
-                foreach (var tag in choice.tags)
+            var choices = story.currentChoices;
+            var options = new List<ChoiceOptionContext>(choices.Count);
+
+            for (int index = 0; index < choices.Count; index++)
+            {
+                var choice = choices[index];
+                options.Add(new ChoiceOptionContext
                 {
-                    if (!Utils.GetTagKeyValue(tag, out var key, out var value))
-                        continue;
-
-                    foreach (var processor in _tagProcessors)
-                    {
-                        if (!processor.CanHandle(key))
-                            continue;
-
-                        processor.Reset();
-                        processor.Process(value, _dialogueHandler.TagProcessContext);
-                    }
-                }
+                    Choice = choice,
+                    ChoiceIndex = index,
+                    LineContext = BuildChoiceLineContext(choice)
+                });
             }
 
             OnChoicesPrepared?.Invoke(new ChoiceContext
             {
-                Choices = choices
+                Choices = choices,
+                Options = options
             });
         }
+
+        private DialogueLineContext BuildChoiceLineContext(Choice choice)
+        {
+            return _dialogueHandler.CreateLineContext(choice.text, choice.tags);
+        }
+
+        public void MakeChoice(int choiceIndex) => _dialogueHandler.MakeChoice(choiceIndex);
     }
 }

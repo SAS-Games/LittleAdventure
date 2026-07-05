@@ -1,0 +1,765 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4548ccb12fcad0a4f8357e38b99d61e4, type: 3}
+  m_Name: MoonlitBridgeSimpleDraft
+  m_EditorClassIdentifier: Assembly-CSharp-Editor::SAS.DialogueSystem.EditorTools.DialogueStoryDraft
+  outputFileName: MoonlitBridgeSimple
+  outputFolder: {fileID: 102900000, guid: 0fe13c6fed63f0a49827450da04031b3, type: 3}
+  includeCommonInk: 0
+  commonInkFile: LA_common.ink
+  includeFiles: []
+  globalTags: []
+  writeStartDivert: 1
+  startKnot: moonlit_bridge
+  compileOnSave: 1
+  appendEndToLineOnlySections: 1
+  sections:
+  - sectionType: 0
+    knotName: moonlit_bridge
+    entries:
+    - type: 0
+      text: The old bridge hangs over a silver river, broken in the middle.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: moonlit_bridge_intro
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 1
+        audioId: soft_mystery
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: A tiny lantern spirit flickers beside the railing.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 1
+        speakerId: lumen
+        speakerName: LUMEN
+        portraitKey: 
+        speakerAnimation: Appear
+        useLocale: 1
+        localeKey: lumen_appears
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '"Careful, traveler. This bridge only remembers brave footsteps."'
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 1
+        speakerId: lumen
+        speakerName: LUMEN
+        portraitKey: 
+        speakerAnimation: Talk
+        useLocale: 1
+        localeKey: lumen_warning
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Ask the lantern spirit for help
+      targetKnot: ask_lumen
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_ask_lumen
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Inspect the broken bridge
+      targetKnot: inspect_bridge
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_inspect_bridge
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Cross immediately
+      targetKnot: cross_now
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_cross_now
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: ask_lumen
+    entries:
+    - type: 0
+      text: '"Polite footsteps are lighter than brave ones."'
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 1
+        speakerId: lumen
+        speakerName: LUMEN
+        portraitKey: 
+        speakerAnimation: Smile
+        useLocale: 1
+        localeKey: lumen_polite
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Ask what the bridge needs
+      targetKnot: bridge_secret
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_ask_need
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Inspect the bridge
+      targetKnot: inspect_bridge
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_inspect_after_lumen
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: bridge_secret
+    entries:
+    - type: 0
+      text: '"The bridge lost its heart. Find the Moon Seed between the stones."'
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 1
+        speakerId: lumen
+        speakerName: LUMEN
+        portraitKey: 
+        speakerAnimation: Talk
+        useLocale: 1
+        localeKey: lumen_moon_seed_hint
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Place the Moon Seed
+      targetKnot: repair_bridge
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: inspect_bridge > 0
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_place_seed
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Look for the Moon Seed
+      targetKnot: inspect_bridge
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_find_seed
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: inspect_bridge
+    entries:
+    - type: 0
+      text: Between two cracked stones, a pale seed glows like a trapped star.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: inspect_find_seed
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 1
+        audioId: item_found
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Place the Moon Seed into the bridge
+      targetKnot: repair_bridge
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_place_seed
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Return to Lumen
+      targetKnot: ask_lumen
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choice_return_lumen
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: repair_bridge
+    entries:
+    - type: 0
+      text: The Moon Seed blooms. Roots of light stitch the bridge together.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: repair_bridge
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 1
+        audioId: bridge_repair
+        customTags: []
+      expanded: 1
+    - type: 2
+      text: 
+      targetKnot: good_ending
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 0
+        localeKey: 
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: cross_now
+    entries:
+    - type: 0
+      text: You step onto the broken bridge. The stones tremble beneath you.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: risky_crossing
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 5
+      text: 
+      targetKnot: safe_crossing
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: ask_lumen > 0
+      elseTargetKnot: bad_ending
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 0
+        localeKey: 
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: safe_crossing
+    entries:
+    - type: 0
+      text: Lumen catches your sleeve with a thread of light and pulls you back.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 1
+        speakerId: lumen
+        speakerName: LUMEN
+        portraitKey: 
+        speakerAnimation: Save
+        useLocale: 1
+        localeKey: lumen_saves_you
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 2
+      text: 
+      targetKnot: moonlit_bridge
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 0
+        localeKey: 
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: good_ending
+    entries:
+    - type: 0
+      text: You cross into the moonlit forest, carrying the warmth of a tiny lantern
+        beside your heart.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: good_ending
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 1
+        audioId: peaceful_theme
+        customTags: []
+      expanded: 1
+    - type: 7
+      text: 
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 0
+        localeKey: 
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: bad_ending
+    entries:
+    - type: 0
+      text: The bridge rejects your haste. You tumble into silver mist.
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: bad_ending_fall
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 4
+      text: 
+      targetKnot: 
+      targetIsTunnel: 0
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      bodyEntries: []
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 0
+        localeKey: 
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  references:
+    version: 2
+    RefIds: []

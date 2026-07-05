@@ -87,11 +87,14 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
     private void InitializeAudioInfoDictionary()
     {
         _audioInfoDictionary = new Dictionary<string, DialogueAudioInfoSO>();
-        if (m_DefaultAudioInfo)
-            _audioInfoDictionary.Add(m_DefaultAudioInfo.id, m_DefaultAudioInfo);
+        if (m_DefaultAudioInfo && !string.IsNullOrEmpty(m_DefaultAudioInfo.id))
+            _audioInfoDictionary[m_DefaultAudioInfo.id] = m_DefaultAudioInfo;
         foreach (DialogueAudioInfoSO audioInfo in m_AudioInfos)
         {
-            _audioInfoDictionary.Add(audioInfo.id, audioInfo);
+            if (audioInfo == null || string.IsNullOrEmpty(audioInfo.id))
+                continue;
+
+            _audioInfoDictionary[audioInfo.id] = audioInfo;
         }
     }
 
@@ -163,7 +166,8 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
             return;
         }
 
-        StopCoroutine(_typewriterCoroutine);
+        if (_typewriterCoroutine != null)
+            StopCoroutine(_typewriterCoroutine);
         StartCoroutine(SkipWithDelay());
     }
 
@@ -191,6 +195,9 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
         float minPitch = _currentAudioInfo.minPitch;
         float maxPitch = _currentAudioInfo.maxPitch;
         bool stopAudioSource = _currentAudioInfo.stopAudioSource;
+
+        if (_audioSource == null || dialogueTypingSoundClips == null || dialogueTypingSoundClips.Length == 0 || frequencyLevel <= 0)
+            return;
 
         // play the sound based on the config
         if (currentDisplayedCharacterCount % frequencyLevel == 0)

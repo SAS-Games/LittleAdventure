@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using SAS.Core.TagSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,67 +11,141 @@ namespace SAS.DialogueSystem
     {
         [FieldRequiresParent] private ChoiceHandler _handler;
         [FieldRequiresChild] private ChoiceView[] _choices;
+        [SerializeField] private ChoiceView m_ChoicePrefab;
+        [SerializeField] private Transform m_ChoiceContainer;
+
+        private readonly List<ChoiceView> _choiceViews = new();
 
         private void Awake()
         {
             this.Initialize();
+            InitializeChoicePool();
         }
 
         private void OnEnable()
         {
+            if (_handler == null)
+                return;
+
             _handler.OnChoicesPrepared += PresentChoices;
             _handler.OnChoicesHidden += HideChoices;
         }
 
         private void OnDisable()
         {
+            if (_handler == null)
+                return;
+
             _handler.OnChoicesPrepared -= PresentChoices;
             _handler.OnChoicesHidden -= HideChoices;
         }
 
         private void PresentChoices(ChoiceContext context)
         {
-            var choices = context.Choices;
+            var options = context.Options;
+            var choiceCount = options?.Count ?? context.Choices?.Count ?? 0;
 
-            if (choices.Count > _choices.Length)
-                Debug.LogError($"UI supports {_choices.Length} choices but received {choices.Count}");
+            EnsureChoiceCapacity(choiceCount);
 
             int index = 0;
-            foreach (var choice in choices)
+            for (; index < choiceCount; index++)
             {
-                if (index >= _choices.Length)
+                if (index >= _choiceViews.Count)
                     break;
 
-                var view = _choices[index];
-                SetText(view, choice.text);
-                index++;
+                var view = _choiceViews[index];
+                var option = options != null
+                    ? options[index]
+                    : new ChoiceOptionContext
+                    {
+                        Choice = context.Choices[index],
+                        ChoiceIndex = index,
+                        LineContext = new DialogueLineContext(context.Choices[index].text, context.Choices[index].tags)
+                    };
+                SetChoice(view, option);
             }
 
-            for (int i = index; i < _choices.Length; i++)
-                _choices[i].gameObject.SetActive(false);
+            for (int i = index; i < _choiceViews.Count; i++)
+                _choiceViews[i].gameObject.SetActive(false);
 
-            StartCoroutine(SelectFirstChoice());
+            if (choiceCount > 0)
+                StartCoroutine(SelectFirstChoice());
         }
 
-        protected virtual void SetText(ChoiceView view, string text)
+        protected virtual void SetChoice(ChoiceView view, ChoiceOptionContext option)
         {
-            view.SetText(text);
+            var locale = option.LineContext?.Locale;
+            if (!string.IsNullOrEmpty(locale))
+                view.SetLocalText(locale, option.Choice.text);
+            else
+                view.SetText(option.Choice.text);
+
+            view.BindSelectedEvent(_handler.MakeChoice, option.ChoiceIndex);
             view.gameObject.SetActive(true);
         }
 
         private IEnumerator SelectFirstChoice()
         {
+            if (EventSystem.current == null)
+                yield break;
+
             EventSystem.current.SetSelectedGameObject(null);
             yield return null;
 
-            if (_choices.Length > 0)
-                EventSystem.current.SetSelectedGameObject(_choices[0].gameObject);
+            if (_choiceViews.Count > 0 && _choiceViews[0].gameObject.activeInHierarchy)
+                EventSystem.current.SetSelectedGameObject(_choiceViews[0].gameObject);
         }
 
         private void HideChoices()
         {
-            foreach (var choice in _choices)
+            foreach (var choice in _choiceViews)
+            {
+                choice.ClearSelectedEvents();
                 choice.gameObject.SetActive(false);
+            }
+        }
+
+        private void InitializeChoicePool()
+        {
+            _choiceViews.Clear();
+
+            if (_choices != null)
+            {
+                foreach (var choice in _choices)
+                {
+                    if (choice != null && !_choiceViews.Contains(choice))
+                        _choiceViews.Add(choice);
+                }
+            }
+
+            if (m_ChoicePrefab == null && _choiceViews.Count > 0)
+                m_ChoicePrefab = _choiceViews[0];
+
+            if (m_ChoiceContainer == null && m_ChoicePrefab != null)
+                m_ChoiceContainer = m_ChoicePrefab.transform.parent;
+
+            HideChoices();
+        }
+
+        private void EnsureChoiceCapacity(int choiceCount)
+        {
+            if (choiceCount <= _choiceViews.Count)
+                return;
+
+            if (m_ChoicePrefab == null)
+            {
+                Debug.LogError($"UI supports {_choiceViews.Count} choices but received {choiceCount}, and no choice prefab/template is assigned.");
+                return;
+            }
+
+            var parent = m_ChoiceContainer != null ? m_ChoiceContainer : m_ChoicePrefab.transform.parent;
+            while (_choiceViews.Count < choiceCount)
+            {
+                var view = Instantiate(m_ChoicePrefab, parent);
+                view.name = $"{m_ChoicePrefab.name} {_choiceViews.Count + 1}";
+                view.gameObject.SetActive(false);
+                _choiceViews.Add(view);
+            }
         }
     }
 }

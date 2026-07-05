@@ -1,0 +1,609 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4548ccb12fcad0a4f8357e38b99d61e4, type: 3}
+  m_Name: IntroductionDraft
+  m_EditorClassIdentifier: Assembly-CSharp-Editor::SAS.DialogueSystem.EditorTools.DialogueStoryDraft
+  outputFileName: Introduction
+  outputFolder: {fileID: 102900000, guid: 0fe13c6fed63f0a49827450da04031b3, type: 3}
+  includeCommonInk: 0
+  commonInkFile: LA_common.ink
+  includeFiles: []
+  globalTags: []
+  writeStartDivert: 1
+  startKnot: introduction
+  compileOnSave: 1
+  appendEndToLineOnlySections: 1
+  sections:
+  - sectionType: 0
+    knotName: introduction
+    entries:
+    - type: 0
+      text: Welcome to the Unity Localization Tutorial! In this interactive guide,
+        you will learn the basics of localization, including setting up your project
+        and translating text for different languages.
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: introduction
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 2
+      text: 
+      targetKnot: choose_a_topic
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 1
+        speakerId: npc
+        speakerName: KAIROS
+        portraitKey: 
+        speakerAnimation: Talk
+        useLocale: 0
+        localeKey: 
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: choose_a_topic
+    entries:
+    - type: 0
+      text: 'Choose a topic to get started:'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: get_started
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: What is Localization?
+      targetKnot: what_is_localization
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: what_is_localization
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Setting Up Localization in Unity
+      targetKnot: setup_localization
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: setting_up_localization
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Translating Text
+      targetKnot: translating_text
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: how_to_translate
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Done
+      targetKnot: END
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: done
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: what_is_localization
+    entries:
+    - type: 0
+      text: Localization is the process of adapting your game for different regions,
+        cultures, and languages. This involves translating text, adjusting date formats,
+        adapting graphics, and sometimes even changing gameplay elements to better
+        suit the target audience.
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: what_is_localization1
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: Localization is crucial for reaching a global audience and ensuring your
+        game is accessible to players from diverse backgrounds.
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: what_is_localization2
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Go Back
+      targetKnot: choose_a_topic
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choose_a_topic
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: setup_localization
+    entries:
+    - type: 0
+      text: 'Setting up localization in Unity involves a few key steps:'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: setup_localization
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '1. **Install the Localization Package**: Go to the Unity Package Manager
+        and install the official Unity Localization package.'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: setup_localization_step1
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '2. **Create a Localization Settings Asset**: This asset will store all
+        your localization settings, including supported languages and default language.'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: setup_localization_step2
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '3. **Set Up Locales**: Locales represent the different languages and
+        cultures your game supports. Create a new Locale for each language.'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: setup_localization_step3
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '4. **Create String Tables**: String tables store all the text that needs
+        to be translated. Each language will have its own string table.'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: setup_localization_step4
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Go Back
+      targetKnot: choose_a_topic
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choose_a_topic
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
+  - sectionType: 0
+    knotName: translating_text
+    entries:
+    - type: 0
+      text: Translating text is a key part of localization. In Unity, you use string
+        tables to store translations for different languages.
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: translating_text
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '1. **Add Entries to String Tables**: Each entry in a string table represents
+        a piece of text that needs to be translated. For example, the English string
+        table might have an entry for "Start Game," and the Spanish table would have
+        "Iniciar Juego."'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: translating_text_step1
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '2. **Use the Localize Component**: Attach the `Localize String Event`
+        component to UI elements like text fields or buttons. This component will
+        automatically display the correct translation based on the selected locale.'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: translating_text_step2
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 0
+      text: '3. **Preview Translations**: In the Localization Settings, you can switch
+        between different locales to preview how the translated text looks in your
+        game.'
+      targetKnot: 
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 0
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: translating_text_step3
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    - type: 1
+      text: Go Back
+      targetKnot: choose_a_topic
+      choiceDepth: 1
+      stickyChoice: 0
+      suppressChoiceText: 1
+      fallbackChoice: 0
+      choiceConditionExpression: 
+      gatherDepth: 1
+      conditionExpression: isCoop
+      elseTargetKnot: 
+      rawInk: 
+      tags:
+        useSpeaker: 0
+        speakerId: 
+        speakerName: 
+        portraitKey: 
+        speakerAnimation: 
+        useLocale: 1
+        localeKey: choose_a_topic
+        useLayout: 0
+        layoutAnimation: 
+        useAudio: 0
+        audioId: 
+        customTags: []
+      expanded: 1
+    expanded: 1
