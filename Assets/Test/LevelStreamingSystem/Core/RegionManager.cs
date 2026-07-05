@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Debug = SAS.Debug;
 
 namespace LevelStreaming
 {
     public partial class RegionManager : MonoBehaviour
     {
-        const string TAG = "RegionManager";
-
         [Serializable]
         public class Portal
         {
@@ -74,12 +71,12 @@ namespace LevelStreaming
             {
                 if (string.IsNullOrEmpty(region.RegionName))
                 {
-                    Debug.LogWarning($"Region has no valid name: {region.Type}", this, TAG);
+                    Debug.LogWarning($"Region has no valid name: {region.Type}", this);
                     continue;
                 }
 
                 if (!regionNames.Add(region.RegionName))
-                    Debug.LogWarning($"Duplicate region name detected: {region.RegionName}", this, TAG);
+                    Debug.LogWarning($"Duplicate region name detected: {region.RegionName}", this);
 
                 GetOrCreateMeta(region);
 
@@ -91,7 +88,7 @@ namespace LevelStreaming
             if (RegionSelectionStrategy != null)
                 RegionSelectionStrategy.Initialize(regions);
             else
-                Debug.LogError("No RegionSelectionStrategy assigned!", this, TAG);
+                Debug.LogError("No RegionSelectionStrategy assigned!", this);
         }
 
         public void UpdateLoadedRegions(HashSet<Region> loadedRegions)
