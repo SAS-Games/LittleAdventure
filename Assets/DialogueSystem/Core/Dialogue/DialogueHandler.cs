@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Debug =  UnityEngine.Debug;
 
 namespace SAS.DialogueSystem
 {
@@ -53,7 +54,7 @@ namespace SAS.DialogueSystem
             if (m_LoadGlobalsJSON != null)
                 _dialogueGlobalVariables = new DialogueGlobalVariables(m_LoadGlobalsJSON, m_GlobalsSaveKey);
             else
-                Debug.LogWarning("Dialogue globals JSON is not assigned.", "DialogueHandler");
+                Debug.LogWarning("Dialogue globals JSON is not assigned.");
 
             _inkExternalMethodRegistry = new InkExternalMethodRegistry();
         }
@@ -76,7 +77,7 @@ namespace SAS.DialogueSystem
 
             if (inkJSON == null)
             {
-                Debug.LogError("Cannot enter dialogue mode because Ink JSON is not assigned.", "DialogueHandler");
+                Debug.LogError("Cannot enter dialogue mode because Ink JSON is not assigned.");
                 return;
             }
 
@@ -87,7 +88,7 @@ namespace SAS.DialogueSystem
             catch (Exception ex)
             {
                 CurrentStory = null;
-                Debug.LogError($"Failed to create Ink story from '{inkJSON.name}': {ex.Message}", "DialogueHandler");
+                Debug.LogError($"Failed to create Ink story from '{inkJSON.name}': {ex.Message}");
                 return;
             }
 
@@ -145,7 +146,7 @@ namespace SAS.DialogueSystem
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"Failed to continue Ink story: {ex.Message}", "DialogueHandler");
+                    Debug.LogError($"Failed to continue Ink story: {ex.Message}");
                     BeginExitDialogueMode();
                     return;
                 }
@@ -265,18 +266,18 @@ namespace SAS.DialogueSystem
 
             if (choiceIndex < 0 || choiceIndex >= CurrentStory.currentChoices.Count)
             {
-                Debug.LogWarning($"Choice index {choiceIndex} is out of range.", "DialogueHandler");
+                Debug.LogWarning($"Choice index {choiceIndex} is out of range.");
                 return;
             }
 
-            Debug.Log("Making choice " + choiceIndex, "DialogueHandler");
+            Debug.Log("Making choice " + choiceIndex);
             try
             {
                 CurrentStory.ChooseChoiceIndex(choiceIndex);
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to choose Ink choice index {choiceIndex}: {ex.Message}", "DialogueHandler");
+                Debug.LogError($"Failed to choose Ink choice index {choiceIndex}: {ex.Message}");
                 BeginExitDialogueMode();
                 return;
             }
