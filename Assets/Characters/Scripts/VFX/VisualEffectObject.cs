@@ -1,7 +1,4 @@
-using SAS.Pool;
 using UnityEngine;
-using UnityEngine.VFX;
-using Debug = SAS.Debug;
 
 public class VisualEffectObject : SelfDespawnable
 {

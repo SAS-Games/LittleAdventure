@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using UniRx;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 public class CharacterAnimatorProcessor : MonoBehaviour
 {
@@ -22,7 +21,7 @@ public class CharacterAnimatorProcessor : MonoBehaviour
         var dialogueHandlerComponent = _dialogueHandler as Component;
         if (dialogueHandlerComponent == null)
         {
-            Debug.LogWarning("Cannot register character animator because the dialogue handler is not a Unity component.", "DialogueHandler");
+            Debug.LogWarning("Cannot register character animator because the dialogue handler is not a Unity component.");
             return;
         }
 
@@ -33,7 +32,7 @@ public class CharacterAnimatorProcessor : MonoBehaviour
         {
             Debug.LogWarning($"No IAnimatorProcessor found with matching tag '{m_Tag}' " +
              $"Checked {animatorProcessors.Length} processors in children. " +
-             $"Ensure that a ProxyAnimatorProcessor with tag '{m_Tag}' exists as a child of DialogueHandler.", "DialogueHandler");
+             $"Ensure that a ProxyAnimatorProcessor with tag '{m_Tag}' exists as a child of DialogueHandler.");
             return;
         }
 

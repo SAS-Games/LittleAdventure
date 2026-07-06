@@ -1,8 +1,8 @@
+using System;
+using System.Linq;
 using SAS.Pool;
 using SAS.WeaponSystem.Components;
-using System.Linq;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 namespace SAS.WeaponSystem
 {
@@ -17,7 +17,7 @@ namespace SAS.WeaponSystem
         private Rigidbody _rigidbody;
         private Transform _attacker;
 
-        event System.Action<float> IDamageable.OnDamageTaken
+        event Action<float> IDamageable.OnDamageTaken
         {
             add { }
             remove { }

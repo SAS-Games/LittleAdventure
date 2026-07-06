@@ -1,14 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 namespace LevelStreaming
 {
     [RequireComponent(typeof(RegionManager)), DisallowMultipleComponent]
     public class RegionStreamingController : MonoBehaviour
     {
-        const string TAG = "StreamingController";
-
         [SerializeField] private RuntimeScriptableObject<RegionStreamingLoader> m_StreamingLoader;
         [SerializeField] private float m_UpdateInterval = 0.1f;
 
@@ -28,7 +25,7 @@ namespace LevelStreaming
             _regionManager = GetComponent<RegionManager>();
             if (_streamingLoader == null)
             {
-                Debug.LogError("Loader must implement IStreamingLoader<Region>.", this, TAG);
+                Debug.LogError("Loader must implement IStreamingLoader<Region>.", this);
                 enabled = false;
                 return;
             }
@@ -166,7 +163,7 @@ namespace LevelStreaming
                     activatable.OnRegionActivated(region, active);
             }
 
-            Debug.Log($"Region {region.RegionName} is in active range {active}", this, TAG);
+            Debug.Log($"Region {region.RegionName} is in active range {active}", this);
         }
 
         private void OnLoadComplete(RegionManager.Region region)

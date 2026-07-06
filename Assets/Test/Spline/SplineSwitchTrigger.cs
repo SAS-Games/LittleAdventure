@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 [RequireComponent(typeof(SplineSwitcher))]
 public class SplineSwitchTrigger : MonoBehaviour

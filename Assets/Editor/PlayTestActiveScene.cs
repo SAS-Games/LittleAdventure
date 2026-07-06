@@ -1,10 +1,7 @@
-using UnityEngine;
-using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
-using Debug = SAS.Debug;
+using UnityEditor;
+using UnityEngine;
 
 [InitializeOnLoad]
 public static class PlayLoadedScene

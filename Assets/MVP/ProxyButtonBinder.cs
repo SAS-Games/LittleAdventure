@@ -2,7 +2,6 @@ using UnityEngine;
 using UniRx;
 using SAS.Core.TagSystem;
 using UnityEngine.UI;
-using Debug = SAS.Debug;
 
 [RequireComponent(typeof(Button))]
 public class ProxyButtonBinder : MonoBehaviour, MetaLocator.IHandler
@@ -37,9 +36,9 @@ public class ProxyButtonBinder : MonoBehaviour, MetaLocator.IHandler
         {
             var message = $"[ProxyButtonBinder<{name}>] No ProxyButton found with tag '{this.GetTag()}' on '{gameObject.name}'";
             if (isCore)
-                Debug.LogError($"OnCoreLoaded : {message}", "ProxyButtonBinder");
+                Debug.LogError($"OnCoreLoaded : {message}");
             else
-                Debug.LogWarning($"OnMetaLoaded : {message}", "ProxyButtonBinder");
+                Debug.LogWarning($"OnMetaLoaded : {message}");
         }
     }
 }

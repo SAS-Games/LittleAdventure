@@ -1,7 +1,6 @@
 using SAS.Core.TagSystem;
 using UniRx;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 public class ProxyViewString : MonoBehaviour, IProxyView<string>, ServiceLocator.IService
 {
@@ -13,6 +12,6 @@ public class ProxyViewString : MonoBehaviour, IProxyView<string>, ServiceLocator
     void IProxyView<string>.OnValueChanged(string value)
     {
         _value.Value = value;
-        Debug.Log($"Value: {value}", this.GetTag().ToString());
+        Debug.Log($"Value: {value} {this.GetTag().ToString()}");
     }
 }

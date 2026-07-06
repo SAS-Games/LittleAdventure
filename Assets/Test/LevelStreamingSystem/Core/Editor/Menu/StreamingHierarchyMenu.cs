@@ -4,7 +4,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
-using Debug = SAS.Debug;
 
 public static class StreamingHierarchyMenu
 {

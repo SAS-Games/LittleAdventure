@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SAS.Core.TagSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Debug = SAS.Debug;
 
 namespace SAS.DialogueSystem
 {

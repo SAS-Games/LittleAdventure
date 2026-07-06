@@ -1,13 +1,12 @@
-using UnityEngine;
-using Debug = SAS.Debug;
+using Ink.Runtime;
 
 namespace SAS.DialogueSystem
 {
     public static class Utils
     {
-        public static Ink.Runtime.Object GetVariableState(this DialogueGlobalVariables dialogueGlobalVariables, string variableName)
+        public static Object GetVariableState(this DialogueGlobalVariables dialogueGlobalVariables, string variableName)
         {
-            Ink.Runtime.Object variableValue = null;
+            Object variableValue = null;
             dialogueGlobalVariables.GlobalVariables.TryGetValue(variableName, out variableValue);
             if (variableValue == null)
             {

@@ -1,6 +1,5 @@
 using System.Linq;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 [CreateAssetMenu(menuName = "ImageKeyMapConfig")]
 public class ImageKeyMapConfig : ScriptableObject

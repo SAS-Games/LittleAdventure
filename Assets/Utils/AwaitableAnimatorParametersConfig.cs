@@ -1,13 +1,12 @@
-using UnityEngine;
 using System;
-using Debug = SAS.Debug;
+using UnityEngine;
 
 namespace SAS.StateMachineGraph.Utilities
 {
     [CreateAssetMenu(menuName = "SAS/State Machine Character Controller/Awaitable Animator Parameters Config")]
     public class AwaitableAnimatorParametersConfig : ScriptableObject
     {
-        [System.Serializable]
+        [Serializable]
         public class ParametersKeyMap
         {
             public string key;

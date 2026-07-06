@@ -1,8 +1,6 @@
 using SAS.StateMachineCharacterController;
 using SAS.StateMachineGraph.Utilities;
-using TMPro;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 public abstract class KnockbackBase : MonoBehaviour, IKnockbackable
 {

@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using Object = UnityEngine.Object;
-using Debug = SAS.Debug;
 
 [DisallowMultipleComponent, RequireComponent(typeof(PlayableDirector))]
 public class TimelineCrossSceneBinder : MonoBehaviour

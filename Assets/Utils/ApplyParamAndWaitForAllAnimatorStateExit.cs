@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
-using UnityEngine;
-using UniRx;
-using System.Collections.Generic;
 using System;
-using Debug = SAS.Debug;
+using System.Threading.Tasks;
+using UniRx;
+using UnityEngine;
 
 namespace SAS.StateMachineGraph.Utilities
 {

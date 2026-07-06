@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SAS.DialogueSystem;
 using SAS.Core.TagSystem;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 [RequireComponent(typeof(SpeakerTagProcessor)), DisallowMultipleComponent]
 public class SpeakerPresenter : MonoBehaviour

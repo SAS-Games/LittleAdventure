@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Events;
-using Debug = SAS.Debug;
 
 public class SpawnerGroup : MonoBehaviour
 {

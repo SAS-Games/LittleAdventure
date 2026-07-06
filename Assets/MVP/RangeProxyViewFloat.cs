@@ -1,7 +1,6 @@
 using SAS.Core.TagSystem;
 using UniRx;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 public class RangeProxyViewFloat : MonoBehaviour, IRangeProxyView<float>, ServiceLocator.IService
 {
@@ -16,6 +15,6 @@ public class RangeProxyViewFloat : MonoBehaviour, IRangeProxyView<float>, Servic
     {
         _value.Value = value;
         _maxValue.Value = maxValue; 
-        Debug.Log($"Value: {value}", this.GetTag().ToString());
+        Debug.Log($"Value: {value} {this.GetTag().ToString()}");
     }
 }

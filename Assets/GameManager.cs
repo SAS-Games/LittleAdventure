@@ -5,7 +5,6 @@ using SAS.StateMachineGraph;
 using SAS.Core.TagSystem;
 using Unity.Cinemachine;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 struct GamePauseEvent : IEvent
 {
@@ -34,7 +33,6 @@ public struct GlobalThreatLevelEvent : IEvent
 
 public class GameManager : MonoBehaviour, IReady
 {
-    private const string Tag = "GameManager";
     private EventBinding<SceneGroupLoadedEvent> _sceneGroupLoadedEventBinding;
     private EventBinding<SceneGroupLoadStartEvent> _sceneGroupLoadStartEventBinding;
 
@@ -83,7 +81,7 @@ public class GameManager : MonoBehaviour, IReady
         CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
         if (brain == null)
         {
-            Debug.LogWarning("CinemachineBrain not found on main camera.", Tag);
+            Debug.LogWarning("CinemachineBrain not found on main camera.");
             return;
         }
 
@@ -92,7 +90,7 @@ public class GameManager : MonoBehaviour, IReady
         var virtualCamera = brain.ActiveVirtualCamera as CinemachineCamera;
         if (virtualCamera == null)
         {
-            Debug.LogWarning("ActiveVirtualCamera is not a CinemachineCamera.", Tag);
+            Debug.LogWarning("ActiveVirtualCamera is not a CinemachineCamera.");
             return;
         }
 
@@ -100,7 +98,7 @@ public class GameManager : MonoBehaviour, IReady
         var cinemachineTargetGroup = targetGroup.GetComponent<CinemachineTargetGroup>();
         if (cinemachineTargetGroup == null)
         {
-            Debug.LogWarning("CinemachineTargetGroup not found on TrackingTarget.", Tag);
+            Debug.LogWarning("CinemachineTargetGroup not found on TrackingTarget.");
             return;
         }
 
@@ -109,7 +107,7 @@ public class GameManager : MonoBehaviour, IReady
             var lookAtTarget = player.GetComponent<ICameraLookAt>()?.Target;
             if (lookAtTarget == null)
             {
-                Debug.LogWarning("ICameraLookAt.Target is null.", Tag);
+                Debug.LogWarning("ICameraLookAt.Target is null.");
                 return;
             }
 

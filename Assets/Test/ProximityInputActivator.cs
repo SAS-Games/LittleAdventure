@@ -3,7 +3,6 @@ using SAS.StateMachineCharacterController;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Debug = SAS.Debug;
 
 public abstract class ProximityInputActivator : MonoBehaviour
 {
@@ -23,7 +22,7 @@ public abstract class ProximityInputActivator : MonoBehaviour
         var inputAction = inputHandler.PlayerInput.actions[m_InputActionName];
         if (inputAction == null)
         {
-            Debug.LogWarning($"Input action '{m_InputActionName}' not found on player.", nameof(ProximityInputActivator));
+            Debug.LogWarning($"Input action '{m_InputActionName}' not found on player.");
             return;
         }
         void Callback(InputAction.CallbackContext context) => OnInputPerformed(context, inputHandler.PlayerInput);

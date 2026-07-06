@@ -1,6 +1,5 @@
 using FMODUnity;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 public class PlayerSurfaceDetector : MonoBehaviour
 {

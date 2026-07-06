@@ -1,7 +1,6 @@
 using SAS.Core.TagSystem;
 using System;
 using UnityEngine;
-using Debug = SAS.Debug;
 
 public class DamageReceiver : MonoBehaviour, IDamageable
 {

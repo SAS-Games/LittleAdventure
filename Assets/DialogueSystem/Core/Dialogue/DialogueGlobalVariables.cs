@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Ink.Runtime;
-using Debug = SAS.Debug;
 
 public class DialogueGlobalVariables
 {
