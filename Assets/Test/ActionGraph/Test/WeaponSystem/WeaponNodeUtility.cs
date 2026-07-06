@@ -1,139 +1,137 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
-using SAS.WeaponSystem;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SAS.ActionGraph.WeaponSystem
 {
-public static class WeaponNodeUtility
-{
-    public static T GetAttackData<T>(ActionDataProvider<T> dataProvider, WeaponContext context)
+    public static class WeaponNodeUtility
     {
-        if (dataProvider == null)
-            return default;
-
-        int attackIndex = dataProvider.UseSingleValue || context == null ? 0 : context.CurrentAttackIndex;
-        return WeaponAttackDataSelector.GetForAttack(dataProvider.GetAllData(), attackIndex);
-    }
-
-    public static WeaponContext RequireWeaponContext(ActionContext context)
-    {
-        var weaponContext = context as WeaponContext;
-        if (weaponContext == null)
-            throw new InvalidOperationException("Weapon node requires WeaponContext.");
-
-        return weaponContext;
-    }
-
-    public static Vector3 GetOwnerForward(WeaponContext context)
-    {
-        if (context.Owner != null)
+        public static T GetAttackData<T>(ActionDataProvider<T> dataProvider, WeaponContext context)
         {
-            ICharacter character = context.Owner.GetComponentInParent<ICharacter>();
-            if (character != null)
-                return character.Forward;
+            if (dataProvider == null)
+                return default;
+
+            int attackIndex = dataProvider.UseSingleValue || context == null ? 0 : context.CurrentAttackIndex;
+            return WeaponAttackDataSelector.GetForAttack(dataProvider.GetAllData(), attackIndex);
         }
 
-        Transform origin = context.OriginTransform;
-        return origin != null ? origin.forward : Vector3.forward;
-    }
-
-    public static IMovementVectorHandler GetMovementVectorHandler(WeaponContext context)
-    {
-        if (context.Owner == null)
-            return null;
-
-        MonoBehaviour[] behaviours = context.Owner.GetComponentsInParent<MonoBehaviour>();
-        for (int i = 0; i < behaviours.Length; i++)
+        public static WeaponContext RequireWeaponContext(ActionContext context)
         {
-            MonoBehaviour behaviour = behaviours[i];
-            if (behaviour == null)
-                continue;
+            var weaponContext = context as WeaponContext;
+            if (weaponContext == null)
+                throw new InvalidOperationException("Weapon node requires WeaponContext.");
 
-            if (behaviour is IMovementVectorHandler movementVectorHandler)
-                return movementVectorHandler;
+            return weaponContext;
         }
 
-        return null;
-    }
-
-    public static IMovementVelocityComposer GetMovementVelocityComposer(WeaponContext context)
-    {
-        if (context.Owner == null)
-            return null;
-
-        MonoBehaviour[] behaviours = context.Owner.GetComponentsInParent<MonoBehaviour>();
-        for (int i = 0; i < behaviours.Length; i++)
+        public static Vector3 GetOwnerForward(WeaponContext context)
         {
-            MonoBehaviour behaviour = behaviours[i];
-            if (behaviour == null)
-                continue;
+            if (context.Owner != null)
+            {
+                ICharacter character = context.Owner.GetComponentInParent<ICharacter>();
+                if (character != null)
+                    return character.Forward;
+            }
 
-            if (behaviour is IMovementVelocityComposer movementVelocityComposer)
-                return movementVelocityComposer;
+            Transform origin = context.OriginTransform;
+            return origin != null ? origin.forward : Vector3.forward;
         }
 
-        return null;
-    }
+        public static IMovementVectorHandler GetMovementVectorHandler(WeaponContext context)
+        {
+            if (context.Owner == null)
+                return null;
 
-    public static Vector3 GetMovementForward(WeaponContext context, Component movementComponent)
-    {
-        if (movementComponent != null)
-            return movementComponent.transform.forward;
+            MonoBehaviour[] behaviours = context.Owner.GetComponentsInParent<MonoBehaviour>();
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                MonoBehaviour behaviour = behaviours[i];
+                if (behaviour == null)
+                    continue;
 
-        return GetOwnerForward(context);
-    }
+                if (behaviour is IMovementVectorHandler movementVectorHandler)
+                    return movementVectorHandler;
+            }
 
-    public static Component GetMovementTargetComponent(IMovementVelocityComposer movementVelocityComposer, IMovementVectorHandler movementVectorHandler)
-    {
-        if (movementVelocityComposer is Component composerComponent)
-            return composerComponent;
-
-        if (movementVectorHandler is Component handlerComponent)
-            return handlerComponent;
-
-        return null;
-    }
-
-    public static bool TrySetMovementVector(WeaponContext context, Vector3 movement)
-    {
-        IMovementVectorHandler movementVectorHandler = GetMovementVectorHandler(context);
-        if (movementVectorHandler == null)
-            return false;
-
-        movementVectorHandler.MovementVector = movement;
-        return true;
-    }
-
-    public static GameObject AttachChild(GameObject prefab, Transform root, string socketPath)
-    {
-        Transform socket = FindByFullPath(root, socketPath);
-        if (prefab == null || socket == null)
             return null;
+        }
 
-        GameObject instance = UnityEngine.Object.Instantiate(prefab, socket, false);
-        instance.transform.localPosition = Vector3.zero;
-        instance.transform.localRotation = Quaternion.identity;
-        instance.transform.localScale = Vector3.one;
-        return instance;
-    }
+        public static IMovementVelocityComposer GetMovementVelocityComposer(WeaponContext context)
+        {
+            if (context.Owner == null)
+                return null;
 
-    private static Transform FindByFullPath(Transform root, string fullPath)
-    {
-        if (root == null || string.IsNullOrEmpty(fullPath))
+            MonoBehaviour[] behaviours = context.Owner.GetComponentsInParent<MonoBehaviour>();
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                MonoBehaviour behaviour = behaviours[i];
+                if (behaviour == null)
+                    continue;
+
+                if (behaviour is IMovementVelocityComposer movementVelocityComposer)
+                    return movementVelocityComposer;
+            }
+
             return null;
+        }
 
-        if (fullPath.StartsWith(root.name + "/", StringComparison.Ordinal))
-            fullPath = fullPath.Substring(root.name.Length + 1);
+        public static Vector3 GetMovementForward(WeaponContext context, Component movementComponent)
+        {
+            if (movementComponent != null)
+                return movementComponent.transform.forward;
 
-        Transform socket = root.Find(fullPath);
-        if (socket == null)
-            Debug.LogWarning($"[WeaponAttachModels] Socket not found: {fullPath} under {root.name}");
+            return GetOwnerForward(context);
+        }
 
-        return socket;
+        public static Component GetMovementTargetComponent(IMovementVelocityComposer movementVelocityComposer,
+            IMovementVectorHandler movementVectorHandler)
+        {
+            if (movementVelocityComposer is Component composerComponent)
+                return composerComponent;
+
+            if (movementVectorHandler is Component handlerComponent)
+                return handlerComponent;
+
+            return null;
+        }
+
+        public static bool TrySetMovementVector(WeaponContext context, Vector3 movement)
+        {
+            IMovementVectorHandler movementVectorHandler = GetMovementVectorHandler(context);
+            if (movementVectorHandler == null)
+                return false;
+
+            movementVectorHandler.MovementVector = movement;
+            return true;
+        }
+
+        public static GameObject AttachChild(GameObject prefab, Transform root, string socketPath)
+        {
+            Transform socket = FindByFullPath(root, socketPath);
+            if (prefab == null || socket == null)
+                return null;
+
+            GameObject instance = Object.Instantiate(prefab, socket, false);
+            instance.transform.localPosition = Vector3.zero;
+            instance.transform.localRotation = Quaternion.identity;
+            instance.transform.localScale = Vector3.one;
+            return instance;
+        }
+
+        private static Transform FindByFullPath(Transform root, string fullPath)
+        {
+            if (root == null || string.IsNullOrEmpty(fullPath))
+                return null;
+
+            if (fullPath.StartsWith(root.name + "/", StringComparison.Ordinal))
+                fullPath = fullPath.Substring(root.name.Length + 1);
+
+            Transform socket = root.Find(fullPath);
+            if (socket == null)
+                Debug.LogWarning($"[WeaponAttachModels] Socket not found: {fullPath} under {root.name}");
+
+            return socket;
+        }
     }
 }
-}
-
