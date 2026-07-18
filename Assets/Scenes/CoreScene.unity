@@ -240,10 +240,10 @@ MonoBehaviour:
   m_Tags:
   - m_Component: {fileID: 1834802552}
     m_Value:
-      guid: 0
-      resolvedName: 
-      sourceOptions: {fileID: 0}
-      lastKnownName: 
+      guid: -1375052634
+      resolvedName: Pause
+      sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
+      lastKnownName: Pause
 --- !u!114 &1834802554
 MonoBehaviour:
   m_ObjectHideFlags: 0

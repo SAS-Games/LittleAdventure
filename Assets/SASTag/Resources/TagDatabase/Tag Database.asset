@@ -27,3 +27,5 @@ MonoBehaviour:
     guid: 1001
   - name: CameraTarget
     guid: 1003
+  - name: Pause
+    guid: -1375052634
