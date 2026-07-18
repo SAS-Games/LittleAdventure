@@ -9,7 +9,7 @@ namespace SAS.DialogueSystem
         [FieldRequiresSelf] private TMP_Text m_DialogueText;
         [FieldRequiresSelf] protected ITypewriterEffect _typewriterEffect;
         [FieldRequiresParent] protected DialogueHandler _dialogueHandler;
-        private bool _skip;
+        private DialogueLineContext _presentedLine;
 
         protected virtual void Awake()
         {
@@ -42,30 +42,17 @@ namespace SAS.DialogueSystem
 
         private void HandleCompleteTextRevealed()
         {
-            if (_dialogueHandler == null)
+            if (_dialogueHandler == null || _presentedLine == null)
                 return;
 
-            var lineContext = _dialogueHandler.CurrentLineContext;
-            _dialogueHandler.NotifyLineMessageShown(lineContext);
-
-            var shouldAdvanceFromSkip = _skip;
-            _skip = false;
-
-            var story = _dialogueHandler.CurrentStory;
-            if ((_dialogueHandler.AutoContinueToNextLine || shouldAdvanceFromSkip) &&
-                story != null &&
-                story.currentChoices.Count == 0)
-            {
-                _dialogueHandler.ContinueStory();
-            }
+            var completedLine = _presentedLine;
+            _presentedLine = null;
+            _dialogueHandler.CompleteLinePresentation(completedLine);
         }
 
         private void Skip()
         {
-            if (_skip)
-                return;
-            _skip = true;
-            _typewriterEffect?.Skip(true);
+            _typewriterEffect?.Skip();
         }
 
         protected virtual void OnEnterDialogueMode()
@@ -74,6 +61,9 @@ namespace SAS.DialogueSystem
 
         protected virtual void ExitDialogueMode()
         {
+            _presentedLine = null;
+            _typewriterEffect?.Cancel();
+
             if (m_DialogueText != null)
                 m_DialogueText.text = "";
 
@@ -86,15 +76,31 @@ namespace SAS.DialogueSystem
                 return;
 
             ApplyLineAudio(lineContext);
-            OnStoryContinue(lineContext.Text);
+            StartLinePresentation(lineContext, lineContext.Text);
         }
 
         protected void ApplyLineAudio(DialogueLineContext lineContext)
         {
+            var audioEffect = _typewriterEffect as ITypewriterAudioEffect;
             if (!string.IsNullOrEmpty(lineContext.AudioInfoId))
-                (_typewriterEffect as ITypewriterAudioEffect)?.SetCurrentAudioInfo(lineContext.AudioInfoId);
+                audioEffect?.SetCurrentAudioInfo(lineContext.AudioInfoId);
+            else
+                audioEffect?.SetDefaultAudioInfo();
         }
 
-        protected virtual void OnStoryContinue(string textToDisplay) => _typewriterEffect?.StartTyping(textToDisplay);
+        protected void StartLinePresentation(DialogueLineContext lineContext, string textToDisplay)
+        {
+            if (lineContext == null)
+                return;
+
+            _presentedLine = lineContext;
+            if (_typewriterEffect != null)
+            {
+                _typewriterEffect.StartTyping(textToDisplay ?? string.Empty);
+                return;
+            }
+
+            HandleCompleteTextRevealed();
+        }
     }
 }

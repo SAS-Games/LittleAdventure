@@ -7,6 +7,9 @@ namespace LevelStreaming
     {
         public static Task ToTask(this AsyncOperation op)
         {
+            if (op == null)
+                throw new System.ArgumentNullException(nameof(op));
+
             if (op.isDone)
                 return Task.CompletedTask;
 

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: DebugRuntimeConfig
   m_EditorClassIdentifier: DevUtilities::DebugRuntimeConfig
   pauseOnEnable: 0
-  logLevel: -1
+  logLevel: 7
   allowedTags: []

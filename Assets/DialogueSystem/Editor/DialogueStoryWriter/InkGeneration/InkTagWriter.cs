@@ -13,18 +13,14 @@ namespace SAS.DialogueSystem.EditorTools
 
             if (tags.useSpeaker)
             {
-                var speakerParts = new List<string>();
-                AddSpeakerPart(speakerParts, "id", tags.speakerId);
-                AddSpeakerPart(speakerParts, "name", tags.speakerName);
-                AddSpeakerPart(speakerParts, "image", tags.portraitKey);
-                AddSpeakerPart(speakerParts, "anim", tags.speakerAnimation);
-
-                if (speakerParts.Count > 0)
-                    output.Add("speaker:" + string.Join(", ", speakerParts));
+                AddCanonicalTag(output, "speaker", tags.speakerId);
+                AddCanonicalTag(output, "speaker_name", tags.speakerName);
+                AddCanonicalTag(output, "portrait", tags.portraitKey);
+                AddCanonicalTag(output, "animation", tags.speakerAnimation);
             }
 
             if (tags.useLocale && !string.IsNullOrWhiteSpace(tags.localeKey))
-                output.Add("local:" + InkSanitizer.CleanTagValue(tags.localeKey));
+                output.Add("locale:" + InkSanitizer.CleanTagValue(tags.localeKey));
 
             if (tags.useLayout && !string.IsNullOrWhiteSpace(tags.layoutAnimation))
                 output.Add("layout:" + InkSanitizer.CleanTagValue(tags.layoutAnimation));
@@ -78,10 +74,10 @@ namespace SAS.DialogueSystem.EditorTools
                    (tags.customTags != null && tags.customTags.Count > 0);
         }
 
-        private static void AddSpeakerPart(List<string> parts, string key, string value)
+        private static void AddCanonicalTag(List<string> output, string key, string value)
         {
             if (!string.IsNullOrWhiteSpace(value))
-                parts.Add($"{key}::{InkSanitizer.CleanTagValue(value)}");
+                output.Add($"{key}:{InkSanitizer.CleanTagValue(value)}");
         }
     }
 }

@@ -3,90 +3,123 @@ using UnityEngine;
 
 namespace LevelStreaming
 {
-    public class QuadtreeNode
+    /// <summary>
+    /// X/Z quadtree for typical Unity world-space regions. Regions that straddle child
+    /// boundaries remain in their parent, preventing duplicate results and exponential
+    /// insertion into multiple branches.
+    /// </summary>
+    public sealed class QuadtreeNode
     {
         private readonly Bounds bounds;
         private readonly int depth;
         private readonly int maxDepth;
         private readonly int maxCapacity;
-        private List<RegionManager.Region> regions;
+        private readonly List<RegionManager.Region> regions;
         private QuadtreeNode[] children;
 
         public QuadtreeNode(Bounds bounds, int depth, int maxDepth, int maxCapacity)
         {
             this.bounds = bounds;
             this.depth = depth;
-            this.maxDepth = maxDepth;
-            this.maxCapacity = maxCapacity;
+            this.maxDepth = Mathf.Max(0, maxDepth);
+            this.maxCapacity = Mathf.Max(1, maxCapacity);
             regions = new List<RegionManager.Region>();
-            children = null;
         }
 
         public void Insert(RegionManager.Region region)
         {
-            if (!bounds.Intersects(region.CachedBounds))
+            if (region == null || !bounds.Intersects(region.CachedBounds))
                 return;
 
-            if (children == null)
+            if (children != null)
             {
-                regions.Add(region);
+                int childIndex = GetContainingChild(region.CachedBounds);
+                if (childIndex >= 0)
+                {
+                    children[childIndex].Insert(region);
+                    return;
+                }
+            }
 
-                if (regions.Count > maxCapacity && depth < maxDepth)
-                    Subdivide();
-            }
-            else
-            {
-                foreach (var child in children)
-                    child.Insert(region);
-            }
+            regions.Add(region);
+            if (children == null && regions.Count > maxCapacity && depth < maxDepth)
+                Subdivide();
         }
 
-        public void Query(Bounds range, List<RegionManager.Region> results)
+        public void Query(Bounds range, HashSet<RegionManager.Region> results)
         {
             if (!bounds.Intersects(range))
                 return;
 
+            foreach (var region in regions)
+            {
+                if (region.CachedBounds.Intersects(range))
+                    results.Add(region);
+            }
+
             if (children == null)
-            {
-                foreach (var region in regions)
-                {
-                    if (region.CachedBounds.Intersects(range))
-                        results.Add(region);
-                }
-            }
-            else
-            {
-                foreach (var child in children)
-                    child.Query(range, results);
-            }
+                return;
+
+            foreach (var child in children)
+                child.Query(range, results);
         }
 
         private void Subdivide()
         {
             children = new QuadtreeNode[4];
 
-            Vector3 size = bounds.size / 2f;
+            Vector3 childSize = new(bounds.size.x * 0.5f, bounds.size.y, bounds.size.z * 0.5f);
             Vector3 center = bounds.center;
+            float offsetX = childSize.x * 0.5f;
+            float offsetZ = childSize.z * 0.5f;
 
-            children[0] = new QuadtreeNode(new Bounds(center + new Vector3(-size.x / 2, size.y / 2, 0), size),
-                depth + 1, maxDepth, maxCapacity);
-            children[1] = new QuadtreeNode(new Bounds(center + new Vector3(size.x / 2, size.y / 2, 0), size),
-                depth + 1, maxDepth, maxCapacity);
-            children[2] = new QuadtreeNode(new Bounds(center + new Vector3(-size.x / 2, -size.y / 2, 0), size),
-                depth + 1, maxDepth, maxCapacity);
-            children[3] = new QuadtreeNode(new Bounds(center + new Vector3(size.x / 2, -size.y / 2, 0), size),
-                depth + 1, maxDepth, maxCapacity);
+            children[0] = CreateChild(center + new Vector3(-offsetX, 0f, -offsetZ), childSize);
+            children[1] = CreateChild(center + new Vector3(offsetX, 0f, -offsetZ), childSize);
+            children[2] = CreateChild(center + new Vector3(-offsetX, 0f, offsetZ), childSize);
+            children[3] = CreateChild(center + new Vector3(offsetX, 0f, offsetZ), childSize);
 
-            foreach (var region in regions)
+            for (int i = regions.Count - 1; i >= 0; i--)
             {
-                foreach (var child in children)
-                    child.Insert(region);
-            }
+                int childIndex = GetContainingChild(regions[i].CachedBounds);
+                if (childIndex < 0)
+                    continue;
 
-            regions.Clear();
+                RegionManager.Region region = regions[i];
+                regions.RemoveAt(i);
+                children[childIndex].Insert(region);
+            }
         }
 
-        // 🔹 Public read-only access for visualization
+        private QuadtreeNode CreateChild(Vector3 center, Vector3 size)
+        {
+            return new QuadtreeNode(new Bounds(center, size), depth + 1, maxDepth, maxCapacity);
+        }
+
+        private int GetContainingChild(Bounds regionBounds)
+        {
+            if (children == null)
+                return -1;
+
+            for (int i = 0; i < children.Length; i++)
+            {
+                if (Contains(children[i].bounds, regionBounds))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private static bool Contains(Bounds outer, Bounds inner)
+        {
+            Vector3 outerMin = outer.min;
+            Vector3 outerMax = outer.max;
+            Vector3 innerMin = inner.min;
+            Vector3 innerMax = inner.max;
+            return innerMin.x >= outerMin.x && innerMax.x <= outerMax.x &&
+                   innerMin.y >= outerMin.y && innerMax.y <= outerMax.y &&
+                   innerMin.z >= outerMin.z && innerMax.z <= outerMax.z;
+        }
+
         public Bounds Bounds => bounds;
         public int Depth => depth;
         public QuadtreeNode[] Children => children;

@@ -9,16 +9,47 @@ namespace LevelStreaming.Editor
         [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected)]
         static void DrawGizmoForRegionManager(RegionManager manager, GizmoType gizmoType)
         {
-            if (manager.RegionSelectionStrategy is not QuadtreeRegionSelection strategy)
+            if (manager.ActiveRegionSelectionStrategy is not QuadtreeRegionSelection strategy)
                 return;
             if (!strategy.DebugDraw)
                 return;
 
-            if (!Application.isPlaying && manager.Regions is { Count: > 0 })
-                strategy.Initialize(manager.Regions);
+            QuadtreeNode root = strategy.Root;
+            if (!Application.isPlaying)
+                root = BuildPreview(manager, strategy.MaxDepth, strategy.MaxCapacity);
 
-            if (strategy.Root != null)
-                DrawNodeRecursive(strategy.Root, strategy.MaxDepth);
+            if (root != null)
+                DrawNodeRecursive(root, Mathf.Max(1, strategy.MaxDepth));
+        }
+
+        private static QuadtreeNode BuildPreview(RegionManager manager, int maxDepth, int maxCapacity)
+        {
+            if (manager.Regions == null || manager.Regions.Count == 0)
+                return null;
+
+            bool hasRegion = false;
+            Bounds worldBounds = default;
+            foreach (var region in manager.Regions)
+            {
+                if (region == null)
+                    continue;
+
+                if (!hasRegion)
+                {
+                    worldBounds = region.CachedBounds;
+                    hasRegion = true;
+                }
+                else
+                    worldBounds.Encapsulate(region.CachedBounds);
+            }
+
+            if (!hasRegion)
+                return null;
+
+            var root = new QuadtreeNode(worldBounds, 0, maxDepth, maxCapacity);
+            foreach (var region in manager.Regions)
+                root.Insert(region);
+            return root;
         }
 
         private static void DrawNodeRecursive(QuadtreeNode node, int maxDepth)

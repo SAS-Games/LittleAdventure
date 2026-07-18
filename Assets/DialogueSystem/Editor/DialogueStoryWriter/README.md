@@ -318,7 +318,7 @@ Editor fields:
 Generated Ink:
 
 ```ink
-Welcome back. #speaker:id::npc, name::KAIROS, anim::Talk #local:welcome_back #layout:right #audio:default
+Welcome back. #speaker:npc #speaker_name:KAIROS #animation:Talk #locale:welcome_back #layout:right #audio:default
 ```
 
 Use this for normal dialogue.
@@ -462,7 +462,7 @@ Writes choice text inside square brackets.
 Generated Ink:
 
 ```ink
-* [What is Localization? #local:what_is_localization] -> what_is_localization
+* [What is Localization? #locale:what_is_localization] -> what_is_localization
 ```
 
 This is useful because Ink shows the text as a choice but does not print it again as normal story output after the choice is selected.
@@ -476,7 +476,7 @@ Choice localization tags are written inside the square brackets when choice text
 Recommended:
 
 ```ink
-* [Setting Up Localization in Unity #local:setting_up_localization] -> setup_localization
+* [Setting Up Localization in Unity #locale:setting_up_localization] -> setup_localization
 ```
 
 In the editor, the designer should only fill:
@@ -486,7 +486,7 @@ In the editor, the designer should only fill:
 - Target: `setup_localization`
 - Suppress Choice Text: enabled
 
-The designer should not manually type the `#local:` tag into the choice text.
+The designer should not manually type the `#locale:` tag into the choice text.
 
 ### Choice Condition
 
@@ -495,7 +495,7 @@ Controls whether the choice is visible.
 Generated Ink:
 
 ```ink
-* {has_relic_key} [Use the relic key #local:use_relic_key] -> key_gate
+* {has_relic_key} [Use the relic key #locale:use_relic_key] -> key_gate
 ```
 
 This choice only appears when `has_relic_key` is true.
@@ -617,7 +617,7 @@ Generated Ink:
 
 ```ink
 { inspected_relic:
-    KAIROS nods toward the relic. #local:inspected_relic_line
+    KAIROS nods toward the relic. #locale:inspected_relic_line
 }
 ```
 
@@ -698,10 +698,16 @@ Use this when the current flow is done and should return to the caller in Ink fl
 
 Tags are metadata attached to lines or choices.
 
-Your runtime tag processors read these tags and update UI or behavior.
+The runtime parses every line or choice exactly once into an immutable `DialogueLineContext`. The canonical fields are:
 
-At runtime, every parsed tag is also stored on `DialogueLineContext.Tags`.
-This includes built-in tags and custom tags, including no-value tags such as:
+- `id`
+- `locale`
+- `speaker`, `speaker_name`, `portrait`, and `animation`
+- `listener`, `listener_name`, `listener_portrait`, and `listener_animation`
+- `layout`
+- `audio`
+
+Every parsed tag is also kept in the case-insensitive, multi-value `DialogueLineContext.Tags` bag. This includes arbitrary custom tags and no-value tags such as:
 
 ```ink
 #CLEAR
@@ -721,36 +727,91 @@ if (lineContext.TryGetTagValue("quest", out var questId))
 }
 ```
 
-The existing processors still handle the common presentation tags:
+Canonical metadata is parsed as a complete set, so tag order does not matter. Duplicate scalar fields produce a warning and the final value wins. Invalid identifiers and incomplete participant definitions produce errors; `DialogueHandler` rejects lines with metadata errors by default.
 
-- `speaker`
-- `local` / `locale`
-- `layout`
-- `audio`
+## Canonical Inky Metadata
+
+The runtime accepts the fields written by the customized Inky metadata inspector:
+
+```ink
+# id:dialogue.leave.01
+# locale:dialogue.leave.01
+# speaker:alice
+# speaker_name:Alice
+# portrait:happy
+# animation:TalkHappy
+# listener:bob
+# listener_portrait:concerned
+# listener_animation:Listen
+# audio:alice_leave_01
+Alice: We should leave.
+```
+
+`speaker` is the active voice. `listener` is an optional second participant, so no separate dialogue mode is required:
+
+- Narration has no participant tags.
+- Monologue uses only `speaker` and optional portrait/animation fields.
+- Dialogue uses `speaker` plus an optional `listener`.
+
+The speaker presenter activates every participant for which it has a configured `SpeakerView`. Portrait and animation values remain stable lookup keys; they are not asset paths.
+
+Runtime code can query roles without knowing how many participants a line has:
+
+```csharp
+string activeSpeaker = lineContext.CurrentSpeakerId;
+string listener = lineContext.ListenerId;
+
+if (lineContext.TryGetParticipant("listener", out var participant))
+{
+    string characterId = participant.CharacterId;
+    string portraitKey = participant.PortraitKey;
+    string animationKey = participant.AnimationKey;
+}
+```
+
+Generic roles use the explicit `participant.<role>` namespace so they cannot collide with ordinary custom tags:
+
+```ink
+# participant.interviewer:maya
+# participant.interviewer.name:Detective Maya
+# participant.interviewer.portrait:focused
+# participant.interviewer.animation:Question
+What did you see?
+```
+
+Only `participant.interviewer:maya` is required to create the role. Name, portrait, and animation are optional. Add an `interviewer` participant slot to `SpeakerPresenter` when that role needs its own `SpeakerView`.
+
+Choice tags use the same parser because `ChoiceHandler` builds a `DialogueLineContext` from `Choice.tags`. This makes choice `id`, `locale`, analytics, and other custom metadata available before selection.
+
+## Runtime flow
+
+`DialogueSession` owns all Ink progression and exposes deterministic states: `Starting`, `PresentingLine`, `WaitingForAdvance`, `PresentingChoices`, `Exiting`, and `Faulted`. Unity components adapt input and presentation around it:
+
+- Send player input to `DialogueHandler.RequestAdvance()`. It skips the active typewriter reveal or continues a fully presented line as appropriate.
+- A line presenter calls `CompleteLinePresentation(lineContext)` exactly once after it has revealed or skipped the line.
+- Choice selection is accepted only while the session is `PresentingChoices`, preventing double selection.
+- Presentation components never call `Story.Continue()` directly.
+- Choice-only knots transition directly to `PresentingChoices`; they do not create a fake empty line.
 
 ## Speaker Tag
 
-Generated Ink:
+Use the canonical fields:
 
 ```ink
-#speaker:id::npc, name::KAIROS, image::Default/default, anim::Talk
+# speaker:npc
+# speaker_name:KAIROS
+# portrait:default
+# animation:Talk
 ```
 
-Fields:
-
-- Speaker Id
-- Display Name
-- Portrait Key
-- Speaker Animation
-
-Use this to control speaker name, portrait, and speaker animation.
+The runtime intentionally has no legacy compound speaker parser. `speaker` is the character ID, `speaker_name` is an optional display override, and portrait/animation are optional presentation lookup keys.
 
 ## Localization Tag
 
 Generated Ink:
 
 ```ink
-#local:introduction_welcome
+#locale:introduction_welcome
 ```
 
 Use this to replace displayed text with a localized string.
@@ -786,7 +847,7 @@ Generated Ink:
 #emotion:teacher
 ```
 
-Use custom tags for extra metadata consumed by custom processors or gameplay listeners.
+Use custom tags for extra metadata consumed by gameplay systems. They do not need to be part of the canonical participant schema.
 
 If a custom tag has no value, it writes only the key:
 

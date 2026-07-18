@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace LevelStreaming
@@ -15,13 +16,17 @@ namespace LevelStreaming
             //    and that portal is inside unload bounds → keep it
             foreach (var other in regionManager.loadedRegions)
             {
-                if (other == region)
+                if (other == null || other == region || other.Portals == null)
                     continue;
 
-                for (int i = 0; i < other.Portals.Count; i++)
+                int portalCount = Mathf.Min(other.Portals.Count, other.CachedWorldPortalBounds.Count);
+                for (int i = 0; i < portalCount; i++)
                 {
                     var portal = other.Portals[i];
-                    if (portal.TargetRegionName == region.RegionName)
+                    if (portal != null && string.Equals(
+                            portal.TargetRegionName,
+                            region.RegionName,
+                            StringComparison.Ordinal))
                     {
                         var portalBounds = other.CachedWorldPortalBounds[i];
                         if (unloadBounds.Intersects(portalBounds))

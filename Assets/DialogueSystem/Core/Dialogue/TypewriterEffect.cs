@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public interface ITypewriterEffect
 {
     void StartTyping(string text);
-    void Skip(bool quickSkipNeeded = false);
-    Action CompleteTextRevealed { get; set; }
-    Action<char> CharacterRevealed { get; set; }
+    void Skip();
+    void Cancel();
+    bool IsRevealing { get; }
+    event Action CompleteTextRevealed;
+    event Action<char> CharacterRevealed;
 }
 
 public interface ITypewriterAudioEffect
@@ -29,33 +30,23 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
 
     [SerializeField] private float m_InterpunctuationDelay = 0.5f;
 
-    [Header("Skip options")]
-    [SerializeField] private bool m_QuickSkip;
-
-    [SerializeField][Min(1)] private int m_SkipSpeedup = 5;
+    [Header("Completion")]
     [SerializeField][Range(0.1f, 0.5f)] private float m_SendDoneDelay = 0.25f;
 
     [Header("Audio")]
     [SerializeField] private DialogueAudioInfoSO m_DefaultAudioInfo;
 
-    [SerializeField] private InputAction _skipInputAction;
-
     [SerializeField] private DialogueAudioInfoSO[] m_AudioInfos;
     [SerializeField] private bool m_MakePredictable;
     [SerializeField] private bool m_AutoPlay;
 
-    public bool CurrentlySkipping { get; private set; }
-    public Action CompleteTextRevealed { get; set; }
-    public Action<char> CharacterRevealed { get; set; }
+    public bool IsRevealing { get; private set; }
+    public event Action CompleteTextRevealed;
+    public event Action<char> CharacterRevealed;
 
     private TMP_Text _textBox;
-    private int _currentVisibleCharacterIndex;
     private Coroutine _typewriterCoroutine;
-    private WaitForSeconds _simpleDelay;
-    private WaitForSeconds _interpunctuationDelay;
-    private WaitForSeconds _skipDelay;
-    private WaitForSeconds _immediateSkipDelay;
-    private WaitForSeconds _textboxFullEventDelay;
+    private int _presentationVersion;
 
     private DialogueAudioInfoSO _currentAudioInfo;
     private Dictionary<string, DialogueAudioInfoSO> _audioInfoDictionary;
@@ -63,17 +54,9 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
 
     private void Awake()
     {
-        //_skipInputAction.performed += _ => { (this as ITypewriterEffect). Skip(); };
         _audioSource = this.gameObject.GetComponentInParent<AudioSource>();
         _currentAudioInfo = m_DefaultAudioInfo;
         _textBox = GetComponent<TMP_Text>();
-
-        _simpleDelay = new WaitForSeconds(1 / m_CharactersPerSecond);
-        _interpunctuationDelay = new WaitForSeconds(m_InterpunctuationDelay);
-
-        _skipDelay = new WaitForSeconds(1 / (m_CharactersPerSecond * m_SkipSpeedup));
-        _immediateSkipDelay = new WaitForSeconds(0.25f);
-        _textboxFullEventDelay = new WaitForSeconds(m_SendDoneDelay);
         InitializeAudioInfoDictionary();
     }
 
@@ -83,12 +66,17 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
             StartTyping(_textBox.text);
     }
 
+    private void OnDisable()
+    {
+        Cancel();
+    }
+
     private void InitializeAudioInfoDictionary()
     {
         _audioInfoDictionary = new Dictionary<string, DialogueAudioInfoSO>();
         if (m_DefaultAudioInfo && !string.IsNullOrEmpty(m_DefaultAudioInfo.id))
             _audioInfoDictionary[m_DefaultAudioInfo.id] = m_DefaultAudioInfo;
-        foreach (DialogueAudioInfoSO audioInfo in m_AudioInfos)
+        foreach (DialogueAudioInfoSO audioInfo in m_AudioInfos ?? Array.Empty<DialogueAudioInfoSO>())
         {
             if (audioInfo == null || string.IsNullOrEmpty(audioInfo.id))
                 continue;
@@ -99,88 +87,93 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
 
     public void StartTyping(string text)
     {
-        PrepareForNewText(text);
-    }
+        Cancel();
 
-    private void PrepareForNewText(string text)
-    {
-        CurrentlySkipping = false;
-        
-        if (_typewriterCoroutine != null)
-            StopCoroutine(_typewriterCoroutine);
-
-        _textBox.text = text;
+        var presentationVersion = _presentationVersion;
+        _textBox.text = text ?? string.Empty;
         _textBox.maxVisibleCharacters = 0;
-        _currentVisibleCharacterIndex = 0;
-
-        _typewriterCoroutine = StartCoroutine(Typewriter());
+        _textBox.ForceMeshUpdate();
+        IsRevealing = true;
+        _typewriterCoroutine = StartCoroutine(Typewriter(presentationVersion));
     }
 
-    private IEnumerator Typewriter()
+    public void Skip()
+    {
+        if (!IsRevealing)
+            return;
+
+        if (_typewriterCoroutine != null)
+        {
+            StopCoroutine(_typewriterCoroutine);
+            _typewriterCoroutine = null;
+        }
+
+        _textBox.ForceMeshUpdate();
+        _textBox.maxVisibleCharacters = _textBox.textInfo.characterCount;
+        CompletePresentation(_presentationVersion);
+    }
+
+    public void Cancel()
+    {
+        _presentationVersion++;
+        if (_typewriterCoroutine != null)
+        {
+            StopCoroutine(_typewriterCoroutine);
+            _typewriterCoroutine = null;
+        }
+        IsRevealing = false;
+    }
+
+    private IEnumerator Typewriter(int presentationVersion)
     {
         yield return null;
+        if (presentationVersion != _presentationVersion)
+            yield break;
 
-        TMP_TextInfo textInfo = _textBox.textInfo;
+        _textBox.ForceMeshUpdate();
+        var textInfo = _textBox.textInfo;
+        var characterDelay = 1f / Mathf.Max(1f, m_CharactersPerSecond);
 
-        while (_currentVisibleCharacterIndex < textInfo.characterCount + 1)
+        for (var characterIndex = 0; characterIndex < textInfo.characterCount; characterIndex++)
         {
-            var lastCharacterIndex = textInfo.characterCount - 1;
-
-            if (_currentVisibleCharacterIndex >= lastCharacterIndex)
-            {
-                _textBox.maxVisibleCharacters++;
-                yield return _textboxFullEventDelay;
-                CompleteTextRevealed?.Invoke();
+            if (presentationVersion != _presentationVersion)
                 yield break;
-            }
 
-            char character = textInfo.characterInfo[_currentVisibleCharacterIndex].character;
-
-            _textBox.maxVisibleCharacters++;
-
-            if (!CurrentlySkipping &&
-                (character == '?' || character == '.' || character == ',' || character == ':' ||
-                 character == ';' || character == '!' || character == '-'))
-                yield return _interpunctuationDelay;
-            else
-                yield return CurrentlySkipping ? _skipDelay : _simpleDelay;
-
-
+            var character = textInfo.characterInfo[characterIndex].character;
+            _textBox.maxVisibleCharacters = characterIndex + 1;
             CharacterRevealed?.Invoke(character);
-            PlayDialogueSound(_currentVisibleCharacterIndex, character);
-            _currentVisibleCharacterIndex++;
-        }
-    }
+            PlayDialogueSound(characterIndex, character);
 
-    void ITypewriterEffect.Skip(bool quickSkipNeeded)
-    {
-        if (CurrentlySkipping)
-            return;
+            if (characterIndex + 1 >= textInfo.characterCount)
+                continue;
 
-        CurrentlySkipping = true;
-
-        if (!m_QuickSkip || !quickSkipNeeded)
-        {
-            StartCoroutine(SkipSpeedupReset());
-            return;
+            var delay = IsInterpunctuation(character)
+                ? Mathf.Max(0f, m_InterpunctuationDelay)
+                : characterDelay;
+            if (delay > 0f)
+                yield return new WaitForSecondsRealtime(delay);
         }
 
-        if (_typewriterCoroutine != null)
-            StopCoroutine(_typewriterCoroutine);
-        StartCoroutine(SkipWithDelay());
+        if (m_SendDoneDelay > 0f)
+            yield return new WaitForSecondsRealtime(m_SendDoneDelay);
+
+        CompletePresentation(presentationVersion);
     }
 
-    private IEnumerator SkipWithDelay()
+    private void CompletePresentation(int presentationVersion)
     {
-        _textBox.maxVisibleCharacters = _textBox.textInfo.characterCount;
-        yield return _immediateSkipDelay;
+        if (!IsRevealing || presentationVersion != _presentationVersion)
+            return;
+
+        IsRevealing = false;
+        _typewriterCoroutine = null;
         CompleteTextRevealed?.Invoke();
     }
 
-    private IEnumerator SkipSpeedupReset()
+    private static bool IsInterpunctuation(char character)
     {
-        yield return new WaitUntil(() => _textBox.maxVisibleCharacters == _textBox.textInfo.characterCount - 1);
-        CurrentlySkipping = false;
+        return character == '?' || character == '.' || character == ',' || character == ':' ||
+               character == ';' || character == '!' || character == '-';
     }
 
     private void PlayDialogueSound(int currentDisplayedCharacterCount, char currentCharacter)
@@ -248,13 +241,25 @@ public class TypewriterEffect : MonoBehaviour, ITypewriterEffect, ITypewriterAud
         if (audioInfo != null)
             this._currentAudioInfo = audioInfo;
         else
+        {
+            _currentAudioInfo = m_DefaultAudioInfo;
             Debug.LogWarning("Failed to find audio info for id: " + id);
+        }
     }
 
     void ITypewriterAudioEffect.SetDefaultAudioInfo()
     {
         if (m_DefaultAudioInfo == null)
+        {
+            _currentAudioInfo = null;
             return;
+        }
         (this as ITypewriterAudioEffect)?.SetCurrentAudioInfo(m_DefaultAudioInfo.id);
+    }
+
+    private void OnValidate()
+    {
+        m_CharactersPerSecond = Mathf.Max(1f, m_CharactersPerSecond);
+        m_InterpunctuationDelay = Mathf.Max(0f, m_InterpunctuationDelay);
     }
 }

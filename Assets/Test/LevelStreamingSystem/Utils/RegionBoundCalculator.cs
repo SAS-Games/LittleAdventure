@@ -54,18 +54,9 @@ namespace LevelStreaming
                 return;
             }
 
-            // ✅ Correct world → local conversion
-            var localCenter = transform.InverseTransformPoint(worldBounds.center);
-
-            // IMPORTANT: size must ignore rotation scaling issues
-            Vector3 localSize = worldBounds.size;
-            localSize = new Vector3(
-                localSize.x / transform.lossyScale.x,
-                localSize.y / transform.lossyScale.y,
-                localSize.z / transform.lossyScale.z
-            );
-
-            m_RegionBound.Bounds = new Bounds(localCenter, localSize);
+            m_RegionBound.Bounds = BoundsTransformUtility.InverseTransform(
+                worldBounds,
+                transform.localToWorldMatrix);
 
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(m_RegionBound);

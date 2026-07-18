@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -16,13 +17,24 @@ public class MemoryWatchdog : MonoBehaviour
 
     [Tooltip("Minimum delay between two cleanup operations (seconds)")]
     [SerializeField] private float m_CleanupCooldown = 30f;
-    
-    [Tooltip("Minimum delay between two cleanup operations (seconds)")]
+
+    [Tooltip("Run a full managed garbage collection after unloading unused assets. This can cause a frame hitch.")]
+    [SerializeField] private bool m_ForceGarbageCollection;
+
+    [Tooltip("Optional runtime memory readout.")]
     [SerializeField] private TMP_Text m_text;
 
     private bool _isCleaning;
     private float _lastCleanupTime;
-    private WaitForSeconds _waitForSeconds;
+    private WaitForSecondsRealtime _waitForSeconds;
+
+    public long CurrentAllocatedBytes { get; private set; }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        Instance = null;
+    }
 
     private void Awake()
     {
@@ -30,14 +42,21 @@ public class MemoryWatchdog : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            _lastCleanupTime = float.NegativeInfinity;
             UpdateMemoryUsageText();
-            _waitForSeconds = new WaitForSeconds(m_CheckInterval);
+            _waitForSeconds = new WaitForSecondsRealtime(m_CheckInterval);
             StartCoroutine(CheckMemoryRoutine());
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     private IEnumerator CheckMemoryRoutine()
@@ -52,10 +71,10 @@ public class MemoryWatchdog : MonoBehaviour
     
     private void UpdateMemoryUsageText()
     {
+        CurrentAllocatedBytes = Profiler.GetTotalAllocatedMemoryLong();
         if (m_text != null)
         {
-            long usedBytes = Profiler.GetTotalAllocatedMemoryLong();
-            float usedGB = usedBytes / (1024f * 1024f * 1024f);
+            float usedGB = CurrentAllocatedBytes / (1024f * 1024f * 1024f);
             m_text.text = $"Memory Used {usedGB:F2} GB";
         }
     }
@@ -76,7 +95,7 @@ public class MemoryWatchdog : MonoBehaviour
         if (!force)
         {
             long thresholdBytes = (long)m_MemoryThresholdMB * 1024 * 1024;
-            long usedBytes = Profiler.GetTotalAllocatedMemoryLong();
+            long usedBytes = CurrentAllocatedBytes = Profiler.GetTotalAllocatedMemoryLong();
 
             if (usedBytes < thresholdBytes) 
                 return;
@@ -95,8 +114,21 @@ public class MemoryWatchdog : MonoBehaviour
     {
         _isCleaning = true;
         yield return Resources.UnloadUnusedAssets();
-        System.GC.Collect();
+        if (m_ForceGarbageCollection)
+            GC.Collect();
         _lastCleanupTime = Time.realtimeSinceStartup;
         _isCleaning = false;
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        m_MemoryThresholdMB = Mathf.Max(1, m_MemoryThresholdMB);
+        m_CheckInterval = Mathf.Max(0.1f, m_CheckInterval);
+        m_CleanupCooldown = Mathf.Max(0f, m_CleanupCooldown);
+
+        if (Application.isPlaying && Instance == this)
+            _waitForSeconds = new WaitForSecondsRealtime(m_CheckInterval);
+    }
+#endif
 }

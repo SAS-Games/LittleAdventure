@@ -1,60 +1,57 @@
 using Ink.Runtime;
 using SAS.Core.TagSystem;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Debug =  UnityEngine.Debug;
 
 namespace SAS.DialogueSystem
 {
     public class DialogueHandler : MonoBehaviour, IDialogueHandler
     {
-        [Header("Load Globals JSON")]
+        [Header("Persistence")]
         [SerializeField] private TextAsset m_LoadGlobalsJSON;
         [SerializeField] private string m_GlobalsSaveKey = "INK_VARIABLES";
+        [Header("Metadata")]
+        [SerializeField] private DialogueMetadataProfile m_DefaultMetadataProfile;
+        [Header("Presentation")]
         [SerializeField] private GameObject m_DialoguePanel;
-        [field:SerializeField] public bool AutoContinueToNextLine { get;private set; }
+        [SerializeField] private bool m_RejectInvalidMetadata = true;
+        [field: SerializeField] public bool AutoContinueToNextLine { get; private set; }
         [SerializeField] private InputAction _nextInputAction;
-        [FieldRequiresSelf] private IInkMetaParser _inkMetaParser;
 
-        public Story CurrentStory { get; private set; }
-
+        private DialogueSession _session;
         private DialogueGlobalVariables _dialogueGlobalVariables;
         private InkExternalMethodRegistry _inkExternalMethodRegistry;
+        private GameObject _initiator;
+        private IContextBinder _contextBinder;
+        private bool _isExiting;
+
+        public Story CurrentStory => _session?.Story;
         public InkExternalMethodRegistry InkExternalMethodRegistry => _inkExternalMethodRegistry;
-        public bool DialogueIsPlaying { get; private set; }
+        public DialogueSessionState State => _session?.State ?? DialogueSessionState.Idle;
+        public bool DialogueIsPlaying =>
+            State != DialogueSessionState.Idle &&
+            State != DialogueSessionState.Exiting &&
+            State != DialogueSessionState.Faulted;
+        public DialogueLineContext CurrentLineContext => _session?.CurrentLine;
 
-        private ITagProcessor[] _tagProcessors;
-        private TagProcessContext _tagProcessContext;
-        public TagProcessContext TagProcessContext => _tagProcessContext;
-        public DialogueLineContext CurrentLineContext => _tagProcessContext?.CurrentLine;
-
-
-        public event Action<Story> OnStoryMessageShown;
-        public event Action<Story, DialogueLineContext> OnLineMessageShown;
-        public event Action<string> OnStoryContinue;
+        public event Action<DialogueLineContext> OnLinePresented;
         public event Action<DialogueLineContext> OnLineReady;
+        public event Action<DialogueSessionState> OnStateChanged;
         public event Action OnEnterDialogueMode;
         public event Action OnExitDialogueMode;
         public event Action OnSkipRequested;
-        private GameObject _initiator;
-        private IContextBinder _contextBinder;
-        private Coroutine _exitCoroutine;
 
         private void Awake()
         {
             this.Initialize();
-            _tagProcessors = GetComponentsInChildren<ITagProcessor>();
-            _tagProcessContext = new TagProcessContext(_inkMetaParser);
             if (_nextInputAction != null)
                 _nextInputAction.performed += OnNextInputPerformed;
 
             if (m_LoadGlobalsJSON != null)
                 _dialogueGlobalVariables = new DialogueGlobalVariables(m_LoadGlobalsJSON, m_GlobalsSaveKey);
             else
-                Debug.LogWarning("Dialogue globals JSON is not assigned.");
+                Debug.LogWarning("Dialogue globals JSON is not assigned.", this);
 
             _inkExternalMethodRegistry = new InkExternalMethodRegistry();
         }
@@ -62,41 +59,78 @@ namespace SAS.DialogueSystem
         private void OnEnable() => _nextInputAction?.Enable();
         private void OnDisable() => _nextInputAction?.Disable();
 
-
         private void Start()
         {
-            DialogueIsPlaying = false;
             if (m_DialoguePanel != null)
                 m_DialoguePanel.SetActive(false);
         }
 
-        public void EnterDialogueMode(TextAsset inkJSON, GameObject initiator)
+        public void EnterDialogueMode(
+            TextAsset inkJSON,
+            GameObject initiator,
+            DialogueMetadataProfile metadataProfile = null)
         {
-            if (DialogueIsPlaying)
+            if (State != DialogueSessionState.Idle)
+            {
+                Debug.LogWarning($"Cannot start dialogue while the session is {State}.", this);
                 return;
+            }
 
             if (inkJSON == null)
             {
-                Debug.LogError("Cannot enter dialogue mode because Ink JSON is not assigned.");
+                Debug.LogError("Cannot enter dialogue mode because Ink JSON is not assigned.", this);
                 return;
             }
 
+            DialogueMetadataSchema metadataSchema;
             try
             {
-                CurrentStory = new Story(inkJSON.text);
+                var selectedProfile = metadataProfile != null ? metadataProfile : m_DefaultMetadataProfile;
+                if (selectedProfile == null)
+                {
+                    Debug.LogError(
+                        "Cannot enter dialogue mode because no metadata profile is assigned to the story or handler.",
+                        this);
+                    return;
+                }
+
+                metadataSchema = selectedProfile.GetSchema();
             }
             catch (Exception ex)
             {
-                CurrentStory = null;
-                Debug.LogError($"Failed to create Ink story from '{inkJSON.name}': {ex.Message}");
+                Debug.LogError($"Cannot enter dialogue mode because its metadata profile is invalid: {ex.Message}", this);
                 return;
             }
 
+            Story story;
+            try
+            {
+                story = new Story(inkJSON.text);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to create Ink story from '{inkJSON.name}': {ex}", this);
+                return;
+            }
+
+            _session = new DialogueSession(story, metadataSchema);
+            _session.StateChanged += HandleSessionStateChanged;
             _initiator = initiator;
-            DialogueIsPlaying = true;
+            OnStateChanged?.Invoke(DialogueSessionState.Starting);
+
             if (m_DialoguePanel != null)
                 m_DialoguePanel.SetActive(true);
-            _dialogueGlobalVariables?.StartListening(CurrentStory);
+
+            try
+            {
+                _dialogueGlobalVariables?.StartListening(story);
+                _inkExternalMethodRegistry.Bind(story);
+            }
+            catch (Exception ex)
+            {
+                FailAndExit($"Failed to initialize dialogue '{inkJSON.name}'.", ex);
+                return;
+            }
 
             EventBus<DialogueStartEvent>.Raise(new DialogueStartEvent
             {
@@ -104,201 +138,191 @@ namespace SAS.DialogueSystem
                 initiator = initiator
             });
             OnEnterDialogueMode?.Invoke();
-            _inkExternalMethodRegistry.Bind(CurrentStory);
             ContinueStory();
         }
 
-        private IEnumerator ExitDialogueMode()
+        private void ExitDialogueMode(bool notify = true)
         {
-            yield return new WaitForSeconds(0.2f);
+            if (_session == null || _isExiting)
+                return;
 
-            _dialogueGlobalVariables?.StopListening(CurrentStory);
-            _inkExternalMethodRegistry.Unbind(CurrentStory);
+            _isExiting = true;
+            var session = _session;
+            var story = session.Story;
+            var initiator = _initiator;
 
-            DialogueIsPlaying = false;
-            if (m_DialoguePanel != null)
-                m_DialoguePanel.SetActive(false);
-
-            // go back to default audio
-            //(_typewriterEffect as ITypewriterAudioEffect)?.SetDefaultAudioInfo();
-            OnExitDialogueMode?.Invoke();
-            EventBus<DialogueEndEvent>.Raise(new DialogueEndEvent
+            try
             {
-                dialogueHandler = this,
-                initiator = _initiator
-            });
-            _initiator = null;
-            CurrentStory = null;
-            _exitCoroutine = null;
+                session.BeginExit();
+                _dialogueGlobalVariables?.StopListening(story);
+                _inkExternalMethodRegistry?.Unbind(story);
+
+                if (notify)
+                {
+                    OnExitDialogueMode?.Invoke();
+                    EventBus<DialogueEndEvent>.Raise(new DialogueEndEvent
+                    {
+                        dialogueHandler = this,
+                        initiator = initiator
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Dialogue cleanup failed: {ex}", this);
+            }
+            finally
+            {
+                session.StateChanged -= HandleSessionStateChanged;
+                if (ReferenceEquals(_session, session))
+                    _session = null;
+
+                _initiator = null;
+                if (m_DialoguePanel != null)
+                    m_DialoguePanel.SetActive(false);
+
+                _isExiting = false;
+                OnStateChanged?.Invoke(DialogueSessionState.Idle);
+            }
         }
 
         public void ContinueStory()
         {
-            if (CurrentStory == null)
+            var session = _session;
+            if (session == null)
                 return;
 
-            if (CurrentStory.canContinue)
+            DialogueStep step;
+            try
             {
-                string nextLine;
-                try
-                {
-                    nextLine = CurrentStory.Continue();
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"Failed to continue Ink story: {ex.Message}");
-                    BeginExitDialogueMode();
-                    return;
-                }
+                step = session.Continue();
+            }
+            catch (Exception ex)
+            {
+                FailAndExit("Failed to continue the Ink story.", ex);
+                return;
+            }
 
-                if (!string.IsNullOrEmpty(nextLine) || CurrentStory.canContinue || CurrentStory.currentChoices.Count > 0)
-                {
-                    var lineContext = BuildLineContext(nextLine, CurrentStory.currentTags);
-                    OnLineReady?.Invoke(lineContext);
-                    OnStoryContinue?.Invoke(nextLine);
-                }
+            if (!ReferenceEquals(_session, session))
+                return;
+
+            switch (step.Kind)
+            {
+                case DialogueStepKind.Line:
+                    if (ValidateMetadata(step.Line))
+                        OnLineReady?.Invoke(step.Line);
+                    break;
+
+                case DialogueStepKind.Choices:
+                    // ChoiceHandler reacts to the PresentingChoices state transition.
+                    break;
+
+                case DialogueStepKind.Completed:
+                    ExitDialogueMode();
+                    break;
+            }
+        }
+
+        public bool ValidateMetadata(DialogueLineContext lineContext)
+        {
+            if (lineContext == null)
+                return false;
+
+            foreach (var diagnostic in lineContext.Diagnostics)
+            {
+                var key = string.IsNullOrEmpty(diagnostic.Key) ? string.Empty : $" ({diagnostic.Key})";
+                var message = $"Dialogue metadata [{diagnostic.Code}]{key}: {diagnostic.Message}";
+                if (diagnostic.Severity == DialogueMetadataSeverity.Error)
+                    Debug.LogError(message, this);
                 else
-                    BeginExitDialogueMode();
-            }
-            else if (CurrentStory.currentChoices.Count > 0)
-                return;
-            else
-                BeginExitDialogueMode();
-        }
-
-        private DialogueLineContext BuildLineContext(string lineText, List<string> currentTags)
-        {
-            var lineContext = _tagProcessContext.BeginLine(lineText, currentTags);
-            ProcessTags(_tagProcessContext, currentTags);
-            return lineContext;
-        }
-
-        public DialogueLineContext CreateLineContext(string lineText, List<string> currentTags)
-        {
-            var context = new TagProcessContext(_inkMetaParser);
-            var lineContext = context.BeginLine(lineText, currentTags);
-            ProcessTags(context, currentTags, false);
-            return lineContext;
-        }
-
-        public void NotifyLineMessageShown(DialogueLineContext lineContext)
-        {
-            OnStoryMessageShown?.Invoke(CurrentStory);
-            OnLineMessageShown?.Invoke(CurrentStory, lineContext);
-        }
-
-        private void ProcessTags(TagProcessContext context, List<string> currentTags)
-        {
-            ProcessTags(context, currentTags, true);
-        }
-
-        private void ProcessTags(TagProcessContext context, List<string> currentTags, bool runProcessors)
-        {
-            if (runProcessors)
-            {
-                foreach (var tagProcessor in _tagProcessors)
-                    tagProcessor.Reset();
+                    Debug.LogWarning(message, this);
             }
 
-            if (currentTags == null)
-                return;
+            if (!lineContext.HasErrors || !m_RejectInvalidMetadata)
+                return true;
 
-            foreach (string tag in currentTags)
-            {
-                if (Utils.GetTagKeyValue(tag, out string tagKey, out string tagValue))
-                {
-                    ApplyTagMetadata(context, tagKey, tagValue);
-
-                    if (!runProcessors)
-                        continue;
-
-                    foreach (var tagProcessor in _tagProcessors)
-                    {
-                        if (tagProcessor.CanHandle(tagKey))
-                            tagProcessor.Process(tagValue, context);
-                    }
-                }
-            }
+            FailAndExit("Dialogue stopped because the current line contains invalid metadata.");
+            return false;
         }
 
-        private void ApplyTagMetadata(TagProcessContext context, string tagKey, string tagValue)
+        internal DialogueLineContext ParseMetadata(string text, System.Collections.Generic.IEnumerable<string> tags)
         {
-            context.CurrentLine.AddTag(tagKey, tagValue);
+            return _session?.ParseMetadata(text, tags);
+        }
 
-            if (string.Equals(tagKey, "local", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(tagKey, "locale", StringComparison.OrdinalIgnoreCase))
-            {
-                context.CurrentLine.SetLocale(tagValue);
+        public void CompleteLinePresentation(DialogueLineContext lineContext)
+        {
+            var session = _session;
+            if (session == null || !session.CompleteLinePresentation(lineContext))
                 return;
+
+            OnLinePresented?.Invoke(lineContext);
+
+            if (ReferenceEquals(_session, session) &&
+                AutoContinueToNextLine &&
+                session.State == DialogueSessionState.WaitingForAdvance)
+            {
+                ContinueStory();
             }
-
-            if (string.Equals(tagKey, "layout", StringComparison.OrdinalIgnoreCase))
-            {
-                context.CurrentLine.SetLayoutAnim(tagValue);
-                return;
-            }
-
-            if (string.Equals(tagKey, "audio", StringComparison.OrdinalIgnoreCase))
-            {
-                context.CurrentLine.SetAudioInfo(tagValue);
-                return;
-            }
-
-            if (!string.Equals(tagKey, "speaker", StringComparison.OrdinalIgnoreCase) || context.MetaParser == null)
-                return;
-
-            var parsed = context.MetaParser.Parse(tagValue);
-            if (!parsed.TryGetValue("id", out var speakerId))
-                return;
-
-            context.CurrentLine.SetSpeaker(speakerId, new SpeakerState
-            {
-                Name = parsed.GetValueOrDefault("name"),
-                Image = parsed.GetValueOrDefault("image"),
-                Animation = parsed.GetValueOrDefault("anim")
-            });
         }
 
         public void MakeChoice(int choiceIndex)
         {
-            if (CurrentStory == null)
+            var session = _session;
+            if (session == null)
                 return;
 
-            if (choiceIndex < 0 || choiceIndex >= CurrentStory.currentChoices.Count)
-            {
-                Debug.LogWarning($"Choice index {choiceIndex} is out of range.");
-                return;
-            }
-
-            Debug.Log("Making choice " + choiceIndex);
             try
             {
-                CurrentStory.ChooseChoiceIndex(choiceIndex);
+                if (!session.TryChoose(choiceIndex))
+                {
+                    Debug.LogWarning(
+                        $"Cannot choose index {choiceIndex} while the dialogue session is {session.State}.",
+                        this);
+                    return;
+                }
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Failed to choose Ink choice index {choiceIndex}: {ex.Message}");
-                BeginExitDialogueMode();
+                FailAndExit($"Failed to choose Ink choice index {choiceIndex}.", ex);
                 return;
             }
 
-            ContinueStory();
+            if (ReferenceEquals(_session, session))
+                ContinueStory();
         }
 
-        private void Skip()
+        public void RequestAdvance()
         {
-            OnSkipRequested?.Invoke();
+            switch (_session?.GetAdvanceAction() ?? DialogueAdvanceAction.None)
+            {
+                case DialogueAdvanceAction.RevealCurrentLine:
+                    OnSkipRequested?.Invoke();
+                    break;
+
+                case DialogueAdvanceAction.ContinueStory:
+                    ContinueStory();
+                    break;
+            }
         }
 
-        private void OnNextInputPerformed(InputAction.CallbackContext _) => Skip();
-
-        private void BeginExitDialogueMode()
+        private void HandleSessionStateChanged(DialogueSessionState state)
         {
-            if (_exitCoroutine != null)
-                return;
-
-            _exitCoroutine = StartCoroutine(ExitDialogueMode());
+            OnStateChanged?.Invoke(state);
         }
+
+        private void FailAndExit(string message, Exception exception = null)
+        {
+            if (exception == null)
+                Debug.LogError(message, this);
+            else
+                Debug.LogError($"{message}\n{exception}", this);
+
+            _session?.Fault();
+            ExitDialogueMode();
+        }
+
+        private void OnNextInputPerformed(InputAction.CallbackContext _) => RequestAdvance();
 
         private void OnApplicationQuit()
         {
@@ -314,6 +338,10 @@ namespace SAS.DialogueSystem
         {
             if (_nextInputAction != null)
                 _nextInputAction.performed -= OnNextInputPerformed;
+
+            if (_session != null)
+                ExitDialogueMode(false);
+
             _contextBinder?.Remove(this);
         }
     }

@@ -8,6 +8,8 @@ public class DialogueTrigger : MonoBehaviour
     [Header("Ink JSON")]
     [FormerlySerializedAs("inkJSON")]
     [SerializeField] private TextAsset m_InkJSON;
+    [Tooltip("Optional per-story tag mapping. The dialogue handler default is used when this is empty.")]
+    [SerializeField] private DialogueMetadataProfile m_MetadataProfile;
     [SerializeField] private bool m_AutoStart = false;
     [SerializeField] private bool m_TriggerOncePerSession = true;
     private bool _triggered = false;
@@ -41,10 +43,10 @@ public class DialogueTrigger : MonoBehaviour
             if (!_triggered)
             {
                 _triggered = true;
-                _dialogueHandler.EnterDialogueMode(m_InkJSON, gameObject);
+                _dialogueHandler.EnterDialogueMode(m_InkJSON, gameObject, m_MetadataProfile);
             }
         }
         else
-            _dialogueHandler.EnterDialogueMode(m_InkJSON, gameObject);
+            _dialogueHandler.EnterDialogueMode(m_InkJSON, gameObject, m_MetadataProfile);
     }
 }

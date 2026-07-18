@@ -222,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: AssemblyStateMachine::SAS.StateMachineGraph.EntryStateModel
   m_Position: {x: 664, y: 238, z: 0}
   m_Transitions:
-  - {fileID: 6864372323953283210}
+  - {fileID: 5820618947464263673}
 --- !u!114 &-1294538683894811666
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -476,7 +476,7 @@ MonoBehaviour:
     whenToExecute: 1
   m_Transitions:
   - {fileID: 7090742331724709620}
---- !u!114 &6864372323953283210
+--- !u!114 &5820618947464263673
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}

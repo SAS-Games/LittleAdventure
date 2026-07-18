@@ -1,33 +1,38 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Localization;
-using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 public class ChoiceView : MonoBehaviour
 {
     [SerializeField] private Button m_Button;
     [SerializeField] private TMP_Text m_Text;
-    [SerializeField] private LocalizeStringEvent m_LocalizedStringEvent;
     [SerializeField] private string m_LocalizedTableName = "DialogueTextTable";
+    private UnityAction _boundSelectedAction;
+    private LocalizedString _activeLocalizedString;
+    private LocalizedString.ChangeHandler _localizedStringHandler;
+    private int _localizationVersion;
 
-    private void Awake()
-    {
-        if (m_LocalizedStringEvent != null)
-            m_LocalizedStringEvent.OnUpdateString.AddListener(SetText);
-    }
+    private void OnDisable() => CancelLocalization();
 
     private void OnDestroy()
     {
-        if (m_LocalizedStringEvent != null)
-            m_LocalizedStringEvent.OnUpdateString.RemoveListener(SetText);
+        CancelLocalization();
+        ClearSelectedEvents();
     }
 
     public void SetText(string text)
     {
+        CancelLocalization();
+        ApplyText(text);
+    }
+
+    private void ApplyText(string text)
+    {
         if (m_Text != null)
-            m_Text.text = text; 
+            m_Text.text = text;
     }
 
     public void SetLocalText(string id)
@@ -37,14 +42,22 @@ public class ChoiceView : MonoBehaviour
 
     public void SetLocalText(string id, string fallbackText)
     {
-        if (m_LocalizedStringEvent == null || string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(id))
         {
             SetText(fallbackText);
             return;
         }
 
-        SetText(fallbackText);
-        m_LocalizedStringEvent.StringReference = new LocalizedString(m_LocalizedTableName, id);
+        CancelLocalization();
+        ApplyText(fallbackText);
+        var version = _localizationVersion;
+        _activeLocalizedString = new LocalizedString(m_LocalizedTableName, id);
+        _localizedStringHandler = localizedText =>
+        {
+            if (version == _localizationVersion)
+                ApplyText(localizedText);
+        };
+        _activeLocalizedString.StringChanged += _localizedStringHandler;
     }
 
     public void BindSelectedEvent(UnityAction<int> action, int parameter)
@@ -52,14 +65,30 @@ public class ChoiceView : MonoBehaviour
         if (m_Button == null)
             return;
 
-        m_Button.onClick.RemoveAllListeners();
-        m_Button.onClick.AddListener(() => action(parameter));
+        ClearSelectedEvents();
+        if (action == null)
+            return;
+
+        _boundSelectedAction = () => action(parameter);
+        m_Button.onClick.AddListener(_boundSelectedAction);
     }
 
     public void ClearSelectedEvents()
     {
-        if (m_Button != null)
-            m_Button.onClick.RemoveAllListeners();
+        if (m_Button != null && _boundSelectedAction != null)
+            m_Button.onClick.RemoveListener(_boundSelectedAction);
+        _boundSelectedAction = null;
+    }
+
+    private void CancelLocalization()
+    {
+        _localizationVersion++;
+        if (_activeLocalizedString != null && _localizedStringHandler != null)
+            _activeLocalizedString.StringChanged -= _localizedStringHandler;
+
+        (_activeLocalizedString as IDisposable)?.Dispose();
+        _activeLocalizedString = null;
+        _localizedStringHandler = null;
     }
 
 }

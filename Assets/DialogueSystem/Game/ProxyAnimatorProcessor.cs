@@ -1,4 +1,3 @@
-using Ink.Runtime;
 using SAS.Core.TagSystem;
 using UniRx;
 using UnityEngine;
@@ -27,16 +26,16 @@ namespace SAS.DialogueSystem
         {
             this.Initialize();
             if (_dialogueHandler != null)
-                _dialogueHandler.OnLineMessageShown += OnTextRevealed;
+                _dialogueHandler.OnLinePresented += OnTextRevealed;
         }
 
         private void OnDestroy()
         {
             if (_dialogueHandler != null)
-                _dialogueHandler.OnLineMessageShown -= OnTextRevealed;
+                _dialogueHandler.OnLinePresented -= OnTextRevealed;
         }
 
-        private void OnTextRevealed(Story story, DialogueLineContext lineContext)
+        private void OnTextRevealed(DialogueLineContext lineContext)
         {
             if (lineContext == null)
                 return;

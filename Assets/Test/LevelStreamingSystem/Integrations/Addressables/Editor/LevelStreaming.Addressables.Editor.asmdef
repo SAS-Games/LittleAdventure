@@ -1,0 +1,31 @@
+{
+    "name": "LevelStreaming.Addressables.Editor",
+    "rootNamespace": "",
+    "references": [
+        "LevelStreaming.Runtime",
+        "LevelStreaming.Editor",
+        "LevelStreaming.Addressables",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.Addressables.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "LEVEL_STREAMING_ADDRESSABLES"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.addressables",
+            "expression": "",
+            "define": "LEVEL_STREAMING_ADDRESSABLES"
+        }
+    ],
+    "noEngineReferences": false
+}

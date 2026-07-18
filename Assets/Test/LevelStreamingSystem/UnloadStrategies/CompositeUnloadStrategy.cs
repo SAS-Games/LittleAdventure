@@ -22,14 +22,16 @@ namespace LevelStreaming
             switch (mode)
             {
                 case CombinationMode.AND:
+                    bool hasAndStrategy = false;
                     foreach (var strategy in strategies)
                     {
                         if (strategy == null) continue;
+                        hasAndStrategy = true;
                         if (!strategy.ShouldUnload(unloadBounds, regionManager, region))
                             return false; // fail fast
                     }
 
-                    return true;
+                    return hasAndStrategy;
 
                 case CombinationMode.OR:
                     foreach (var strategy in strategies)

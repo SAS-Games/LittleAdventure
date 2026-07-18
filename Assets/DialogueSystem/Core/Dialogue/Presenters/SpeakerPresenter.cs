@@ -4,21 +4,22 @@ using SAS.DialogueSystem;
 using SAS.Core.TagSystem;
 using UnityEngine;
 
-[RequireComponent(typeof(SpeakerTagProcessor)), DisallowMultipleComponent]
+[DisallowMultipleComponent]
 public class SpeakerPresenter : MonoBehaviour
 {
     [Serializable]
-    private class Speaker
+    private class ParticipantSlot
     {
-        public string id;
+        public string role;
         public SpeakerView view;
     }
 
-    [SerializeField] private List<Speaker> m_Speakers;
+    [SerializeField] private List<ParticipantSlot> m_ParticipantSlots;
 
     [FieldRequiresParent] protected DialogueHandler _dialogueHandler;
 
-    private readonly Dictionary<string, SpeakerView> _views = new();
+    private readonly Dictionary<string, SpeakerView> _viewsByRole = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _reportedMissingRoles = new(StringComparer.OrdinalIgnoreCase);
 
     void Awake()
     {
@@ -27,34 +28,43 @@ public class SpeakerPresenter : MonoBehaviour
         if (_dialogueHandler != null)
             _dialogueHandler.OnLineReady += OnLineReady;
 
-        RegisterConfiguredSpeakers();
-        RegisterChildSpeakerViews();
+        RegisterConfiguredSlots();
+        RegisterChildSlots();
     }
 
-    private void RegisterConfiguredSpeakers()
+    private void RegisterConfiguredSlots()
     {
-        if (m_Speakers == null)
+        if (m_ParticipantSlots == null)
             return;
 
-        foreach (var speaker in m_Speakers)
+        foreach (var slot in m_ParticipantSlots)
         {
-            if (string.IsNullOrEmpty(speaker.id) || speaker.view == null)
+            if (string.IsNullOrWhiteSpace(slot.role) || slot.view == null)
                 continue;
 
-            _views[speaker.id] = speaker.view;
+            var role = slot.role.Trim();
+            if (_viewsByRole.ContainsKey(role))
+                Debug.LogWarning($"Duplicate dialogue participant slot for role '{role}'. The final slot is used.", this);
+            _viewsByRole[role] = slot.view;
         }
     }
 
-    private void RegisterChildSpeakerViews()
+    private void RegisterChildSlots()
     {
+        var fallbackRoles = new[] { "speaker", "listener" };
+        var fallbackIndex = 0;
         foreach (var view in GetComponentsInChildren<SpeakerView>(true))
         {
-            var animatorProcessor = view.GetComponent<IAnimatorProcessor>();
-            if (animatorProcessor == null || string.IsNullOrEmpty(animatorProcessor.Tag))
+            if (_viewsByRole.ContainsValue(view))
                 continue;
 
-            if (!_views.ContainsKey(animatorProcessor.Tag))
-                _views.Add(animatorProcessor.Tag, view);
+            while (fallbackIndex < fallbackRoles.Length && _viewsByRole.ContainsKey(fallbackRoles[fallbackIndex]))
+                fallbackIndex++;
+            if (fallbackIndex >= fallbackRoles.Length)
+                break;
+
+            _viewsByRole.Add(fallbackRoles[fallbackIndex], view);
+            fallbackIndex++;
         }
     }
 
@@ -69,30 +79,20 @@ public class SpeakerPresenter : MonoBehaviour
         if (lineContext == null)
             return;
 
-        foreach (var view in _views.Values)
+        foreach (var view in _viewsByRole.Values)
             view.gameObject.SetActive(false);
 
-        foreach (var kvp in lineContext.Speakers)
+        foreach (var participant in lineContext.Participants)
         {
-            var speakerId = kvp.Key;
-            var state = kvp.Value;
-
-            if (!_views.TryGetValue(speakerId, out var view))
+            if (!_viewsByRole.TryGetValue(participant.Role, out var view))
             {
-                Debug.LogWarning($"Speaker '{speakerId}' not found.");
+                if (_reportedMissingRoles.Add(participant.Role))
+                    Debug.LogWarning($"Dialogue participant slot for role '{participant.Role}' is not configured.", this);
                 continue;
             }
 
             view.gameObject.SetActive(true);
-
-            if (!string.IsNullOrEmpty(state.Name))
-                view.SetName(state.Name);
-
-            if (!string.IsNullOrEmpty(state.Image))
-                view.SetImage(state.Image);
-
-            if (!string.IsNullOrEmpty(state.Animation))
-                view.SetAnimationState(state.Animation);
+            view.SetParticipant(participant);
         }
     }
 }

@@ -12,24 +12,51 @@ namespace LevelStreaming
 
         public override void Initialize(IReadOnlyList<RegionManager.Region> regionRefs)
         {
-            Bounds worldBounds = new Bounds(Vector3.zero, Vector3.one);
+            m_MaxDepth = Mathf.Max(0, m_MaxDepth);
+            m_MaxCapacity = Mathf.Max(1, m_MaxCapacity);
+            bool hasRegion = false;
+            Bounds worldBounds = default;
             foreach (var region in regionRefs)
-                worldBounds.Encapsulate(region.CachedBounds);
+            {
+                if (region == null)
+                    continue;
+
+                if (!hasRegion)
+                {
+                    worldBounds = region.CachedBounds;
+                    hasRegion = true;
+                }
+                else
+                    worldBounds.Encapsulate(region.CachedBounds);
+            }
+
+            if (!hasRegion)
+            {
+                _root = null;
+                return;
+            }
 
             _root = new QuadtreeNode(worldBounds, 0, m_MaxDepth, m_MaxCapacity);
 
             foreach (var region in regionRefs)
-                _root.Insert(region);
+            {
+                if (region != null)
+                    _root.Insert(region);
+            }
         }
 
         public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
         {
-            var results = new List<RegionManager.Region>();
+            if (_root == null)
+                return new List<RegionManager.Region>();
+
+            var results = new HashSet<RegionManager.Region>();
             _root.Query(queryBounds, results);
-            return results;
+            return new List<RegionManager.Region>(results);
         }
 
         public QuadtreeNode Root => _root;
         public int MaxDepth => m_MaxDepth;
+        public int MaxCapacity => m_MaxCapacity;
     }
 }

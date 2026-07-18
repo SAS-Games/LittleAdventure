@@ -4,6 +4,8 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Collections.Generic;
+using LevelStreaming.Editor;
 
 public static class StreamingHierarchyMenu
 {
@@ -14,8 +16,7 @@ public static class StreamingHierarchyMenu
     [MenuItem(CreateMenuPath, false, 0)]
     private static void CreateStreamingLevel(MenuCommand command)
     {
-        RegionManager regionManager =
-            Object.FindFirstObjectByType<RegionManager>();
+        RegionManager regionManager = RegionAuthoringUtility.FindTargetManager();
 
         if (regionManager == null)
         {
@@ -30,10 +31,14 @@ public static class StreamingHierarchyMenu
 
         // Create additive empty scene
         Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+        var regionRoot = new GameObject("Region");
+        SceneManager.MoveGameObjectToScene(regionRoot, newScene);
+        regionRoot.AddComponent<RegionBound>();
 
         if (!EditorSceneManager.SaveScene(newScene, scenePath))
         {
             Debug.LogError("[Streaming] Failed to save streaming scene.");
+            EditorSceneManager.CloseScene(newScene, true);
             return;
         }
 
@@ -51,13 +56,13 @@ public static class StreamingHierarchyMenu
     [MenuItem(CreateMenuPath, true)]
     private static bool ValidateCreateStreamingLevel()
     {
-        return Object.FindFirstObjectByType<RegionManager>() != null;
+        return RegionAuthoringUtility.FindTargetManager(showDialog: false) != null;
     }
 
     [MenuItem(AddExistingMenuPath, false, 1)]
     private static void AddExistingStreamingLevel(MenuCommand command)
     {
-        RegionManager regionManager = Object.FindFirstObjectByType<RegionManager>();
+        RegionManager regionManager = RegionAuthoringUtility.FindTargetManager();
 
         if (regionManager == null)
         {
@@ -70,13 +75,12 @@ public static class StreamingHierarchyMenu
         if (string.IsNullOrEmpty(absolutePath))
             return;
 
-        if (!absolutePath.StartsWith(Application.dataPath))
+        string scenePath = FileUtil.GetProjectRelativePath(absolutePath);
+        if (string.IsNullOrWhiteSpace(scenePath) || !scenePath.StartsWith("Assets/"))
         {
             Debug.LogError("[Streaming] Scene must be inside Assets folder.");
             return;
         }
-
-        string scenePath = "Assets" + absolutePath.Substring(Application.dataPath.Length);
 
         SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
 
@@ -92,7 +96,7 @@ public static class StreamingHierarchyMenu
     [MenuItem(AddExistingMenuPath, true)]
     private static bool ValidateAddExistingStreamingLevel()
     {
-        return Object.FindFirstObjectByType<RegionManager>() != null;
+        return RegionAuthoringUtility.FindTargetManager(showDialog: false) != null;
     }
 
     private static void RegisterScene(RegionManager regionManager, SceneAsset sceneAsset)
@@ -126,32 +130,73 @@ public static class StreamingHierarchyMenu
 
             if (existingPath == scenePath)
             {
-                Debug.LogWarning($"Scene '{scenePath}' already used by another region. " + "This is allowed but ensure bounds differ.");
+                Debug.LogWarning(
+                    $"Scene '{scenePath}' is already used by another region. Runtime loading will be shared; " +
+                    "apply source bounds for these regions individually.");
             }
         }
 
-        // Add new region entry
-        regionsProp.arraySize++;
+        // Add a fully initialized region entry. Unity may duplicate the previous array
+        // element when growing serialized arrays, so every relevant field is overwritten.
+        int newIndex = regionsProp.arraySize;
+        regionsProp.arraySize = newIndex + 1;
 
-        SerializedProperty newRegion = regionsProp.GetArrayElementAtIndex(regionsProp.arraySize - 1);
+        SerializedProperty newRegion = regionsProp.GetArrayElementAtIndex(newIndex);
         newRegion.FindPropertyRelative("type").enumValueIndex = (int)RegionManager.RegionType.Scene;
-        newRegion.FindPropertyRelative("regionName").stringValue = Path.GetFileNameWithoutExtension(scenePath);
+        newRegion.FindPropertyRelative("regionName").stringValue =
+            GenerateUniqueRegionName(regionManager, Path.GetFileNameWithoutExtension(scenePath));
+        newRegion.FindPropertyRelative("cachedBounds").boundsValue =
+            new Bounds(Vector3.zero, Vector3.one * 2f);
+        newRegion.FindPropertyRelative("portals").arraySize = 0;
+
+        SerializedProperty newSceneRef = newRegion.FindPropertyRelative("sceneRef");
+        newSceneRef.FindPropertyRelative("sceneAsset").objectReferenceValue = sceneAsset;
+        newSceneRef.FindPropertyRelative("scenePath").stringValue = scenePath;
+
+        ClearAssetReference(newRegion.FindPropertyRelative("prefabRef"));
+        ClearAssetReference(newRegion.FindPropertyRelative("addressableSceneRef"));
 
         var defaultStrategy = FindDefaultUnloadStrategy();
-        if (defaultStrategy != null)
-            newRegion.FindPropertyRelative("unloadStrategy").objectReferenceValue = defaultStrategy;
+        newRegion.FindPropertyRelative("unloadStrategy").objectReferenceValue = defaultStrategy;
 
         so.ApplyModifiedProperties();
-        
-        var region = regionManager.Regions[regionManager.Regions.Count - 1];
-
-#if UNITY_EDITOR
-        region.SceneRef.SceneAsset = sceneAsset;
-#endif
-
+        SceneBuildSettingsUtility.EnsureEnabled(scenePath);
         EditorUtility.SetDirty(regionManager);
+        EditorSceneManager.MarkSceneDirty(regionManager.gameObject.scene);
 
         Debug.Log($"[Streaming] Registered region: {scenePath}");
+    }
+
+    private static string GenerateUniqueRegionName(RegionManager manager, string baseName)
+    {
+        string candidate = string.IsNullOrWhiteSpace(baseName) ? "Region" : baseName;
+        var existing = new HashSet<string>();
+        foreach (var region in manager.Regions)
+        {
+            if (region != null && !string.IsNullOrWhiteSpace(region.RegionName))
+                existing.Add(region.RegionName);
+        }
+
+        if (!existing.Contains(candidate))
+            return candidate;
+
+        int suffix = 2;
+        while (existing.Contains($"{candidate}_{suffix}"))
+            suffix++;
+        return $"{candidate}_{suffix}";
+    }
+
+    private static void ClearAssetReference(SerializedProperty property)
+    {
+        if (property == null)
+            return;
+
+        SerializedProperty guid = property.FindPropertyRelative("m_AssetGUID");
+        if (guid != null)
+            guid.stringValue = string.Empty;
+        SerializedProperty subObject = property.FindPropertyRelative("m_SubObjectName");
+        if (subObject != null)
+            subObject.stringValue = string.Empty;
     }
     
     private static UnloadStrategy FindDefaultUnloadStrategy()

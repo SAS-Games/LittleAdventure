@@ -1,34 +1,27 @@
-using SAS.Core.TagSystem;
+using System;
 using UnityEngine;
 using UnityEngine.Localization;
-using UnityEngine.Localization.Components;
 
 namespace SAS.DialogueSystem
 {
-    [RequireComponent(typeof(LocaleTextTagProcessor)), DisallowMultipleComponent]
+    [DisallowMultipleComponent]
     public class DialogueLocaleTextPresenter : DialogueTextPresenter
     {
-        [SerializeField] private LocalizeStringEvent m_LocalizedStringEvent;
         [SerializeField] private string m_LocalizedTableName = "DialogueTextTable";
-
-        protected override void OnEnterDialogueMode()
-        {
-            if (m_LocalizedStringEvent != null && _typewriterEffect != null)
-                m_LocalizedStringEvent.OnUpdateString.AddListener(_typewriterEffect.StartTyping);
-        }
+        private DialogueLineContext _pendingLocalizedLine;
+        private LocalizedString _activeLocalizedString;
+        private LocalizedString.ChangeHandler _localizedStringHandler;
+        private int _localizationVersion;
 
         protected override void ExitDialogueMode()
         {
+            CancelLocalization();
             base.ExitDialogueMode();
-            if (m_LocalizedStringEvent != null && _typewriterEffect != null)
-                m_LocalizedStringEvent.OnUpdateString.RemoveListener(_typewriterEffect.StartTyping);
         }
 
         protected override void OnDestroy()
         {
-            if (m_LocalizedStringEvent != null && _typewriterEffect != null)
-                m_LocalizedStringEvent.OnUpdateString.RemoveListener(_typewriterEffect.StartTyping);
-
+            CancelLocalization();
             base.OnDestroy();
         }
 
@@ -37,13 +30,50 @@ namespace SAS.DialogueSystem
             if (lineContext == null)
                 return;
 
-            if (!string.IsNullOrEmpty(lineContext.Locale) && m_LocalizedStringEvent != null)
+            if (!string.IsNullOrEmpty(lineContext.Locale))
             {
                 ApplyLineAudio(lineContext);
-                m_LocalizedStringEvent.StringReference = new LocalizedString(m_LocalizedTableName, lineContext.Locale);
+                BeginLocalization(lineContext);
             }
             else
+            {
+                CancelLocalization();
                 base.OnLineReady(lineContext);
+            }
+        }
+
+        private void BeginLocalization(DialogueLineContext lineContext)
+        {
+            CancelLocalization();
+            _pendingLocalizedLine = lineContext;
+            var version = _localizationVersion;
+            _activeLocalizedString = new LocalizedString(m_LocalizedTableName, lineContext.Locale);
+            _localizedStringHandler = localizedText => HandleLocalizedString(version, lineContext, localizedText);
+            _activeLocalizedString.StringChanged += _localizedStringHandler;
+        }
+
+        private void HandleLocalizedString(int version, DialogueLineContext lineContext, string localizedText)
+        {
+            if (version != _localizationVersion || lineContext == null || !ReferenceEquals(_pendingLocalizedLine, lineContext) ||
+                _dialogueHandler == null || _dialogueHandler.State != DialogueSessionState.PresentingLine || !ReferenceEquals(_dialogueHandler.CurrentLineContext, lineContext))
+            {
+                return;
+            }
+
+            CancelLocalization();
+            StartLinePresentation(lineContext, localizedText);
+        }
+
+        private void CancelLocalization()
+        {
+            _localizationVersion++;
+            _pendingLocalizedLine = null;
+            if (_activeLocalizedString != null && _localizedStringHandler != null)
+                _activeLocalizedString.StringChanged -= _localizedStringHandler;
+
+            (_activeLocalizedString as IDisposable)?.Dispose();
+            _activeLocalizedString = null;
+            _localizedStringHandler = null;
         }
     }
 }

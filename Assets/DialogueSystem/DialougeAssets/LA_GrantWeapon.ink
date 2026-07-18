@@ -10,16 +10,16 @@ EXTERNAL grant_weapon(player_name, weaponName)
 }
 
 === NPC_UNLOCK_WEAPON ===
-Greetings, adventurers! I bestow upon you the legendary {weapon_name}.#speaker:id::npc, name::KAIROS, anim::Talk
+Greetings, adventurers! I bestow upon you the legendary {weapon_name}.#speaker:npc #speaker_name:KAIROS #animation:Talk
 ~ grant_weapon(Player1_name, weapon_name)
 ~ grant_weapon(Player2_name, weapon_name)
-(Both players now wield the {weapon_name}!) #speaker:id::npc, name::KAIROS, anim::Talk
-To attack, press {attackButton}. #speaker:id::npc, name::KAIROS, anim::Talk
+(Both players now wield the {weapon_name}!) #speaker:npc #speaker_name:KAIROS #animation:Talk
+To attack, press {attackButton}. #speaker:npc #speaker_name:KAIROS #animation:Talk
 -> END
 
 === SINGLEPLAYER_NPC_UNLOCK_WEAPON ===
-Greetings, adventurer! I bestow upon you the legendary {weapon_name}.#speaker:id::npc, name::KAIROS, anim::Talk
+Greetings, adventurer! I bestow upon you the legendary {weapon_name}.#speaker:npc #speaker_name:KAIROS #animation:Talk
 ~ grant_weapon(Player1_name, weapon_name)
-(You now wield the {weapon_name}!) #speaker:id::npc, name::KAIROS, anim::Talk
-To attack, press {attackButton}. #speaker:id::npc, name::KAIROS, anim::Talk
+(You now wield the {weapon_name}!) #speaker:npc #speaker_name:KAIROS #animation:Talk
+To attack, press {attackButton}. #speaker:npc #speaker_name:KAIROS #animation:Talk
 -> END

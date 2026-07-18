@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SAS.DialogueSystem
 {
-    [RequireComponent(typeof(LayoutAnimatorTagProcessor), typeof(Animator))]
+    [RequireComponent(typeof(Animator))]
     public class DialogueLayoutAnimator : MonoBehaviour
     {
         [FieldRequiresSelf] private Animator m_LayoutAnimator;

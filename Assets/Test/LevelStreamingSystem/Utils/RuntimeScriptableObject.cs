@@ -24,6 +24,20 @@ public abstract class RuntimeScriptableObject<T> : ScriptableObject where T : Ru
     }
 
     /// <summary>
+    /// Creates an independent runtime clone for one consumer. Prefer this when the
+    /// ScriptableObject contains mutable runtime state (for example, a streaming loader).
+    /// </summary>
+    public T CreateRuntimeInstance()
+    {
+        var instance = Instantiate(this) as T;
+        if (instance == null)
+            return null;
+
+        instance.OnInstanceCreated();
+        return instance;
+    }
+
+    /// <summary>
     /// Called when a runtime instance is created
     /// </summary>
     protected virtual void OnInstanceCreated()
@@ -35,6 +49,6 @@ public abstract class RuntimeScriptableObject<T> : ScriptableObject where T : Ru
     /// </summary>
     public static implicit operator T(RuntimeScriptableObject<T> original)
     {
-        return original.Instance;
+        return original == null ? null : original.Instance;
     }
 }

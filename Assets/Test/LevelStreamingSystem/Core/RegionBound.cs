@@ -5,7 +5,7 @@ namespace LevelStreaming
     [ExecuteAlways]
     public class RegionBound : MonoBehaviour
     {
-        [SerializeField] private Bounds m_RegionBounds;
+        [SerializeField] private Bounds m_RegionBounds = new(Vector3.zero, Vector3.one * 2f);
 
         public Bounds Bounds
         {

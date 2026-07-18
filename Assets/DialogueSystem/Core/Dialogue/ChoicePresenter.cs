@@ -42,7 +42,7 @@ namespace SAS.DialogueSystem
         private void PresentChoices(ChoiceContext context)
         {
             var options = context.Options;
-            var choiceCount = options?.Count ?? context.Choices?.Count ?? 0;
+            var choiceCount = options?.Count ?? 0;
 
             EnsureChoiceCapacity(choiceCount);
 
@@ -53,15 +53,7 @@ namespace SAS.DialogueSystem
                     break;
 
                 var view = _choiceViews[index];
-                var option = options != null
-                    ? options[index]
-                    : new ChoiceOptionContext
-                    {
-                        Choice = context.Choices[index],
-                        ChoiceIndex = index,
-                        LineContext = new DialogueLineContext(context.Choices[index].text, context.Choices[index].tags)
-                    };
-                SetChoice(view, option);
+                SetChoice(view, options[index]);
             }
 
             for (int i = index; i < _choiceViews.Count; i++)

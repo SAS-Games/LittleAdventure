@@ -59,7 +59,7 @@ namespace SAS.DialogueSystem.EditorTools
             }
 
             if (tags.useLocale && !string.IsNullOrWhiteSpace(tags.localeKey))
-                draft.globalTags.Add(new DialogueStoryCustomTag { key = "local", value = tags.localeKey });
+                draft.globalTags.Add(new DialogueStoryCustomTag { key = "locale", value = tags.localeKey });
 
             if (tags.useLayout && !string.IsNullOrWhiteSpace(tags.layoutAnimation))
                 draft.globalTags.Add(new DialogueStoryCustomTag { key = "layout", value = tags.layoutAnimation });
@@ -87,7 +87,24 @@ namespace SAS.DialogueSystem.EditorTools
             {
                 ParseSpeakerTag(value, tags);
             }
-            else if (key.Equals("local", StringComparison.OrdinalIgnoreCase) || key.Equals("locale", StringComparison.OrdinalIgnoreCase))
+            else if (key.Equals("speaker_name", StringComparison.OrdinalIgnoreCase))
+            {
+                tags.useSpeaker = true;
+                tags.speakerName = value;
+            }
+            else if (key.Equals("portrait", StringComparison.OrdinalIgnoreCase) ||
+                     key.Equals("speaker_portrait", StringComparison.OrdinalIgnoreCase))
+            {
+                tags.useSpeaker = true;
+                tags.portraitKey = value;
+            }
+            else if (key.Equals("animation", StringComparison.OrdinalIgnoreCase) ||
+                     key.Equals("speaker_animation", StringComparison.OrdinalIgnoreCase))
+            {
+                tags.useSpeaker = true;
+                tags.speakerAnimation = value;
+            }
+            else if (key.Equals("locale", StringComparison.OrdinalIgnoreCase))
             {
                 tags.useLocale = true;
                 tags.localeKey = value;
@@ -115,25 +132,7 @@ namespace SAS.DialogueSystem.EditorTools
         private static void ParseSpeakerTag(string value, DialogueStoryTagSet tags)
         {
             tags.useSpeaker = true;
-            foreach (var rawPart in value.Split(','))
-            {
-                var part = rawPart.Trim();
-                var split = part.Split(new[] { "::" }, 2, StringSplitOptions.None);
-                if (split.Length != 2)
-                    continue;
-
-                var key = split[0].Trim();
-                var fieldValue = split[1].Trim();
-
-                if (key.Equals("id", StringComparison.OrdinalIgnoreCase))
-                    tags.speakerId = fieldValue;
-                else if (key.Equals("name", StringComparison.OrdinalIgnoreCase))
-                    tags.speakerName = fieldValue;
-                else if (key.Equals("image", StringComparison.OrdinalIgnoreCase))
-                    tags.portraitKey = fieldValue;
-                else if (key.Equals("anim", StringComparison.OrdinalIgnoreCase))
-                    tags.speakerAnimation = fieldValue;
-            }
+            tags.speakerId = value.Trim();
         }
     }
 }

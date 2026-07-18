@@ -13,6 +13,9 @@ namespace LevelStreaming.Editor
 
             var boundsProp = property.FindPropertyRelative("cachedBounds");
             var portalsProp = property.FindPropertyRelative("portals");
+            var typeProp = property.FindPropertyRelative("type");
+            SerializedProperty sourceProp = GetSourceProperty(property,
+                (RegionManager.RegionType)typeProp.enumValueIndex);
 
             float line = EditorGUIUtility.singleLineHeight;
             float space = EditorGUIUtility.standardVerticalSpacing;
@@ -25,13 +28,13 @@ namespace LevelStreaming.Editor
             // Name + Type
             height += (line + space) * 2;
 
-            // Scene or Prefab
-            height += line + space;
+            // Scene, Prefab, or Addressable Scene
+            height += EditorGUI.GetPropertyHeight(sourceProp, true) + space;
 
             // Bounds
             height += EditorGUI.GetPropertyHeight(boundsProp, true) + space;
 
-            // ✅ Refresh Button
+            // Fit/apply buttons
             height += line + space;
 
             // Portals
@@ -68,6 +71,7 @@ namespace LevelStreaming.Editor
             var typeProp = property.FindPropertyRelative("type");
             var sceneProp = property.FindPropertyRelative("sceneRef");
             var prefabProp = property.FindPropertyRelative("prefabRef");
+            var addressableSceneProp = property.FindPropertyRelative("addressableSceneRef");
             var boundsProp = property.FindPropertyRelative("cachedBounds");
             var portalsProp = property.FindPropertyRelative("portals");
             var unloadProp = property.FindPropertyRelative("unloadStrategy");
@@ -82,26 +86,33 @@ namespace LevelStreaming.Editor
 
             var type = (RegionManager.RegionType)typeProp.enumValueIndex;
 
-            // Scene or Prefab
-            if (type == RegionManager.RegionType.Scene)
+            SerializedProperty sourceProp = type switch
             {
-                EditorGUI.PropertyField(rect, sceneProp);
-                rect.y += line + space;
-            }
-            else if (type == RegionManager.RegionType.Prefab)
+                RegionManager.RegionType.Scene => sceneProp,
+                RegionManager.RegionType.Prefab => prefabProp,
+                RegionManager.RegionType.AddressableScene => addressableSceneProp,
+                _ => null
+            };
+
+            if (sourceProp != null)
             {
-                EditorGUI.PropertyField(rect, prefabProp);
-                rect.y += line + space;
+                float sourceHeight = EditorGUI.GetPropertyHeight(sourceProp, true);
+                EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, sourceHeight), sourceProp, true);
+                rect.y += sourceHeight + space;
             }
 
             // Cached Bounds
             float boundsHeight = EditorGUI.GetPropertyHeight(boundsProp, true);
             EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, boundsHeight), boundsProp, true);
             rect.y += boundsHeight + space;
-            Rect buttonRect = new Rect(rect.x, rect.y, rect.width, line);
+            float buttonGap = 4f;
+            float buttonWidth = (rect.width - buttonGap) * 0.5f;
+            Rect refreshButton = new Rect(rect.x, rect.y, buttonWidth, line);
+            Rect applyButton = new Rect(rect.x + buttonWidth + buttonGap, rect.y, buttonWidth, line);
 
-            if (GUI.Button(buttonRect, "Refresh Bounds From Asset"))
+            if (GUI.Button(refreshButton, "Fit From Asset"))
             {
+                property.serializedObject.ApplyModifiedProperties();
                 var manager = property.serializedObject.targetObject as RegionManager;
 
                 if (manager != null)
@@ -118,6 +129,23 @@ namespace LevelStreaming.Editor
 
                     EditorUtility.SetDirty(manager);
                 }
+
+                property.serializedObject.Update();
+            }
+
+            if (GUI.Button(applyButton, "Apply To Asset"))
+            {
+                property.serializedObject.ApplyModifiedProperties();
+                var manager = property.serializedObject.targetObject as RegionManager;
+                int index = GetRegionIndex(property);
+                if (manager != null && index >= 0 && index < manager.Regions.Count &&
+                    EditorUtility.DisplayDialog(
+                        "Apply Streaming Bounds",
+                        "This writes the cached bounds into the source scene or prefab.",
+                        "Apply",
+                        "Cancel"))
+                    manager.ApplyBounds(manager.Regions[index]);
+                property.serializedObject.Update();
             }
 
             rect.y += line + space;
@@ -149,6 +177,18 @@ namespace LevelStreaming.Editor
                 return index;
 
             return -1;
+        }
+
+        private static SerializedProperty GetSourceProperty(SerializedProperty property,
+            RegionManager.RegionType type)
+        {
+            return type switch
+            {
+                RegionManager.RegionType.Scene => property.FindPropertyRelative("sceneRef"),
+                RegionManager.RegionType.Prefab => property.FindPropertyRelative("prefabRef"),
+                RegionManager.RegionType.AddressableScene => property.FindPropertyRelative("addressableSceneRef"),
+                _ => property.FindPropertyRelative("sceneRef")
+            };
         }
     }
 }

@@ -8,7 +8,6 @@ namespace SAS.DialogueSystem
 {
     public struct ChoiceContext
     {
-        public IReadOnlyList<Choice> Choices;
         public IReadOnlyList<ChoiceOptionContext> Options;
     }
 
@@ -37,7 +36,7 @@ namespace SAS.DialogueSystem
                 return;
 
             _dialogueHandler.OnLineReady += HandleLineReady;
-            _dialogueHandler.OnLineMessageShown += HandleLineMessageShown;
+            _dialogueHandler.OnStateChanged += HandleStateChanged;
         }
 
         private void OnDisable()
@@ -46,7 +45,8 @@ namespace SAS.DialogueSystem
                 return;
 
             _dialogueHandler.OnLineReady -= HandleLineReady;
-            _dialogueHandler.OnLineMessageShown -= HandleLineMessageShown;
+            _dialogueHandler.OnStateChanged -= HandleStateChanged;
+            OnChoicesHidden?.Invoke();
         }
 
         private void HandleLineReady(DialogueLineContext _)
@@ -54,7 +54,25 @@ namespace SAS.DialogueSystem
             OnChoicesHidden?.Invoke();
         }
 
-        private void HandleLineMessageShown(Story story, DialogueLineContext _)
+        private void HandleStateChanged(DialogueSessionState state)
+        {
+            if (state == DialogueSessionState.PresentingChoices)
+            {
+                PrepareChoices(_dialogueHandler.CurrentStory);
+                return;
+            }
+
+            if (state == DialogueSessionState.Starting ||
+                state == DialogueSessionState.PresentingLine ||
+                state == DialogueSessionState.Exiting ||
+                state == DialogueSessionState.Faulted ||
+                state == DialogueSessionState.Idle)
+            {
+                OnChoicesHidden?.Invoke();
+            }
+        }
+
+        private void PrepareChoices(Story story)
         {
             if (story == null)
             {
@@ -68,24 +86,30 @@ namespace SAS.DialogueSystem
             for (int index = 0; index < choices.Count; index++)
             {
                 var choice = choices[index];
+                var lineContext = BuildChoiceLineContext(choice);
+                if (!_dialogueHandler.ValidateMetadata(lineContext))
+                {
+                    OnChoicesHidden?.Invoke();
+                    return;
+                }
+
                 options.Add(new ChoiceOptionContext
                 {
                     Choice = choice,
                     ChoiceIndex = index,
-                    LineContext = BuildChoiceLineContext(choice)
+                    LineContext = lineContext
                 });
             }
 
             OnChoicesPrepared?.Invoke(new ChoiceContext
             {
-                Choices = choices,
                 Options = options
             });
         }
 
         private DialogueLineContext BuildChoiceLineContext(Choice choice)
         {
-            return _dialogueHandler.CreateLineContext(choice.text, choice.tags);
+            return _dialogueHandler.ParseMetadata(choice.text, choice.tags);
         }
 
         public void MakeChoice(int choiceIndex) => _dialogueHandler.MakeChoice(choiceIndex);

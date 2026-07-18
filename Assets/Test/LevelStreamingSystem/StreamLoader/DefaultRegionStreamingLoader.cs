@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LevelStreaming
@@ -6,29 +8,50 @@ namespace LevelStreaming
     [CreateAssetMenu(menuName = "Streaming/StreamingLoader/DefaultRegionStreamingLoader")]
     public class DefaultRegionStreamingLoader : RegionStreamingLoader
     {
-        private IStreamingLoader<RegionManager.Region> _sceneLoader;
-        private IStreamingLoader<RegionManager.Region> _prefabLoader;
+        private readonly Dictionary<RegionManager.RegionType, IStreamingLoader<RegionManager.Region>> _loaders = new();
 
         public override void Initialize(RegionStreamingController regionStreamingController, RegionManager regionManager)
         {
             base.Initialize(regionStreamingController, regionManager);
-            _sceneLoader = new SceneStreamingLoader(_regionManager);
-            _prefabLoader = new PrefabStreamingLoader(_regionManager);
+            _loaders.Clear();
+            _loaders.Add(RegionManager.RegionType.Scene, new SceneStreamingLoader(_regionManager));
+
+            TryAddOptionalLoader(RegionManager.RegionType.Prefab);
+            TryAddOptionalLoader(RegionManager.RegionType.AddressableScene);
         }
 
-        public override void Load(RegionManager.Region region, Action<RegionManager.Region> onLoaded) =>
-            GetLoader(region).Load(region, onLoaded);
+        public override Task LoadAsync(RegionManager.Region region) =>
+            GetLoader(region.Type).LoadAsync(region);
 
-        public override void Unload(RegionManager.Region region, Action<RegionManager.Region> onUnloaded) =>
-            GetLoader(region).Unload(region, onUnloaded);
+        public override Task UnloadAsync(RegionManager.Region region)
+        {
+            RegionManager.RegionType loadedType =
+                _regionManager.GetOrCreateMeta(region).LoadedType ?? region.Type;
+            return GetLoader(loadedType).UnloadAsync(region);
+        }
 
         public override bool IsLoading(RegionManager.Region region) =>
-            GetLoader(region).IsLoading(region);
+            _regionManager.IsRegionLoading(region);
 
         public override bool IsLoaded(RegionManager.Region region) =>
-            GetLoader(region).IsLoaded(region);
+            _regionManager.IsRegionLoaded(region);
 
-        private IStreamingLoader<RegionManager.Region> GetLoader(RegionManager.Region region) =>
-            region.Type == RegionManager.RegionType.Scene ? _sceneLoader : _prefabLoader;
+        public override bool Supports(RegionManager.RegionType type) => _loaders.ContainsKey(type);
+
+        private void TryAddOptionalLoader(RegionManager.RegionType type)
+        {
+            if (RegionStreamingBackendRegistry.TryCreate(type, _regionManager, out var loader))
+                _loaders[type] = loader;
+        }
+
+        private IStreamingLoader<RegionManager.Region> GetLoader(RegionManager.RegionType type)
+        {
+            if (_loaders.TryGetValue(type, out var loader))
+                return loader;
+
+            throw new NotSupportedException(
+                $"No streaming backend is available for region type '{type}'. " +
+                "Install and enable the matching optional integration, or change the region type.");
+        }
     }
 }

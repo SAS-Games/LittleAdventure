@@ -136,7 +136,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Button: {fileID: 4058850757582239180}
   m_Text: {fileID: 2766684399940331038}
-  m_LocalizedStringEvent: {fileID: 0}
   m_LocalizedTableName: DialogueTextTable
 --- !u!1 &1925031533165583716
 GameObject:
@@ -496,7 +495,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Button: {fileID: 7532748483282396759}
   m_Text: {fileID: 5846623647911530304}
-  m_LocalizedStringEvent: {fileID: 0}
   m_LocalizedTableName: DialogueTextTable
 --- !u!1 &3986224482510626509
 GameObject:
@@ -767,9 +765,7 @@ GameObject:
   - component: {fileID: 1053626094833009880}
   - component: {fileID: 5910611694296214387}
   - component: {fileID: 6699412997712243619}
-  - component: {fileID: 7972820065310619787}
   - component: {fileID: 7406577211281165454}
-  - component: {fileID: 7643850093629804269}
   - component: {fileID: 7604528857672369803}
   m_Layer: 5
   m_Name: DialoguePanel
@@ -851,7 +847,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LoadGlobalsJSON: {fileID: 4900000, guid: 79f780b0969c0534e92c3481f5f8b558, type: 3}
+  m_DefaultMetadataProfile: {fileID: 11400000, guid: f4bc6e9d51a142bb927164f0030f4f07, type: 2}
+  m_GlobalsSaveKey: INK_VARIABLES
   m_DialoguePanel: {fileID: 4627647359639425192}
+  m_RejectInvalidMetadata: 1
   <AutoContinueToNextLine>k__BackingField: 0
   _nextInputAction:
     m_Name: Next Input
@@ -900,18 +899,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &7972820065310619787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4627647359639425192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31d23dcc29cb78b41b74f67437ed30cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7406577211281165454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -925,20 +912,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ContinueIcon: {fileID: 8743069265964213950}
---- !u!114 &7643850093629804269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4627647359639425192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb9c1204e7bf4ea4bbe657083b73b547, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <SupportedKeys>k__BackingField:
-  - speaker
 --- !u!114 &7604528857672369803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,7 +924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2eaa33fc71bd14b8bc35695efa78e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Speakers: []
+  m_ParticipantSlots: []
 --- !u!1 &5011532392078521750
 GameObject:
   m_ObjectHideFlags: 0
@@ -1362,7 +1335,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Button: {fileID: 934221449696361132}
   m_Text: {fileID: 4665822960972026959}
-  m_LocalizedStringEvent: {fileID: 0}
   m_LocalizedTableName: DialogueTextTable
 --- !u!1 &6052613277432496595
 GameObject:
@@ -1637,7 +1609,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Button: {fileID: 4800005447508928607}
   m_Text: {fileID: 6435653346033060441}
-  m_LocalizedStringEvent: {fileID: 0}
   m_LocalizedTableName: DialogueTextTable
 --- !u!1 &8743069265964213950
 GameObject:

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 #if UNITY_AI
 using UnityEngine.AI;
 #endif
@@ -8,9 +9,9 @@ using UnityEngine.AI;
 public class RuntimeGizmosGL : MonoBehaviour
 {
     // ------------ Internal Data ------------
-    struct Line { public Vector3 a, b; public Color color; public float time; }
-    struct Quad { public Vector3 a, b, c, d; public Color color; public float time; }
-    struct Tri { public Vector3 a, b, c; public Color color; public float time; }
+    struct Line { public Vector3 a, b; public Color color; public float expiresAt; public bool rendered; }
+    struct Quad { public Vector3 a, b, c, d; public Color color; public float expiresAt; public bool rendered; }
+    struct Tri { public Vector3 a, b, c; public Color color; public float expiresAt; public bool rendered; }
 
     private static readonly List<Line> lines = new List<Line>();
     private static readonly List<Quad> quads = new List<Quad>();
@@ -20,7 +21,16 @@ public class RuntimeGizmosGL : MonoBehaviour
     
     private static RuntimeGizmosGL instance;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        lines.Clear();
+        quads.Clear();
+        tris.Clear();
+        lineMat = null;
+        instance = null;
+    }
+
     private static void AutoInit()
     {
         if (instance == null)
@@ -34,10 +44,24 @@ public class RuntimeGizmosGL : MonoBehaviour
 
     void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
         if (!lineMat)
         {
             // Hidden Unity shader, supports vertex colors + transparency
             var shader = Shader.Find("Hidden/Internal-Colored");
+            if (shader == null)
+            {
+                Debug.LogError("Runtime gizmos require the Hidden/Internal-Colored shader.", this);
+                enabled = false;
+                return;
+            }
+
             lineMat = new Material(shader) { hideFlags = HideFlags.HideAndDontSave };
             lineMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             lineMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
@@ -46,35 +70,84 @@ public class RuntimeGizmosGL : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    private void OnEnable()
     {
-        // Decrement line lifetimes
+        Camera.onPostRender += RenderBuiltInCamera;
+        RenderPipelineManager.endCameraRendering += RenderScriptableCamera;
+    }
+
+    private void OnDisable()
+    {
+        Camera.onPostRender -= RenderBuiltInCamera;
+        RenderPipelineManager.endCameraRendering -= RenderScriptableCamera;
+    }
+
+    private void OnDestroy()
+    {
+        if (instance != this)
+            return;
+
+        instance = null;
+        lines.Clear();
+        quads.Clear();
+        tris.Clear();
+        if (lineMat != null)
+            Destroy(lineMat);
+        lineMat = null;
+    }
+
+    void Update()
+    {
+        float now = Time.unscaledTime;
         for (int i = lines.Count - 1; i >= 0; i--)
         {
-            var l = lines[i]; l.time -= Time.deltaTime;
-            if (l.time <= 0) lines.RemoveAt(i); else lines[i] = l;
+            var item = lines[i];
+            if (IsExpired(item.expiresAt, item.rendered, now))
+                lines.RemoveAt(i);
         }
 
         for (int i = quads.Count - 1; i >= 0; i--)
         {
-            var q = quads[i]; q.time -= Time.deltaTime;
-            if (q.time <= 0) quads.RemoveAt(i); else quads[i] = q;
+            var item = quads[i];
+            if (IsExpired(item.expiresAt, item.rendered, now))
+                quads.RemoveAt(i);
         }
 
         for (int i = tris.Count - 1; i >= 0; i--)
         {
-            var t = tris[i]; t.time -= Time.deltaTime;
-            if (t.time <= 0) tris.RemoveAt(i); else tris[i] = t;
+            var item = tris[i];
+            if (IsExpired(item.expiresAt, item.rendered, now))
+                tris.RemoveAt(i);
         }
     }
 
-    void OnPostRender()
+    private static bool IsExpired(float expiresAt, bool rendered, float now)
     {
-        if (lines.Count == 0 && quads.Count == 0 && tris.Count == 0) return;
+        return expiresAt < 0f ? rendered : now >= expiresAt;
+    }
+
+    private static void RenderBuiltInCamera(Camera camera)
+    {
+        if (GraphicsSettings.currentRenderPipeline == null)
+            Render(camera);
+    }
+
+    private static void RenderScriptableCamera(ScriptableRenderContext context, Camera camera)
+    {
+        if (GraphicsSettings.currentRenderPipeline != null)
+            Render(camera);
+    }
+
+    private static void Render(Camera camera)
+    {
+        if (camera == null || lineMat == null ||
+            (lines.Count == 0 && quads.Count == 0 && tris.Count == 0))
+            return;
 
         lineMat.SetPass(0);
         GL.PushMatrix();
-        GL.MultMatrix(Matrix4x4.identity);
+        GL.LoadProjectionMatrix(camera.projectionMatrix);
+        GL.modelview = camera.worldToCameraMatrix;
 
         // Lines
         if (lines.Count > 0)
@@ -119,6 +192,7 @@ public class RuntimeGizmosGL : MonoBehaviour
         }
 
         GL.PopMatrix();
+        MarkOneFrameItemsRendered();
     }
 
     // ------------ Public API (Lines) ------------
@@ -129,7 +203,7 @@ public class RuntimeGizmosGL : MonoBehaviour
         {
             a = a, b = b,
             color = color,
-            time = duration <= 0 ? Time.deltaTime : duration
+            expiresAt = duration <= 0f ? -1f : Time.unscaledTime + duration
         });
     }
 
@@ -228,8 +302,11 @@ public class RuntimeGizmosGL : MonoBehaviour
             DrawWireSphere((p1 + p2) * 0.5f, radius, color, segments, duration);
             return;
         }
-        Vector3 forward = Vector3.Slerp(up, -up, 0.5f).normalized;
-        Vector3 right = Vector3.Cross(up, forward).normalized;
+        Vector3 reference = Mathf.Abs(Vector3.Dot(up, Vector3.up)) > 0.99f
+            ? Vector3.right
+            : Vector3.up;
+        Vector3 right = Vector3.Cross(up, reference).normalized;
+        Vector3 forward = Vector3.Cross(right, up).normalized;
 
         // cylinder sides
         for (int i = 0; i < segments; i++)
@@ -309,7 +386,7 @@ public class RuntimeGizmosGL : MonoBehaviour
             {
                 a = origin, b = points[i], c = points[i + 1],
                 color = color,
-                time = duration <= 0 ? Time.deltaTime : duration
+                expiresAt = duration <= 0f ? -1f : Time.unscaledTime + duration
             });
         }
     }
@@ -333,12 +410,46 @@ public class RuntimeGizmosGL : MonoBehaviour
     // ------------ Helpers ------------
     private static void AddQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d, Color color, float duration)
     {
+        EnsureInstance();
         quads.Add(new Quad
         {
             a = a, b = b, c = c, d = d,
             color = color,
-            time = duration <= 0 ? Time.deltaTime : duration
+            expiresAt = duration <= 0f ? -1f : Time.unscaledTime + duration
         });
+    }
+
+    private static void MarkOneFrameItemsRendered()
+    {
+        for (int i = 0; i < lines.Count; i++)
+        {
+            Line item = lines[i];
+            if (item.expiresAt < 0f)
+            {
+                item.rendered = true;
+                lines[i] = item;
+            }
+        }
+
+        for (int i = 0; i < quads.Count; i++)
+        {
+            Quad item = quads[i];
+            if (item.expiresAt < 0f)
+            {
+                item.rendered = true;
+                quads[i] = item;
+            }
+        }
+
+        for (int i = 0; i < tris.Count; i++)
+        {
+            Tri item = tris[i];
+            if (item.expiresAt < 0f)
+            {
+                item.rendered = true;
+                tris[i] = item;
+            }
+        }
     }
 
     private static void EnsureInstance()

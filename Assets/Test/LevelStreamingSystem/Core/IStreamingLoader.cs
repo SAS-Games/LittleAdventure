@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
+
 namespace LevelStreaming
 {
     public interface IStreamingLoader<TRegion>
     {
-        void Load(TRegion region, System.Action<TRegion> onLoaded);
-        void Unload(TRegion region, System.Action<TRegion> onUnloaded);
+        Task LoadAsync(TRegion region);
+        Task UnloadAsync(TRegion region);
         bool IsLoading(TRegion region);
         bool IsLoaded(TRegion region);
     }

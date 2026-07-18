@@ -4,34 +4,34 @@
 -> moonlit_bridge
 
 === moonlit_bridge ===
-The old bridge hangs over a silver river, broken in the middle. #local:moonlit_bridge_intro #audio:soft_mystery
-A tiny lantern spirit flickers beside the railing. #speaker:id::lumen, name::LUMEN, anim::Appear #local:lumen_appears
-"Careful, traveler. This bridge only remembers brave footsteps." #speaker:id::lumen, name::LUMEN, anim::Talk #local:lumen_warning
-* [Ask the lantern spirit for help #local:choice_ask_lumen] -> ask_lumen
-* [Inspect the broken bridge #local:choice_inspect_bridge] -> inspect_bridge
-* [Cross immediately #local:choice_cross_now] -> cross_now
+The old bridge hangs over a silver river, broken in the middle. #locale:moonlit_bridge_intro #audio:soft_mystery
+A tiny lantern spirit flickers beside the railing. #speaker:lumen #speaker_name:LUMEN #animation:Appear #locale:lumen_appears
+"Careful, traveler. This bridge only remembers brave footsteps." #speaker:lumen #speaker_name:LUMEN #animation:Talk #locale:lumen_warning
+* [Ask the lantern spirit for help #locale:choice_ask_lumen] -> ask_lumen
+* [Inspect the broken bridge #locale:choice_inspect_bridge] -> inspect_bridge
+* [Cross immediately #locale:choice_cross_now] -> cross_now
 
 === ask_lumen ===
-"Polite footsteps are lighter than brave ones." #speaker:id::lumen, name::LUMEN, anim::Smile #local:lumen_polite
-* [Ask what the bridge needs #local:choice_ask_need] -> bridge_secret
-* [Inspect the bridge #local:choice_inspect_after_lumen] -> inspect_bridge
+"Polite footsteps are lighter than brave ones." #speaker:lumen #speaker_name:LUMEN #animation:Smile #locale:lumen_polite
+* [Ask what the bridge needs #locale:choice_ask_need] -> bridge_secret
+* [Inspect the bridge #locale:choice_inspect_after_lumen] -> inspect_bridge
 
 === bridge_secret ===
-"The bridge lost its heart. Find the Moon Seed between the stones." #speaker:id::lumen, name::LUMEN, anim::Talk #local:lumen_moon_seed_hint
-* {inspect_bridge > 0} Place the Moon Seed #local:choice_place_seed -> repair_bridge
-* Look for the Moon Seed #local:choice_find_seed -> inspect_bridge
+"The bridge lost its heart. Find the Moon Seed between the stones." #speaker:lumen #speaker_name:LUMEN #animation:Talk #locale:lumen_moon_seed_hint
+* {inspect_bridge > 0} Place the Moon Seed #locale:choice_place_seed -> repair_bridge
+* Look for the Moon Seed #locale:choice_find_seed -> inspect_bridge
 
 === inspect_bridge ===
-Between two cracked stones, a pale seed glows like a trapped star. #local:inspect_find_seed #audio:item_found
-* Place the Moon Seed into the bridge #local:choice_place_seed -> repair_bridge
-* Return to Lumen #local:choice_return_lumen -> ask_lumen
+Between two cracked stones, a pale seed glows like a trapped star. #locale:inspect_find_seed #audio:item_found
+* Place the Moon Seed into the bridge #locale:choice_place_seed -> repair_bridge
+* Return to Lumen #locale:choice_return_lumen -> ask_lumen
 
 === repair_bridge ===
-The Moon Seed blooms. Roots of light stitch the bridge together. #local:repair_bridge #audio:bridge_repair
+The Moon Seed blooms. Roots of light stitch the bridge together. #locale:repair_bridge #audio:bridge_repair
 -> good_ending
 
 === cross_now ===
-You step onto the broken bridge. The stones tremble beneath you. #local:risky_crossing
+You step onto the broken bridge. The stones tremble beneath you. #locale:risky_crossing
 { ask_lumen > 0:
     -> safe_crossing
 - else:
@@ -39,13 +39,13 @@ You step onto the broken bridge. The stones tremble beneath you. #local:risky_cr
 }
 
 === safe_crossing ===
-Lumen catches your sleeve with a thread of light and pulls you back. #speaker:id::lumen, name::LUMEN, anim::Save #local:lumen_saves_you
+Lumen catches your sleeve with a thread of light and pulls you back. #speaker:lumen #speaker_name:LUMEN #animation:Save #locale:lumen_saves_you
 -> moonlit_bridge
 
 === good_ending ===
-You cross into the moonlit forest, carrying the warmth of a tiny lantern beside your heart. #local:good_ending #audio:peaceful_theme
+You cross into the moonlit forest, carrying the warmth of a tiny lantern beside your heart. #locale:good_ending #audio:peaceful_theme
 -> DONE
 
 === bad_ending ===
-The bridge rejects your haste. You tumble into silver mist. #local:bad_ending_fall
+The bridge rejects your haste. You tumble into silver mist. #locale:bad_ending_fall
 -> END

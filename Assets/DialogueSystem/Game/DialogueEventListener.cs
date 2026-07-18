@@ -52,11 +52,11 @@ public class DialogueEventListener : MonoBehaviour
         m_OnDialogueStart?.Invoke(dialogueHandler);
         OnDialogueStart(evt);
         UnsubscribeFromStoryMessages();
-        dialogueHandler.OnLineMessageShown += OnTextRevealed;
+        dialogueHandler.OnLinePresented += OnTextRevealed;
         _subscribedDialogueHandler = dialogueHandler;
     }
 
-    private void OnTextRevealed(Story story, DialogueLineContext lineContext)
+    private void OnTextRevealed(DialogueLineContext lineContext)
     {
         if (lineContext == null)
             return;
@@ -80,7 +80,7 @@ public class DialogueEventListener : MonoBehaviour
         if (_subscribedDialogueHandler == null)
             return;
 
-        _subscribedDialogueHandler.OnLineMessageShown -= OnTextRevealed;
+        _subscribedDialogueHandler.OnLinePresented -= OnTextRevealed;
         _subscribedDialogueHandler = null;
     }
 

@@ -1,4 +1,3 @@
-using Ink.Runtime;
 using SAS.Core.TagSystem;
 using UnityEngine;
 
@@ -12,8 +11,8 @@ namespace SAS.DialogueSystem
         protected virtual void Awake()
         {
             this.Initialize();
-            _dialogueHandler.OnLineReady += OnLineReady;
-            _dialogueHandler.OnLineMessageShown += OnLineMessageShown;
+            if (_dialogueHandler != null)
+                _dialogueHandler.OnStateChanged += HandleStateChanged;
         }
 
         private void OnDestroy()
@@ -21,20 +20,13 @@ namespace SAS.DialogueSystem
             if (_dialogueHandler == null)
                 return;
 
-            _dialogueHandler.OnLineReady -= OnLineReady;
-            _dialogueHandler.OnLineMessageShown -= OnLineMessageShown;
+            _dialogueHandler.OnStateChanged -= HandleStateChanged;
         }
 
-        private void OnLineMessageShown(Story story, DialogueLineContext lineContext)
-        {
-            if (story != null && m_ContinueIcon != null)
-                m_ContinueIcon.SetActive(story.currentChoices.Count == 0);
-        }
-
-        private void OnLineReady(DialogueLineContext lineContext)
+        private void HandleStateChanged(DialogueSessionState state)
         {
             if (m_ContinueIcon != null)
-                m_ContinueIcon.SetActive(false);
+                m_ContinueIcon.SetActive(state == DialogueSessionState.WaitingForAdvance);
         }
     }
 }

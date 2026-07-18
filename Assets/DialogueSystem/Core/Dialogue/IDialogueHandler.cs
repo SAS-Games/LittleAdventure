@@ -1,25 +1,28 @@
 using Ink.Runtime;
 using SAS.Core.TagSystem;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public interface IDialogueHandler : IBindable, IInitializable
 {
-    void EnterDialogueMode(TextAsset inkJSON, GameObject initiator);
+    void EnterDialogueMode(
+        TextAsset inkJSON,
+        GameObject initiator,
+        DialogueMetadataProfile metadataProfile = null);
     void ContinueStory();
+    void RequestAdvance();
     void MakeChoice(int choiceIndex);
-    DialogueLineContext CreateLineContext(string lineText, List<string> currentTags);
+    void CompleteLinePresentation(DialogueLineContext lineContext);
 
     bool DialogueIsPlaying { get; }
+    SAS.DialogueSystem.DialogueSessionState State { get; }
     InkExternalMethodRegistry InkExternalMethodRegistry { get; }
     Story CurrentStory { get; }
     DialogueLineContext CurrentLineContext { get; }
 
-    event Action<Story> OnStoryMessageShown;
-    event Action<Story, DialogueLineContext> OnLineMessageShown;
-    event Action<string> OnStoryContinue;
+    event Action<DialogueLineContext> OnLinePresented;
     event Action<DialogueLineContext> OnLineReady;
+    event Action<SAS.DialogueSystem.DialogueSessionState> OnStateChanged;
     event Action OnEnterDialogueMode;
     event Action OnExitDialogueMode;
     event Action OnSkipRequested;

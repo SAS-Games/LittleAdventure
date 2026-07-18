@@ -8,22 +8,14 @@ namespace LevelStreaming
     {
         [SerializeField] private long m_MemoryLimitMB = 1024;
 
-        private static RegionManager.Region _cachedLRU;
-        private static int _lastFrameChecked = -1;
-
         public override bool ShouldUnload(Bounds unloadBounds, RegionManager regionManager, RegionManager.Region region)
         {
             long currentMemory = Profiler.GetTotalAllocatedMemoryLong() / (1024 * 1024);
             if (currentMemory <= m_MemoryLimitMB)
                 return false;
 
-            if (_lastFrameChecked != Time.frameCount)
-            {
-                _lastFrameChecked = Time.frameCount;
-                _cachedLRU = FindLeastRecentlyUsed(regionManager);
-            }
-
-            return _cachedLRU != null && _cachedLRU == region;
+            var lru = FindLeastRecentlyUsed(regionManager);
+            return lru != null && lru == region;
         }
 
         private RegionManager.Region FindLeastRecentlyUsed(RegionManager regionManager)
@@ -33,7 +25,12 @@ namespace LevelStreaming
 
             foreach (var r in regionManager.loadedRegions)
             {
-                if (regionManager.TryGetMeta(r, out var meta) && meta.LoadedTime < oldestTime)
+                if (regionManager.IsRegionDesired(r))
+                    continue;
+
+                if (regionManager.TryGetMeta(r, out var meta) &&
+                    meta.State == RegionManager.RegionStreamingState.Loaded &&
+                    meta.LoadedTime < oldestTime)
                 {
                     oldestTime = meta.LoadedTime;
                     lru = r;

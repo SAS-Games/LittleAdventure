@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 2,
+  "tags": {
+    "listner": {
+      "label": "Listner",
+      "contexts": [
+        "dialogue",
+        "choice"
+      ]
+    }
+  }
+}

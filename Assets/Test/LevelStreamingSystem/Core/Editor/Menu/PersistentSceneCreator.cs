@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using LevelStreaming.Editor;
 
 public static class PersistentSceneCreator
 {
@@ -13,6 +14,21 @@ public static class PersistentSceneCreator
     public static void CreatePersistentScene()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        GameObject prefab = LoadStreamingManagerPrefab();
+        if (prefab == null)
+        {
+            Debug.LogError("[PersistentSceneCreator] Could not find unique StreamingManager prefab.");
+            return;
+        }
+
+        string path = EditorUtility.SaveFilePanelInProject(
+            "Save Persistent Scene",
+            DefaultSceneName,
+            "unity",
+            "Save the Persistent Scene");
+        if (string.IsNullOrEmpty(path))
             return;
 
         Scene newScene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
@@ -28,26 +44,24 @@ public static class PersistentSceneCreator
         if (cam.GetComponent<CameraFrustumStreamingBoundsProvider>() == null)
             Undo.AddComponent<CameraFrustumStreamingBoundsProvider>(cam.gameObject);
 
-        GameObject prefab = LoadStreamingManagerPrefab();
-
-        if (prefab == null)
+        GameObject instance = PrefabUtility.InstantiatePrefab(prefab, newScene) as GameObject;
+        if (instance == null)
         {
-            Debug.LogError("[PersistentSceneCreator] Could not find unique StreamingManager prefab.");
+            Debug.LogError("[PersistentSceneCreator] Could not instantiate the StreamingManager prefab.");
             return;
         }
 
-        GameObject instance =PrefabUtility.InstantiatePrefab(prefab, newScene) as GameObject;
         instance.name = "StreamingManager";
-        PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
         EditorSceneManager.MarkSceneDirty(newScene);
 
-        string path = EditorUtility.SaveFilePanelInProject("Save Persistent Scene", DefaultSceneName, "unity", "Save the Persistent Scene");
-
-        if (!string.IsNullOrEmpty(path))
+        if (!EditorSceneManager.SaveScene(newScene, path))
         {
-            EditorSceneManager.SaveScene(newScene, path);
-            Debug.Log("[PersistentSceneCreator] Persistent Scene created successfully.");
+            Debug.LogError($"[PersistentSceneCreator] Could not save persistent scene '{path}'.");
+            return;
         }
+
+        SceneBuildSettingsUtility.EnsureEnabled(path);
+        Debug.Log("[PersistentSceneCreator] Persistent Scene created successfully.");
     }
 
     private static GameObject LoadStreamingManagerPrefab()

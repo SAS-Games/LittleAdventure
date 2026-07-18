@@ -22,7 +22,18 @@ namespace LevelStreaming
 
         private void OnValidate()
         {
+            m_LoadBoundsSize = Sanitize(m_LoadBoundsSize);
+            m_ActivateBoundsSize = Sanitize(m_ActivateBoundsSize);
+            m_UnloadBoundsSize = Sanitize(m_UnloadBoundsSize);
             UpdateCachedBounds();
+        }
+
+        private static Vector3 Sanitize(Vector3 size)
+        {
+            return new Vector3(
+                Mathf.Max(0.01f, Mathf.Abs(size.x)),
+                Mathf.Max(0.01f, Mathf.Abs(size.y)),
+                Mathf.Max(0.01f, Mathf.Abs(size.z)));
         }
 
         private void UpdateCachedBounds()
