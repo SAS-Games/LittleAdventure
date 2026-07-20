@@ -42,19 +42,3 @@ MonoBehaviour:
       sourceOptions: {fileID: 0}
       lastKnownName: 
     m_ExcludedPlatforms: 
-  - m_Interface: ISaveSystem, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Type: JsonFileSaveSystem, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Tag:
-      guid: 0
-      resolvedName: 
-      sourceOptions: {fileID: 0}
-      lastKnownName: 
-    m_ExcludedPlatforms: 0500000006000000
-  - m_Interface: IUserModel, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Type: DummyUserModel, AssemblySave, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Tag:
-      guid: 0
-      resolvedName: 
-      sourceOptions: {fileID: 0}
-      lastKnownName: 
-    m_ExcludedPlatforms: 0500000006000000
