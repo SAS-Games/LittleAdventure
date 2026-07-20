@@ -38,7 +38,11 @@ public class ActionGraphWindow : EditorWindow
     [OnOpenAsset]
     public static bool OnOpenAsset(int instanceID, int line)
     {
+#if UNITY_6000_3_OR_NEWER
+        if (EditorUtility.EntityIdToObject(instanceID) is ActionGraphAsset config)  
+#else
         if (EditorUtility.InstanceIDToObject(instanceID) is ActionGraphAsset config)
+#endif
         {
             OpenWithConfig(config);
             return true;
