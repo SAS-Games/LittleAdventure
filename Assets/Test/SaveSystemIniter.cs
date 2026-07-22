@@ -3,18 +3,25 @@ using UnityEngine;
 using UserModel = DummyUserModel;
 using SaveSystem = JsonFileSaveSystem;
 
+[DefaultExecutionOrder(-90)]
 public class SaveSystemIniter : MonoBehaviour
 {
-   private IUserModel _userModel;
-   private ISaveSystem _saveSystem;
-   
-  [SerializeField] private BaseContextBinder m_ContextBinder;
-   void Awake()
-   {
-      _userModel = new UserModel();
-      _saveSystem = new SaveSystem(Application.persistentDataPath);
+    [SerializeField] private BaseContextBinder m_ContextBinder;
 
-      (m_ContextBinder as IContextBinder).Add(typeof(UserModel), _userModel, default);
-      (m_ContextBinder as IContextBinder).Add(typeof(SaveSystem), _saveSystem, default);
-   }
+    private void Awake()
+    {
+        IContextBinder context = m_ContextBinder;
+
+        if (context == null)
+        {
+            Debug.LogError($"{nameof(SaveSystemIniter)} requires a context binder.", this);
+            return;
+        }
+
+        IUserModel userModel = new UserModel();
+        ISaveSystem saveSystem = new SaveSystem(Application.persistentDataPath);
+
+        context.Add(typeof(IUserModel), userModel, default);
+        context.Add(typeof(ISaveSystem), saveSystem, default);
+    }
 }

@@ -22,12 +22,12 @@ MonoBehaviour:
     m_Type: TargetRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms: 
-  - m_Interface: ICheckpointManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    m_Type: PlayerCheckpointManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
+  - m_Interface: SAS.Checkpoints.ICheckpointSystemInstaller, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    m_Type: SAS.Checkpoints.CheckpointSystemInstaller, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
     m_Tag: 0
-    m_ExcludedPlatforms: 
+    m_ExcludedPlatforms:
   - m_Interface: IDialogueHandler, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     m_Type: SAS.DialogueSystem.DialogueHandler, Assembly-CSharp, Version=0.0.0.0,

@@ -21715,6 +21715,168 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1001 &631836163
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 646997489949937029, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_SpawnPoints.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 646997489949937029, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: <IsDefault>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 646997489949937029, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: <SpawnPointGroupId>k__BackingField
+      value: First Gate Opened
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2670196469131547900, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3739608066044235530, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3739608066044235530, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4406742532216470055, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_Name
+      value: SpawnPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469324919855718366, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7664745833622775864, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_Name
+      value: FirstGateCheckpoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 7664745833622775864, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338323977911731863, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      propertyPath: m_SpawnTransform
+      value: 
+      objectReference: {fileID: 631836167}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 4406742532216470056, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7664745833622775864, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 631836166}
+    - targetCorrespondingSourceObject: {fileID: 7664745833622775864, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 631836168}
+  m_SourcePrefab: {fileID: 100100000, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+--- !u!1 &631836164 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7664745833622775864, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+  m_PrefabInstance: {fileID: 631836163}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &631836165 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 646997489949937029, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+  m_PrefabInstance: {fileID: 631836163}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631836164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7da23e96af6345409582cd17c12848f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SAS.Checkpoints.SpawnPointGroup
+--- !u!114 &631836166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631836164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b83ae0d94b3de17468e855590e28424c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SAS.Checkpoints.Checkpoint
+  m_Definition:
+    m_Id: FirstGate
+    m_DisplayName: FirstGate
+    m_Order: 0
+  m_CompleteOnlyOnce: 1
+  m_AllowBackwardActivation: 0
+  m_SpawnPointGroup: {fileID: 631836165}
+  m_FallbackSpawnPoint: {fileID: 0}
+  m_ActiveObjects: []
+  m_InactiveObjects: []
+--- !u!4 &631836167 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3739608066044235530, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
+  m_PrefabInstance: {fileID: 631836163}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &631836168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631836164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97550a319de0ffa46ac896b0775a9f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SAS.Checkpoints.CheckpointCompletionState
+  m_CheckpointId: FirstGate
+  m_EnableWhenCompleted: []
+  m_DisableWhenCompleted:
+  - {fileID: 1908074100}
+  - {fileID: 1192213793}
+  m_ApplyIncompleteState: 1
+  m_DisableSelfWhenCompleted: 0
 --- !u!1 &660841453 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6821645571046104110, guid: 468d9c46b67464e47bdc80e8f9103914, type: 3}
@@ -22230,7 +22392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8580557254700678108, guid: 28c1a7e8943a1d442a547dc79419a132, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8580557254700678108, guid: 28c1a7e8943a1d442a547dc79419a132, type: 3}
       propertyPath: m_LocalPosition.z
@@ -35962,7 +36124,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7664745833622775864, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
       propertyPath: m_Name
-      value: SpawnPointGroup
+      value: DefaultSpawnPoint
       objectReference: {fileID: 0}
     - target: {fileID: 7664745833622775864, guid: fa83c5a1c9aa97d47a3669ab29c7bc42, type: 3}
       propertyPath: m_IsActive
@@ -36211,6 +36373,58 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1908074101}
     m_Modifications:
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4727870325118384527}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 631836166}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetActive
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Complete
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: SAS.Checkpoints.Checkpoint, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2771270392486499354, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+      propertyPath: m_OnTweenComplete.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5856494542362694760, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
       propertyPath: m_Name
       value: Gate
@@ -36260,6 +36474,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+--- !u!1 &4727870325118384527 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5856494542362694760, guid: 374174d50765cf74a8aa69864f77fe45, type: 3}
+  m_PrefabInstance: {fileID: 4727870325118384526}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8125581197735088134
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36329,5 +36548,6 @@ SceneRoots:
   - {fileID: 558304030745314224}
   - {fileID: 94585887}
   - {fileID: 2048772379}
+  - {fileID: 631836163}
   - {fileID: 8125581197735088134}
   - {fileID: 785831687}
