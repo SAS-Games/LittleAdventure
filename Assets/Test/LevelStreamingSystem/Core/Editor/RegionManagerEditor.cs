@@ -58,9 +58,20 @@ namespace LevelStreaming.Editor
             EditorGUILayout.Space(4f);
             EditorGUILayout.LabelField("Scene Authoring", EditorStyles.boldLabel);
 
+            using (new EditorGUI.DisabledScope(Application.isPlaying))
+            {
+                var loadAllContent = new GUIContent(
+                    "Load All Streaming Scenes For Editing",
+                    "Open every Scene and Addressable Scene region additively, then keep this persistent scene active.");
+                if (GUILayout.Button(loadAllContent))
+                    StreamingPersistentSceneMenu.LoadAllStreamingScenesForEditing(manager);
+            }
+
             if (manager.Regions.Count == 0)
             {
-                EditorGUILayout.HelpBox("Add a region to enable Scene view handles.", MessageType.Info);
+                EditorGUILayout.HelpBox(
+                    "Add a region to enable edit-time scene loading and Scene view handles.",
+                    MessageType.Info);
                 _editSelectedRegion = false;
                 return;
             }

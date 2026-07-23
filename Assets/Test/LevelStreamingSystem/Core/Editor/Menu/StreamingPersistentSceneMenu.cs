@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using LevelStreaming;
 using UnityEditor;
@@ -7,6 +8,9 @@ using UnityEngine.SceneManagement;
 
 public static class StreamingPersistentSceneMenu
 {
+    private const string LoadAllContextMenuPath =
+        "CONTEXT/RegionManager/Load All Streaming Scenes For Editing";
+
     public static List<string> FindPersistentScenes()
     {
         List<string> result = new();
@@ -21,8 +25,9 @@ public static class StreamingPersistentSceneMenu
             if (scenePath.StartsWith("Packages/"))
                 continue;
 
-            // FAST dependency check (no scene opening)
-            var dependencies = AssetDatabase.GetDependencies(scenePath, false);
+            // Persistent scenes normally inherit RegionManager from the
+            // LS_StreamingManager prefab, so nested dependencies must be included.
+            var dependencies = AssetDatabase.GetDependencies(scenePath, true);
 
             foreach (var dep in dependencies)
             {
@@ -34,6 +39,7 @@ public static class StreamingPersistentSceneMenu
             }
         }
 
+        result.Sort(StringComparer.OrdinalIgnoreCase);
         return result;
     }
     
@@ -65,38 +71,120 @@ public static class StreamingPersistentSceneMenu
             return;
         }
 
-        // Load all streaming scenes
+        LoadAllStreamingScenesForEditing(regionManager);
+        Debug.Log($"[Streaming] Loaded Persistent Scene: {persistentScenePath}");
+    }
+
+    /// <summary>
+    /// Opens every scene-backed region additively for authoring while keeping the
+    /// RegionManager's persistent scene active.
+    /// </summary>
+    public static void LoadAllStreamingScenesForEditing(RegionManager regionManager)
+    {
+        if (Application.isPlaying)
+        {
+            Debug.LogWarning("[Streaming] Streaming scenes can only be opened for editing outside Play Mode.");
+            return;
+        }
+
+        if (regionManager == null)
+        {
+            Debug.LogError("[Streaming] Select a persistent-scene object with a RegionManager.");
+            return;
+        }
+
+        Scene persistentScene = regionManager.gameObject.scene;
+        if (!persistentScene.IsValid() || !persistentScene.isLoaded)
+        {
+            Debug.LogError("[Streaming] The selected RegionManager must belong to a loaded scene.", regionManager);
+            return;
+        }
+
+        int openedCount = 0;
+        int alreadyLoadedCount = 0;
+        int invalidCount = 0;
+        var visitedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         foreach (var region in regionManager.Regions)
         {
             if (region == null || region.Type == RegionManager.RegionType.Prefab)
                 continue;
 
-            string path = region.Type == RegionManager.RegionType.Scene
-                ? region.SceneRef?.ScenePath
-                : AssetDatabase.GUIDToAssetPath(region.AddressableSceneRef?.AssetGUID);
+            string path = GetScenePath(region);
 
-            if (string.IsNullOrEmpty(path) || AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
+            if (string.IsNullOrWhiteSpace(path) ||
+                AssetDatabase.LoadAssetAtPath<SceneAsset>(path) == null)
             {
-                Debug.LogWarning($"[Streaming] Region '{region.RegionName}' has a missing scene asset.");
+                invalidCount++;
+                Debug.LogWarning(
+                    $"[Streaming] Region '{region.RegionName}' has a missing scene asset.",
+                    regionManager);
                 continue;
             }
 
+            path = path.Replace('\\', '/');
+            if (!visitedPaths.Add(path))
+                continue;
+
             Scene existing = EditorSceneManager.GetSceneByPath(path);
             if (existing.IsValid() && existing.isLoaded)
+            {
+                alreadyLoadedCount++;
                 continue;
+            }
 
             try
             {
                 EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+                openedCount++;
             }
-            catch (System.Exception exception)
+            catch (Exception exception)
             {
-                Debug.LogError($"[Streaming] Could not open '{path}': {exception.Message}");
+                invalidCount++;
+                Debug.LogError(
+                    $"[Streaming] Could not open '{path}': {exception.Message}",
+                    regionManager);
             }
         }
 
         EditorSceneManager.SetActiveScene(persistentScene);
-        Debug.Log($"[Streaming] Loaded Persistent Scene: {persistentScenePath}");
+        Debug.Log(
+            $"[Streaming] Edit-time scene load complete for '{persistentScene.name}': " +
+            $"{openedCount} opened, {alreadyLoadedCount} already loaded, {invalidCount} invalid.",
+            regionManager);
+    }
+
+    [MenuItem(LoadAllContextMenuPath, false, 1000)]
+    private static void LoadAllStreamingScenesForEditing(MenuCommand command)
+    {
+        LoadAllStreamingScenesForEditing(command.context as RegionManager);
+    }
+
+    [MenuItem(LoadAllContextMenuPath, true)]
+    private static bool ValidateLoadAllStreamingScenesForEditing(MenuCommand command)
+    {
+        if (Application.isPlaying || command.context is not RegionManager regionManager)
+            return false;
+
+        Scene scene = regionManager.gameObject.scene;
+        return scene.IsValid() && scene.isLoaded;
+    }
+
+    private static string GetScenePath(RegionManager.Region region)
+    {
+        if (region.Type == RegionManager.RegionType.AddressableScene)
+            return AssetDatabase.GUIDToAssetPath(region.AddressableSceneRef?.AssetGUID);
+
+        if (region.Type != RegionManager.RegionType.Scene || region.SceneRef == null)
+            return string.Empty;
+
+        string assetPath = region.SceneRef.SceneAsset == null
+            ? string.Empty
+            : AssetDatabase.GetAssetPath(region.SceneRef.SceneAsset);
+
+        return string.IsNullOrWhiteSpace(assetPath)
+            ? region.SceneRef.ScenePath
+            : assetPath;
     }
 
     private static string _cachedGuid;
@@ -111,7 +199,7 @@ public static class StreamingPersistentSceneMenu
 
         MonoScript script = MonoScript.FromMonoBehaviour(rm);
         _cachedGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(script));
-        Object.DestroyImmediate(go);
+        UnityEngine.Object.DestroyImmediate(go);
 
         return _cachedGuid;
     }

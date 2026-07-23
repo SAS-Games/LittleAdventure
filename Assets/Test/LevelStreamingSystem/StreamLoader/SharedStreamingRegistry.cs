@@ -22,8 +22,7 @@ namespace LevelStreaming
 
         public readonly struct EntrySnapshot
         {
-            public EntrySnapshot(string key, int referenceCount, bool isLoading, bool isUnloading,
-                bool loadFailed)
+            public EntrySnapshot(string key, int referenceCount, bool isLoading, bool isUnloading, bool loadFailed)
             {
                 Key = key;
                 ReferenceCount = referenceCount;
