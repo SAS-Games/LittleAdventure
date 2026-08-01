@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using SAS.SceneManagement;
 using SAS.StateMachineCharacterController;
@@ -39,7 +40,8 @@ public class GameManager : MonoBehaviour, IReady
     [SerializeField] private PlayerSpawner m_PlayerSpawner;
     [Inject] private IPlayerSetupModel _playerSetupModel;
     private bool _gamePaused = false;
-    private bool _isReady = false;
+    private int _readinessVersion;
+    private TaskCompletionSource<bool> _readySource = CreateReadySource();
 
     private void Start()
     {
@@ -61,19 +63,27 @@ public class GameManager : MonoBehaviour, IReady
     }
     private void OnSceneGroupLoadStart(SceneGroupLoadStartEvent sceneGroupLoadStartEvent)
     {
+        _readinessVersion++;
+        _readySource.TrySetCanceled();
+        _readySource = CreateReadySource();
+
         foreach (var player in m_PlayerSpawner.Players)
             player.GetComponent<Actor>().enabled = false;
     }
 
     private async void OnSceneGroupLoaded(SceneGroupLoadedEvent sceneGroupLoadedEvent)
     {
-        _isReady = false;
+        var readinessVersion = _readinessVersion;
 
         await CameraTargetSetupAsync();
+
+        if (readinessVersion != _readinessVersion)
+            return;
+
         foreach (var player in m_PlayerSpawner.Players)
             player.GetComponent<Actor>().enabled = true;
 
-        _isReady = true;
+        _readySource.TrySetResult(true);
     }
 
     private async Task CameraTargetSetupAsync()
@@ -146,10 +156,19 @@ public class GameManager : MonoBehaviour, IReady
         EventBus<LevelCompleteEvent>.Raise(new LevelCompleteEvent() { });
     }
 
-    public bool IsReady => _isReady;
-
-    void OnDestroy()
+    public Task WaitUntilReadyAsync(CancellationToken cancellationToken = default)
     {
+        return ReadinessTask.WaitAsync(_readySource.Task, cancellationToken);
+    }
+
+    private static TaskCompletionSource<bool> CreateReadySource()
+    {
+        return new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+    }
+
+    private void OnDestroy()
+    {
+        _readySource.TrySetCanceled();
         EventBus<SceneGroupLoadedEvent>.Deregister(_sceneGroupLoadedEventBinding);
         EventBus<SceneGroupLoadStartEvent>.Deregister(_sceneGroupLoadStartEventBinding);
     }
