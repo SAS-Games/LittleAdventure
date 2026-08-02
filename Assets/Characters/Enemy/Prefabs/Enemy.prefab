@@ -33,6 +33,7 @@ GameObject:
   - component: {fileID: -4076462158924257271}
   - component: {fileID: 8736583208240175133}
   - component: {fileID: 2185251188230104950}
+  - component: {fileID: 5527864397508862104}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -57,6 +58,22 @@ Transform:
   - {fileID: 5801843580254565798}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5527864397508862104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7170290597381789726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b7e943c93eb4dc6a281783394066c81, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  primaryWeapon: {fileID: 2900963362514375763}
+  secondaryWeapon: {fileID: 0}
+  primaryInputKey: Attack
+  secondaryInputKey: SecondaryAttack
 --- !u!95 &3116689710209305241
 Animator:
   serializedVersion: 7
@@ -683,9 +700,6 @@ MonoBehaviour:
   comboGraphConfig: {fileID: 11400000, guid: c9f3f664f5a94634b8bf021f08a06c4d, type: 2}
   animator: {fileID: 3116689710209305241}
   hitOrigin: {fileID: 5801843580254565798}
-  registerInput: 0
-  attackInputKey: Attack
-  forwardInputToFsmController: 0
 --- !u!1001 &2207844396437546306
 PrefabInstance:
   m_ObjectHideFlags: 0

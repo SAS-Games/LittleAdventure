@@ -1,11 +1,11 @@
 using SAS.Core.TagSystem;
+using SAS.ActionGraph.WeaponSystem;
 using SAS.StateMachineGraph;
-using SAS.WeaponSystem;
 
 public class AttackAction : IAwaitableStateAction
 {
-    [FieldRequiresChild] private IWeapon _weapon;
-    public bool IsCompleted => !_weapon.IsInUse;
+    [FieldRequiresChild] private IAttackWeaponController _weaponController;
+    public bool IsCompleted => !_weaponController.IsInUse;
 
     void IStateAction.OnInitialize(Actor actor, Tag tag, string key)
     {
@@ -14,6 +14,6 @@ public class AttackAction : IAwaitableStateAction
 
     void IStateAction.Execute(ActionExecuteEvent executeEvent)
     {
-        _weapon.Enter();
+        _weaponController.Enter();
     }
 }

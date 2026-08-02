@@ -72,7 +72,7 @@ MonoBehaviour:
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
         editorPosition: {x: 1496.6666, y: -65.33333}
-        editorSize: {x: 240, y: 145.33334}
+        editorSize: {x: 248.66675, y: 148}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -80,8 +80,8 @@ MonoBehaviour:
     - rid: 1668481441099677806
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
-        editorPosition: {x: 1774, y: -65.33333}
-        editorSize: {x: 309.33325, y: 235.33333}
+        editorPosition: {x: 1809.3334, y: -65.33333}
+        editorSize: {x: 224.66663, y: 364.66666}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
