@@ -131,7 +131,7 @@ MonoBehaviour:
       type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
       data:
         editorPosition: {x: 2427.3333, y: -1019.3333}
-        editorSize: {x: 220, y: 335.3333}
+        editorSize: {x: 428, y: 333.3333}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -280,6 +280,6 @@ MonoBehaviour:
         data:
         - localDirection: {x: 0, y: 0, z: 1}
           speed: 1
-          duration: 0.15
-          velocityContributionMode: 0
+          duration: 0.1
+          velocityContributionMode: 2
           velocityContributionPriority: 100
