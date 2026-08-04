@@ -272,11 +272,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlayerPrefab: {fileID: 4622055182962459638, guid: a9d07cf6e45ab884f9ca8cee8b6b54c0, type: 3}
-  m_PlayerNamrTag:
-    guid: 1792460456
-    resolvedName: PlayerName
-    sourceOptions: {fileID: 11400000, guid: b14a0eaccaf61554c877a1c0551b829b, type: 2}
-    lastKnownName: PlayerName
 --- !u!114 &1834802557
 MonoBehaviour:
   m_ObjectHideFlags: 0
