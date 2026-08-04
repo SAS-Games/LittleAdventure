@@ -2,5 +2,14 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/Pool_Sysytem" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/SASPackage-DevUtilities" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/SASPackage-SceneManagement" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/SASPackages-Core" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/SASPackages-SaveSystem" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/SASPackages-StateMachine" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/SASPackages-Tween" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/SASPackages-WebServiceManagment" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Packages/StateMachineCharacterController" vcs="Git" />
   </component>
 </project>

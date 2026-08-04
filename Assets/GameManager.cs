@@ -50,6 +50,11 @@ public class GameManager : MonoBehaviour, IReady
         _sceneGroupLoadStartEventBinding = new EventBinding<SceneGroupLoadStartEvent>(OnSceneGroupLoadStart);
         EventBus<SceneGroupLoadedEvent>.Register(_sceneGroupLoadedEventBinding);
         EventBus<SceneGroupLoadStartEvent>.Register(_sceneGroupLoadStartEventBinding);
+
+        m_PlayerSpawner.PlayerThreatLevelChanged += OnPlayerThreatLevelChanged;
+        m_PlayerSpawner.GlobalThreatLevelChanged += OnGlobalThreatLevelChanged;
+        m_PlayerSpawner.AllPlayersDied += GameOver;
+
         foreach (PlayerProfile player in _playerSetupModel.Players)
         {
             SpawnPlayer(player);
@@ -58,8 +63,26 @@ public class GameManager : MonoBehaviour, IReady
 
     private void SpawnPlayer(PlayerProfile playerProfile)
     {
-        var player = m_PlayerSpawner.SpawnPlayer(playerProfile);
+        var player = m_PlayerSpawner.SpawnPlayer(playerProfile.Input);
+        playerProfile.Character = player;
         SceneUtility.MoveGameObjectToScene(player, gameObject.scene);
+    }
+
+    private static void OnPlayerThreatLevelChanged(GameObject player, int value)
+    {
+        EventBus<PlayerThreatLevelEvent>.Raise(new PlayerThreatLevelEvent
+        {
+            character = player,
+            value = value
+        });
+    }
+
+    private static void OnGlobalThreatLevelChanged(float averageThreatLevel)
+    {
+        EventBus<GlobalThreatLevelEvent>.Raise(new GlobalThreatLevelEvent
+        {
+            averageThreatLevel = averageThreatLevel
+        });
     }
     private void OnSceneGroupLoadStart(SceneGroupLoadStartEvent sceneGroupLoadStartEvent)
     {
@@ -168,6 +191,13 @@ public class GameManager : MonoBehaviour, IReady
 
     private void OnDestroy()
     {
+        if (m_PlayerSpawner != null)
+        {
+            m_PlayerSpawner.PlayerThreatLevelChanged -= OnPlayerThreatLevelChanged;
+            m_PlayerSpawner.GlobalThreatLevelChanged -= OnGlobalThreatLevelChanged;
+            m_PlayerSpawner.AllPlayersDied -= GameOver;
+        }
+
         _readySource.TrySetCanceled();
         EventBus<SceneGroupLoadedEvent>.Deregister(_sceneGroupLoadedEventBinding);
         EventBus<SceneGroupLoadStartEvent>.Deregister(_sceneGroupLoadStartEventBinding);
