@@ -103,22 +103,23 @@ namespace LevelStreaming
                 return;
 
             _lastUpdateTime = Time.time;
+            if (!TryGetBoundsSnapshot(out StreamingBoundsSnapshot bounds))
+                return;
 
-            UpdateDesiredRegions();
+            UpdateDesiredRegions(bounds.Load);
             _regionManager.UpdateDesiredRegions(_desiredRegions);
-            HandleUnloading();
+            HandleUnloading(bounds.Unload);
             HandleLoading();
-            HandleActivation();
+            HandleActivation(bounds.Activate);
 
             _regionManager.UpdateLoadedRegions(_loadedRegions);
         }
 
-        private void UpdateDesiredRegions()
+        private void UpdateDesiredRegions(Bounds loadBounds)
         {
             _desiredRegions.Clear();
             _desireReasons.Clear();
 
-            Bounds loadBounds = _target.GetLoadBounds();
             var nearby = _regionManager.FindRegionsInRange(loadBounds);
             foreach (var region in nearby)
                 MarkDesired(region, RegionDesireReason.Bounds);
@@ -182,13 +183,12 @@ namespace LevelStreaming
             }
         }
 
-        private void HandleUnloading()
+        private void HandleUnloading(Bounds unloadBounds)
         {
             _unloadCandidates.Clear();
             _unloadCandidates.UnionWith(_loadedRegions);
             _unloadCandidates.ExceptWith(_desiredRegions);
 
-            Bounds unloadBounds = _target.GetUnloadBounds();
             foreach (var region in _unloadCandidates)
             {
                 if (region?.UnloadStrategy == null)
@@ -217,10 +217,8 @@ namespace LevelStreaming
             }
         }
 
-        private void HandleActivation()
+        private void HandleActivation(Bounds activateBounds)
         {
-            Bounds activateBounds = _target.GetActivateBounds();
-
             foreach (var region in _loadedRegions)
             {
                 if (!_regionManager.TryGetMeta(region, out var meta) ||
@@ -392,8 +390,8 @@ namespace LevelStreaming
             EnsureLoadedBookkeeping(region);
             LogState(region, "loaded");
 
-            if (!_isShuttingDown && HasStreamingTarget() &&
-                _target.GetActivateBounds().Intersects(region.CachedBounds))
+            if (!_isShuttingDown && TryGetBoundsSnapshot(out StreamingBoundsSnapshot bounds) &&
+                bounds.Activate.Intersects(region.CachedBounds))
                 ActivateRegion(region);
         }
 
@@ -475,6 +473,26 @@ namespace LevelStreaming
             return true;
         }
 
+        private bool TryGetBoundsSnapshot(out StreamingBoundsSnapshot snapshot)
+        {
+            snapshot = default;
+            if (!HasStreamingTarget())
+                return false;
+
+            if (_target is IStreamingBoundsSnapshotProvider snapshotProvider)
+                return snapshotProvider.TryGetSnapshot(out snapshot);
+
+            snapshot = new StreamingBoundsSnapshot(
+                _target.GetActivateBounds(),
+                _target.GetLoadBounds(),
+                _target.GetUnloadBounds(),
+                Vector3.zero,
+                Vector3.zero,
+                0f,
+                0);
+            return true;
+        }
+
         /// <summary>
         /// Stops new streaming work, waits for operations already in flight, deactivates
         /// all active regions, and unloads every region owned by this controller.
@@ -550,12 +568,12 @@ namespace LevelStreaming
 
         private void OnDrawGizmos()
         {
-            if (!m_DrawStreamingBounds || !HasStreamingTarget())
+            if (!m_DrawStreamingBounds || !TryGetBoundsSnapshot(out StreamingBoundsSnapshot bounds))
                 return;
 
-            DrawBounds(_target.GetLoadBounds(), Color.yellow);
-            DrawBounds(_target.GetActivateBounds(), Color.blue);
-            DrawBounds(_target.GetUnloadBounds(), Color.red);
+            DrawBounds(bounds.Load, Color.yellow);
+            DrawBounds(bounds.Activate, Color.blue);
+            DrawBounds(bounds.Unload, Color.red);
         }
 
         private static void DrawBounds(Bounds bounds, Color color)

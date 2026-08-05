@@ -16,6 +16,10 @@ namespace LevelStreaming.Editor
 
         public override void OnInspectorGUI()
         {
+            if (GUILayout.Button("Open Level Streaming Editor", GUILayout.Height(28f)))
+                LevelStreamingEditorWindow.Open((RegionManager)target);
+
+            EditorGUILayout.Space(4f);
             serializedObject.Update();
             DrawDefaultInspector();
             serializedObject.ApplyModifiedProperties();
@@ -65,6 +69,14 @@ namespace LevelStreaming.Editor
                     "Open every Scene and Addressable Scene region additively, then keep this persistent scene active.");
                 if (GUILayout.Button(loadAllContent))
                     StreamingPersistentSceneMenu.LoadAllStreamingScenesForEditing(manager);
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("Frame Complete World"))
+                        StreamingPersistentSceneMenu.FrameCompleteWorld(manager);
+                    if (GUILayout.Button("Unload Streaming Scenes"))
+                        StreamingPersistentSceneMenu.UnloadAllStreamingScenesForEditing(manager);
+                }
             }
 
             if (manager.Regions.Count == 0)

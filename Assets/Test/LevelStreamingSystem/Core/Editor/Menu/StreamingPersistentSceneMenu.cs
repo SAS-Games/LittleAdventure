@@ -10,6 +10,8 @@ public static class StreamingPersistentSceneMenu
 {
     private const string LoadAllContextMenuPath =
         "CONTEXT/RegionManager/Load All Streaming Scenes For Editing";
+    private const string UnloadAllContextMenuPath =
+        "CONTEXT/RegionManager/Unload Streaming Scenes After Editing";
 
     public static List<string> FindPersistentScenes()
     {
@@ -148,10 +150,105 @@ public static class StreamingPersistentSceneMenu
         }
 
         EditorSceneManager.SetActiveScene(persistentScene);
+        FrameCompleteWorld(regionManager);
         Debug.Log(
             $"[Streaming] Edit-time scene load complete for '{persistentScene.name}': " +
             $"{openedCount} opened, {alreadyLoadedCount} already loaded, {invalidCount} invalid.",
             regionManager);
+    }
+
+    /// <summary>
+    /// Closes loaded scene-backed regions while preserving the persistent scene.
+    /// Modified scenes are offered for saving before anything is closed.
+    /// </summary>
+    public static void UnloadAllStreamingScenesForEditing(RegionManager regionManager)
+    {
+        if (Application.isPlaying)
+        {
+            Debug.LogWarning("[Streaming] Streaming scenes can only be closed for editing outside Play Mode.");
+            return;
+        }
+
+        if (regionManager == null)
+        {
+            Debug.LogError("[Streaming] Select a persistent-scene object with a RegionManager.");
+            return;
+        }
+
+        Scene persistentScene = regionManager.gameObject.scene;
+        if (!persistentScene.IsValid() || !persistentScene.isLoaded)
+        {
+            Debug.LogError("[Streaming] The selected RegionManager must belong to a loaded scene.", regionManager);
+            return;
+        }
+
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        int closedCount = 0;
+        var visitedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (RegionManager.Region region in regionManager.Regions)
+        {
+            if (region == null || region.Type == RegionManager.RegionType.Prefab)
+                continue;
+
+            string path = GetScenePath(region)?.Replace('\\', '/');
+            if (string.IsNullOrWhiteSpace(path) || !visitedPaths.Add(path))
+                continue;
+
+            Scene scene = EditorSceneManager.GetSceneByPath(path);
+            if (!scene.IsValid() || !scene.isLoaded || scene.handle == persistentScene.handle)
+                continue;
+
+            if (EditorSceneManager.CloseScene(scene, true))
+                closedCount++;
+        }
+
+        if (persistentScene.IsValid() && persistentScene.isLoaded)
+            EditorSceneManager.SetActiveScene(persistentScene);
+
+        Debug.Log(
+            $"[Streaming] Closed {closedCount} streaming scene(s); '{persistentScene.name}' remains loaded.",
+            regionManager);
+    }
+
+    /// <summary>Frames the union of all configured region bounds in the Scene view.</summary>
+    public static void FrameCompleteWorld(RegionManager regionManager)
+    {
+        if (regionManager?.Regions == null)
+            return;
+
+        bool initialized = false;
+        Bounds worldBounds = default;
+        foreach (RegionManager.Region region in regionManager.Regions)
+        {
+            if (region == null)
+                continue;
+
+            if (!initialized)
+            {
+                worldBounds = region.CachedBounds;
+                initialized = true;
+            }
+            else
+            {
+                worldBounds.Encapsulate(region.CachedBounds.min);
+                worldBounds.Encapsulate(region.CachedBounds.max);
+            }
+        }
+
+        if (!initialized)
+            return;
+
+        SceneView sceneView = SceneView.lastActiveSceneView;
+        if (sceneView == null && SceneView.sceneViews.Count > 0)
+            sceneView = SceneView.sceneViews[0] as SceneView;
+
+        if (sceneView == null)
+            return;
+
+        sceneView.Frame(worldBounds, true);
+        sceneView.Repaint();
     }
 
     [MenuItem(LoadAllContextMenuPath, false, 1000)]
@@ -168,6 +265,18 @@ public static class StreamingPersistentSceneMenu
 
         Scene scene = regionManager.gameObject.scene;
         return scene.IsValid() && scene.isLoaded;
+    }
+
+    [MenuItem(UnloadAllContextMenuPath, false, 1001)]
+    private static void UnloadAllStreamingScenesForEditing(MenuCommand command)
+    {
+        UnloadAllStreamingScenesForEditing(command.context as RegionManager);
+    }
+
+    [MenuItem(UnloadAllContextMenuPath, true)]
+    private static bool ValidateUnloadAllStreamingScenesForEditing(MenuCommand command)
+    {
+        return ValidateLoadAllStreamingScenesForEditing(command);
     }
 
     private static string GetScenePath(RegionManager.Region region)
