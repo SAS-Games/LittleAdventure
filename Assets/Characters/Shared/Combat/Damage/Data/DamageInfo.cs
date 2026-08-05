@@ -1,10 +1,4 @@
-﻿using UnityEngine;
-
-public interface IDamageInfo
-{
-    float Amount { get; }
-    GameObject Source { get; }
-}
+using UnityEngine;
 
 public class DamageInfo : IDamageInfo
 {
