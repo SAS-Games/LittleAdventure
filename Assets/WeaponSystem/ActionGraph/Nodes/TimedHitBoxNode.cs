@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SAS.ActionGraph.WeaponSystem
@@ -26,8 +25,8 @@ namespace SAS.ActionGraph.WeaponSystem
     {
     }
 
-    [ActionNodeMenu("Weapon/Timed Hit Box")]
-    public class TimedHitBoxNode : ActionNode<WeaponTimedHitBoxData>
+    [ActionNodeMenu("Weapon/Timed Hit Box", "Collects unique targets inside a box during the configured animation time window.")]
+    public class TimedHitBoxNode : WeaponActionNode<WeaponTimedHitBoxData>
     {
         private Collider[] _results = new Collider[10];
 
@@ -35,12 +34,12 @@ namespace SAS.ActionGraph.WeaponSystem
         {
         }
 
-        public override async Task ExecuteAsync(ActionContext context, CancellationToken token)
+        public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
-            var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-            var data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext) ?? new WeaponTimedHitBoxData();
+            var weaponContext = RequireWeaponContext(context);
+            var data = GetAttackData(weaponContext) ?? new WeaponTimedHitBoxData();
             Bounds hitBox = data.hitBox;
             LayerMask layers = data.layers;
             float startTime = data.startTime;
@@ -77,7 +76,7 @@ namespace SAS.ActionGraph.WeaponSystem
                 if (inAttackState && stateInfo.normalizedTime > endTime)
                     return;
 
-                await Awaitable.NextFrameAsync();
+                await Awaitable.NextFrameAsync(token);
             }
         }
 

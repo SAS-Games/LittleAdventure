@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -18,21 +17,22 @@ public class ComboBeginCurrentAttackProvider : ActionDataProvider<ComboBeginCurr
 {
 }
 
-[ActionNodeMenu("Weapon/Combo Begin Current Attack")]
-public class ComboBeginCurrentAttackNode : ActionNode<ComboBeginCurrentAttackData>
+[ActionNodeMenu("Weapon/Combo Begin Current Attack", "Starts the current combo step and clears hit data from the previous attack.")]
+public class ComboBeginCurrentAttackNode : WeaponActionNode<ComboBeginCurrentAttackData>
 {
     public ComboBeginCurrentAttackNode(ActionDataProvider<ComboBeginCurrentAttackData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
+        await Awaitable.MainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
+        var weaponContext = RequireWeaponContext(context);
         int index = Mathf.Max(0, weaponContext.CurrentAttackIndex);
         weaponContext.BeginAttack(index);
-        return Task.CompletedTask;
+        return;
     }
 }
 }

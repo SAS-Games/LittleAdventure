@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.Pool;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem.Components;
@@ -23,8 +22,8 @@ namespace SAS.ActionGraph.WeaponSystem
     {
     }
 
-    [ActionNodeMenu("Weapon/Spawn Pooled Projectiles")]
-    public class SpawnPooledProjectilesNode : ActionNode<WeaponPooledProjectileData>
+    [ActionNodeMenu("Weapon/Spawn Pooled Projectiles", "Spawns the configured projectiles from a shared pool at the attacker's source transform.")]
+    public class SpawnPooledProjectilesNode : WeaponActionNode<WeaponPooledProjectileData>
     {
         private static readonly HashSet<int> InitializedPools = new HashSet<int>();
 
@@ -52,18 +51,19 @@ namespace SAS.ActionGraph.WeaponSystem
             }
         }
 
-        public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+        public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
         {
+            await Awaitable.MainThreadAsync();
             token.ThrowIfCancellationRequested();
 
-            WeaponContext weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-            WeaponPooledProjectileData data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext);
+            WeaponContext weaponContext = RequireWeaponContext(context);
+            WeaponPooledProjectileData data = GetAttackData(weaponContext);
             if (data == null || data.objectPool == null || data.spawnInfos == null)
-                return Task.CompletedTask;
+                return;
 
             Transform spawnTransform = GetProjectileSourceTransform(weaponContext);
             if (spawnTransform == null)
-                return Task.CompletedTask;
+                return;
 
             for (int i = 0; i < data.spawnInfos.Length; i++)
             {
@@ -72,7 +72,7 @@ namespace SAS.ActionGraph.WeaponSystem
                 data.objectPool.Spawn(spawnInfo);
             }
 
-            return Task.CompletedTask;
+            return;
         }
 
         private static Transform GetProjectileSourceTransform(WeaponContext weaponContext)

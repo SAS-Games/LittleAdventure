@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -20,19 +19,20 @@ public class WeaponApplyDamageToHitsProvider : ActionDataProvider<WeaponApplyDam
 {
 }
 
-[ActionNodeMenu("Weapon/Apply Damage To Hits")]
-public class ApplyDamageToHitsNode : ActionNode<WeaponApplyDamageToHitsData>
+[ActionNodeMenu("Weapon/Apply Damage To Hits", "Applies damage to every target collected by the most recent hit-box node.")]
+public class ApplyDamageToHitsNode : WeaponActionNode<WeaponApplyDamageToHitsData>
 {
     public ApplyDamageToHitsNode(ActionDataProvider<WeaponApplyDamageToHitsData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
+        await Awaitable.MainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-        var data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext) ?? new WeaponApplyDamageToHitsData();
+        var weaponContext = RequireWeaponContext(context);
+        var data = GetAttackData(weaponContext) ?? new WeaponApplyDamageToHitsData();
 
         float amount = data.amount;
         if (data.useOwnerDamageModifier && weaponContext.Owner != null)
@@ -54,9 +54,7 @@ public class ApplyDamageToHitsNode : ActionNode<WeaponApplyDamageToHitsData>
                 damageable.Damage(new DamageInfo(amount, weaponContext.Owner != null ? weaponContext.Owner.transform.root.gameObject : null));
         }
 
-        return Task.CompletedTask;
+        return;
     }
 }
 }
-
-

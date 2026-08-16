@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -22,8 +21,8 @@ public class WeaponAttachModelsProvider : ActionDataProvider<WeaponAttachModelsD
 {
 }
 
-[ActionNodeMenu("Weapon/Attach Models")]
-public class AttachModelsNode : ActionNode<WeaponAttachModelsData>
+[ActionNodeMenu("Weapon/Attach Models", "Creates the configured left- and right-hand weapon models at their character sockets.")]
+public class AttachModelsNode : WeaponActionNode<WeaponAttachModelsData>
 {
     private GameObject _leftWeaponInstance;
     private GameObject _rightWeaponInstance;
@@ -38,16 +37,17 @@ public class AttachModelsNode : ActionNode<WeaponAttachModelsData>
         _selector.Reset();
     }
 
-    public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
+        await Awaitable.MainThreadAsync();
         token.ThrowIfCancellationRequested();
         AttachWeapons(context);
-        return Task.CompletedTask;
+        return;
     }
 
     private void AttachWeapons(ActionContext context)
     {
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
+        var weaponContext = RequireWeaponContext(context);
         var data = _selector.GetNext();
         if (data == null || weaponContext.Owner == null)
             return;

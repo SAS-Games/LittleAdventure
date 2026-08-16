@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using UnityEngine;
 
@@ -20,19 +19,20 @@ namespace SAS.ActionGraph.WeaponSystem
     {
     }
 
-    [ActionNodeMenu("Weapon/Apply Knockback To Hits")]
-    public class ApplyKnockbackToHitsNode : ActionNode<WeaponApplyKnockbackToHitsData>
+    [ActionNodeMenu("Weapon/Apply Knockback To Hits", "Pushes every target collected by the most recent hit-box node away from the attacker.")]
+    public class ApplyKnockbackToHitsNode : WeaponActionNode<WeaponApplyKnockbackToHitsData>
     {
         public ApplyKnockbackToHitsNode(ActionDataProvider<WeaponApplyKnockbackToHitsData> dataProvider) : base(dataProvider)
         {
         }
 
-        public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+        public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
         {
+            await Awaitable.MainThreadAsync();
             token.ThrowIfCancellationRequested();
 
-            var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-            var data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext) ??
+            var weaponContext = RequireWeaponContext(context);
+            var data = GetAttackData(weaponContext) ??
                        new WeaponApplyKnockbackToHitsData();
 
             Vector3 angle = data.angle;
@@ -52,7 +52,7 @@ namespace SAS.ActionGraph.WeaponSystem
                     knockbackable.PerformAction(attacker, angle, strength);
             }
 
-            return Task.CompletedTask;
+            return;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -18,20 +17,21 @@ public class ComboResetProvider : ActionDataProvider<ComboResetData>
 {
 }
 
-[ActionNodeMenu("Weapon/Combo Reset")]
-public class ComboResetNode : ActionNode<ComboResetData>
+[ActionNodeMenu("Weapon/Combo Reset", "Returns the combo to its first attack and clears buffered input and hit state.")]
+public class ComboResetNode : WeaponActionNode<ComboResetData>
 {
     public ComboResetNode(ActionDataProvider<ComboResetData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
+        await Awaitable.MainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
+        var weaponContext = RequireWeaponContext(context);
         weaponContext.ResetCombo();
-        return Task.CompletedTask;
+        return;
     }
 }
 }

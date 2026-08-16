@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -20,39 +19,20 @@ public class WeaponWaitAnimationExitProvider : ActionDataProvider<WeaponWaitAnim
 {
 }
 
-[ActionNodeMenu("Weapon/Wait Animation Exit")]
-public class WaitAnimationExitNode : ActionNode<WeaponWaitAnimationExitData>
+[ActionNodeMenu("Weapon/Wait Animation Exit", "Pauses graph execution until the tagged attack animation state has finished.")]
+public class WaitAnimationExitNode : WeaponActionNode<WeaponWaitAnimationExitData>
 {
     public WaitAnimationExitNode(ActionDataProvider<WeaponWaitAnimationExitData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override async Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-        var data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext) ?? new WeaponWaitAnimationExitData();
-        string stateTag = data.stateTag;
-
-        if (weaponContext.Animator == null)
-            return;
-
-        bool enteredAttackState = false;
-        while (true)
-        {
-            token.ThrowIfCancellationRequested();
-
-            AnimatorStateInfo stateInfo = weaponContext.Animator.GetCurrentAnimatorStateInfo(data.layer);
-            bool inAttackState = stateInfo.IsTag(stateTag);
-
-            if (inAttackState)
-                enteredAttackState = true;
-            else if (enteredAttackState)
-                return;
-
-            await Awaitable.NextFrameAsync();
-        }
+        var weaponContext = RequireWeaponContext(context);
+        var data = GetAttackData(weaponContext) ?? new WeaponWaitAnimationExitData();
+        await WeaponNodeUtility.WaitForAnimationExitAsync(weaponContext, data.layer, data.stateTag, token);
     }
 }
 }

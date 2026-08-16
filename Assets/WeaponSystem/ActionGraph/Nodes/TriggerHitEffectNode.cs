@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -20,23 +19,24 @@ public class WeaponTriggerHitEffectProvider : ActionDataProvider<WeaponTriggerHi
 {
 }
 
-[ActionNodeMenu("Weapon/Trigger Hit Effect")]
-public class TriggerHitEffectNode : ActionNode<WeaponTriggerHitEffectData>
+[ActionNodeMenu("Weapon/Trigger Hit Effect", "Raises a hit-effect event when the current attack struck a valid target.")]
+public class TriggerHitEffectNode : WeaponActionNode<WeaponTriggerHitEffectData>
 {
     public TriggerHitEffectNode(ActionDataProvider<WeaponTriggerHitEffectData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
+        await Awaitable.MainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-        var data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext) ?? new WeaponTriggerHitEffectData();
+        var weaponContext = RequireWeaponContext(context);
+        var data = GetAttackData(weaponContext) ?? new WeaponTriggerHitEffectData();
         string eventName = data.eventName;
 
         if (string.IsNullOrEmpty(eventName) || weaponContext.Owner == null)
-            return Task.CompletedTask;
+            return;
 
         for (int i = 0; i < weaponContext.Hits.Count; i++)
         {
@@ -54,7 +54,7 @@ public class TriggerHitEffectNode : ActionNode<WeaponTriggerHitEffectData>
             break;
         }
 
-        return Task.CompletedTask;
+        return;
     }
 }
 }

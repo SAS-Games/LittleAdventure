@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using SAS.WeaponSystem;
 using UnityEngine;
 
@@ -85,7 +84,7 @@ namespace SAS.ActionGraph.WeaponSystem
             _ = ExecuteGraphAsync();
         }
 
-        private async Task ExecuteGraphAsync()
+        private async Awaitable ExecuteGraphAsync()
         {
             PopulateContext();
             _context.ResetCombo();

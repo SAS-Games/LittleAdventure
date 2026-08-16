@@ -40,6 +40,20 @@ Player attack input is ignored while `FSMCharacterController` is disabled. Disab
 
 Weapon-specific nodes remain in this feature folder and depend on the generic ActionGraph API. This lets ActionGraph move into a reusable package later without making that package depend on WeaponSystem.
 
+Weapon nodes derive from `WeaponActionNode<T>`, which centralizes `WeaponContext` validation and attack-indexed data selection. Shared animation-exit waiting also lives in `WeaponNodeUtility`, so individual nodes only contain their weapon behavior.
+
+ActionGraph execution uses Unity's pooled `Awaitable` API end to end instead of `System.Threading.Tasks.Task`. Immediate actions stay on the Unity main thread, frame and timer waits receive the graph cancellation token directly, and Parallel starts every child before awaiting all branches. Parallel rents its temporary Awaitable buffer from `ArrayPool`, avoiding a new managed array on each execution while remaining safe when executions overlap during cancellation.
+
+SubGraph nodes compile every referenced graph once during initialization and reuse isolated runtime instances on later executions. Each invocation resets the cached graph to preserve the former build-per-call selector behavior, parent resets propagate through every cached variant, and recursive SubGraph references fail early with the asset path instead of constructing forever.
+
+The ActionGraph window provides editor-only live debugging during Play Mode. `Live Debug` highlights running, completed, cancelled, and failed nodes, while the bounded trace panel records the latest 200 state changes and exception messages. `Clear Trace` resets both the panel and node highlights. All runtime observation wrappers and events are guarded by `UNITY_EDITOR`; player builds contain the original undecorated execution tree and no debug calls.
+
+Every graph node displays a short description in the ActionGraph editor. Edit its multiline `Description` field to save a per-node override in the graph asset, or use `Reset to Default` to restore generated text. Weapon actions provide their defaults through `ActionNodeMenuAttribute`; flow and condition nodes receive contextual defaults from the editor, and third-party actions without custom text receive a readable fallback.
+
+Every graph has a Sequence or Parallel root. The root is structural and never occupies the canvas; loading a graph immediately displays its children. A nested Sequence or Parallel node appears as a normal card without an extra `GROUP` label. Enter it with the chevron, by double-clicking its title, or by selecting it and pressing Enter. Its container is then hidden so only its direct children are shown. Sequence children are numbered by execution order and provide up/down controls to run earlier or later. Parallel children start together, so their list order has no execution-order meaning. Use `Add Node` while inside a Sequence or Parallel node, `← Parent` to move up one level, or a clickable breadcrumb to jump directly to any ancestor. These navigation changes affect only the editor presentation—the runtime graph and execution order are unchanged.
+
+The Graph object field replaces the older `Use Selection` shortcut. `Create Root` appears only when the loaded graph has no root; normal graph assets already contain one. Closed Sequence and Parallel cards intentionally have no Contents port or add button—their children are managed from inside the node.
+
 The current combo graph uses a reusable loop:
 
 - set up weapon models

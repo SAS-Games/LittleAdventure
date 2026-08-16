@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -19,32 +18,33 @@ public class ComboAdvanceIfInputAcceptedProvider : ActionDataProvider<ComboAdvan
 {
 }
 
-[ActionNodeMenu("Weapon/Combo Advance If Input Accepted")]
-public class ComboAdvanceIfInputAcceptedNode : ActionNode<ComboAdvanceIfInputAcceptedData>
+[ActionNodeMenu("Weapon/Combo Advance If Input Accepted", "Advances to the next combo attack only when the input window accepted a buffered attack.")]
+public class ComboAdvanceIfInputAcceptedNode : WeaponActionNode<ComboAdvanceIfInputAcceptedData>
 {
     public ComboAdvanceIfInputAcceptedNode(ActionDataProvider<ComboAdvanceIfInputAcceptedData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
+        await Awaitable.MainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
+        var weaponContext = RequireWeaponContext(context);
         var data = _selector.GetNext() ?? new ComboAdvanceIfInputAcceptedData();
         if (!weaponContext.ComboInputAccepted)
-            return Task.CompletedTask;
+            return;
 
         int comboCount = Mathf.Max(1, data.comboCount);
         int nextIndex = weaponContext.CurrentAttackIndex + 1;
         if (nextIndex >= comboCount)
         {
             weaponContext.ComboInputAccepted = false;
-            return Task.CompletedTask;
+            return;
         }
 
         weaponContext.CurrentAttackIndex = nextIndex;
-        return Task.CompletedTask;
+        return;
     }
 }
 }

@@ -1,10 +1,28 @@
 ﻿using System;
+using System.Threading;
 using SAS.StateMachineCharacterController;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace SAS.ActionGraph.WeaponSystem
 {
+    public abstract class WeaponActionNode<T> : ActionNode<T>
+    {
+        protected WeaponActionNode(ActionDataProvider<T> dataProvider) : base(dataProvider)
+        {
+        }
+
+        protected static WeaponContext RequireWeaponContext(ActionContext context)
+        {
+            return WeaponNodeUtility.RequireWeaponContext(context);
+        }
+
+        protected T GetAttackData(WeaponContext context)
+        {
+            return WeaponNodeUtility.GetAttackData(_dataProvider, context);
+        }
+    }
+
     public static class WeaponNodeUtility
     {
         public static T GetAttackData<T>(ActionDataProvider<T> dataProvider, WeaponContext context)
@@ -23,6 +41,31 @@ namespace SAS.ActionGraph.WeaponSystem
                 throw new InvalidOperationException("Weapon node requires WeaponContext.");
 
             return weaponContext;
+        }
+
+        public static async Awaitable WaitForAnimationExitAsync(
+            WeaponContext context,
+            int layer,
+            string stateTag,
+            CancellationToken token)
+        {
+            if (context.Animator == null)
+                return;
+
+            bool enteredState = false;
+            while (true)
+            {
+                token.ThrowIfCancellationRequested();
+
+                AnimatorStateInfo stateInfo = context.Animator.GetCurrentAnimatorStateInfo(layer);
+                bool isInState = stateInfo.IsTag(stateTag);
+                if (isInState)
+                    enteredState = true;
+                else if (enteredState)
+                    return;
+
+                await Awaitable.NextFrameAsync(token);
+            }
         }
 
         public static Vector3 GetOwnerForward(WeaponContext context)

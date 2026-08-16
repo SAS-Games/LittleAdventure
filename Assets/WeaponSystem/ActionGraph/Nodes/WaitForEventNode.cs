@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SAS.ActionGraph.WeaponSystem
@@ -19,14 +18,14 @@ namespace SAS.ActionGraph.WeaponSystem
     {
     }
 
-    [ActionNodeMenu("Event/Wait For Event")]
+    [ActionNodeMenu("Event/Wait For Event", "Pauses graph execution until the named owner event fires or the timeout expires.")]
     public class WaitForEventNode : ActionNode<WaitForEventData>
     {
         public WaitForEventNode(ActionDataProvider<WaitForEventData> dataProvider) : base(dataProvider)
         {
         }
 
-        public override async Task ExecuteAsync(ActionContext context, CancellationToken token)
+        public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
@@ -67,7 +66,7 @@ namespace SAS.ActionGraph.WeaponSystem
                         return;
                     }
 
-                    await Awaitable.NextFrameAsync();
+                    await Awaitable.NextFrameAsync(token);
                     elapsed += Time.deltaTime;
                 }
             }

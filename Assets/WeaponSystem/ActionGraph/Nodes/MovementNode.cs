@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using UnityEngine;
 
@@ -31,19 +30,19 @@ public class WeaponMovementProvider : ActionDataProvider<WeaponMovementData>, II
 {
 }
 
-[ActionNodeMenu("Weapon/Movement")]
-public class MovementNode : ActionNode<WeaponMovementData>
+[ActionNodeMenu("Weapon/Movement", "Moves the attacker in local space for a short attack lunge or reposition.")]
+public class MovementNode : WeaponActionNode<WeaponMovementData>
 {
     public MovementNode(ActionDataProvider<WeaponMovementData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override async Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
         var weaponContext = RequireWeaponContext(context);
-        var data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext);
+        var data = GetAttackData(weaponContext);
 
         if (data == null || data.duration <= 0f || data.speed == 0f || weaponContext.Owner == null)
         {
@@ -87,7 +86,7 @@ public class MovementNode : ActionNode<WeaponMovementData>
 
                 elapsed += Time.deltaTime;
 
-                await Awaitable.NextFrameAsync();
+                await Awaitable.NextFrameAsync(token);
             }
         }
         finally
@@ -99,14 +98,6 @@ public class MovementNode : ActionNode<WeaponMovementData>
         }
     }
 
-    private static WeaponContext RequireWeaponContext(ActionContext context)
-    {
-        var weaponContext = context as WeaponContext;
-        if (weaponContext == null)
-            throw new InvalidOperationException("Movement node requires WeaponContext.");
-
-        return weaponContext;
-    }
 }
 }
 

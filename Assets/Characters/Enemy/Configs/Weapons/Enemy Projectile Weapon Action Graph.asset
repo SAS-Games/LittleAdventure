@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89528923cf4cf4f48843187ab98866ca, type: 3}
   m_Name: Enemy Projectile Weapon Action Graph
-  m_EditorClassIdentifier: Assembly-CSharp::ActionGraphAsset
+  m_EditorClassIdentifier: AssemblyCore::ActionGraphAsset
   root:
     rid: 7200000000000000001
   references:
@@ -26,7 +26,7 @@ MonoBehaviour:
           timeoutSeconds: 2
           throwOnTimeout: 0
     - rid: 7200000000000000001
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 240, y: 240}
         editorSize: {x: 260, y: 220}
@@ -39,7 +39,7 @@ MonoBehaviour:
         - rid: 7200000000000000008
         - rid: 7200000000000000009
     - rid: 7200000000000000002
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 580, y: 240}
         editorSize: {x: 260, y: 140}
@@ -48,7 +48,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7200000000000000010
     - rid: 7200000000000000003
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 900.6667, y: 240.00002}
         editorSize: {x: 248.66669, y: 170}
@@ -59,7 +59,7 @@ MonoBehaviour:
         - rid: 7200000000000000004
         - rid: 7200000000000000007
     - rid: 7200000000000000004
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1220, y: 9.333336}
         editorSize: {x: 248.66663, y: 170}
@@ -70,7 +70,7 @@ MonoBehaviour:
         - rid: 7200000000000000005
         - rid: 7200000000000000006
     - rid: 7200000000000000005
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1535.3334, y: 9.333336}
         editorSize: {x: 220, y: 255.33333}
@@ -79,7 +79,7 @@ MonoBehaviour:
         dataProvider:
           rid: 1668481461043331177
     - rid: 7200000000000000006
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1820.6666, y: 9.333336}
         editorSize: {x: 309.33337, y: 235.33333}
@@ -88,7 +88,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7200000000000000013
     - rid: 7200000000000000007
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1220, y: 420}
         editorSize: {x: 290, y: 150}
@@ -97,7 +97,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7200000000000000014
     - rid: 7200000000000000008
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 2095.3333, y: 240.00002}
         editorSize: {x: 220, y: 195.33331}
@@ -106,7 +106,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7200000000000000011
     - rid: 7200000000000000009
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 2371.3333, y: 240.00002}
         editorSize: {x: 224.66675, y: 145.33331}
@@ -115,14 +115,14 @@ MonoBehaviour:
         dataProvider:
           rid: 7200000000000000015
     - rid: 7200000000000000010
-      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      type: {class: AnimatorSetBoolProvider, ns: , asm: AssemblyCore}
       data:
         useSingleValue: 0
         data:
         - parameterName: Attack
           value: 1
     - rid: 7200000000000000011
-      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      type: {class: AnimatorSetBoolProvider, ns: , asm: AssemblyCore}
       data:
         useSingleValue: 1
         data:

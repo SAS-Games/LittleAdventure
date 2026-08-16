@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using SAS.StateMachineCharacterController;
 using SAS.WeaponSystem;
 using UnityEngine;
@@ -23,21 +22,22 @@ public class WeaponIndexedAnimationProvider : ActionDataProvider<WeaponIndexedAn
 {
 }
 
-[ActionNodeMenu("Weapon/Indexed Animation")]
-public class IndexedAnimationNode : ActionNode<WeaponIndexedAnimationData>
+[ActionNodeMenu("Weapon/Indexed Animation", "Plays the animation whose state name ends with the current combo attack index.")]
+public class IndexedAnimationNode : WeaponActionNode<WeaponIndexedAnimationData>
 {
     public IndexedAnimationNode(ActionDataProvider<WeaponIndexedAnimationData> dataProvider) : base(dataProvider)
     {
     }
 
-    public override Task ExecuteAsync(ActionContext context, CancellationToken token)
+    public override async Awaitable ExecuteAsync(ActionContext context, CancellationToken token)
     {
+        await Awaitable.MainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        var weaponContext = WeaponNodeUtility.RequireWeaponContext(context);
-        var data = WeaponNodeUtility.GetAttackData(_dataProvider, weaponContext);
+        var weaponContext = RequireWeaponContext(context);
+        var data = GetAttackData(weaponContext);
         if (weaponContext.Animator == null || data == null)
-            return Task.CompletedTask;
+            return;
 
         string stateName = $"{data.statePrefix}{weaponContext.CurrentAttackIndex}";
         if (data.crossFade)
@@ -53,7 +53,7 @@ public class IndexedAnimationNode : ActionNode<WeaponIndexedAnimationData>
             weaponContext.Animator.Play(stateName, data.layer, data.normalizedStartTime);
         }
 
-        return Task.CompletedTask;
+        return;
     }
 }
 }

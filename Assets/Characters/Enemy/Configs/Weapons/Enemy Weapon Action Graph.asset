@@ -11,14 +11,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89528923cf4cf4f48843187ab98866ca, type: 3}
   m_Name: Enemy Weapon Action Graph
-  m_EditorClassIdentifier: Assembly-CSharp::ActionGraphAsset
+  m_EditorClassIdentifier: AssemblyCore::ActionGraphAsset
   root:
     rid: 7100000000000000001
   references:
     version: 2
     RefIds:
     - rid: 7100000000000000001
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 240, y: 240}
         editorSize: {x: 260, y: 220}
@@ -31,7 +31,7 @@ MonoBehaviour:
         - rid: 7100000000000000010
         - rid: 7100000000000000011
     - rid: 7100000000000000002
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 580, y: 240}
         editorSize: {x: 260, y: 140}
@@ -40,7 +40,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000012
     - rid: 7100000000000000003
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 900, y: 240}
         editorSize: {x: 270, y: 180}
@@ -51,7 +51,7 @@ MonoBehaviour:
         - rid: 7100000000000000004
         - rid: 7100000000000000009
     - rid: 7100000000000000004
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1170.6666, y: -112}
         editorSize: {x: 248.66675, y: 212}
@@ -64,7 +64,7 @@ MonoBehaviour:
         - rid: 7100000000000000007
         - rid: 7100000000000000008
     - rid: 7100000000000000005
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1460.6666, y: -112}
         editorSize: {x: 220, y: 175.33333}
@@ -73,7 +73,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000014
     - rid: 7100000000000000006
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1712.6666, y: -112}
         editorSize: {x: 309.33337, y: 235.33334}
@@ -82,7 +82,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000015
     - rid: 7100000000000000007
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1965.3334, y: -112}
         editorSize: {x: 220, y: 175.33333}
@@ -91,7 +91,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000016
     - rid: 7100000000000000008
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 2212.6667, y: -112}
         editorSize: {x: 220, y: 235.33334}
@@ -100,7 +100,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000017
     - rid: 7100000000000000009
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1170.6666, y: 534.6667}
         editorSize: {x: 220, y: 175.33331}
@@ -109,7 +109,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000018
     - rid: 7100000000000000010
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1460.6666, y: 242.66667}
         editorSize: {x: 220, y: 195.33334}
@@ -118,7 +118,7 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000013
     - rid: 7100000000000000011
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
         editorPosition: {x: 1712.6666, y: 242.66667}
         editorSize: {x: 224.66675, y: 145.33334}
@@ -127,14 +127,14 @@ MonoBehaviour:
         dataProvider:
           rid: 7100000000000000019
     - rid: 7100000000000000012
-      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      type: {class: AnimatorSetBoolProvider, ns: , asm: AssemblyCore}
       data:
         useSingleValue: 1
         data:
         - parameterName: Attack
           value: 1
     - rid: 7100000000000000013
-      type: {class: AnimatorSetBoolProvider, ns: , asm: Assembly-CSharp}
+      type: {class: AnimatorSetBoolProvider, ns: , asm: AssemblyCore}
       data:
         useSingleValue: 1
         data:

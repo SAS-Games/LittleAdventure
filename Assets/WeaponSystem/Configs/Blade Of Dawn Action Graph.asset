@@ -11,17 +11,18 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89528923cf4cf4f48843187ab98866ca, type: 3}
   m_Name: Blade Of Dawn Action Graph
-  m_EditorClassIdentifier: Assembly-CSharp::ActionGraphAsset
+  m_EditorClassIdentifier: AssemblyCore::ActionGraphAsset
   root:
     rid: 1668481441099677786
   references:
     version: 2
     RefIds:
     - rid: 1668481441099677786
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 336, y: 296.66666}
-        editorSize: {x: 248.66669, y: 232}
+        editorDescription: 
+        editorPosition: {x: -130, y: 287.3333}
+        editorSize: {x: 496.66666, y: 306.00003}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         type: 0
@@ -30,10 +31,11 @@ MonoBehaviour:
         - rid: 1668481441099677790
         - rid: 1668481441099677798
     - rid: 1668481441099677790
-      type: {class: LoopNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: LoopNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 910, y: 296.66666}
-        editorSize: {x: 306, y: 220}
+        editorDescription: 
+        editorPosition: {x: 717.3333, y: 287.3333}
+        editorSize: {x: 399.3333, y: 280.66666}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         maxIterations: 3
@@ -47,10 +49,11 @@ MonoBehaviour:
       data:
         expected: 1
     - rid: 1668481441099677797
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 1207.3334, y: -65.33333}
-        editorSize: {x: 248.66663, y: 212}
+        editorDescription: 
+        editorPosition: {x: 1182, y: -126}
+        editorSize: {x: 512, y: 329.33334}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         type: 0
@@ -60,37 +63,41 @@ MonoBehaviour:
         - rid: 1668481441099677807
         - rid: 1668481441099677808
     - rid: 1668481441099677798
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 4332.6665, y: 296.66666}
-        editorSize: {x: 224.66699, y: 145.33334}
+        editorDescription: 
+        editorPosition: {x: 1767.3334, y: 287.3333}
+        editorSize: {x: 455.99988, y: 228.66666}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481441099677809
     - rid: 1668481441099677805
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 1496.6666, y: -65.33333}
-        editorSize: {x: 248.66675, y: 148}
+        editorDescription: 
+        editorPosition: {x: 1733.3334, y: -126}
+        editorSize: {x: 453.33337, y: 228.66666}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481441099677814
     - rid: 1668481441099677806
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 1809.3334, y: -65.33333}
-        editorSize: {x: 224.66663, y: 364.66666}
+        editorDescription: 
+        editorPosition: {x: 2228, y: -126}
+        editorSize: {x: 490, y: 398.66666}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481441099677815
     - rid: 1668481441099677807
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 2160.6667, y: -65.33333}
-        editorSize: {x: 248.6665, y: 191.33333}
+        editorDescription: 
+        editorPosition: {x: 2767.3333, y: -126}
+        editorSize: {x: 679.3335, y: 274.66666}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         type: 1
@@ -99,10 +106,11 @@ MonoBehaviour:
         - rid: 1668481441099677817
         - rid: 1668481441099677818
     - rid: 1668481441099677808
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 2776, y: -69.33333}
-        editorSize: {x: 272.66675, y: 195.33333}
+        editorDescription: 
+        editorPosition: {x: 3482, y: -126}
+        editorSize: {x: 553.33325, y: 298.66666}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -128,19 +136,21 @@ MonoBehaviour:
           transitionDuration: 0.05
           normalizedStartTime: 0
     - rid: 1668481441099677816
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
+        editorDescription: 
         editorPosition: {x: 2427.3333, y: -1019.3333}
-        editorSize: {x: 428, y: 333.3333}
+        editorSize: {x: 425.3335, y: 412}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481468307603549
     - rid: 1668481441099677817
-      type: {class: FlowNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: FlowNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 2427.3333, y: -652}
-        editorSize: {x: 248.66675, y: 212.00003}
+        editorDescription: 
+        editorPosition: {x: 2919.3333, y: -1019.3333}
+        editorSize: {x: 505.3335, y: 289.3333}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         type: 0
@@ -150,10 +160,11 @@ MonoBehaviour:
         - rid: 1668481441099677825
         - rid: 1668481441099677826
     - rid: 1668481441099677818
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 2432, y: -332.6667}
-        editorSize: {x: 309.33325, y: 235.33334}
+        editorDescription: 
+        editorPosition: {x: 3501.3333, y: -1022}
+        editorSize: {x: 415.3335, y: 292}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -165,37 +176,41 @@ MonoBehaviour:
         data:
         - comboCount: 3
     - rid: 1668481441099677823
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 2774, y: -636}
-        editorSize: {x: 334, y: 268.00003}
+        editorDescription: 
+        editorPosition: {x: 2612, y: -641.3333}
+        editorSize: {x: 485.33325, y: 298}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481441099677833
     - rid: 1668481441099677824
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 3188, y: -653.3333}
-        editorSize: {x: 292, y: 340}
+        editorDescription: 
+        editorPosition: {x: 3123.3333, y: -641.3333}
+        editorSize: {x: 445.3335, y: 378}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481441099677834
     - rid: 1668481441099677825
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 3514.6667, y: -652}
-        editorSize: {x: 309.33325, y: 235.33334}
+        editorDescription: 
+        editorPosition: {x: 3584.6667, y: -641.3333}
+        editorSize: {x: 419.33325, y: 298}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
           rid: 1668481441099677835
     - rid: 1668481441099677826
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 3884.6667, y: -652}
-        editorSize: {x: 309.33325, y: 235.33334}
+        editorDescription: 
+        editorPosition: {x: 4027.3333, y: -641.3333}
+        editorSize: {x: 514.66675, y: 298}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
@@ -208,7 +223,7 @@ MonoBehaviour:
         - layer: 0
           comboCount: 3
           inputDelay: 0.1
-          requiredAnimationProgress: 0.35
+          requiredAnimationProgress: 0.8
           stateTag: Attack
           bufferEarlyInput: 1
     - rid: 1668481441099677833
@@ -256,10 +271,12 @@ MonoBehaviour:
         - angle: {x: 1, y: 0, z: 0.5}
           strength: 2
     - rid: 1668481441099677853
-      type: {class: ActionNodeConfig, ns: , asm: Assembly-CSharp}
+      type: {class: ActionNodeConfig, ns: , asm: AssemblyCore}
       data:
-        editorPosition: {x: 637.3333, y: 296.66666}
-        editorSize: {x: 232.66669, y: 125.33334}
+        editorDescription: "Creates the configured left- and right-hand \nweapon
+          models at their character sockets."
+        editorPosition: {x: 394, y: 287.3333}
+        editorSize: {x: 277.3333, y: 312.00003}
         editorCollapsed: 0
         editorChildrenListCollapsed: 0
         dataProvider:
