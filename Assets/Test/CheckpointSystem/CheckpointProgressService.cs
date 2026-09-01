@@ -9,7 +9,7 @@ namespace SAS.Checkpoints
 {
     public sealed class CheckpointProgressService : ICheckpointProgressService, IDisposable
     {
-        private readonly ICheckpointProgressStore _progressStore;
+        private readonly ICheckpointSaveAdapter _saveAdapter;
         private readonly HashSet<string> _completedCheckpointIds = new(StringComparer.Ordinal);
         private readonly SemaphoreSlim _operationLock = new(1, 1);
         private readonly object _stateLock = new();
@@ -34,9 +34,9 @@ namespace SAS.Checkpoints
             }
         }
 
-        public CheckpointProgressService(ICheckpointProgressStore progressStore)
+        public CheckpointProgressService(ICheckpointSaveAdapter saveAdapter = null)
         {
-            _progressStore = progressStore ?? throw new ArgumentNullException(nameof(progressStore));
+            _saveAdapter = saveAdapter;
         }
 
         public async Task InitializeAsync(int userId)
@@ -49,7 +49,9 @@ namespace SAS.Checkpoints
 
             try
             {
-                CheckpointProgressData loadedData = await _progressStore.LoadAsync(userId);
+                CheckpointProgressData loadedData = _saveAdapter == null
+                    ? new CheckpointProgressData()
+                    : await _saveAdapter.LoadAsync(userId);
 
                 loadedData ??= new CheckpointProgressData();
                 ValidateVersion(loadedData);
@@ -240,7 +242,10 @@ namespace SAS.Checkpoints
 
         private async Task SaveAsync(CheckpointProgressData data)
         {
-            bool succeeded = await _progressStore.SaveAsync(_userId, data);
+            if (_saveAdapter == null)
+                return;
+
+            bool succeeded = await _saveAdapter.SaveAsync(_userId, data);
             if (!succeeded)
                 throw new IOException("The save system rejected checkpoint progress data.");
         }

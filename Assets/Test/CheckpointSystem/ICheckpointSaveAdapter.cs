@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 namespace SAS.Checkpoints
 {
     /// <summary>
-    /// Persists checkpoint progress without coupling the checkpoint system to a
-    /// game's save-system implementation.
+    /// Adapts checkpoint progress loading and saving to a game's save system.
+    /// Supplying this adapter is optional.
     /// </summary>
-    public interface ICheckpointProgressStore
+    public interface ICheckpointSaveAdapter
     {
         Task<CheckpointProgressData> LoadAsync(int userId);
         Task<bool> SaveAsync(int userId, CheckpointProgressData data);

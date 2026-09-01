@@ -9,14 +9,14 @@ namespace SAS.Checkpoints.Tests
 {
     public sealed class CheckpointProgressServiceTests
     {
-        private FakeProgressStore _progressStore;
+        private FakeSaveAdapter _saveAdapter;
         private CheckpointProgressService _service;
 
         [SetUp]
         public void SetUp()
         {
-            _progressStore = new FakeProgressStore();
-            _service = new CheckpointProgressService(_progressStore);
+            _saveAdapter = new FakeSaveAdapter();
+            _service = new CheckpointProgressService(_saveAdapter);
         }
 
         [TearDown]
@@ -36,6 +36,20 @@ namespace SAS.Checkpoints.Tests
         }
 
         [Test]
+        public async Task NoStore_TracksProgressForCurrentServiceLifetime()
+        {
+            using CheckpointProgressService service = new();
+
+            await service.InitializeAsync(7);
+            await service.ActivateCheckpointAsync(CreateActiveData("CP_01"));
+
+            Assert.That(service.IsCompleted("CP_01"), Is.True);
+            Assert.That(
+                service.GetActiveCheckpoint().CheckpointId,
+                Is.EqualTo("CP_01"));
+        }
+
+        [Test]
         public async Task Initialize_RaisesInitializedAfterStateIsReady()
         {
             bool wasReadyDuringEvent = false;
@@ -52,7 +66,7 @@ namespace SAS.Checkpoints.Tests
         [Test]
         public void Initialize_WithVersionOne_RejectsSave()
         {
-            _progressStore.Data = new CheckpointProgressData
+            _saveAdapter.Data = new CheckpointProgressData
             {
                 Version = 1,
                 CompletedCheckpointIds = new List<string> { "CP_01" }
@@ -65,7 +79,7 @@ namespace SAS.Checkpoints.Tests
         [Test]
         public async Task Initialize_SanitizesCompletedIds()
         {
-            _progressStore.Data = new CheckpointProgressData
+            _saveAdapter.Data = new CheckpointProgressData
             {
                 CompletedCheckpointIds = new List<string>
                 {
@@ -97,7 +111,7 @@ namespace SAS.Checkpoints.Tests
             Assert.That(
                 _service.GetActiveCheckpoint().CheckpointId,
                 Is.EqualTo("CP_01"));
-            Assert.That(_progressStore.SaveCount, Is.EqualTo(1));
+            Assert.That(_saveAdapter.SaveCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -137,13 +151,13 @@ namespace SAS.Checkpoints.Tests
         {
             await _service.InitializeAsync(7);
             await _service.ActivateCheckpointAsync(CreateActiveData("CP_01"));
-            int saveCount = _progressStore.SaveCount;
+            int saveCount = _saveAdapter.SaveCount;
 
             Assert.That(
                 await _service.ActivateCheckpointAsync(
                     CreateActiveData("CP_01")),
                 Is.False);
-            Assert.That(_progressStore.SaveCount, Is.EqualTo(saveCount));
+            Assert.That(_saveAdapter.SaveCount, Is.EqualTo(saveCount));
         }
 
         [Test]
@@ -182,7 +196,7 @@ namespace SAS.Checkpoints.Tests
         {
             await _service.InitializeAsync(7);
             await _service.ActivateCheckpointAsync(CreateActiveData("CP_01"));
-            _progressStore.FailNextSave = true;
+            _saveAdapter.FailNextSave = true;
 
             Assert.ThrowsAsync<IOException>(
                 async () => await _service.ActivateCheckpointAsync(
@@ -205,7 +219,7 @@ namespace SAS.Checkpoints.Tests
                 Quaternion.identity);
         }
 
-        private sealed class FakeProgressStore : ICheckpointProgressStore
+        private sealed class FakeSaveAdapter : ICheckpointSaveAdapter
         {
             public CheckpointProgressData Data;
             public int SaveCount;

@@ -17,7 +17,7 @@ namespace SAS.Checkpoints
     {
         private readonly IContextBinder _contextBinder;
 
-        [Inject(optional: true)] private ICheckpointProgressStore _progressStore;
+        [Inject(optional: true)] private ICheckpointSaveAdapter _saveAdapter;
         [Inject(optional: true)] private ICheckpointUserIdProvider _userIdProvider;
         [Inject(optional: true)] private ICheckpointPlayerProvider _playerProvider;
         [Inject(optional: true)] private ICheckpointSceneLoadNotifier _sceneLoadNotifier;
@@ -40,10 +40,10 @@ namespace SAS.Checkpoints
             contextComponent.Initialize(this);
         }
 
-        private CheckpointSystemInstaller(IContextBinder context, ICheckpointProgressStore progressStore, ICheckpointUserIdProvider userIdProvider, ICheckpointPlayerProvider playerProvider, ICheckpointSceneLoadNotifier sceneLoadNotifier)
+        private CheckpointSystemInstaller(IContextBinder context, ICheckpointSaveAdapter saveAdapter, ICheckpointUserIdProvider userIdProvider, ICheckpointPlayerProvider playerProvider, ICheckpointSceneLoadNotifier sceneLoadNotifier)
         {
             _contextBinder = context ?? throw new ArgumentNullException(nameof(context));
-            _progressStore = progressStore;
+            _saveAdapter = saveAdapter;
             _userIdProvider = userIdProvider;
             _playerProvider = playerProvider;
             _sceneLoadNotifier = sceneLoadNotifier;
@@ -53,11 +53,16 @@ namespace SAS.Checkpoints
         /// Composition-root entry point for games that construct their adapters
         /// in code instead of registering them in a Binder asset.
         /// </summary>
-        public static CheckpointSystemInstaller Install(IContextBinder context, ICheckpointProgressStore progressStore, ICheckpointUserIdProvider userIdProvider, ICheckpointPlayerProvider playerProvider = null, ICheckpointSceneLoadNotifier sceneLoadNotifier = null)
+        public static CheckpointSystemInstaller Install(
+            IContextBinder context,
+            ICheckpointSaveAdapter saveAdapter = null,
+            ICheckpointUserIdProvider userIdProvider = null,
+            ICheckpointPlayerProvider playerProvider = null,
+            ICheckpointSceneLoadNotifier sceneLoadNotifier = null)
         {
             CheckpointSystemInstaller installer = new(
                 context,
-                progressStore,
+                saveAdapter,
                 userIdProvider,
                 playerProvider,
                 sceneLoadNotifier);
@@ -76,12 +81,9 @@ namespace SAS.Checkpoints
             if (_isInstalled)
                 return;
 
-            _progressStore ??= new JsonFileCheckpointProgressStore(Application.persistentDataPath);
-            _userIdProvider ??= new FixedCheckpointUserIdProvider();
-
             ValidateOptionalRespawnDependencies();
 
-            _checkpointProgressService = new CheckpointProgressService(_progressStore);
+            _checkpointProgressService = new CheckpointProgressService(_saveAdapter);
             _checkpointManager = new CheckpointManager(_checkpointProgressService);
             _checkpointRespawnService = new CheckpointRespawnService(_checkpointManager, _checkpointProgressService);
 
@@ -116,8 +118,10 @@ namespace SAS.Checkpoints
 
         private void BindCheckpointServices()
         {
-            _contextBinder.Add(typeof(ICheckpointProgressStore), _progressStore, default);
-            _contextBinder.Add(typeof(ICheckpointUserIdProvider), _userIdProvider, default);
+            if (_saveAdapter != null)
+                _contextBinder.Add(typeof(ICheckpointSaveAdapter), _saveAdapter, default);
+            if (_userIdProvider != null)
+                _contextBinder.Add(typeof(ICheckpointUserIdProvider), _userIdProvider, default);
 
             if (_playerProvider != null)
                 _contextBinder.Add(typeof(ICheckpointPlayerProvider), _playerProvider, default);
@@ -132,7 +136,8 @@ namespace SAS.Checkpoints
 
         private async Task InitializeCheckpointSystemAsync()
         {
-            await _checkpointProgressService.InitializeAsync(_userIdProvider.GetActiveUserId());
+            int userId = _userIdProvider?.GetActiveUserId() ?? 0;
+            await _checkpointProgressService.InitializeAsync(userId);
             _checkpointManager.RestoreFromProgress();
         }
 

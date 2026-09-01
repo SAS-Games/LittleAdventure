@@ -17,14 +17,16 @@ for service registration and component injection, plus Unity APIs.
 
 The portable contracts are:
 
-- `ICheckpointProgressStore` for loading and saving checkpoint data.
+- `ICheckpointSaveAdapter` for connecting checkpoint data to a save system.
 - `ICheckpointUserIdProvider` for selecting a user or save slot.
 - `ICheckpointPlayerProvider` for enumerating players to respawn.
 - `ICheckpointSceneLoadNotifier` for notifying the core after a scene load.
 
-The first two have self-contained defaults: JSON files below
-`Application.persistentDataPath` and user ID `0`. Automatic respawn after scene
-loads is enabled only when both player and scene-load adapters are provided.
+All four adapters are optional. Without `ICheckpointSaveAdapter`, progress is
+kept only for the lifetime of the checkpoint services and no save API is called.
+Without `ICheckpointUserIdProvider`, user ID `0` is used. Automatic respawn after
+scene loads is enabled only when both the player and scene-load adapters are
+provided.
 
 ## Game integration
 
@@ -39,14 +41,17 @@ The game installer uses the explicit composition-root overload:
 ```csharp
 CheckpointSystemInstaller.Install(
     context,
-    progressStore,
-    userIdProvider,
+    saveAdapter,         // optional; omit for session-only progress
+    userIdProvider,      // optional; defaults to user ID 0
     playerProvider,       // optional as a pair
     sceneLoadNotifier);   // optional as a pair
 ```
 
-A different game only implements the checkpoint-owned interfaces above. If it
-does not need automatic respawning on scene loads, omit the last two adapters.
+A game only implements the checkpoint-owned interfaces for the features it
+needs. Calling `CheckpointSystemInstaller.Install(context)` creates a working
+session-only system. To persist progress, implement `ICheckpointSaveAdapter`
+using the game's existing save service. If the game does not need automatic
+respawning on scene loads, omit the last two adapters.
 
 ## Scene setup
 
@@ -150,10 +155,11 @@ The checkpoint ID comparison is ordinal and case-sensitive.
 
 ## Save format
 
-Checkpoint data is stored at `Progress/CheckpointProgress` for the active user.
-Only `CheckpointProgressData.CurrentVersion` (currently version 2) is accepted.
-There is no legacy migration; delete incompatible checkpoint progress data when
-the schema version changes.
+When a persistence adapter is supplied, it determines where checkpoint data is
+stored. LittleAdventure's adapter uses `Progress/CheckpointProgress` for the
+active user. Only `CheckpointProgressData.CurrentVersion` (currently version 2)
+is accepted. There is no legacy migration; delete incompatible checkpoint
+progress data when the schema version changes.
 
 IDs are ordinal and case-sensitive. Keep checkpoint and group IDs stable after
 shipping because saved data refers to them directly.

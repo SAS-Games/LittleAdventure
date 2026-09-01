@@ -19,7 +19,7 @@ namespace SAS.Checkpoints.LittleAdventure
         [Inject(optional: true)] private IUserModel _userModel;
         [Inject(optional: true)] private IPlayerSetupModel _playerSetupModel;
 
-        private global::SAS.Checkpoints.CheckpointSystemInstaller _coreInstaller;
+        private Checkpoints.CheckpointSystemInstaller _coreInstaller;
         private CheckpointSceneLoadNotifier _sceneLoadNotifier;
 
         public CheckpointSystemInstaller(IContextBinder context)
@@ -34,13 +34,13 @@ namespace SAS.Checkpoints.LittleAdventure
 
         void IInitializable.OnCreated(IContextBinder contextBinder)
         {
-            ICheckpointProgressStore progressStore = _saveSystem != null
-                ? new CheckpointProgressStore(_saveSystem)
-                : new JsonFileCheckpointProgressStore(Application.persistentDataPath);
+            ICheckpointSaveAdapter saveAdapter = _saveSystem != null
+                ? new CheckpointSaveAdapter(_saveSystem)
+                : null;
 
             ICheckpointUserIdProvider userIdProvider = _userModel != null
                 ? new CheckpointUserIdProvider(_userModel)
-                : new FixedCheckpointUserIdProvider();
+                : null;
 
             ICheckpointPlayerProvider playerProvider = null;
 
@@ -50,9 +50,9 @@ namespace SAS.Checkpoints.LittleAdventure
                 _sceneLoadNotifier = new CheckpointSceneLoadNotifier();
             }
 
-            _coreInstaller = global::SAS.Checkpoints.CheckpointSystemInstaller.Install(
+            _coreInstaller = Checkpoints.CheckpointSystemInstaller.Install(
                 _contextBinder,
-                progressStore,
+                saveAdapter,
                 userIdProvider,
                 playerProvider,
                 _sceneLoadNotifier);
@@ -65,14 +65,14 @@ namespace SAS.Checkpoints.LittleAdventure
         }
     }
 
-    public sealed class CheckpointProgressStore : ICheckpointProgressStore
+    public sealed class CheckpointSaveAdapter : ICheckpointSaveAdapter
     {
         private const string DirectoryName = "Progress";
         private const string FileName = "CheckpointProgress";
 
         private readonly ISaveSystem _saveSystem;
 
-        public CheckpointProgressStore(ISaveSystem saveSystem)
+        public CheckpointSaveAdapter(ISaveSystem saveSystem)
         {
             _saveSystem = saveSystem ?? throw new ArgumentNullException(nameof(saveSystem));
         }
