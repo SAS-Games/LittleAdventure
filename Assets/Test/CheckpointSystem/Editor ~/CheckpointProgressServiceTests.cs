@@ -9,14 +9,14 @@ namespace SAS.Checkpoints.Tests
 {
     public sealed class CheckpointProgressServiceTests
     {
-        private FakeSaveSystem _saveSystem;
+        private FakeProgressStore _progressStore;
         private CheckpointProgressService _service;
 
         [SetUp]
         public void SetUp()
         {
-            _saveSystem = new FakeSaveSystem();
-            _service = new CheckpointProgressService(_saveSystem);
+            _progressStore = new FakeProgressStore();
+            _service = new CheckpointProgressService(_progressStore);
         }
 
         [TearDown]
@@ -52,7 +52,7 @@ namespace SAS.Checkpoints.Tests
         [Test]
         public void Initialize_WithVersionOne_RejectsSave()
         {
-            _saveSystem.Data = new CheckpointProgressData
+            _progressStore.Data = new CheckpointProgressData
             {
                 Version = 1,
                 CompletedCheckpointIds = new List<string> { "CP_01" }
@@ -65,7 +65,7 @@ namespace SAS.Checkpoints.Tests
         [Test]
         public async Task Initialize_SanitizesCompletedIds()
         {
-            _saveSystem.Data = new CheckpointProgressData
+            _progressStore.Data = new CheckpointProgressData
             {
                 CompletedCheckpointIds = new List<string>
                 {
@@ -81,37 +81,6 @@ namespace SAS.Checkpoints.Tests
 
             Assert.That(_service.IsCompleted("CP_01"), Is.True);
             Assert.That(_service.IsCompleted("CP_02"), Is.True);
-            Assert.That(await _service.CompleteAsync("CP_01"), Is.False);
-        }
-
-        [Test]
-        public async Task Complete_AddsIdOnce()
-        {
-            await _service.InitializeAsync(7);
-
-            Assert.That(await _service.CompleteAsync("CP_01"), Is.True);
-            Assert.That(await _service.CompleteAsync("CP_01"), Is.False);
-            Assert.That(_saveSystem.SaveCount, Is.EqualTo(1));
-        }
-
-        [Test]
-        public async Task Complete_RaisesEventAfterStateIsCommitted()
-        {
-            await _service.InitializeAsync(7);
-            string completedId = null;
-            bool wasCompletedDuringEvent = false;
-
-            _service.CheckpointCompleted += checkpointId =>
-            {
-                completedId = checkpointId;
-                wasCompletedDuringEvent =
-                    _service.IsCompleted(checkpointId);
-            };
-
-            await _service.CompleteAsync("CP_01");
-
-            Assert.That(completedId, Is.EqualTo("CP_01"));
-            Assert.That(wasCompletedDuringEvent, Is.True);
         }
 
         [Test]
@@ -128,14 +97,14 @@ namespace SAS.Checkpoints.Tests
             Assert.That(
                 _service.GetActiveCheckpoint().CheckpointId,
                 Is.EqualTo("CP_01"));
-            Assert.That(_saveSystem.SaveCount, Is.EqualTo(1));
+            Assert.That(_progressStore.SaveCount, Is.EqualTo(1));
         }
 
         [Test]
         public async Task Activate_PreviouslyCompletedCheckpoint_CanBecomeActive()
         {
             await _service.InitializeAsync(7);
-            await _service.CompleteAsync("CP_01");
+            await _service.ActivateCheckpointAsync(CreateActiveData("CP_01"));
             await _service.ActivateCheckpointAsync(CreateActiveData("CP_02"));
 
             Assert.That(
@@ -168,13 +137,13 @@ namespace SAS.Checkpoints.Tests
         {
             await _service.InitializeAsync(7);
             await _service.ActivateCheckpointAsync(CreateActiveData("CP_01"));
-            int saveCount = _saveSystem.SaveCount;
+            int saveCount = _progressStore.SaveCount;
 
             Assert.That(
                 await _service.ActivateCheckpointAsync(
                     CreateActiveData("CP_01")),
                 Is.False);
-            Assert.That(_saveSystem.SaveCount, Is.EqualTo(saveCount));
+            Assert.That(_progressStore.SaveCount, Is.EqualTo(saveCount));
         }
 
         [Test]
@@ -213,7 +182,7 @@ namespace SAS.Checkpoints.Tests
         {
             await _service.InitializeAsync(7);
             await _service.ActivateCheckpointAsync(CreateActiveData("CP_01"));
-            _saveSystem.FailNextSave = true;
+            _progressStore.FailNextSave = true;
 
             Assert.ThrowsAsync<IOException>(
                 async () => await _service.ActivateCheckpointAsync(
@@ -236,33 +205,23 @@ namespace SAS.Checkpoints.Tests
                 Quaternion.identity);
         }
 
-        private sealed class FakeSaveSystem : ISaveSystem
+        private sealed class FakeProgressStore : ICheckpointProgressStore
         {
             public CheckpointProgressData Data;
             public int SaveCount;
             public bool FailNextSave;
 
-            public Task<T> Load<T>(
-                int userId,
-                string dirName,
-                string fileName)
-                where T : new()
+            public Task<CheckpointProgressData> LoadAsync(int userId)
             {
-                if (typeof(T) == typeof(CheckpointProgressData) &&
-                    Data != null)
-                {
-                    return Task.FromResult(
-                        (T)(object)Clone(Data));
-                }
+                if (Data != null)
+                    return Task.FromResult(Clone(Data));
 
-                return Task.FromResult(new T());
+                return Task.FromResult(new CheckpointProgressData());
             }
 
-            public Task<bool> Save<T>(
+            public Task<bool> SaveAsync(
                 int userId,
-                string dirName,
-                string fileName,
-                T data)
+                CheckpointProgressData data)
             {
                 SaveCount++;
 
@@ -272,29 +231,9 @@ namespace SAS.Checkpoints.Tests
                     return Task.FromResult(false);
                 }
 
-                if (data is CheckpointProgressData checkpointData)
-                {
-                    Data = Clone(checkpointData);
-                }
+                Data = Clone(data);
 
                 return Task.FromResult(true);
-            }
-
-            public Task DeleteFile(
-                int userId,
-                string dir,
-                string fileName)
-            {
-                Data = null;
-                return Task.CompletedTask;
-            }
-
-            public Task DeleteDirectory(
-                int userId,
-                string dirName)
-            {
-                Data = null;
-                return Task.CompletedTask;
             }
 
             private static CheckpointProgressData Clone(

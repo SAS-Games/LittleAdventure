@@ -27,11 +27,6 @@ namespace SAS.Checkpoints
                 SpawnedObject = null;
         }
 
-        public void ForceRelease()
-        {
-            SpawnedObject = null;
-        }
-
         private void OnDrawGizmos()
         {
             Transform spawnTransform = SpawnTransform;

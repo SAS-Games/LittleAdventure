@@ -9,12 +9,44 @@ groups. `CheckpointRespawnService` teleports a player to the active checkpoint,
 or to the loaded default group when the player has not activated a checkpoint
 yet.
 
-`SaveSystemIniter` owns only the generic `ISaveSystem` and `IUserModel`
-bindings. `CheckpointSystemInstaller`, registered in `GameLevelBinder`, creates,
-initializes, registers, and disposes the checkpoint progress, manager, respawn,
-and scene-respawn services. It uses the project-level save and user services
-when available. When a scene is run through the standalone scene-test
-bootstrap, it creates local fallback save and user services instead.
+`CheckpointSystemInstaller` creates, initializes, registers, and disposes the
+checkpoint progress, manager, respawn, and optional scene-respawn services. The
+core has no references to `ISaveSystem`, `IUserModel`, `IPlayerSetupModel`, or
+`SceneGroupLoadedEvent`. It still uses the shared `SAS.Core.TagSystem` binder
+for service registration and component injection, plus Unity APIs.
+
+The portable contracts are:
+
+- `ICheckpointProgressStore` for loading and saving checkpoint data.
+- `ICheckpointUserIdProvider` for selecting a user or save slot.
+- `ICheckpointPlayerProvider` for enumerating players to respawn.
+- `ICheckpointSceneLoadNotifier` for notifying the core after a scene load.
+
+The first two have self-contained defaults: JSON files below
+`Application.persistentDataPath` and user ID `0`. Automatic respawn after scene
+loads is enabled only when both player and scene-load adapters are provided.
+
+## Game integration
+
+Copy this `CheckpointSystem` folder to reuse the core. Put adapters that know
+about a particular game's models and events in a separate sibling folder. In
+LittleAdventure that folder is `CheckpointSystem_Game`; its namespaced
+`CheckpointSystemInstaller` adapts the existing save system,
+user model, player setup model, and scene-group event.
+
+The game installer uses the explicit composition-root overload:
+
+```csharp
+CheckpointSystemInstaller.Install(
+    context,
+    progressStore,
+    userIdProvider,
+    playerProvider,       // optional as a pair
+    sceneLoadNotifier);   // optional as a pair
+```
+
+A different game only implements the checkpoint-owned interfaces above. If it
+does not need automatic respawning on scene loads, omit the last two adapters.
 
 ## Scene setup
 

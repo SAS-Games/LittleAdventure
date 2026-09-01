@@ -13,10 +13,7 @@ namespace SAS.Checkpoints
         bool IsCompleted(string checkpointId);
         ActiveCheckpointData GetActiveCheckpoint();
         Task InitializeAsync(int userId);
-        Task<bool> CompleteAsync(string checkpointId);
         Task<bool> ActivateCheckpointAsync(ActiveCheckpointData checkpointData);
-        Task SetActiveCheckpointAsync(ActiveCheckpointData checkpointData);
-
         Task ResetAsync();
     }
 }

@@ -25,26 +25,6 @@ namespace SAS.Checkpoints.Tests
         }
 
         [Test]
-        public void FirstAndRandomAvailable_IgnoreOccupiedAndNullPoints()
-        {
-            SpawnPoint occupied = CreatePoint("Occupied");
-            SpawnPoint available = CreatePoint("Available");
-            occupied.Assign(new GameObject("Player"));
-            SetPoints(occupied, null, available);
-
-            Assert.That(
-                _group.TryGetFirstAvailable(out SpawnPoint first),
-                Is.True);
-            Assert.That(first, Is.SameAs(available));
-            Assert.That(
-                _group.TryGetRandomAvailable(out SpawnPoint random),
-                Is.True);
-            Assert.That(random, Is.SameAs(available));
-
-            Object.DestroyImmediate(occupied.SpawnedObject);
-        }
-
-        [Test]
         public void ByPlayerId_IsDeterministicAndSupportsNegativeIds()
         {
             SpawnPoint zero = CreatePoint("Zero");
@@ -86,16 +66,10 @@ namespace SAS.Checkpoints.Tests
             SetPoints(zero, one);
 
             Assert.That(
-                _group.TryGetFirstAvailable(out _),
-                Is.False);
-            Assert.That(
-                _group.TryGetRandomAvailable(out _),
-                Is.False);
-            Assert.That(
                 _group.TryGetAvailableByPlayerId(0, out _),
                 Is.False);
             Assert.That(
-                _group.TryGetFallback(out SpawnPoint fallback),
+                _group.TryGetByPlayerId(0, out SpawnPoint fallback),
                 Is.True);
             Assert.That(fallback, Is.SameAs(zero));
 
@@ -107,12 +81,12 @@ namespace SAS.Checkpoints.Tests
         public void EmptyAndNullArrays_ReturnFalse()
         {
             SetPoints();
-            Assert.That(_group.TryGetFirstAvailable(out _), Is.False);
             Assert.That(_group.TryGetByPlayerId(0, out _), Is.False);
+            Assert.That(_group.TryGetAvailableByPlayerId(0, out _), Is.False);
 
             SetPointsArray(null);
-            Assert.That(_group.TryGetRandomAvailable(out _), Is.False);
-            Assert.That(_group.TryGetFallback(out _), Is.False);
+            Assert.That(_group.TryGetByPlayerId(0, out _), Is.False);
+            Assert.That(_group.TryGetAvailableByPlayerId(0, out _), Is.False);
         }
 
         private SpawnPoint CreatePoint(string name)

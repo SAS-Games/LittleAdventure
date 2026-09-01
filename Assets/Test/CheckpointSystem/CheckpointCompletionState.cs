@@ -11,18 +11,21 @@ namespace SAS.Checkpoints
     {
         [SerializeField] private string m_CheckpointId;
 
-        [Tooltip("Objects that are enabled after this checkpoint is completed.")]
-        [SerializeField] private List<GameObject> m_EnableWhenCompleted = new();
+        [Tooltip("Objects that are enabled after this checkpoint is completed.")] [SerializeField]
+        private List<GameObject> m_EnableWhenCompleted = new();
 
-        [Tooltip("Objects that are disabled after this checkpoint is completed.")]
-        [SerializeField] private List<GameObject> m_DisableWhenCompleted = new();
+        [Tooltip("Objects that are disabled after this checkpoint is completed.")] [SerializeField]
+        private List<GameObject> m_DisableWhenCompleted = new();
 
         [Tooltip("When incomplete, applies the opposite state to both object lists.")]
         [FormerlySerializedAs("m_RestoreObjectsIfIncomplete")]
-        [SerializeField] private bool m_ApplyIncompleteState = true;
+        [SerializeField]
+        private bool m_ApplyIncompleteState = true;
 
-        [Tooltip("Disables this GameObject after completion. Keep this component on an always-loaded controller when possible.")]
-        [SerializeField] private bool m_DisableSelfWhenCompleted;
+        [Tooltip(
+            "Disables this GameObject after completion. Keep this component on an always-loaded controller when possible.")]
+        [SerializeField]
+        private bool m_DisableSelfWhenCompleted;
 
         [Inject] private ICheckpointProgressService _checkpointProgressService;
 
@@ -34,7 +37,9 @@ namespace SAS.Checkpoints
 
             if (_checkpointProgressService == null)
             {
-                Debug.LogError($"{nameof(CheckpointCompletionState)} on '{name}' " + "could not resolve the checkpoint progress service.", this);
+                Debug.LogError(
+                    $"{nameof(CheckpointCompletionState)} on '{name}' " +
+                    "could not resolve the checkpoint progress service.", this);
                 return;
             }
 

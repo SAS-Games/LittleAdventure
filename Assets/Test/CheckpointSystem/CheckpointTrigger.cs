@@ -7,14 +7,11 @@ namespace SAS.Checkpoints
     [RequireComponent(typeof(Collider))]
     public sealed class CheckpointTrigger : MonoBehaviour
     {
-        [SerializeField]
-        private Checkpoint m_Checkpoint;
+        [SerializeField] private Checkpoint m_Checkpoint;
 
-        [SerializeField]
-        private string m_PlayerTag = "Player";
+        [SerializeField] private string m_PlayerTag = "Player";
 
-        [SerializeField]
-        private bool m_DisableAfterActivation;
+        [SerializeField] private bool m_DisableAfterActivation;
 
         private bool _activationInProgress;
 

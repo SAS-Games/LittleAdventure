@@ -8,15 +8,11 @@ namespace SAS.Checkpoints
         private readonly ICheckpointManager _checkpointManager;
         private readonly ICheckpointProgressService _progressService;
 
-        public CheckpointRespawnService(ICheckpointManager checkpointManager, ICheckpointProgressService progressService)
+        public CheckpointRespawnService(ICheckpointManager checkpointManager,
+            ICheckpointProgressService progressService)
         {
             _checkpointManager = checkpointManager ?? throw new ArgumentNullException(nameof(checkpointManager));
             _progressService = progressService ?? throw new ArgumentNullException(nameof(progressService));
-        }
-
-        public bool TryGetSpawnPoint(int playerId, out SpawnPoint spawnPoint)
-        {
-            return _checkpointManager.TryGetSpawnPoint(playerId, out spawnPoint);
         }
 
         public bool TryRespawn(int playerId, GameObject player)
@@ -24,7 +20,7 @@ namespace SAS.Checkpoints
             if (player == null)
                 return false;
 
-            if (TryGetSpawnPoint(playerId, out SpawnPoint spawnPoint))
+            if (_checkpointManager.TryGetSpawnPoint(playerId, out SpawnPoint spawnPoint))
             {
                 Teleport(player, spawnPoint.Position, spawnPoint.Rotation);
                 spawnPoint.Assign(player);

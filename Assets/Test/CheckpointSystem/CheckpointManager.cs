@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SAS.Checkpoints
 {
@@ -18,10 +19,6 @@ namespace SAS.Checkpoints
         private bool _isDisposed;
 
         public event Action<Checkpoint, Checkpoint> ActiveCheckpointChanged;
-        public Checkpoint ActiveCheckpoint => _activeCheckpoint;
-        public string ActiveCheckpointId => _activeCheckpointId;
-
-        public bool HasActiveCheckpoint => !string.IsNullOrWhiteSpace(_activeCheckpointId);
 
         public CheckpointManager(ICheckpointProgressService progressService)
         {
@@ -52,19 +49,24 @@ namespace SAS.Checkpoints
 
             if (string.IsNullOrWhiteSpace(checkpoint.Id))
             {
-                Debug.LogError($"Cannot register checkpoint '{checkpoint.name}' " + "because its ID is empty.", checkpoint);
+                Debug.LogError($"Cannot register checkpoint '{checkpoint.name}' " + "because its ID is empty.",
+                    checkpoint);
                 return;
             }
 
-            if (_checkpoints.TryGetValue(checkpoint.Id, out Checkpoint existing) && existing != null && existing != checkpoint)
+            if (_checkpoints.TryGetValue(checkpoint.Id, out Checkpoint existing) && existing != null &&
+                existing != checkpoint)
             {
-                Debug.LogError($"Duplicate checkpoint ID '{checkpoint.Id}'. Objects: '{existing.name}' and '{checkpoint.name}'.", checkpoint);
+                Debug.LogError(
+                    $"Duplicate checkpoint ID '{checkpoint.Id}'. Objects: '{existing.name}' and '{checkpoint.name}'.",
+                    checkpoint);
                 return;
             }
 
             _checkpoints[checkpoint.Id] = checkpoint;
 
-            if (_activeCheckpoint == null && string.Equals(_activeCheckpointId, checkpoint.Id, StringComparison.Ordinal))
+            if (_activeCheckpoint == null &&
+                string.Equals(_activeCheckpointId, checkpoint.Id, StringComparison.Ordinal))
                 SetRuntimeActiveCheckpoint(checkpoint);
         }
 
@@ -94,13 +96,17 @@ namespace SAS.Checkpoints
 
             if (string.IsNullOrWhiteSpace(groupId))
             {
-                Debug.LogError($"Cannot register spawn-point group " + $"'{group.name}' because its ID is empty.", group);
+                Debug.LogError($"Cannot register spawn-point group " + $"'{group.name}' because its ID is empty.",
+                    group);
                 return;
             }
 
-            if (_spawnPointGroups.TryGetValue(groupId, out SpawnPointGroup existing) && existing != null && existing != group)
+            if (_spawnPointGroups.TryGetValue(groupId, out SpawnPointGroup existing) && existing != null &&
+                existing != group)
             {
-                Debug.LogError($"Duplicate spawn-point group ID '{groupId}'. Objects: '{existing.name}' and '{group.name}'.", group);
+                Debug.LogError(
+                    $"Duplicate spawn-point group ID '{groupId}'. Objects: '{existing.name}' and '{group.name}'.",
+                    group);
                 return;
             }
 
@@ -116,7 +122,10 @@ namespace SAS.Checkpoints
             }
 
             if (_defaultSpawnPointGroup != group)
-                Debug.LogError($"Multiple default spawn-point groups are loaded. " + $"Keeping '{_defaultSpawnPointGroup.name}' and " + $"ignoring '{group.name}' as the default.", group);
+                Debug.LogError(
+                    $"Multiple default spawn-point groups are loaded. " +
+                    $"Keeping '{_defaultSpawnPointGroup.name}' and " + $"ignoring '{group.name}' as the default.",
+                    group);
         }
 
         public void UnregisterGroup(SpawnPointGroup group)
@@ -127,7 +136,8 @@ namespace SAS.Checkpoints
             if (group == null || string.IsNullOrWhiteSpace(group.SpawnPointGroupId))
                 return;
 
-            if (_spawnPointGroups.TryGetValue(group.SpawnPointGroupId, out SpawnPointGroup registered) && registered == group)
+            if (_spawnPointGroups.TryGetValue(group.SpawnPointGroupId, out SpawnPointGroup registered) &&
+                registered == group)
                 _spawnPointGroups.Remove(group.SpawnPointGroupId);
 
             if (_defaultSpawnPointGroup == group)
@@ -203,27 +213,7 @@ namespace SAS.Checkpoints
             }
         }
 
-        public bool TryGetCheckpoint(string checkpointId, out Checkpoint checkpoint)
-        {
-            ThrowIfDisposed();
-
-            checkpoint = null;
-
-            if (string.IsNullOrWhiteSpace(checkpointId))
-                return false;
-
-            if (!_checkpoints.TryGetValue(checkpointId, out checkpoint))
-                return false;
-
-            if (checkpoint != null)
-                return true;
-
-            _checkpoints.Remove(checkpointId);
-            checkpoint = null;
-            return false;
-        }
-
-        public bool TryGetSpawnPointGroup(string spawnPointGroupId, out SpawnPointGroup group)
+        private bool TryGetSpawnPointGroup(string spawnPointGroupId, out SpawnPointGroup group)
         {
             ThrowIfDisposed();
 
@@ -243,13 +233,14 @@ namespace SAS.Checkpoints
             return false;
         }
 
-        public bool TryGetActiveSpawnPointGroup(out SpawnPointGroup group)
+        private bool TryGetActiveSpawnPointGroup(out SpawnPointGroup group)
         {
             ThrowIfDisposed();
 
             group = null;
 
-            if (_activeCheckpoint != null && _activeCheckpoint.SpawnPointGroup != null && _activeCheckpoint.SpawnPointGroup.isActiveAndEnabled)
+            if (_activeCheckpoint != null && _activeCheckpoint.SpawnPointGroup != null &&
+                _activeCheckpoint.SpawnPointGroup.isActiveAndEnabled)
             {
                 group = _activeCheckpoint.SpawnPointGroup;
                 return true;
@@ -281,7 +272,7 @@ namespace SAS.Checkpoints
             return group.TryGetByPlayerId(playerId, out spawnPoint);
         }
 
-        public bool TryGetDefaultSpawnPointGroup(out SpawnPointGroup group)
+        private bool TryGetDefaultSpawnPointGroup(out SpawnPointGroup group)
         {
             ThrowIfDisposed();
 

@@ -9,19 +9,26 @@ namespace SAS.Checkpoints
     {
     }
 
-    public sealed class CheckpointSystemInstaller : ICheckpointSystemInstaller, IInitializable, IDestroyable
+    /// <summary>
+    /// Installs only checkpoint-owned services. A game can bind implementations
+    /// of the checkpoint dependency interfaces before this installer is created.
+    /// </summary>
+    public sealed class CheckpointSystemInstaller : ICheckpointSystemInstaller, IInitializable, IDestroyable, IDisposable
     {
         private readonly IContextBinder _contextBinder;
 
-        [Inject(optional: true)] private ISaveSystem _saveSystem;
-        [Inject(optional: true)] private IUserModel _userModel;
-        [Inject(optional: true)] private IPlayerSetupModel _playerSetupModel;
+        [Inject(optional: true)] private ICheckpointProgressStore _progressStore;
+        [Inject(optional: true)] private ICheckpointUserIdProvider _userIdProvider;
+        [Inject(optional: true)] private ICheckpointPlayerProvider _playerProvider;
+        [Inject(optional: true)] private ICheckpointSceneLoadNotifier _sceneLoadNotifier;
 
-        private CheckpointProgressService _checkpointProgressService;
-        private CheckpointManager _checkpointManager;
-        private CheckpointRespawnService _checkpointRespawnService;
+        private ICheckpointManager _checkpointManager;
+        private ICheckpointProgressService _checkpointProgressService;
+        private ICheckpointRespawnService _checkpointRespawnService;
         private CheckpointSceneRespawner _checkpointSceneRespawner;
-        private Task _checkpointInitializationTask;
+        private Task _checkpointInitializationTask = Task.CompletedTask;
+        private bool _isInstalled;
+        private bool _isDisposed;
 
         public CheckpointSystemInstaller(IContextBinder context)
         {
@@ -33,12 +40,48 @@ namespace SAS.Checkpoints
             contextComponent.Initialize(this);
         }
 
+        private CheckpointSystemInstaller(IContextBinder context, ICheckpointProgressStore progressStore, ICheckpointUserIdProvider userIdProvider, ICheckpointPlayerProvider playerProvider, ICheckpointSceneLoadNotifier sceneLoadNotifier)
+        {
+            _contextBinder = context ?? throw new ArgumentNullException(nameof(context));
+            _progressStore = progressStore;
+            _userIdProvider = userIdProvider;
+            _playerProvider = playerProvider;
+            _sceneLoadNotifier = sceneLoadNotifier;
+        }
+
+        /// <summary>
+        /// Composition-root entry point for games that construct their adapters
+        /// in code instead of registering them in a Binder asset.
+        /// </summary>
+        public static CheckpointSystemInstaller Install(IContextBinder context, ICheckpointProgressStore progressStore, ICheckpointUserIdProvider userIdProvider, ICheckpointPlayerProvider playerProvider = null, ICheckpointSceneLoadNotifier sceneLoadNotifier = null)
+        {
+            CheckpointSystemInstaller installer = new(
+                context,
+                progressStore,
+                userIdProvider,
+                playerProvider,
+                sceneLoadNotifier);
+
+            installer.InstallCore();
+            return installer;
+        }
+
         void IInitializable.OnCreated(IContextBinder contextBinder)
         {
-            _saveSystem ??= new JsonFileSaveSystem(Application.persistentDataPath);
-            _userModel ??= new DummyUserModel();
+            InstallCore();
+        }
 
-            _checkpointProgressService = new CheckpointProgressService(_saveSystem);
+        private void InstallCore()
+        {
+            if (_isInstalled)
+                return;
+
+            _progressStore ??= new JsonFileCheckpointProgressStore(Application.persistentDataPath);
+            _userIdProvider ??= new FixedCheckpointUserIdProvider();
+
+            ValidateOptionalRespawnDependencies();
+
+            _checkpointProgressService = new CheckpointProgressService(_progressStore);
             _checkpointManager = new CheckpointManager(_checkpointProgressService);
             _checkpointRespawnService = new CheckpointRespawnService(_checkpointManager, _checkpointProgressService);
 
@@ -46,14 +89,42 @@ namespace SAS.Checkpoints
 
             _checkpointInitializationTask = InitializeCheckpointSystemAsync();
 
-            if (_playerSetupModel != null)
-                _checkpointSceneRespawner = new CheckpointSceneRespawner(_checkpointRespawnService, _playerSetupModel, _checkpointInitializationTask);
+            if (_playerProvider != null && _sceneLoadNotifier != null)
+            {
+                _checkpointSceneRespawner = new CheckpointSceneRespawner(
+                    _checkpointRespawnService,
+                    _playerProvider,
+                    _sceneLoadNotifier,
+                    _checkpointInitializationTask);
+            }
 
+            _isInstalled = true;
             ObserveCheckpointInitializationFailuresAsync(_checkpointInitializationTask);
+        }
+
+        private void ValidateOptionalRespawnDependencies()
+        {
+            if ((_playerProvider == null) == (_sceneLoadNotifier == null))
+                return;
+
+            Debug.LogWarning(
+                "Automatic checkpoint respawning requires both " +
+                $"{nameof(ICheckpointPlayerProvider)} and " +
+                $"{nameof(ICheckpointSceneLoadNotifier)}. " +
+                "Automatic scene-load respawning is disabled.");
         }
 
         private void BindCheckpointServices()
         {
+            _contextBinder.Add(typeof(ICheckpointProgressStore), _progressStore, default);
+            _contextBinder.Add(typeof(ICheckpointUserIdProvider), _userIdProvider, default);
+
+            if (_playerProvider != null)
+                _contextBinder.Add(typeof(ICheckpointPlayerProvider), _playerProvider, default);
+
+            if (_sceneLoadNotifier != null)
+                _contextBinder.Add(typeof(ICheckpointSceneLoadNotifier), _sceneLoadNotifier, default);
+
             _contextBinder.Add(typeof(ICheckpointProgressService), _checkpointProgressService, default);
             _contextBinder.Add(typeof(ICheckpointManager), _checkpointManager, default);
             _contextBinder.Add(typeof(ICheckpointRespawnService), _checkpointRespawnService, default);
@@ -61,7 +132,7 @@ namespace SAS.Checkpoints
 
         private async Task InitializeCheckpointSystemAsync()
         {
-            await _checkpointProgressService.InitializeAsync(_userModel.GetActiveUserId());
+            await _checkpointProgressService.InitializeAsync(_userIdProvider.GetActiveUserId());
             _checkpointManager.RestoreFromProgress();
         }
 
@@ -79,9 +150,18 @@ namespace SAS.Checkpoints
 
         void IDestroyable.OnDestroyed(IContextBinder contextBinder)
         {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (_isDisposed)
+                return;
+
             _checkpointSceneRespawner?.Dispose();
-            _checkpointManager?.Dispose();
-            _checkpointProgressService?.Dispose();
+            (_checkpointManager as IDisposable)?.Dispose();
+            (_checkpointProgressService as IDisposable)?.Dispose();
+            _isDisposed = true;
         }
     }
 }

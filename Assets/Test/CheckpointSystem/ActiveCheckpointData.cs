@@ -17,7 +17,8 @@ namespace SAS.Checkpoints
         {
         }
 
-        public ActiveCheckpointData(string checkpointId, string sceneName, string spawnPointGroupId, Vector3 fallbackPosition, Quaternion fallbackRotation)
+        public ActiveCheckpointData(string checkpointId, string sceneName, string spawnPointGroupId,
+            Vector3 fallbackPosition, Quaternion fallbackRotation)
         {
             CheckpointId = checkpointId;
             SceneName = sceneName;
@@ -28,7 +29,8 @@ namespace SAS.Checkpoints
 
         internal ActiveCheckpointData Clone()
         {
-            return new ActiveCheckpointData(CheckpointId, SceneName, SpawnPointGroupId, FallbackPosition, FallbackRotation);
+            return new ActiveCheckpointData(CheckpointId, SceneName, SpawnPointGroupId, FallbackPosition,
+                FallbackRotation);
         }
     }
 }

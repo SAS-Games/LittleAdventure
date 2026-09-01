@@ -8,16 +8,19 @@ namespace SAS.Checkpoints
     [DisallowMultipleComponent]
     public sealed class Checkpoint : MonoBehaviour
     {
-        [Header("Definition")]
-        [SerializeField] private CheckpointDefinition m_Definition;
-        [Header("Activation")]
-        [SerializeField] private bool m_CompleteOnlyOnce = true;
+        [Header("Definition")] [SerializeField]
+        private CheckpointDefinition m_Definition;
+
+        [Header("Activation")] [SerializeField]
+        private bool m_CompleteOnlyOnce = true;
+
         [SerializeField] private bool m_AllowBackwardActivation;
-        [Header("Spawn")]
-        [SerializeField] private SpawnPointGroup m_SpawnPointGroup;
+        [Header("Spawn")] [SerializeField] private SpawnPointGroup m_SpawnPointGroup;
         [SerializeField] private Transform m_FallbackSpawnPoint;
-        [Header("Visual State")]
-        [SerializeField] private GameObject[] m_ActiveObjects;
+
+        [Header("Visual State")] [SerializeField]
+        private GameObject[] m_ActiveObjects;
+
         [SerializeField] private GameObject[] m_InactiveObjects;
         [Inject] private ICheckpointManager _checkpointManager;
         [Inject] private ICheckpointProgressService _progressService;
@@ -112,7 +115,9 @@ namespace SAS.Checkpoints
                 throw new InvalidOperationException($"Checkpoint '{name}' has an invalid definition.");
             }
 
-            return new ActiveCheckpointData(Id, gameObject.scene.name, m_SpawnPointGroup != null ? m_SpawnPointGroup.SpawnPointGroupId : null, FallbackPosition, FallbackRotation);
+            return new ActiveCheckpointData(Id, gameObject.scene.name,
+                m_SpawnPointGroup != null ? m_SpawnPointGroup.SpawnPointGroupId : null, FallbackPosition,
+                FallbackRotation);
         }
 
         private bool CanComplete()
@@ -193,7 +198,8 @@ namespace SAS.Checkpoints
                 Debug.LogError($"Checkpoint '{name}' has an empty ID.", this);
 
             if (m_SpawnPointGroup == null)
-                Debug.LogWarning($"Checkpoint '{name}' does not have spawn-point group. The fallback transform will be used.", this);
+                Debug.LogWarning(
+                    $"Checkpoint '{name}' does not have spawn-point group. The fallback transform will be used.", this);
         }
 
         private void ResolveSpawnPointGroup()
@@ -213,7 +219,9 @@ namespace SAS.Checkpoints
                 Debug.LogWarning($"Checkpoint '{name}' has an empty ID.", this);
 
             if (m_SpawnPointGroup == null)
-                Debug.LogWarning($"Checkpoint '{name}' has no spawn-point group; " + "respawning will use its fallback transform.", this);
+                Debug.LogWarning(
+                    $"Checkpoint '{name}' has no spawn-point group; " + "respawning will use its fallback transform.",
+                    this);
         }
 
         private void OnDrawGizmosSelected()

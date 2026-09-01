@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using SAS.SceneManagement;
 using UnityEngine;
 
 namespace SAS.Checkpoints
@@ -8,23 +8,23 @@ namespace SAS.Checkpoints
     internal sealed class CheckpointSceneRespawner : IDisposable
     {
         private readonly ICheckpointRespawnService _respawnService;
-        private readonly IPlayerSetupModel _playerSetupModel;
+        private readonly ICheckpointPlayerProvider _playerProvider;
+        private readonly ICheckpointSceneLoadNotifier _sceneLoadNotifier;
         private readonly Task _systemReady;
-        private readonly EventBinding<SceneGroupLoadedEvent> _sceneLoadedBinding;
 
         private bool _isDisposed;
 
-        public CheckpointSceneRespawner(ICheckpointRespawnService respawnService, IPlayerSetupModel playerSetupModel, Task systemReady)
+        public CheckpointSceneRespawner(ICheckpointRespawnService respawnService, ICheckpointPlayerProvider playerProvider, ICheckpointSceneLoadNotifier sceneLoadNotifier, Task systemReady)
         {
             _respawnService = respawnService ?? throw new ArgumentNullException(nameof(respawnService));
-            _playerSetupModel = playerSetupModel ?? throw new ArgumentNullException(nameof(playerSetupModel));
+            _playerProvider = playerProvider ?? throw new ArgumentNullException(nameof(playerProvider));
+            _sceneLoadNotifier = sceneLoadNotifier ?? throw new ArgumentNullException(nameof(sceneLoadNotifier));
             _systemReady = systemReady ?? throw new ArgumentNullException(nameof(systemReady));
 
-            _sceneLoadedBinding = new EventBinding<SceneGroupLoadedEvent>(OnSceneGroupLoaded);
-            EventBus<SceneGroupLoadedEvent>.Register(_sceneLoadedBinding);
+            _sceneLoadNotifier.SceneLoaded += OnSceneLoaded;
         }
 
-        private async void OnSceneGroupLoaded(SceneGroupLoadedEvent sceneGroupLoadedEvent)
+        private async void OnSceneLoaded()
         {
             try
             {
@@ -33,14 +33,19 @@ namespace SAS.Checkpoints
                 if (_isDisposed)
                     return;
 
-                foreach (PlayerProfile player in _playerSetupModel.Players)
+                IEnumerable<CheckpointPlayer> players = _playerProvider.GetPlayers();
+
+                if (players == null)
+                    return;
+
+                foreach (CheckpointPlayer player in players)
                 {
-                    GameObject character = player.Character;
+                    GameObject character = player.GameObject;
 
                     if (character == null || !character.activeSelf)
                         continue;
 
-                    _respawnService.TryRespawn(player.Index, character);
+                    _respawnService.TryRespawn(player.PlayerId, character);
                 }
             }
             catch (Exception exception)
@@ -54,7 +59,7 @@ namespace SAS.Checkpoints
             if (_isDisposed)
                 return;
 
-            EventBus<SceneGroupLoadedEvent>.Deregister(_sceneLoadedBinding);
+            _sceneLoadNotifier.SceneLoaded -= OnSceneLoaded;
             _isDisposed = true;
         }
     }

@@ -37,48 +37,6 @@ namespace SAS.Checkpoints
                 _checkpointManager.UnregisterGroup(this);
         }
 
-        public bool TryGetRandomAvailable(out SpawnPoint spawnPoint)
-        {
-            spawnPoint = null;
-
-            if (m_SpawnPoints == null)
-                return false;
-
-            int availableCount = 0;
-
-            foreach (SpawnPoint point in m_SpawnPoints)
-            {
-                if (point == null || point.IsOccupied)
-                    continue;
-
-                availableCount++;
-
-                if (Random.Range(0, availableCount) == 0)
-                    spawnPoint = point;
-            }
-
-            return spawnPoint != null;
-        }
-
-        public bool TryGetFirstAvailable(out SpawnPoint spawnPoint)
-        {
-            spawnPoint = null;
-
-            if (m_SpawnPoints == null)
-                return false;
-
-            foreach (SpawnPoint point in m_SpawnPoints)
-            {
-                if (point != null && !point.IsOccupied)
-                {
-                    spawnPoint = point;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public bool TryGetByPlayerId(int playerId, out SpawnPoint spawnPoint)
         {
             spawnPoint = null;
@@ -108,25 +66,6 @@ namespace SAS.Checkpoints
                 SpawnPoint point = m_SpawnPoints[index];
 
                 if (point != null && !point.IsOccupied)
-                {
-                    spawnPoint = point;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool TryGetFallback(out SpawnPoint spawnPoint)
-        {
-            spawnPoint = null;
-
-            if (m_SpawnPoints == null)
-                return false;
-
-            foreach (SpawnPoint point in m_SpawnPoints)
-            {
-                if (point != null)
                 {
                     spawnPoint = point;
                     return true;

@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SAS.Checkpoints
 {
     public sealed class CheckpointProgressService : ICheckpointProgressService, IDisposable
     {
-        private const string DirectoryName = "Progress";
-        private const string FileName = "CheckpointProgress";
-
-        private readonly ISaveSystem _saveSystem;
+        private readonly ICheckpointProgressStore _progressStore;
         private readonly HashSet<string> _completedCheckpointIds = new(StringComparer.Ordinal);
-        private readonly SemaphoreSlim _operationLock =new(1, 1);
+        private readonly SemaphoreSlim _operationLock = new(1, 1);
         private readonly object _stateLock = new();
 
         private CheckpointProgressData _data;
@@ -36,9 +34,9 @@ namespace SAS.Checkpoints
             }
         }
 
-        public CheckpointProgressService(ISaveSystem saveSystem)
+        public CheckpointProgressService(ICheckpointProgressStore progressStore)
         {
-            _saveSystem = saveSystem ?? throw new ArgumentNullException(nameof(saveSystem));
+            _progressStore = progressStore ?? throw new ArgumentNullException(nameof(progressStore));
         }
 
         public async Task InitializeAsync(int userId)
@@ -51,7 +49,7 @@ namespace SAS.Checkpoints
 
             try
             {
-                CheckpointProgressData loadedData = await _saveSystem.Load<CheckpointProgressData>(userId, DirectoryName, FileName);
+                CheckpointProgressData loadedData = await _progressStore.LoadAsync(userId);
 
                 loadedData ??= new CheckpointProgressData();
                 ValidateVersion(loadedData);
@@ -160,45 +158,6 @@ namespace SAS.Checkpoints
             }
         }
 
-        public async Task<bool> CompleteAsync(string checkpointId)
-        {
-            EnsureInitialized();
-
-            ValidateCheckpointId(checkpointId, nameof(checkpointId));
-
-            await _operationLock.WaitAsync();
-
-            try
-            {
-                CheckpointProgressData candidate;
-
-                lock (_stateLock)
-                {
-                    EnsureInitialized();
-
-                    if (_completedCheckpointIds.Contains(checkpointId))
-                        return false;
-
-                    candidate = _data.Clone();
-                    candidate.CompletedCheckpointIds.Add(checkpointId);
-                }
-
-                await SaveAsync(candidate);
-
-                lock (_stateLock)
-                {
-                    Commit(candidate);
-                }
-            }
-            finally
-            {
-                _operationLock.Release();
-            }
-
-            RaiseCheckpointCompleted(checkpointId);
-            return true;
-        }
-
         public async Task<bool> ActivateCheckpointAsync(ActiveCheckpointData checkpointData)
         {
             EnsureInitialized();
@@ -249,37 +208,6 @@ namespace SAS.Checkpoints
             return true;
         }
 
-        public async Task SetActiveCheckpointAsync(ActiveCheckpointData checkpointData)
-        {
-            EnsureInitialized();
-            ValidateCheckpointData(checkpointData);
-
-            await _operationLock.WaitAsync();
-
-            try
-            {
-                CheckpointProgressData candidate;
-
-                lock (_stateLock)
-                {
-                    EnsureInitialized();
-                    candidate = _data.Clone();
-                    candidate.ActiveCheckpoint = checkpointData.Clone();
-                }
-
-                await SaveAsync(candidate);
-
-                lock (_stateLock)
-                {
-                    Commit(candidate);
-                }
-            }
-            finally
-            {
-                _operationLock.Release();
-            }
-        }
-
         public async Task ResetAsync()
         {
             EnsureInitialized();
@@ -312,7 +240,7 @@ namespace SAS.Checkpoints
 
         private async Task SaveAsync(CheckpointProgressData data)
         {
-            bool succeeded = await _saveSystem.Save(_userId, DirectoryName, FileName, data);
+            bool succeeded = await _progressStore.SaveAsync(_userId, data);
             if (!succeeded)
                 throw new IOException("The save system rejected checkpoint progress data.");
         }
@@ -338,7 +266,8 @@ namespace SAS.Checkpoints
             if (data.Version == CheckpointProgressData.CurrentVersion)
                 return;
 
-            throw new NotSupportedException($"Checkpoint progress version {data.Version} is not supported. Expected exactly {CheckpointProgressData.CurrentVersion}. Delete or replace the incompatible save data.");
+            throw new NotSupportedException(
+                $"Checkpoint progress version {data.Version} is not supported. Expected exactly {CheckpointProgressData.CurrentVersion}. Delete or replace the incompatible save data.");
         }
 
         private static void Sanitize(CheckpointProgressData data)
@@ -397,7 +326,8 @@ namespace SAS.Checkpoints
                 ThrowIfDisposed();
 
                 if (!_isInitialized)
-                    throw new InvalidOperationException($"{nameof(CheckpointProgressService)} " + "has not been initialized.");
+                    throw new InvalidOperationException($"{nameof(CheckpointProgressService)} " +
+                                                        "has not been initialized.");
             }
         }
 

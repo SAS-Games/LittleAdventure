@@ -31,19 +31,6 @@ namespace SAS.Checkpoints.Tests
         }
 
         [Test]
-        public void RegisterCheckpoint_ResolvesById()
-        {
-            Checkpoint checkpoint = CreateCheckpoint("CP_01", 1);
-
-            _manager.RegisterCheckpoint(checkpoint);
-
-            Assert.That(
-                _manager.TryGetCheckpoint("CP_01", out Checkpoint result),
-                Is.True);
-            Assert.That(result, Is.SameAs(checkpoint));
-        }
-
-        [Test]
         public void DuplicateCheckpointId_KeepsFirstRegistration()
         {
             Checkpoint first = CreateCheckpoint("CP_01", 1);
@@ -56,8 +43,8 @@ namespace SAS.Checkpoints.Tests
                 "'CP_01' and 'CP_01'.");
             _manager.RegisterCheckpoint(duplicate);
 
-            _manager.TryGetCheckpoint("CP_01", out Checkpoint result);
-            Assert.That(result, Is.SameAs(first));
+            Assert.That(_manager.CanActivate(first), Is.True);
+            Assert.That(_manager.CanActivate(duplicate), Is.False);
         }
 
         [Test]
@@ -66,13 +53,10 @@ namespace SAS.Checkpoints.Tests
             _progressService.ActiveCheckpoint = CreateActiveData("CP_01");
             _manager.RestoreFromProgress();
 
-            Assert.That(_manager.ActiveCheckpoint, Is.Null);
-            Assert.That(_manager.ActiveCheckpointId, Is.EqualTo("CP_01"));
-
             Checkpoint checkpoint = CreateCheckpoint("CP_01", 1);
             _manager.RegisterCheckpoint(checkpoint);
 
-            Assert.That(_manager.ActiveCheckpoint, Is.SameAs(checkpoint));
+            Assert.That(_manager.IsActive(checkpoint), Is.True);
         }
 
         [Test]
@@ -84,24 +68,11 @@ namespace SAS.Checkpoints.Tests
 
             _manager.UnregisterCheckpoint(checkpoint);
 
-            Assert.That(_manager.ActiveCheckpoint, Is.Null);
-            Assert.That(_manager.ActiveCheckpointId, Is.EqualTo("CP_01"));
-            Assert.That(_manager.HasActiveCheckpoint, Is.True);
-        }
+            Assert.That(_manager.IsActive(checkpoint), Is.False);
 
-        [Test]
-        public void RegisterGroup_ResolvesById()
-        {
-            SpawnPointGroup group = CreateGroup("CP_01_Group");
+            _manager.RegisterCheckpoint(checkpoint);
 
-            _manager.RegisterGroup(group);
-
-            Assert.That(
-                _manager.TryGetSpawnPointGroup(
-                    "CP_01_Group",
-                    out SpawnPointGroup result),
-                Is.True);
-            Assert.That(result, Is.SameAs(group));
+            Assert.That(_manager.IsActive(checkpoint), Is.True);
         }
 
         [Test]
@@ -126,6 +97,11 @@ namespace SAS.Checkpoints.Tests
         {
             SpawnPointGroup first = CreateGroup("CP_01_Group");
             SpawnPointGroup duplicate = CreateGroup("CP_01_Group");
+            SpawnPoint firstPoint = first.gameObject.AddComponent<SpawnPoint>();
+            SpawnPoint duplicatePoint = duplicate.gameObject.AddComponent<SpawnPoint>();
+            SetField(first, "m_SpawnPoints", new[] { firstPoint });
+            SetField(duplicate, "m_SpawnPoints", new[] { duplicatePoint });
+            _progressService.ActiveCheckpoint = CreateActiveData("CP_01");
             _manager.RegisterGroup(first);
 
             LogAssert.Expect(
@@ -134,10 +110,10 @@ namespace SAS.Checkpoints.Tests
                 "Objects: 'CP_01_Group' and 'CP_01_Group'.");
             _manager.RegisterGroup(duplicate);
 
-            _manager.TryGetSpawnPointGroup(
-                "CP_01_Group",
-                out SpawnPointGroup result);
-            Assert.That(result, Is.SameAs(first));
+            Assert.That(
+                _manager.TryGetSpawnPoint(0, out SpawnPoint result),
+                Is.True);
+            Assert.That(result, Is.SameAs(firstPoint));
         }
 
         [Test]
@@ -264,11 +240,6 @@ namespace SAS.Checkpoints.Tests
                 return Clone(ActiveCheckpoint);
             }
 
-            public Task<bool> CompleteAsync(string checkpointId)
-            {
-                return Task.FromResult(true);
-            }
-
             public Task<bool> ActivateCheckpointAsync(
                 ActiveCheckpointData checkpointData)
             {
@@ -283,13 +254,6 @@ namespace SAS.Checkpoints.Tests
 
                 ActiveCheckpoint = Clone(checkpointData);
                 return Task.FromResult(true);
-            }
-
-            public Task SetActiveCheckpointAsync(
-                ActiveCheckpointData checkpointData)
-            {
-                ActiveCheckpoint = Clone(checkpointData);
-                return Task.CompletedTask;
             }
 
             public Task ResetAsync()

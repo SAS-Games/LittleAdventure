@@ -24,7 +24,7 @@ MonoBehaviour:
     m_ExcludedPlatforms: 
   - m_Interface: SAS.Checkpoints.ICheckpointSystemInstaller, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Type: SAS.Checkpoints.CheckpointSystemInstaller, Assembly-CSharp, Version=0.0.0.0,
+    m_Type: SAS.Checkpoints.LittleAdventure.CheckpointSystemInstaller, Assembly-CSharp, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     m_Tag: 0
     m_ExcludedPlatforms:
