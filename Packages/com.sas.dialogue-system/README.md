@@ -15,7 +15,7 @@ Ink Unity Integration and SAS Core are Git packages in the SAS projects. Install
 
 1. Add the package to the project.
 2. In Package Manager, import **Basic Dialogue** from the Samples tab.
-3. Open `Assets/Samples/SAS Dialogue System/0.1.0/Basic Dialogue/Basic Dialogue.unity`.
+3. Open `Assets/Samples/SAS Dialogue System/0.2.0/Basic Dialogue/Basic Dialogue.unity`.
 4. Enter Play Mode.
 5. Press Space to reveal or advance text. Use the mouse or UI navigation to choose a response.
 
@@ -39,6 +39,7 @@ The sample uses direct component discovery and does not require a project-specif
 | Localization key | `locale` |
 | Layout animation | `layout` |
 | Audio profile | `audio` |
+| Story skip permission | `skip` |
 | Active speaker | `speaker` |
 | Speaker name | `speaker_name` |
 | Speaker portrait | `portrait` |
@@ -71,6 +72,21 @@ For choices, keep metadata inside the visible choice text so Ink exposes it thro
 ```
 
 The optional `story.metadata.json` sidecar configures fields, labels, contexts, and suggestions in customized Inky. Unity runtime behavior is controlled by `DialogueMetadataProfile`, so the tag names in both tools should match.
+
+## Metadata-driven story skipping
+
+Add `# skip:enable` above the line after which the player may skip the rest of the dialogue:
+
+```ink
+# skip:enable
+You can leave now, or stay and hear the rest.
+```
+
+The permission is applied after that line finishes presenting and remains enabled across later lines and choices. Normal reveal and line-by-line advance behavior is unchanged. Use `# skip:disable` on a later line to revoke the permission after that line finishes.
+
+Add `DialogueStorySkipButton` to a uGUI Button under the same `DialogueHandler`. The component drives `Button.interactable` from `DialogueHandler.CanSkipStory`; it can optionally hide a visual root while unavailable. Pressing the button exits the dialogue immediately and raises the normal dialogue-end notifications. Skipped Ink content is not evaluated, choices are not selected, and external functions in skipped content are not invoked.
+
+The default metadata profile uses the `skip` tag. Projects can rename it with the profile's **Story Skip Tag** field, as long as the Inky sidecar uses the same key.
 
 ## Package boundary
 

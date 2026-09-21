@@ -11,10 +11,12 @@ public interface IDialogueHandler : IBindable, IInitializable
         DialogueMetadataProfile metadataProfile = null);
     void ContinueStory();
     void RequestAdvance();
+    bool SkipStory();
     void MakeChoice(int choiceIndex);
     void CompleteLinePresentation(DialogueLineContext lineContext);
 
     bool DialogueIsPlaying { get; }
+    bool CanSkipStory { get; }
     SAS.DialogueSystem.DialogueSessionState State { get; }
     InkExternalMethodRegistry InkExternalMethodRegistry { get; }
     Story CurrentStory { get; }
@@ -26,6 +28,7 @@ public interface IDialogueHandler : IBindable, IInitializable
     event Action OnEnterDialogueMode;
     event Action OnExitDialogueMode;
     event Action OnSkipRequested;
+    event Action<bool> OnStorySkipAvailabilityChanged;
 }
 
 public struct DialogueStartEvent : IEvent

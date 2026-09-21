@@ -59,5 +59,24 @@ namespace SAS.DialogueSystem.Tests
             Assert.IsTrue(line.HasErrors);
             Assert.AreEqual(2, line.Diagnostics.Count(item => item.Code == "participant-id-missing"));
         }
+
+        [Test]
+        public void StorySkipDirectiveIsParsedWithoutHidingCustomMetadata()
+        {
+            var enabled = DialogueMetadataParser.ParseLine(
+                "You may leave now.",
+                new[] { "skip:enable", "quest:forest_gate" },
+                DialogueMetadataSchema.Canonical);
+            var invalid = DialogueMetadataParser.ParseLine(
+                "Malformed directive.",
+                new[] { "skip:later" },
+                DialogueMetadataSchema.Canonical);
+
+            Assert.AreEqual(DialogueStorySkipDirective.Enable, enabled.StorySkipDirective);
+            Assert.AreEqual("forest_gate", enabled.GetTagValues("quest")[0]);
+            Assert.AreEqual(DialogueStorySkipDirective.Unchanged, invalid.StorySkipDirective);
+            Assert.IsTrue(invalid.Diagnostics.Any(item => item.Code == "invalid-skip-directive"));
+            Assert.IsFalse(invalid.HasErrors);
+        }
     }
 }

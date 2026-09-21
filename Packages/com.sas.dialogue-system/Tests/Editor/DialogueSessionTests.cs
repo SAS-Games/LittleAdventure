@@ -42,6 +42,53 @@ Hello. # speaker:alice # listener:bob
             Assert.AreSame(second, session.CurrentLine);
         }
 
+        [Test]
+        public void StorySkipUnlocksAfterTaggedLineAndKeepsNormalAdvanceAvailable()
+        {
+            var session = CreateSession(@"
+# skip:enable
+You may skip after reading this line.
+You may also keep reading.
+-> END
+");
+
+            var unlockLine = session.Continue();
+            Assert.IsFalse(session.CanSkipStory);
+            Assert.IsFalse(session.TrySkipStory());
+
+            Assert.IsTrue(session.CompleteLinePresentation(unlockLine.Line));
+            Assert.IsTrue(session.CanSkipStory);
+            Assert.AreEqual(DialogueAdvanceAction.ContinueStory, session.GetAdvanceAction());
+
+            var nextLine = session.Continue();
+            Assert.AreEqual(DialogueStepKind.Line, nextLine.Kind);
+            Assert.IsTrue(session.CanSkipStory);
+            Assert.IsTrue(session.TrySkipStory());
+            Assert.AreEqual(DialogueSessionState.Exiting, session.State);
+        }
+
+        [Test]
+        public void StorySkipCanBeRevokedByALaterCompletedLine()
+        {
+            var session = CreateSession(@"
+# skip:enable
+Unlock.
+# skip:disable
+Lock again.
+-> END
+");
+
+            var unlockLine = session.Continue();
+            session.CompleteLinePresentation(unlockLine.Line);
+            Assert.IsTrue(session.CanSkipStory);
+
+            var lockLine = session.Continue();
+            Assert.IsTrue(session.CanSkipStory);
+            session.CompleteLinePresentation(lockLine.Line);
+            Assert.IsFalse(session.CanSkipStory);
+            Assert.IsFalse(session.TrySkipStory());
+        }
+
         private static DialogueSession CreateSession(string source)
         {
             var story = new Compiler(source).Compile();

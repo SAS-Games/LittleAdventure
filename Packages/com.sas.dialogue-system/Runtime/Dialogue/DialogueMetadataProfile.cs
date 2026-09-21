@@ -69,6 +69,7 @@ public sealed class DialogueMetadataProfile : ScriptableObject
     [SerializeField] private string m_LocalizationTag = "locale";
     [SerializeField] private string m_LayoutTag = "layout";
     [SerializeField] private string m_AudioTag = "audio";
+    [SerializeField] private string m_StorySkipTag = "skip";
 
     [Header("Participant semantics")]
     [Tooltip("Participant role exposed as CurrentSpeakerId.")]
@@ -103,7 +104,8 @@ public sealed class DialogueMetadataProfile : ScriptableObject
             (m_Participants ?? new List<DialogueParticipantTagBinding>())
                 .Where(binding => binding != null)
                 .Select(binding => binding.BuildSchema()),
-            (m_GenericParticipants ?? new DialogueGenericParticipantTagBinding()).BuildSchema());
+            (m_GenericParticipants ?? new DialogueGenericParticipantTagBinding()).BuildSchema(),
+            m_StorySkipTag);
     }
 
     private void OnValidate()
@@ -174,12 +176,14 @@ public sealed class DialogueMetadataSchema
         string currentSpeakerRole,
         string listenerRole,
         IEnumerable<DialogueParticipantTagSchema> participants,
-        DialogueGenericParticipantTagSchema genericParticipants = null)
+        DialogueGenericParticipantTagSchema genericParticipants = null,
+        string storySkipTag = "skip")
     {
         LineIdTag = Trim(lineIdTag);
         LocalizationTag = Trim(localizationTag);
         LayoutTag = Trim(layoutTag);
         AudioTag = Trim(audioTag);
+        StorySkipTag = Trim(storySkipTag);
         CurrentSpeakerRole = Trim(currentSpeakerRole);
         ListenerRole = Trim(listenerRole);
         _participants = (participants ?? Enumerable.Empty<DialogueParticipantTagSchema>())
@@ -198,6 +202,7 @@ public sealed class DialogueMetadataSchema
     public string LocalizationTag { get; }
     public string LayoutTag { get; }
     public string AudioTag { get; }
+    public string StorySkipTag { get; }
     public string CurrentSpeakerRole { get; }
     public string ListenerRole { get; }
     public IReadOnlyList<DialogueParticipantTagSchema> Participants => _participants;
@@ -230,6 +235,7 @@ public sealed class DialogueMetadataSchema
         foreach (var error in ValidateOptionalTag(LocalizationTag, "Localization", tags)) yield return error;
         foreach (var error in ValidateOptionalTag(LayoutTag, "Layout", tags)) yield return error;
         foreach (var error in ValidateOptionalTag(AudioTag, "Audio", tags)) yield return error;
+        foreach (var error in ValidateOptionalTag(StorySkipTag, "Story skip", tags)) yield return error;
 
         if (!string.IsNullOrEmpty(CurrentSpeakerRole) && !IsValidRole(CurrentSpeakerRole))
             yield return $"Current speaker role '{CurrentSpeakerRole}' is invalid.";
@@ -347,6 +353,7 @@ public sealed class DialogueMetadataSchema
                 "participant.",
                 ".name",
                 ".portrait",
-                ".animation"));
+                ".animation"),
+            "skip");
     }
 }

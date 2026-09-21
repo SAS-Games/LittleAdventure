@@ -50,6 +50,37 @@ public static class DialogueMetadataParser
         ApplyScalar(lineContext, schema.LocalizationTag, lineContext.SetLocale, validateIdentifier: true);
         ApplyScalar(lineContext, schema.LayoutTag, lineContext.SetLayoutAnim, validateIdentifier: false);
         ApplyScalar(lineContext, schema.AudioTag, lineContext.SetAudioInfo, validateIdentifier: false);
+        ApplyStorySkipDirective(lineContext, schema.StorySkipTag);
+    }
+
+    private static void ApplyStorySkipDirective(DialogueLineContext lineContext, string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            return;
+
+        var values = lineContext.GetTagValues(key);
+        if (values.Count == 0)
+            return;
+
+        AddDuplicateDiagnostic(lineContext, key, values.Count);
+        var value = values[values.Count - 1]?.Trim();
+        if (string.Equals(value, "enable", StringComparison.OrdinalIgnoreCase))
+        {
+            lineContext.SetStorySkipDirective(DialogueStorySkipDirective.Enable);
+            return;
+        }
+
+        if (string.Equals(value, "disable", StringComparison.OrdinalIgnoreCase))
+        {
+            lineContext.SetStorySkipDirective(DialogueStorySkipDirective.Disable);
+            return;
+        }
+
+        lineContext.AddDiagnostic(new DialogueMetadataDiagnostic(
+            DialogueMetadataSeverity.Warning,
+            "invalid-skip-directive",
+            $"Metadata '{key}' must be 'enable' or 'disable'.",
+            key));
     }
 
     private static void ApplyScalar(

@@ -65,6 +65,7 @@ namespace SAS.DialogueSystem
         public DialogueMetadataSchema MetadataSchema { get; }
         public DialogueSessionState State { get; private set; }
         public DialogueLineContext CurrentLine { get; private set; }
+        public bool CanSkipStory { get; private set; }
         public event Action<DialogueSessionState> StateChanged;
 
         public DialogueStep Continue()
@@ -103,9 +104,20 @@ namespace SAS.DialogueSystem
                 return false;
             }
 
+            ApplyStorySkipDirective(line.StorySkipDirective);
             TransitionTo(Story.currentChoices.Count > 0
                 ? DialogueSessionState.PresentingChoices
                 : DialogueSessionState.WaitingForAdvance);
+            return true;
+        }
+
+        public bool TrySkipStory()
+        {
+            if (!CanSkipStory || State == DialogueSessionState.Exiting || State == DialogueSessionState.Faulted)
+                return false;
+
+            CurrentLine = null;
+            TransitionTo(DialogueSessionState.Exiting);
             return true;
         }
 
@@ -148,6 +160,19 @@ namespace SAS.DialogueSystem
         public void Fault()
         {
             TransitionTo(DialogueSessionState.Faulted);
+        }
+
+        private void ApplyStorySkipDirective(DialogueStorySkipDirective directive)
+        {
+            switch (directive)
+            {
+                case DialogueStorySkipDirective.Enable:
+                    CanSkipStory = true;
+                    break;
+                case DialogueStorySkipDirective.Disable:
+                    CanSkipStory = false;
+                    break;
+            }
         }
 
         private void TransitionTo(DialogueSessionState state)

@@ -33,6 +33,7 @@ namespace SAS.DialogueSystem
             State != DialogueSessionState.Idle &&
             State != DialogueSessionState.Exiting &&
             State != DialogueSessionState.Faulted;
+        public bool CanSkipStory => _session?.CanSkipStory ?? false;
         public DialogueLineContext CurrentLineContext => _session?.CurrentLine;
 
         public event Action<DialogueLineContext> OnLinePresented;
@@ -41,6 +42,7 @@ namespace SAS.DialogueSystem
         public event Action OnEnterDialogueMode;
         public event Action OnExitDialogueMode;
         public event Action OnSkipRequested;
+        public event Action<bool> OnStorySkipAvailabilityChanged;
 
         private void Awake()
         {
@@ -117,6 +119,7 @@ namespace SAS.DialogueSystem
             _session.StateChanged += HandleSessionStateChanged;
             _initiator = initiator;
             OnStateChanged?.Invoke(DialogueSessionState.Starting);
+            OnStorySkipAvailabilityChanged?.Invoke(false);
 
             if (m_DialoguePanel != null)
                 m_DialoguePanel.SetActive(true);
@@ -182,6 +185,7 @@ namespace SAS.DialogueSystem
                     m_DialoguePanel.SetActive(false);
 
                 _isExiting = false;
+                OnStorySkipAvailabilityChanged?.Invoke(false);
                 OnStateChanged?.Invoke(DialogueSessionState.Idle);
             }
         }
@@ -253,8 +257,12 @@ namespace SAS.DialogueSystem
         public void CompleteLinePresentation(DialogueLineContext lineContext)
         {
             var session = _session;
+            var couldSkipStory = session?.CanSkipStory ?? false;
             if (session == null || !session.CompleteLinePresentation(lineContext))
                 return;
+
+            if (couldSkipStory != session.CanSkipStory)
+                OnStorySkipAvailabilityChanged?.Invoke(session.CanSkipStory);
 
             OnLinePresented?.Invoke(lineContext);
 
@@ -304,6 +312,16 @@ namespace SAS.DialogueSystem
                     ContinueStory();
                     break;
             }
+        }
+
+        public bool SkipStory()
+        {
+            var session = _session;
+            if (session == null || !session.TrySkipStory())
+                return false;
+
+            ExitDialogueMode();
+            return true;
         }
 
         private void HandleSessionStateChanged(DialogueSessionState state)

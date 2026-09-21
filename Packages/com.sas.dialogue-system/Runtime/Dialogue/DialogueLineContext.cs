@@ -8,6 +8,13 @@ public enum DialogueMetadataSeverity
     Error
 }
 
+public enum DialogueStorySkipDirective
+{
+    Unchanged,
+    Enable,
+    Disable
+}
+
 public sealed class DialogueMetadataDiagnostic
 {
     public DialogueMetadataDiagnostic(
@@ -87,6 +94,7 @@ public sealed class DialogueLineContext
     public string Locale { get; private set; } = string.Empty;
     public string LayoutAnim { get; private set; } = string.Empty;
     public string AudioInfoId { get; private set; } = string.Empty;
+    public DialogueStorySkipDirective StorySkipDirective { get; private set; }
 
     internal void SetParticipant(DialogueParticipant participant)
     {
@@ -115,6 +123,7 @@ public sealed class DialogueLineContext
     internal void SetLocale(string locale) => Locale = locale?.Trim() ?? string.Empty;
     internal void SetLayoutAnim(string layoutAnim) => LayoutAnim = layoutAnim?.Trim() ?? string.Empty;
     internal void SetAudioInfo(string audioInfoId) => AudioInfoId = audioInfoId?.Trim() ?? string.Empty;
+    internal void SetStorySkipDirective(DialogueStorySkipDirective directive) => StorySkipDirective = directive;
 
     internal void AddTag(string key, string value)
     {
