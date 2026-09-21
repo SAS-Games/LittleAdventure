@@ -15,28 +15,48 @@ MonoBehaviour:
   m_Bindings:
   - m_Interface: IBGMPlayer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     m_Type: LevelBGMPlayer, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 
   - m_Interface: ITargetRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     m_Type: TargetRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 
-  - m_Interface: SAS.Checkpoints.ICheckpointSystemInstaller, Assembly-CSharp,
+  - m_Interface: SAS.Checkpoints.ICheckpointSystemInstaller, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_Type: SAS.Checkpoints.LittleAdventure.CheckpointSystemInstaller, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    m_Type: SAS.Checkpoints.LittleAdventure.CheckpointSystemInstaller, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
-    m_ExcludedPlatforms:
-  - m_Interface: IDialogueHandler, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
+    m_ExcludedPlatforms: 
+  - m_Interface: IDialogueHandler, SAS.DialogueSystem.Runtime, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    m_Type: SAS.DialogueSystem.DialogueHandler, Assembly-CSharp, Version=0.0.0.0,
+    m_Type: SAS.DialogueSystem.DialogueHandler, SAS.DialogueSystem.Runtime, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-    m_Tag: 0
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 
   - m_Interface: EnemySystem.IEnemyRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     m_Type: EnemySystem.EnemyRegistry, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    m_Tag: 0
+    m_Tag:
+      guid: 0
+      resolvedName: 
+      sourceOptions: {fileID: 0}
+      lastKnownName: 
     m_ExcludedPlatforms: 

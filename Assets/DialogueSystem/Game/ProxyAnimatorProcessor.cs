@@ -2,10 +2,9 @@ using SAS.Core.TagSystem;
 using UniRx;
 using UnityEngine;
 
-public interface IAnimatorProcessor
+public interface IAnimatorProcessor : IDialogueAnimationTarget
 {
     string Tag { get; }
-    void Process(string value);
     IReadOnlyReactiveProperty<string> AnimatorState { get; }
 }
 
@@ -47,7 +46,7 @@ namespace SAS.DialogueSystem
             }
         }
 
-        void IAnimatorProcessor.Process(string tagValue)
+        public void Process(string tagValue)
         {
             _animatorState.SetValueAndForceNotify(tagValue);
         }
