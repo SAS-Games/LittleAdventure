@@ -101,12 +101,9 @@ namespace SAS.Checkpoints
                 return;
             }
 
-            if (_spawnPointGroups.TryGetValue(groupId, out SpawnPointGroup existing) && existing != null &&
-                existing != group)
+            if (_spawnPointGroups.TryGetValue(groupId, out SpawnPointGroup existing) && existing != null && existing != group)
             {
-                Debug.LogError(
-                    $"Duplicate spawn-point group ID '{groupId}'. Objects: '{existing.name}' and '{group.name}'.",
-                    group);
+                Debug.LogError($"Duplicate spawn-point group ID '{groupId}'. Objects: '{existing.name}' and '{group.name}'.", group);
                 return;
             }
 
@@ -122,10 +119,7 @@ namespace SAS.Checkpoints
             }
 
             if (_defaultSpawnPointGroup != group)
-                Debug.LogError(
-                    $"Multiple default spawn-point groups are loaded. " +
-                    $"Keeping '{_defaultSpawnPointGroup.name}' and " + $"ignoring '{group.name}' as the default.",
-                    group);
+                Debug.LogError($"Multiple default spawn-point groups are loaded. " + $"Keeping '{_defaultSpawnPointGroup.name}' and " + $"ignoring '{group.name}' as the default.", group);
         }
 
         public void UnregisterGroup(SpawnPointGroup group)
@@ -239,8 +233,7 @@ namespace SAS.Checkpoints
 
             group = null;
 
-            if (_activeCheckpoint != null && _activeCheckpoint.SpawnPointGroup != null &&
-                _activeCheckpoint.SpawnPointGroup.isActiveAndEnabled)
+            if (_activeCheckpoint != null && _activeCheckpoint.SpawnPointGroup != null && _activeCheckpoint.SpawnPointGroup.isActiveAndEnabled)
             {
                 group = _activeCheckpoint.SpawnPointGroup;
                 return true;

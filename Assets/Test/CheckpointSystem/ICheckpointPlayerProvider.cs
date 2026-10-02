@@ -20,6 +20,7 @@ namespace SAS.Checkpoints
     /// </summary>
     public interface ICheckpointPlayerProvider
     {
+        Awaitable WaitUntilReadyAsync();
         IEnumerable<CheckpointPlayer> GetPlayers();
     }
 }

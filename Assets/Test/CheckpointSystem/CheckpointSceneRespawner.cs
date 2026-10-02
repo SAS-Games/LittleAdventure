@@ -28,29 +28,40 @@ namespace SAS.Checkpoints
         {
             try
             {
-                await _systemReady;
-
-                if (_isDisposed)
-                    return;
-
-                IEnumerable<CheckpointPlayer> players = _playerProvider.GetPlayers();
-
-                if (players == null)
-                    return;
-
-                foreach (CheckpointPlayer player in players)
-                {
-                    GameObject character = player.GameObject;
-
-                    if (character == null || !character.activeSelf)
-                        continue;
-
-                    _respawnService.TryRespawn(player.PlayerId, character);
-                }
+                await RespawnPlayersAsync();
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch (Exception exception)
             {
-                Debug.LogError("Respawning players after a scene-group load failed.\n" + exception);
+                Debug.LogError(
+                    "Respawning players after a scene-group load failed.\n" +
+                    exception);
+            }
+        }
+
+        private async Awaitable RespawnPlayersAsync()
+        {
+            await _systemReady;
+            await _playerProvider.WaitUntilReadyAsync();
+
+            if (_isDisposed)
+                return;
+
+            IEnumerable<CheckpointPlayer> players = _playerProvider.GetPlayers();
+
+            if (players == null)
+                return;
+
+            foreach (CheckpointPlayer player in players)
+            {
+                GameObject character = player.GameObject;
+
+                if (character == null || !character.activeInHierarchy)
+                    continue;
+
+                _respawnService.TryRespawn(player.PlayerId, character);
             }
         }
 

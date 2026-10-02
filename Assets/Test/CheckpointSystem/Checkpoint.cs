@@ -115,9 +115,7 @@ namespace SAS.Checkpoints
                 throw new InvalidOperationException($"Checkpoint '{name}' has an invalid definition.");
             }
 
-            return new ActiveCheckpointData(Id, gameObject.scene.name,
-                m_SpawnPointGroup != null ? m_SpawnPointGroup.SpawnPointGroupId : null, FallbackPosition,
-                FallbackRotation);
+            return new ActiveCheckpointData(Id, gameObject.scene.name, m_SpawnPointGroup != null ? m_SpawnPointGroup.SpawnPointGroupId : null, FallbackPosition,  FallbackRotation);
         }
 
         private bool CanComplete()
