@@ -119,6 +119,28 @@ namespace SAS.Checkpoints.LittleAdventure
             _playerSetupModel = playerSetupModel ?? throw new ArgumentNullException(nameof(playerSetupModel));
         }
 
+        public async Awaitable WaitUntilReadyAsync()
+        {
+            while (!ArePlayersReady())
+                await Awaitable.NextFrameAsync();
+        }
+
+        private bool ArePlayersReady()
+        {
+            IReadOnlyList<PlayerProfile> players = _playerSetupModel.Players;
+
+            if (players == null)
+                return false;
+
+            foreach (PlayerProfile player in players)
+            {
+                if (player != null && player.Character == null)
+                    return false;
+            }
+
+            return true;
+        }
+
         public IEnumerable<CheckpointPlayer> GetPlayers()
         {
             IReadOnlyList<PlayerProfile> players = _playerSetupModel.Players;
