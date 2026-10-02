@@ -53,19 +53,9 @@ namespace SAS.Checkpoints
         /// Composition-root entry point for games that construct their adapters
         /// in code instead of registering them in a Binder asset.
         /// </summary>
-        public static CheckpointSystemInstaller Install(
-            IContextBinder context,
-            ICheckpointSaveAdapter saveAdapter = null,
-            ICheckpointUserIdProvider userIdProvider = null,
-            ICheckpointPlayerProvider playerProvider = null,
-            ICheckpointSceneLoadNotifier sceneLoadNotifier = null)
+        public static CheckpointSystemInstaller Install(IContextBinder context, ICheckpointSaveAdapter saveAdapter = null, ICheckpointUserIdProvider userIdProvider = null, ICheckpointPlayerProvider playerProvider = null, ICheckpointSceneLoadNotifier sceneLoadNotifier = null)
         {
-            CheckpointSystemInstaller installer = new(
-                context,
-                saveAdapter,
-                userIdProvider,
-                playerProvider,
-                sceneLoadNotifier);
+            CheckpointSystemInstaller installer = new(context, saveAdapter, userIdProvider, playerProvider, sceneLoadNotifier);
 
             installer.InstallCore();
             return installer;
@@ -92,13 +82,7 @@ namespace SAS.Checkpoints
             _checkpointInitializationTask = InitializeCheckpointSystemAsync();
 
             if (_playerProvider != null && _sceneLoadNotifier != null)
-            {
-                _checkpointSceneRespawner = new CheckpointSceneRespawner(
-                    _checkpointRespawnService,
-                    _playerProvider,
-                    _sceneLoadNotifier,
-                    _checkpointInitializationTask);
-            }
+                _checkpointSceneRespawner = new CheckpointSceneRespawner(_checkpointRespawnService, _playerProvider, _sceneLoadNotifier, _checkpointInitializationTask);
 
             _isInstalled = true;
             ObserveCheckpointInitializationFailuresAsync(_checkpointInitializationTask);
@@ -109,11 +93,7 @@ namespace SAS.Checkpoints
             if ((_playerProvider == null) == (_sceneLoadNotifier == null))
                 return;
 
-            Debug.LogWarning(
-                "Automatic checkpoint respawning requires both " +
-                $"{nameof(ICheckpointPlayerProvider)} and " +
-                $"{nameof(ICheckpointSceneLoadNotifier)}. " +
-                "Automatic scene-load respawning is disabled.");
+            Debug.LogWarning($"Automatic checkpoint respawning requires both {nameof(ICheckpointPlayerProvider)} and {nameof(ICheckpointSceneLoadNotifier)}. Automatic scene-load respawning is disabled.");
         }
 
         private void BindCheckpointServices()

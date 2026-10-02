@@ -217,9 +217,7 @@ namespace SAS.Checkpoints
                 Debug.LogWarning($"Checkpoint '{name}' has an empty ID.", this);
 
             if (m_SpawnPointGroup == null)
-                Debug.LogWarning(
-                    $"Checkpoint '{name}' has no spawn-point group; " + "respawning will use its fallback transform.",
-                    this);
+                Debug.LogWarning($"Checkpoint '{name}' has no spawn-point group; " + "respawning will use its fallback transform.", this);
         }
 
         private void OnDrawGizmosSelected()

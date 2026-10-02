@@ -49,9 +49,7 @@ namespace SAS.Checkpoints
 
             try
             {
-                CheckpointProgressData loadedData = _saveAdapter == null
-                    ? new CheckpointProgressData()
-                    : await _saveAdapter.LoadAsync(userId);
+                CheckpointProgressData loadedData = _saveAdapter == null ? new CheckpointProgressData() : await _saveAdapter.LoadAsync(userId);
 
                 loadedData ??= new CheckpointProgressData();
                 ValidateVersion(loadedData);
@@ -163,7 +161,6 @@ namespace SAS.Checkpoints
         public async Task<bool> ActivateCheckpointAsync(ActiveCheckpointData checkpointData)
         {
             EnsureInitialized();
-
             ValidateCheckpointData(checkpointData);
 
             await _operationLock.WaitAsync();
@@ -331,8 +328,7 @@ namespace SAS.Checkpoints
                 ThrowIfDisposed();
 
                 if (!_isInitialized)
-                    throw new InvalidOperationException($"{nameof(CheckpointProgressService)} " +
-                                                        "has not been initialized.");
+                    throw new InvalidOperationException($"{nameof(CheckpointProgressService)} " + "has not been initialized.");
             }
         }
 

@@ -35,9 +35,7 @@ namespace SAS.Checkpoints
             }
             catch (Exception exception)
             {
-                Debug.LogError(
-                    "Respawning players after a scene-group load failed.\n" +
-                    exception);
+                Debug.LogError("Respawning players after a scene-group load failed.\n" + exception);
             }
         }
 

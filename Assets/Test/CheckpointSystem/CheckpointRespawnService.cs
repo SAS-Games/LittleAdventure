@@ -8,8 +8,7 @@ namespace SAS.Checkpoints
         private readonly ICheckpointManager _checkpointManager;
         private readonly ICheckpointProgressService _progressService;
 
-        public CheckpointRespawnService(ICheckpointManager checkpointManager,
-            ICheckpointProgressService progressService)
+        public CheckpointRespawnService(ICheckpointManager checkpointManager, ICheckpointProgressService progressService)
         {
             _checkpointManager = checkpointManager ?? throw new ArgumentNullException(nameof(checkpointManager));
             _progressService = progressService ?? throw new ArgumentNullException(nameof(progressService));

@@ -34,13 +34,8 @@ namespace SAS.Checkpoints.LittleAdventure
 
         void IInitializable.OnCreated(IContextBinder contextBinder)
         {
-            ICheckpointSaveAdapter saveAdapter = _saveSystem != null
-                ? new CheckpointSaveAdapter(_saveSystem)
-                : null;
-
-            ICheckpointUserIdProvider userIdProvider = _userModel != null
-                ? new CheckpointUserIdProvider(_userModel)
-                : null;
+            ICheckpointSaveAdapter saveAdapter = _saveSystem != null ? new CheckpointSaveAdapter(_saveSystem) : null;
+            ICheckpointUserIdProvider userIdProvider = _userModel != null ? new CheckpointUserIdProvider(_userModel) : null;
 
             ICheckpointPlayerProvider playerProvider = null;
 
@@ -50,12 +45,7 @@ namespace SAS.Checkpoints.LittleAdventure
                 _sceneLoadNotifier = new CheckpointSceneLoadNotifier();
             }
 
-            _coreInstaller = Checkpoints.CheckpointSystemInstaller.Install(
-                _contextBinder,
-                saveAdapter,
-                userIdProvider,
-                playerProvider,
-                _sceneLoadNotifier);
+            _coreInstaller = Checkpoints.CheckpointSystemInstaller.Install(_contextBinder, saveAdapter, userIdProvider, playerProvider, _sceneLoadNotifier);
         }
 
         void IDestroyable.OnDestroyed(IContextBinder contextBinder)
@@ -87,11 +77,7 @@ namespace SAS.Checkpoints.LittleAdventure
 
         public Task<bool> SaveAsync(int userId, CheckpointProgressData data)
         {
-            return _saveSystem.Save(
-                userId,
-                DirectoryName,
-                FileName,
-                data);
+            return _saveSystem.Save(userId, DirectoryName, FileName, data);
         }
     }
 
@@ -156,9 +142,7 @@ namespace SAS.Checkpoints.LittleAdventure
         }
     }
 
-    public sealed class CheckpointSceneLoadNotifier :
-        ICheckpointSceneLoadNotifier,
-        IDisposable
+    public sealed class CheckpointSceneLoadNotifier : ICheckpointSceneLoadNotifier, IDisposable
     {
         private readonly EventBinding<SceneGroupLoadedEvent> _sceneLoadedBinding;
         private bool _isDisposed;

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace SAS.Checkpoints
 {
@@ -49,24 +48,19 @@ namespace SAS.Checkpoints
 
             if (string.IsNullOrWhiteSpace(checkpoint.Id))
             {
-                Debug.LogError($"Cannot register checkpoint '{checkpoint.name}' " + "because its ID is empty.",
-                    checkpoint);
+                Debug.LogError($"Cannot register checkpoint '{checkpoint.name}' " + "because its ID is empty.", checkpoint);
                 return;
             }
 
-            if (_checkpoints.TryGetValue(checkpoint.Id, out Checkpoint existing) && existing != null &&
-                existing != checkpoint)
+            if (_checkpoints.TryGetValue(checkpoint.Id, out Checkpoint existing) && existing != null && existing != checkpoint)
             {
-                Debug.LogError(
-                    $"Duplicate checkpoint ID '{checkpoint.Id}'. Objects: '{existing.name}' and '{checkpoint.name}'.",
-                    checkpoint);
+                Debug.LogError($"Duplicate checkpoint ID '{checkpoint.Id}'. Objects: '{existing.name}' and '{checkpoint.name}'.", checkpoint);
                 return;
             }
 
             _checkpoints[checkpoint.Id] = checkpoint;
 
-            if (_activeCheckpoint == null &&
-                string.Equals(_activeCheckpointId, checkpoint.Id, StringComparison.Ordinal))
+            if (_activeCheckpoint == null && string.Equals(_activeCheckpointId, checkpoint.Id, StringComparison.Ordinal))
                 SetRuntimeActiveCheckpoint(checkpoint);
         }
 
@@ -96,8 +90,7 @@ namespace SAS.Checkpoints
 
             if (string.IsNullOrWhiteSpace(groupId))
             {
-                Debug.LogError($"Cannot register spawn-point group " + $"'{group.name}' because its ID is empty.",
-                    group);
+                Debug.LogError($"Cannot register spawn-point group " + $"'{group.name}' because its ID is empty.", group);
                 return;
             }
 
@@ -184,8 +177,7 @@ namespace SAS.Checkpoints
                 if (!CanActivate(checkpoint))
                     return false;
 
-                ActiveCheckpointData checkpointData =
-                    checkpoint.CreateProgressData();
+                ActiveCheckpointData checkpointData = checkpoint.CreateProgressData();
 
                 bool saved = await _progressService.ActivateCheckpointAsync(checkpointData);
                 if (!saved)

@@ -56,9 +56,7 @@ namespace SAS.Checkpoints
             if (m_SpawnPoints == null || m_SpawnPoints.Length == 0)
                 return false;
 
-            int startIndex = PositiveModulo(
-                playerId,
-                m_SpawnPoints.Length);
+            int startIndex = PositiveModulo(playerId, m_SpawnPoints.Length);
 
             for (int offset = 0; offset < m_SpawnPoints.Length; offset++)
             {
