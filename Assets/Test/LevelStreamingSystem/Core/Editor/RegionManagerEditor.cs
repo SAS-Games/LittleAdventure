@@ -138,6 +138,19 @@ namespace LevelStreaming.Editor
 
         private void DrawRegionBounds(RegionManager manager, RegionManager.Region region)
         {
+            if (region.Volume is PolygonStreamingVolume polygon)
+            {
+                PolygonStreamingVolumeEditorUtility.DrawWire(polygon, Color.yellow);
+                PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
+                    polygon,
+                    manager,
+                    "Modify Region Polygon");
+                Handles.Label(
+                    polygon.BroadphaseBounds.center + Vector3.up * polygon.BroadphaseBounds.extents.y,
+                    region.RegionName);
+                return;
+            }
+
             if (region.HasCustomVolume)
             {
                 Bounds envelope = region.BroadphaseBounds;

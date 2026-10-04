@@ -2,8 +2,8 @@
 
 The runtime makes load, activation, unload, and portal decisions through
 `IStreamingVolume`. The existing axis-aligned box is `BoxStreamingVolume`.
-This refactor introduces the extension points; it does not add irregular shape
-implementations or shape editing tools.
+Irregular side-scroller sections use `PolygonStreamingVolume`, a concave-capable
+world-space XY outline extruded between Back Z and Front Z.
 
 ## Contracts
 
@@ -26,6 +26,19 @@ class from `StreamingVolume` for region/portal geometry stored by Unity's
 any other supported shape types; the streaming controller does not change.
 Do not depend on a collider in an unloaded content scene. Bake persistent shape
 data or otherwise make the geometry available before content loads.
+
+## Polygon regions
+
+Choose **Polygon Prism** from a region's **Region Shape** field. The cached bounds
+remain the content placement anchor and fallback box; switching shape creates a
+rectangle from those bounds as the initial polygon. Expand **Shape Data** to edit
+the XY vertex list and depth range. With **Edit Shape In Scene View** enabled,
+drag the yellow point handles to shape the outline.
+
+Vertices may run clockwise or counter-clockwise, and concave outlines are supported.
+The outline must contain at least three finite points, have non-zero area, and must
+not cross itself. Boundary contact counts as intersection. Polygon/box and
+polygon/polygon queries are exact in XY and also require their Z ranges to overlap.
 
 ## Provider and region extension points
 
@@ -70,15 +83,13 @@ Selection and unload base classes retain box-query convenience overloads for
 callers. Custom subclasses must override the new `IStreamingVolume` signature.
 `QuadtreeNode.Query` likewise now accepts a volume.
 
-The existing box authoring tools and Phase 1 WorldAuthoring grid/profile/manifest
-schemas remain box-based. Custom volumes currently require their own assignment
-and authoring workflow. Box Apply/Refresh commands reject custom region volumes;
-Scene-view handles do not resize their envelopes. Generic gizmos show enclosing
-boxes for debugging, not the exact boundary. Shape-specific authoring, validation,
-and visualization can be added alongside each future geometry implementation.
+The existing box Apply/Refresh tools and Phase 1 WorldAuthoring grid/profile/manifest
+schemas remain box-based. Apply/Refresh are disabled for polygon regions. Polygon
+outlines have their own Scene-view handles, validation, and exact gizmos.
 
-`Tests/Editor/StreamingVolumeTests.cs` exercises a test-only volume with an empty
-gap inside its envelope, reverse dispatch, selector/index paths, activation and
-post-load activation, unload and portal protection. Native provider sampling,
-camera rotation, adaptive metadata/prediction, and readiness recovery are covered
-by `Tests/Editor/AdaptiveStreamingBoundsProviderTests.cs`.
+`Tests/Editor/StreamingVolumeTests.cs` covers concave polygon containment,
+polygon/box and polygon/polygon intersection, contact, depth separation,
+serialization, invalid outlines, reverse dispatch, selector/index paths,
+activation, unload, and portal protection. Native provider sampling, camera
+rotation, adaptive metadata/prediction, and readiness recovery are covered by
+`Tests/Editor/AdaptiveStreamingBoundsProviderTests.cs`.

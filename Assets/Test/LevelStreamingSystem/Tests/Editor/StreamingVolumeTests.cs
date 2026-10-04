@@ -29,6 +29,17 @@ namespace LevelStreaming.Tests
         private static BoxStreamingVolume Box(float x, float size = 1f) =>
             new(new Bounds(new Vector3(x, 0f, 0f), Vector3.one * size));
 
+        private static PolygonStreamingVolume LShape(float minZ = -1f, float maxZ = 1f) =>
+            new(new[]
+            {
+                new Vector2(-4f, -4f),
+                new Vector2(4f, -4f),
+                new Vector2(4f, -1f),
+                new Vector2(-1f, -1f),
+                new Vector2(-1f, 4f),
+                new Vector2(-4f, 4f)
+            }, minZ, maxZ);
+
         private sealed class VolumeProvider : IStreamingVolumeProvider
         {
             public IStreamingVolume Query;
@@ -55,6 +66,78 @@ namespace LevelStreaming.Tests
         {
             Assert.Throws<NotSupportedException>(() =>
                 StreamingVolumeIntersection.Intersects(new SplitVolume(), new SplitVolume()));
+        }
+
+        [Test]
+        public void PolygonPrism_ContainsConcaveAreaAndBoundaryOnlyWithinItsDepth()
+        {
+            PolygonStreamingVolume polygon = LShape();
+
+            Assert.That(polygon.IsValid, Is.True);
+            Assert.That(polygon.Contains(new Vector3(-3f, 3f, 0f)), Is.True);
+            Assert.That(polygon.Contains(new Vector3(3f, -3f, 0f)), Is.True);
+            Assert.That(polygon.Contains(new Vector3(2f, 2f, 0f)), Is.False);
+            Assert.That(polygon.Contains(new Vector3(-1f, 2f, 0f)), Is.True);
+            Assert.That(polygon.Contains(new Vector3(-3f, 3f, 2f)), Is.False);
+        }
+
+        [Test]
+        public void PolygonPrism_BoxIntersectionRejectsConcaveGapAndIncludesContact()
+        {
+            PolygonStreamingVolume polygon = LShape();
+            var gap = new BoxStreamingVolume(new Bounds(new Vector3(2f, 2f, 0f), Vector3.one));
+            var occupied = new BoxStreamingVolume(new Bounds(new Vector3(-3f, 2f, 0f), Vector3.one));
+            var touching = new BoxStreamingVolume(new Bounds(new Vector3(0f, 2f, 0f), new Vector3(2f, 1f, 1f)));
+            var beyondDepth = new BoxStreamingVolume(new Bounds(new Vector3(-3f, 2f, 3f), Vector3.one));
+
+            Assert.That(polygon.BroadphaseBounds.Intersects(gap.Bounds), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(polygon, gap), Is.False);
+            Assert.That(StreamingVolumeIntersection.Intersects(gap, polygon), Is.False);
+            Assert.That(StreamingVolumeIntersection.Intersects(polygon, occupied), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(polygon, touching), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(polygon, beyondDepth), Is.False);
+        }
+
+        [Test]
+        public void PolygonPrism_IntersectsOtherPolygonsExactlyAndSymmetrically()
+        {
+            PolygonStreamingVolume region = LShape();
+            var inGap = new PolygonStreamingVolume(new[]
+            {
+                new Vector2(1f, 1f), new Vector2(1f, 3f),
+                new Vector2(3f, 3f), new Vector2(3f, 1f)
+            }, -0.5f, 0.5f);
+            var crossing = new PolygonStreamingVolume(new[]
+            {
+                new Vector2(-2f, 0f), new Vector2(-2f, 2f),
+                new Vector2(2f, 2f), new Vector2(2f, 0f)
+            }, -0.5f, 0.5f);
+            var beyondDepth = new PolygonStreamingVolume(crossing.Vertices, 2f, 3f);
+
+            Assert.That(StreamingVolumeIntersection.Intersects(region, inGap), Is.False);
+            Assert.That(StreamingVolumeIntersection.Intersects(inGap, region), Is.False);
+            Assert.That(StreamingVolumeIntersection.Intersects(region, crossing), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(crossing, region), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(region, beyondDepth), Is.False);
+        }
+
+        [Test]
+        public void PolygonPrism_RejectsCrossedOutlineAndRoundTripsSerialization()
+        {
+            var crossed = new PolygonStreamingVolume(new[]
+            {
+                new Vector2(-1f, -1f), new Vector2(1f, 1f),
+                new Vector2(-1f, 1f), new Vector2(1f, -1f)
+            }, -1f, 1f);
+            Assert.That(crossed.IsValid, Is.False);
+            Assert.That(crossed.HasSelfIntersections(), Is.True);
+
+            var region = new RegionManager.Region();
+            region.SetVolume(LShape(-2f, 3f));
+            var restored = JsonUtility.FromJson<RegionManager.Region>(JsonUtility.ToJson(region));
+            Assert.That(restored.Volume, Is.TypeOf<PolygonStreamingVolume>());
+            Assert.That(restored.Volume.Contains(new Vector3(-3f, 3f, 2f)), Is.True);
+            Assert.That(restored.Volume.Contains(new Vector3(2f, 2f, 0f)), Is.False);
         }
 
         [Test]

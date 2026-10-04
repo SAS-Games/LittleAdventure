@@ -61,6 +61,7 @@ namespace LevelStreaming.Editor
                         "but Apply Bounds must be performed individually."));
                 }
 
+                ValidateVolume(region.Volume, $"{prefix} volume", issues);
                 ValidateBounds(region.BroadphaseBounds, $"{prefix} volume envelope", issues);
 
                 if (region.UnloadStrategy == null)
@@ -84,6 +85,8 @@ namespace LevelStreaming.Editor
                     else if (!validNames.Contains(portal.TargetRegionName))
                         issues.Add(Error($"{portalPrefix} targets missing region '{portal.TargetRegionName}'."));
 
+                    if (portal.WorldVolume != null)
+                        ValidateVolume(portal.WorldVolume, $"{portalPrefix} volume", issues);
                     ValidateBounds(portal.WorldVolume?.BroadphaseBounds ?? portal.LocalBounds,
                         $"{portalPrefix} volume envelope", issues);
                 }
@@ -165,6 +168,22 @@ namespace LevelStreaming.Editor
                 issues.Add(Error($"{label} contain non-finite values."));
             else if (bounds.size.x <= 0f || bounds.size.y <= 0f || bounds.size.z <= 0f)
                 issues.Add(Error($"{label} must have a positive size."));
+        }
+
+        private static void ValidateVolume(IStreamingVolume volume, string label,
+            List<RegionValidationIssue> issues)
+        {
+            if (volume is not PolygonStreamingVolume polygon || polygon.IsValid)
+                return;
+
+            int vertexCount = polygon.Vertices?.Count ?? 0;
+            if (vertexCount < 3)
+                issues.Add(Error($"{label} needs at least three polygon vertices."));
+            else if (polygon.HasSelfIntersections())
+                issues.Add(Error($"{label} has crossing polygon edges."));
+            else
+                issues.Add(Error(
+                    $"{label} must have finite XY vertices, a non-zero area, and Front Z greater than Back Z."));
         }
 
         private static bool IsFinite(Vector3 value)

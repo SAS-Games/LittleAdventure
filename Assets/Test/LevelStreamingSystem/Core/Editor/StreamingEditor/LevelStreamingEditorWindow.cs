@@ -435,15 +435,21 @@ namespace LevelStreaming.Editor
             DrawSourceButtons(m_Manager.Regions[m_SelectedRegion]);
 
             EditorGUILayout.Space(6f);
-            EditorGUILayout.LabelField("World Bounds", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(region.FindPropertyRelative("cachedBounds"), GUIContent.none, true);
+            EditorGUILayout.LabelField("World Volume", EditorStyles.boldLabel);
+            SerializedProperty cachedBounds = region.FindPropertyRelative("cachedBounds");
+            SerializedProperty volume = region.FindPropertyRelative("volume");
+            EditorGUILayout.PropertyField(cachedBounds, new GUIContent("Placement / Box Bounds"), true);
+            PolygonStreamingVolumeEditorUtility.DrawShapeFieldLayout(volume, cachedBounds.boundsValue);
             using (new EditorGUILayout.HorizontalScope())
             {
-                m_EditRegionBounds = GUILayout.Toggle(m_EditRegionBounds, "Edit In Scene View", "Button");
-                if (GUILayout.Button("Fit From Asset"))
-                    FitSelectedBounds();
-                if (GUILayout.Button("Apply To Asset"))
-                    ApplySelectedBounds();
+                m_EditRegionBounds = GUILayout.Toggle(m_EditRegionBounds, "Edit Shape In Scene View", "Button");
+                using (new EditorGUI.DisabledScope(volume.managedReferenceValue != null))
+                {
+                    if (GUILayout.Button("Fit From Asset"))
+                        FitSelectedBounds();
+                    if (GUILayout.Button("Apply To Asset"))
+                        ApplySelectedBounds();
+                }
             }
 
             EditorGUILayout.Space(6f);
@@ -738,8 +744,13 @@ namespace LevelStreaming.Editor
 
                 bool selected = i == m_SelectedRegion;
                 Color color = selected ? Color.yellow : GetRegionColor(region.Type);
-                Handles.color = color;
-                Handles.DrawWireCube(region.BroadphaseBounds.center, region.BroadphaseBounds.size);
+                if (region.Volume is PolygonStreamingVolume polygon)
+                    PolygonStreamingVolumeEditorUtility.DrawWire(polygon, color);
+                else
+                {
+                    Handles.color = color;
+                    Handles.DrawWireCube(region.BroadphaseBounds.center, region.BroadphaseBounds.size);
+                }
 
                 Vector3 labelPosition = region.BroadphaseBounds.center + Vector3.up * region.BroadphaseBounds.extents.y;
                 float handleSize = HandleUtility.GetHandleSize(labelPosition) * 0.08f;
@@ -770,7 +781,24 @@ namespace LevelStreaming.Editor
         private void DrawSelectedRegionHandle()
         {
             RegionManager.Region region = m_Manager.Regions[m_SelectedRegion];
-            if (region.HasCustomVolume) return;
+            if (region.Volume is PolygonStreamingVolume polygon)
+            {
+                Handles.color = Color.yellow;
+                if (!PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
+                        polygon,
+                        m_Manager,
+                        "Edit Streaming Region Polygon"))
+                    return;
+
+                RegionEditorCommands.MarkDirty(m_Manager);
+                _serializedManager?.Update();
+                RefreshValidation();
+                Repaint();
+                return;
+            }
+
+            if (region.HasCustomVolume)
+                return;
             _regionHandle.center = region.CachedBounds.center;
             _regionHandle.size = region.CachedBounds.size;
             Handles.color = Color.yellow;
@@ -1073,7 +1101,9 @@ namespace LevelStreaming.Editor
         private static MessageType GetRegionStatus(RegionManager.Region region)
         {
             if (region == null || string.IsNullOrWhiteSpace(region.RegionName) ||
-                !IsUsableBounds(region.CachedBounds) || GetSourceAsset(region) == null)
+                !IsUsableBounds(region.BroadphaseBounds) ||
+                region.Volume is PolygonStreamingVolume { IsValid: false } ||
+                GetSourceAsset(region) == null)
                 return MessageType.Error;
             return region.UnloadStrategy == null ? MessageType.Warning : MessageType.Info;
         }

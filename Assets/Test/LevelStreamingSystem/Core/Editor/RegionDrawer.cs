@@ -12,6 +12,7 @@ namespace LevelStreaming.Editor
                 return EditorGUIUtility.singleLineHeight;
 
             var boundsProp = property.FindPropertyRelative("cachedBounds");
+            var volumeProp = property.FindPropertyRelative("volume");
             var portalsProp = property.FindPropertyRelative("portals");
             var typeProp = property.FindPropertyRelative("type");
             SerializedProperty sourceProp = GetSourceProperty(property,
@@ -33,6 +34,9 @@ namespace LevelStreaming.Editor
 
             // Bounds
             height += EditorGUI.GetPropertyHeight(boundsProp, true) + space;
+
+            // Exact streaming shape
+            height += PolygonStreamingVolumeEditorUtility.GetShapeFieldHeight(volumeProp) + space;
 
             // Fit/apply buttons
             height += line + space;
@@ -73,6 +77,7 @@ namespace LevelStreaming.Editor
             var prefabProp = property.FindPropertyRelative("prefabRef");
             var addressableSceneProp = property.FindPropertyRelative("addressableSceneRef");
             var boundsProp = property.FindPropertyRelative("cachedBounds");
+            var volumeProp = property.FindPropertyRelative("volume");
             var portalsProp = property.FindPropertyRelative("portals");
             var unloadProp = property.FindPropertyRelative("unloadStrategy");
 
@@ -105,6 +110,14 @@ namespace LevelStreaming.Editor
             float boundsHeight = EditorGUI.GetPropertyHeight(boundsProp, true);
             EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, boundsHeight), boundsProp, true);
             rect.y += boundsHeight + space;
+
+            float shapeHeight = PolygonStreamingVolumeEditorUtility.GetShapeFieldHeight(volumeProp);
+            PolygonStreamingVolumeEditorUtility.DrawShapeField(
+                new Rect(rect.x, rect.y, rect.width, shapeHeight),
+                volumeProp,
+                boundsProp.boundsValue);
+            rect.y += shapeHeight + space;
+
             float buttonGap = 4f;
             float buttonWidth = (rect.width - buttonGap) * 0.5f;
             Rect refreshButton = new Rect(rect.x, rect.y, buttonWidth, line);

@@ -93,10 +93,15 @@ namespace LevelStreaming
                 Color fillColor = new(wireColor.r, wireColor.g, wireColor.b, 0.1f);
                 Bounds bounds = region.BroadphaseBounds;
 
-                Gizmos.color = fillColor;
-                Gizmos.DrawCube(bounds.center, bounds.size);
-                Gizmos.color = wireColor;
-                Gizmos.DrawWireCube(bounds.center, bounds.size);
+                if (region.Volume is PolygonStreamingVolume polygon)
+                    DrawPolygonGizmo(polygon, wireColor);
+                else
+                {
+                    Gizmos.color = fillColor;
+                    Gizmos.DrawCube(bounds.center, bounds.size);
+                    Gizmos.color = wireColor;
+                    Gizmos.DrawWireCube(bounds.center, bounds.size);
+                }
 
                 Handles.Label(bounds.center + Vector3.up * bounds.extents.y,
                     string.IsNullOrWhiteSpace(region.RegionName) ? region.Type.ToString() : region.RegionName);
@@ -109,12 +114,41 @@ namespace LevelStreaming
                     if (portal == null)
                         continue;
 
-                    Vector3 worldCenter = region.Origin + portal.LocalBounds.center;
-                    Gizmos.color = new Color(1f, 1f, 0f, 0.1f);
-                    Gizmos.DrawCube(worldCenter, portal.LocalBounds.size);
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawWireCube(worldCenter, portal.LocalBounds.size);
+                    if (portal.WorldVolume is PolygonStreamingVolume portalPolygon)
+                    {
+                        DrawPolygonGizmo(portalPolygon, Color.yellow);
+                    }
+                    else
+                    {
+                        Bounds portalBounds = portal.WorldVolume?.BroadphaseBounds ?? portal.LocalBounds;
+                        if (portal.WorldVolume == null)
+                            portalBounds.center += region.Origin;
+                        Gizmos.color = new Color(1f, 1f, 0f, 0.1f);
+                        Gizmos.DrawCube(portalBounds.center, portalBounds.size);
+                        Gizmos.color = Color.yellow;
+                        Gizmos.DrawWireCube(portalBounds.center, portalBounds.size);
+                    }
                 }
+            }
+        }
+
+        private static void DrawPolygonGizmo(PolygonStreamingVolume polygon, Color color)
+        {
+            if (polygon?.Vertices == null || polygon.Vertices.Count < 2)
+                return;
+
+            Gizmos.color = color;
+            for (int i = 0; i < polygon.Vertices.Count; i++)
+            {
+                Vector2 current = polygon.Vertices[i];
+                Vector2 next = polygon.Vertices[(i + 1) % polygon.Vertices.Count];
+                Vector3 backCurrent = new(current.x, current.y, polygon.MinZ);
+                Vector3 backNext = new(next.x, next.y, polygon.MinZ);
+                Vector3 frontCurrent = new(current.x, current.y, polygon.MaxZ);
+                Vector3 frontNext = new(next.x, next.y, polygon.MaxZ);
+                Gizmos.DrawLine(backCurrent, backNext);
+                Gizmos.DrawLine(frontCurrent, frontNext);
+                Gizmos.DrawLine(backCurrent, frontCurrent);
             }
         }
     }
