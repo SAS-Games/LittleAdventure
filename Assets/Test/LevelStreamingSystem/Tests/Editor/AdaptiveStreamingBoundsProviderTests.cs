@@ -1,10 +1,130 @@
 using NUnit.Framework;
+using System.Reflection;
 using UnityEngine;
 
 namespace LevelStreaming.Tests
 {
     public sealed class AdaptiveStreamingBoundsProviderTests
     {
+        private static void SetField(object target, string name, object value) =>
+            target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(target, value);
+
+        [Test]
+        public void DefaultProvider_SamplesAllBoxesAtCurrentPositionAndReusesGeometry()
+        {
+            var owner = new GameObject("Default volume provider test");
+            owner.SetActive(false);
+            try
+            {
+                IStreamingVolumeProvider provider = owner.AddComponent<DefaultStreamingBoundsProvider>();
+                owner.transform.position = new Vector3(1f, 2f, 3f);
+                Assert.That(provider.TryGetVolumes(out var first), Is.True);
+                Assert.That(first.IsValid, Is.True);
+                Assert.That(first.Activate, Is.TypeOf<BoxStreamingVolume>());
+                Assert.That(first.Activate.BroadphaseBounds, Is.EqualTo(new Bounds(owner.transform.position, new Vector3(10f, 5f, 10f))));
+                Assert.That(first.Load.BroadphaseBounds, Is.EqualTo(new Bounds(owner.transform.position, new Vector3(20f, 10f, 20f))));
+                Assert.That(first.Unload.BroadphaseBounds, Is.EqualTo(new Bounds(owner.transform.position, new Vector3(30f, 15f, 30f))));
+
+                owner.transform.position = new Vector3(10f, 20f, 30f);
+                Assert.That(provider.TryGetVolumes(out var next), Is.True);
+                Assert.That(next.Activate.BroadphaseBounds.center, Is.EqualTo(owner.transform.position));
+                Assert.That(next.Load.BroadphaseBounds.center, Is.EqualTo(owner.transform.position));
+                Assert.That(next.Unload.BroadphaseBounds.center, Is.EqualTo(owner.transform.position));
+                Assert.That(next.ObserverPosition, Is.EqualTo(owner.transform.position));
+                Assert.That(next.Revision, Is.GreaterThan(first.Revision));
+                Assert.That(next.Activate, Is.SameAs(first.Activate));
+                Assert.That(next.Load, Is.SameAs(first.Load));
+                Assert.That(next.Unload, Is.SameAs(first.Unload));
+            }
+            finally { Object.DestroyImmediate(owner); }
+        }
+
+        [Test]
+        public void CameraProvider_PreservesRotatedAabbAndForwardBias()
+        {
+            var owner = new GameObject("Camera volume provider test");
+            owner.SetActive(false);
+            try
+            {
+                owner.AddComponent<Camera>();
+                IStreamingVolumeProvider provider = owner.AddComponent<CameraFrustumStreamingBoundsProvider>();
+                owner.transform.position = new Vector3(1f, 2f, 3f);
+                owner.transform.rotation = Quaternion.Euler(0f, 45f, 0f);
+                Assert.That(provider.TryGetVolumes(out var sample), Is.True);
+                Vector3 center = owner.transform.position + owner.transform.forward * 15f;
+                Assert.That(sample.Activate.BroadphaseBounds.center, Is.EqualTo(center));
+                Assert.That(sample.Load.BroadphaseBounds.center, Is.EqualTo(center));
+                Assert.That(sample.Unload.BroadphaseBounds.center, Is.EqualTo(center));
+
+                // The existing implementation encloses all eight oriented-box corners.
+                Vector3 extents = new Vector3(15f, 8f, 15f * 1.5f) * 0.5f;
+                for (int x = -1; x <= 1; x += 2)
+                for (int y = -1; y <= 1; y += 2)
+                for (int z = -1; z <= 1; z += 2)
+                {
+                    Vector3 corner = center + owner.transform.rotation * Vector3.Scale(extents, new Vector3(x, y, z));
+                    Assert.That(sample.Activate.BroadphaseBounds.SqrDistance(corner), Is.LessThan(0.00001f));
+                }
+                Assert.That(sample.ObserverPosition, Is.EqualTo(owner.transform.position));
+                Assert.That(sample.Activate, Is.TypeOf<BoxStreamingVolume>());
+            }
+            finally { Object.DestroyImmediate(owner); }
+        }
+
+        [Test]
+        public void AdaptiveProvider_PreservesPredictionZoomMetadataAndNesting()
+        {
+            var owner = new GameObject("Adaptive volume provider test");
+            owner.SetActive(false);
+            try
+            {
+                var provider = owner.AddComponent<AdaptiveStreamingBoundsProvider>();
+                SetField(provider, "m_ViewMode", StreamingViewMode.TargetWithZoomMultiplier);
+                SetField(provider, "m_ZoomInput", StreamingZoomInput.Manual);
+                owner.transform.position = new Vector3(3f, 4f, 5f);
+                provider.SetManualZoom(0.75f);
+                provider.SetVelocity(new Vector3(10f, 20f, 0f));
+                Assert.That(((IStreamingVolumeProvider)provider).TryGetVolumes(out var first), Is.True);
+                Assert.That(first.IsValid, Is.True);
+                Assert.That(first.ObserverPosition, Is.EqualTo(owner.transform.position));
+                Assert.That(first.Velocity, Is.EqualTo(new Vector3(10f, 0f, 0f)));
+                Assert.That(first.NormalizedZoom, Is.EqualTo(0.75f));
+                Assert.That(first.Activate.BroadphaseBounds.center, Is.EqualTo(owner.transform.position + Vector3.right * 15f));
+                Assert.That(first.Load.BroadphaseBounds.Contains(first.Activate.BroadphaseBounds.min), Is.True);
+                Assert.That(first.Load.BroadphaseBounds.Contains(first.Activate.BroadphaseBounds.max), Is.True);
+                Assert.That(first.Unload.BroadphaseBounds.Contains(first.Load.BroadphaseBounds.min), Is.True);
+                Assert.That(first.Unload.BroadphaseBounds.Contains(first.Load.BroadphaseBounds.max), Is.True);
+
+                owner.transform.position = new Vector3(30f, 40f, 50f);
+                provider.ResetPrediction();
+                Assert.That(provider.TryGetVolumes(out var next), Is.True);
+                Assert.That(next.ObserverPosition, Is.EqualTo(owner.transform.position));
+                Assert.That(next.Revision, Is.GreaterThan(first.Revision));
+                Assert.That(next.Activate, Is.SameAs(first.Activate));
+                Assert.That(next.Load, Is.SameAs(first.Load));
+                Assert.That(next.Unload, Is.SameAs(first.Unload));
+            }
+            finally { Object.DestroyImmediate(owner); }
+        }
+
+        [Test]
+        public void AdaptiveProvider_MissingObserverReturnsInvalidSampleAndRecovers()
+        {
+            var owner = new GameObject("Unavailable adaptive volume provider test");
+            owner.SetActive(false);
+            try
+            {
+                var provider = owner.AddComponent<AdaptiveStreamingBoundsProvider>();
+                SetField(provider, "m_UseSelfWhenTargetMissing", false);
+                Assert.That(provider.TryGetVolumes(out var sample), Is.False);
+                Assert.That(sample.IsValid, Is.False);
+                provider.SetTarget(owner.transform);
+                Assert.That(provider.TryGetVolumes(out sample), Is.True);
+                Assert.That(sample.IsValid, Is.True);
+            }
+            finally { Object.DestroyImmediate(owner); }
+        }
+
         [Test]
         public void Normalize_AcceptsReversedRangesAndClamps()
         {

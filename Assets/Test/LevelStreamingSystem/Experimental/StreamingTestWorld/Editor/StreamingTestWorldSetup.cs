@@ -10,7 +10,7 @@ namespace LevelStreaming.TestWorld.Editor
     [InitializeOnLoad]
     internal static class StreamingTestWorldSetup
     {
-        private const string Root = "Assets/Test/LevelStreamingSystem/StreamingTestWorld";
+        private const string Root = "Assets/Test/LevelStreamingSystem/Experimental/StreamingTestWorld";
         private const string PersistentScene = Root + "/StreamingTestPersistent.unity";
         private const int GridSize = 5;
 

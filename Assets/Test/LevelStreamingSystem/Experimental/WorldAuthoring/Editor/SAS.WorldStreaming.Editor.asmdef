@@ -1,0 +1,19 @@
+{
+    "name": "SAS.WorldStreaming.Editor",
+    "rootNamespace": "SAS.WorldStreaming.Editor",
+    "references": [
+        "SAS.WorldStreaming.Runtime",
+        "LevelStreaming.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
