@@ -8,13 +8,13 @@ internal static class AdaptiveStreamingBoundsProviderGizmoDrawer
     private static void DrawStreamingBounds(AdaptiveStreamingBoundsProvider provider, GizmoType _)
     {
         if (!provider.DrawGizmos ||
-            !provider.TryGetDebugBounds(out StreamingBoundsSnapshot sample,
+            !provider.TryGetDebugVolumes(out StreamingVolumeSnapshot sample,
                 out Bounds cameraFootprint, out bool hasCameraFootprint))
             return;
 
-        DrawBounds(sample.Unload, new Color(1f, 0.25f, 0.2f, 0.8f));
-        DrawBounds(sample.Load, new Color(1f, 0.85f, 0.1f, 0.9f));
-        DrawBounds(sample.Activate, new Color(0.1f, 0.55f, 1f, 0.9f));
+        DrawBounds(sample.Unload.BroadphaseBounds, new Color(1f, 0.25f, 0.2f, 0.8f));
+        DrawBounds(sample.Load.BroadphaseBounds, new Color(1f, 0.85f, 0.1f, 0.9f));
+        DrawBounds(sample.Activate.BroadphaseBounds, new Color(0.1f, 0.55f, 1f, 0.9f));
 
         Gizmos.color = Color.green;
         Gizmos.DrawLine(sample.ObserverPosition, sample.ObserverPosition + sample.Velocity);

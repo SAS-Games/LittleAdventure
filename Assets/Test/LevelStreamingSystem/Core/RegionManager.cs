@@ -13,6 +13,9 @@ namespace LevelStreaming
         {
             [field: SerializeField] public string TargetRegionName { get; private set; }
             [field: SerializeField] public Bounds LocalBounds { get; set; }=new Bounds(Vector3.zero, Vector3.one);
+            // Optional world-space geometry. Legacy portals keep their local box and region anchor.
+            [SerializeReference] private StreamingVolume worldVolume;
+            public StreamingVolume WorldVolume { get => worldVolume; set => worldVolume = value; }
         }
 
         public enum RegionType
@@ -38,6 +41,8 @@ namespace LevelStreaming
             [SerializeField] private RegionType type;
             [FormerlySerializedAs("<CachedBounds>k__BackingField")]
             [SerializeField] private Bounds cachedBounds = new Bounds(Vector3.zero, Vector3.one*2);
+            [SerializeReference] private StreamingVolume volume;
+            [NonSerialized] private BoxStreamingVolume legacyVolume;
             [FormerlySerializedAs("<Portals>k__BackingField")]
             [SerializeField] private List<Portal> portals = new();
             [FormerlySerializedAs("<UnloadStrategy>k__BackingField")]
@@ -49,9 +54,37 @@ namespace LevelStreaming
             public string RegionName => regionName;
             public RegionType Type => type;
             public Bounds CachedBounds { get => cachedBounds; set => cachedBounds = value; }
+            /// <summary>Null serialized volume uses the existing cached box without asset migration.</summary>
+            public IStreamingVolume Volume
+            {
+                get
+                {
+                    if (volume != null) return volume;
+                    legacyVolume ??= new BoxStreamingVolume(cachedBounds);
+                    legacyVolume.Bounds = cachedBounds;
+                    return legacyVolume;
+                }
+            }
+            public Bounds BroadphaseBounds => Volume.BroadphaseBounds;
+            public bool HasCustomVolume => volume != null;
+            // Placement/portal anchor is independent of the custom volume's enclosing box.
+            public Vector3 Origin => cachedBounds.center;
+            public void SetVolume(StreamingVolume value) => volume = value;
+            public bool Intersects(IStreamingVolume query) => StreamingVolumeIntersection.Intersects(Volume, query);
             public List<Portal> Portals => portals;
             public UnloadStrategy UnloadStrategy => unloadStrategy;
             [NonSerialized] public List<Bounds> CachedWorldPortalBounds = new();
+            [NonSerialized] private List<BoxStreamingVolume> cachedPortalVolumes = new();
+
+            public IStreamingVolume GetPortalVolume(int index)
+            {
+                if (Portals[index]?.WorldVolume != null) return Portals[index].WorldVolume;
+                // Retain compatibility with callers that update the public cached box list.
+                while (cachedPortalVolumes.Count <= index)
+                    cachedPortalVolumes.Add(new BoxStreamingVolume(default));
+                cachedPortalVolumes[index].Bounds = CachedWorldPortalBounds[index];
+                return cachedPortalVolumes[index];
+            }
 
             /// <summary>
             /// Rebuild the portal bounds in world-space using the region's cached bounds.
@@ -73,7 +106,7 @@ namespace LevelStreaming
                     }
 
                     var b = portal.LocalBounds;
-                    b.center += CachedBounds.center;
+                    b.center += Origin;
                     CachedWorldPortalBounds.Add(b);
                 }
             }
@@ -155,7 +188,7 @@ namespace LevelStreaming
 
         public bool IsRegionDesired(Region region) => region != null && _desiredRegions.Contains(region);
 
-        public List<Region> FindRegionsInRange(Bounds queryBounds)
+        public List<Region> FindRegionsInRange(IStreamingVolume queryVolume)
         {
             if (ActiveRegionSelectionStrategy == null)
             {
@@ -163,8 +196,11 @@ namespace LevelStreaming
                 return new List<Region>();
             }
 
-            return ActiveRegionSelectionStrategy.GetNearbyRegions(queryBounds);
+            return ActiveRegionSelectionStrategy.GetNearbyRegions(queryVolume);
         }
+
+        public List<Region> FindRegionsInRange(Bounds queryBounds) =>
+            FindRegionsInRange(new BoxStreamingVolume(queryBounds));
 
         private void BuildLookup()
         {

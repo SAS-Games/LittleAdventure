@@ -36,11 +36,11 @@ namespace LevelStreaming.Editor
 
                 if (!hasRegion)
                 {
-                    worldBounds = region.CachedBounds;
+                    worldBounds = region.BroadphaseBounds;
                     hasRegion = true;
                 }
                 else
-                    worldBounds.Encapsulate(region.CachedBounds);
+                    worldBounds.Encapsulate(region.BroadphaseBounds);
             }
 
             if (!hasRegion)

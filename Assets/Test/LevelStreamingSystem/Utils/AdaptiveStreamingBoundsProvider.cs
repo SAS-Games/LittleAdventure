@@ -33,7 +33,7 @@ namespace LevelStreaming
     /// ground plane, expands immediately, and contracts gradually to avoid churn.
     /// </summary>
     [DefaultExecutionOrder(-100), DisallowMultipleComponent]
-    public sealed class AdaptiveStreamingBoundsProvider : MonoBehaviour, IStreamingBoundsSnapshotProvider
+    public sealed class AdaptiveStreamingBoundsProvider : MonoBehaviour, IStreamingVolumeProvider
     {
         [Header("Registration")]
         [SerializeField] private RegionStreamingController m_Controller;
@@ -89,7 +89,10 @@ namespace LevelStreaming
         [SerializeField] private bool m_DrawGizmos = true;
         [SerializeField] private bool m_DrawCameraFootprint = true;
 
-        private StreamingBoundsSnapshot _snapshot;
+        private readonly BoxStreamingVolume _activateVolume = new(default);
+        private readonly BoxStreamingVolume _loadVolume = new(default);
+        private readonly BoxStreamingVolume _unloadVolume = new(default);
+        private StreamingVolumeSnapshot _snapshot;
         private Bounds _lastCameraFootprint;
         private Vector3 _lastTargetPosition;
         private Vector3 _smoothedVelocity;
@@ -184,29 +187,11 @@ namespace LevelStreaming
             _hasCameraFootprint = false;
         }
 
-        public Bounds GetLoadBounds()
+        public bool TryGetVolumes(out StreamingVolumeSnapshot snapshot)
         {
             EnsureSnapshot();
-            return _snapshot.Load;
-        }
-
-        public Bounds GetUnloadBounds()
-        {
-            EnsureSnapshot();
-            return _snapshot.Unload;
-        }
-
-        public Bounds GetActivateBounds()
-        {
-            EnsureSnapshot();
-            return _snapshot.Activate;
-        }
-
-        public bool TryGetSnapshot(out StreamingBoundsSnapshot snapshot)
-        {
-            EnsureSnapshot();
-            snapshot = _snapshot;
-            return _hasSnapshot;
+            snapshot = _hasSnapshot ? _snapshot : default;
+            return _hasSnapshot && snapshot.IsValid;
         }
 
         private void EnsureSnapshot()
@@ -248,7 +233,7 @@ namespace LevelStreaming
 
             float zoom = EvaluateZoom();
             Vector3 predictedCenter = observerPosition + prediction;
-            StreamingBoundsSnapshot desired = CreateDesiredSnapshot(observerPosition, predictedCenter, zoom);
+            var desired = CreateDesiredBounds(observerPosition, predictedCenter, zoom);
 
             Bounds activate = desired.Activate;
             Bounds load = desired.Load;
@@ -256,18 +241,22 @@ namespace LevelStreaming
 
             if (_hasSnapshot && !forceSnap)
             {
-                load = ContractBounds(_snapshot.Load, load, m_LoadShrinkSpeed, deltaTime);
-                unload = ContractBounds(_snapshot.Unload, unload, m_UnloadShrinkSpeed, deltaTime);
+                load = ContractBounds(_loadVolume.Bounds, load, m_LoadShrinkSpeed, deltaTime);
+                unload = ContractBounds(_unloadVolume.Bounds, unload, m_UnloadShrinkSpeed, deltaTime);
             }
 
             load = Encapsulate(load, activate);
             unload = Encapsulate(unload, load);
 
-            _snapshot = new StreamingBoundsSnapshot(activate, load, unload, observerPosition, _smoothedVelocity, zoom, ++_revision);
+            _activateVolume.Bounds = activate;
+            _loadVolume.Bounds = load;
+            _unloadVolume.Bounds = unload;
+            _snapshot = new StreamingVolumeSnapshot(_activateVolume, _loadVolume, _unloadVolume,
+                observerPosition, _smoothedVelocity, zoom, ++_revision);
             _hasSnapshot = true;
         }
 
-        private StreamingBoundsSnapshot CreateDesiredSnapshot(Vector3 observerPosition, Vector3 predictedCenter, float zoom)
+        private (Bounds Activate, Bounds Load, Bounds Unload) CreateDesiredBounds(Vector3 observerPosition, Vector3 predictedCenter, float zoom)
         {
             bool useZoom = m_ViewMode != StreamingViewMode.TargetOnly;
             float activateScale = useZoom ? EvaluateScale(m_ActivateScaleByZoom, zoom) : 1f;
@@ -318,7 +307,7 @@ namespace LevelStreaming
 
             load = Encapsulate(load, activate);
             unload = Encapsulate(unload, load);
-            return new StreamingBoundsSnapshot(activate, load, unload, observerPosition, _smoothedVelocity, zoom, _revision + 1);
+            return (activate, load, unload);
         }
 
         private Vector3 GetRawVelocity(Vector3 observerPosition, float deltaTime)
@@ -430,7 +419,7 @@ namespace LevelStreaming
         private void RegisterWithController()
         {
             if (m_Controller != null)
-                m_Controller.SetRegionLoadBoundsProvider(this);
+                m_Controller.SetStreamingVolumeProvider(this);
             else
                 Debug.LogError("No RegionStreamingController was found for this bounds provider.", this);
         }
@@ -538,7 +527,7 @@ namespace LevelStreaming
                 m_Camera = GetComponent<Camera>();
         }
 
-        internal bool TryGetDebugBounds(out StreamingBoundsSnapshot sample,
+        internal bool TryGetDebugVolumes(out StreamingVolumeSnapshot sample,
             out Bounds cameraFootprint, out bool hasCameraFootprint)
         {
             if (_hasSnapshot)
@@ -559,7 +548,11 @@ namespace LevelStreaming
                     m_Camera = GetComponent<Camera>();
 
                 Vector3 position = GetObserverPosition();
-                sample = CreateDesiredSnapshot(position, position, EvaluateZoom());
+                float zoom = EvaluateZoom();
+                var desired = CreateDesiredBounds(position, position, zoom);
+                sample = new StreamingVolumeSnapshot(new BoxStreamingVolume(desired.Activate),
+                    new BoxStreamingVolume(desired.Load), new BoxStreamingVolume(desired.Unload),
+                    position, _smoothedVelocity, zoom, _revision + 1);
             }
 
             cameraFootprint = _lastCameraFootprint;

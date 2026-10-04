@@ -227,13 +227,13 @@ public static class StreamingPersistentSceneMenu
 
             if (!initialized)
             {
-                worldBounds = region.CachedBounds;
+                worldBounds = region.BroadphaseBounds;
                 initialized = true;
             }
             else
             {
-                worldBounds.Encapsulate(region.CachedBounds.min);
-                worldBounds.Encapsulate(region.CachedBounds.max);
+                worldBounds.Encapsulate(region.BroadphaseBounds.min);
+                worldBounds.Encapsulate(region.BroadphaseBounds.max);
             }
         }
 

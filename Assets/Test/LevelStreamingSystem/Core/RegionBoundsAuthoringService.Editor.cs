@@ -13,6 +13,11 @@ namespace LevelStreaming.Editor
         {
             if (region == null)
                 return false;
+            if (region.HasCustomVolume)
+            {
+                Debug.LogWarning("Apply Bounds only supports legacy box regions. Use the custom volume's authoring workflow.");
+                return false;
+            }
 
             switch (region.Type)
             {
@@ -33,6 +38,11 @@ namespace LevelStreaming.Editor
         {
             if (region == null)
                 return false;
+            if (region.HasCustomVolume)
+            {
+                Debug.LogWarning("Refresh Bounds only supports legacy box regions. Use the custom volume's authoring workflow.");
+                return false;
+            }
 
             switch (region.Type)
             {

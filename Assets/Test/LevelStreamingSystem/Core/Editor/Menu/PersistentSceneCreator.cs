@@ -41,7 +41,7 @@ public static class PersistentSceneCreator
             cam.tag = "MainCamera";
         }
 
-        if (cam.GetComponent<IStreamingBoundsProvider>() == null)
+        if (cam.GetComponent<IStreamingVolumeProvider>() == null)
             Undo.AddComponent<AdaptiveStreamingBoundsProvider>(cam.gameObject);
 
         GameObject instance = PrefabUtility.InstantiatePrefab(prefab, newScene) as GameObject;

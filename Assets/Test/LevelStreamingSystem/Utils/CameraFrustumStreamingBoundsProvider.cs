@@ -3,12 +3,12 @@ using UnityEngine;
 namespace LevelStreaming
 {
     /// <summary>
-    /// Produces world-axis-aligned broad-phase bounds around a camera-oriented box.
-    /// The returned Bounds encloses the rotated box because Unity Bounds cannot store
-    /// orientation.
+    /// Produces AABB streaming volumes enclosing a camera-oriented box.
+    /// This implementation retains its enclosing-box behavior; it does not yet test
+    /// an oriented box or the actual camera frustum.
     /// </summary>
     [DefaultExecutionOrder(-1), RequireComponent(typeof(Camera))]
-    public class CameraFrustumStreamingBoundsProvider : MonoBehaviour, IStreamingBoundsProvider
+    public class CameraFrustumStreamingBoundsProvider : MonoBehaviour, IStreamingVolumeProvider
     {
         [SerializeField] private RegionStreamingController m_Controller;
 
@@ -23,6 +23,11 @@ namespace LevelStreaming
 
         [Tooltip("Scale applied along the camera-local forward axis.")]
         [SerializeField, Min(0.01f)] private float forwardScale = 1.5f;
+
+        private readonly BoxStreamingVolume _loadVolume = new(default);
+        private readonly BoxStreamingVolume _activateVolume = new(default);
+        private readonly BoxStreamingVolume _unloadVolume = new(default);
+        private uint _revision;
 
         private void Awake()
         {
@@ -42,14 +47,20 @@ namespace LevelStreaming
             }
 
             if (m_Controller != null)
-                m_Controller.SetRegionLoadBoundsProvider(this);
+                m_Controller.SetStreamingVolumeProvider(this);
             else
                 Debug.LogError("No RegionStreamingController was found for this bounds provider.", this);
         }
 
-        public Bounds GetLoadBounds() => CreateWorldAabb(loadSize);
-        public Bounds GetActivateBounds() => CreateWorldAabb(activateSize);
-        public Bounds GetUnloadBounds() => CreateWorldAabb(unloadSize);
+        public bool TryGetVolumes(out StreamingVolumeSnapshot snapshot)
+        {
+            _activateVolume.Bounds = CreateWorldAabb(activateSize);
+            _loadVolume.Bounds = CreateWorldAabb(loadSize);
+            _unloadVolume.Bounds = CreateWorldAabb(unloadSize);
+            snapshot = new StreamingVolumeSnapshot(_activateVolume, _loadVolume,
+                _unloadVolume, transform.position, revision: ++_revision);
+            return true;
+        }
 
         private Bounds CreateWorldAabb(Vector3 localSize)
         {

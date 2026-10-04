@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LevelStreaming
 {
-    public class DefaultStreamingBoundsProvider : MonoBehaviour, IStreamingBoundsProvider
+    public class DefaultStreamingBoundsProvider : MonoBehaviour, IStreamingVolumeProvider
     {
         [Header("Load/Unload Settings")] [SerializeField]
         private Vector3 m_LoadBoundsSize = new(20, 10, 20);
@@ -10,7 +10,12 @@ namespace LevelStreaming
         [SerializeField] private Vector3 m_ActivateBoundsSize = new(10, 5, 10);
         [SerializeField] private Vector3 m_UnloadBoundsSize = new(30, 15, 30);
 
-        // Cached bounds
+        private readonly BoxStreamingVolume _loadVolume = new(default);
+        private readonly BoxStreamingVolume _activateVolume = new(default);
+        private readonly BoxStreamingVolume _unloadVolume = new(default);
+        private uint _revision;
+
+        // AABB implementation data
         private Bounds _loadBounds;
         private Bounds _activateBounds;
         private Bounds _unloadBounds;
@@ -47,22 +52,15 @@ namespace LevelStreaming
             _unloadBounds.center = transform.position;
         }
 
-        public Bounds GetLoadBounds()
+        public bool TryGetVolumes(out StreamingVolumeSnapshot snapshot)
         {
-            _loadBounds.center = transform.position;
-            return _loadBounds;
-        }
-
-        public Bounds GetUnloadBounds()
-        {
-            _unloadBounds.center = transform.position;
-            return _unloadBounds;
-        }
-
-        public Bounds GetActivateBounds()
-        {
-            _activateBounds.center = transform.position;
-            return _activateBounds;
+            UpdateCachedBounds();
+            _loadVolume.Bounds = _loadBounds;
+            _activateVolume.Bounds = _activateBounds;
+            _unloadVolume.Bounds = _unloadBounds;
+            snapshot = new StreamingVolumeSnapshot(_activateVolume, _loadVolume,
+                _unloadVolume, transform.position, revision: ++_revision);
+            return true;
         }
     }
 }

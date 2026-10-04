@@ -26,8 +26,8 @@ namespace LevelStreaming
                     continue;
 
                 _allRegions.Add(region);
-                var minCell = WorldToCell(region.CachedBounds.min);
-                var maxCell = WorldToCell(region.CachedBounds.max);
+                var minCell = WorldToCell(region.BroadphaseBounds.min);
+                var maxCell = WorldToCell(region.BroadphaseBounds.max);
                 if (CellCount(minCell, maxCell) > MaxCellsPerOperation)
                 {
                     _overflowRegions.Add(region);
@@ -49,8 +49,9 @@ namespace LevelStreaming
             }
         }
 
-        public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
+        public override List<RegionManager.Region> GetNearbyRegions(IStreamingVolume queryVolume)
         {
+            Bounds queryBounds = queryVolume.BroadphaseBounds;
             var result = new HashSet<RegionManager.Region>();
 
             var minCell = WorldToCell(queryBounds.min);
@@ -60,7 +61,7 @@ namespace LevelStreaming
             {
                 foreach (var region in _allRegions)
                 {
-                    if (region.CachedBounds.Intersects(queryBounds))
+                    if (region.Intersects(queryVolume))
                         result.Add(region);
                 }
 
@@ -75,7 +76,7 @@ namespace LevelStreaming
                 {
                     foreach (var scene in list)
                     {
-                        if (scene.CachedBounds.Intersects(queryBounds))
+                        if (scene.Intersects(queryVolume))
                             result.Add(scene);
                     }
                 }
@@ -83,7 +84,7 @@ namespace LevelStreaming
 
             foreach (var region in _overflowRegions)
             {
-                if (region.CachedBounds.Intersects(queryBounds))
+                if (region.Intersects(queryVolume))
                     result.Add(region);
             }
 

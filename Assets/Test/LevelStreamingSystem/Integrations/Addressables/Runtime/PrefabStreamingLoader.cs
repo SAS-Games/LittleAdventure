@@ -74,11 +74,11 @@ namespace LevelStreaming
                     Bounds currentWorldBounds = BoundsTransformUtility.Transform(
                         regionBound.Bounds,
                         regionBound.transform.localToWorldMatrix);
-                    instance.transform.position += region.CachedBounds.center - currentWorldBounds.center;
+                    instance.transform.position += region.Origin - currentWorldBounds.center;
                 }
                 else
                 {
-                    instance.transform.position = region.CachedBounds.center;
+                    instance.transform.position = region.Origin;
                 }
 
                 meta.Instance = instance;

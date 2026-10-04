@@ -48,8 +48,8 @@ namespace LevelStreaming.Editor
                 if (region == null)
                     continue;
 
-                Vector3Int min = WorldToCell(region.CachedBounds.min, cellSize);
-                Vector3Int max = WorldToCell(region.CachedBounds.max, cellSize);
+                Vector3Int min = WorldToCell(region.BroadphaseBounds.min, cellSize);
+                Vector3Int max = WorldToCell(region.BroadphaseBounds.max, cellSize);
                 for (long x = min.x; x <= max.x; x++)
                 for (long y = min.y; y <= max.y; y++)
                 for (long z = min.z; z <= max.z; z++)

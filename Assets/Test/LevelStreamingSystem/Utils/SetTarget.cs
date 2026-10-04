@@ -14,14 +14,14 @@ namespace LevelStreaming
                 return;
             }
 
-            var provider = GetComponent<DefaultStreamingBoundsProvider>();
+            var provider = GetComponent<IStreamingVolumeProvider>();
             if (provider == null)
             {
-                Debug.LogError("No DefaultStreamingBoundsProvider found on this object.", this);
+                Debug.LogError("No IStreamingVolumeProvider found on this object.", this);
                 return;
             }
 
-            m_RegionStreamingController.SetRegionLoadBoundsProvider(provider);
+            m_RegionStreamingController.SetStreamingVolumeProvider(provider);
         }
     }
 }

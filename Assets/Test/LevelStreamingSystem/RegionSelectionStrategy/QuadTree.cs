@@ -28,12 +28,12 @@ namespace LevelStreaming
 
         public void Insert(RegionManager.Region region)
         {
-            if (region == null || !bounds.Intersects(region.CachedBounds))
+            if (region == null || !bounds.Intersects(region.BroadphaseBounds))
                 return;
 
             if (children != null)
             {
-                int childIndex = GetContainingChild(region.CachedBounds);
+                int childIndex = GetContainingChild(region.BroadphaseBounds);
                 if (childIndex >= 0)
                 {
                     children[childIndex].Insert(region);
@@ -46,14 +46,14 @@ namespace LevelStreaming
                 Subdivide();
         }
 
-        public void Query(Bounds range, HashSet<RegionManager.Region> results)
+        public void Query(IStreamingVolume queryVolume, HashSet<RegionManager.Region> results)
         {
-            if (!bounds.Intersects(range))
+            if (!bounds.Intersects(queryVolume.BroadphaseBounds))
                 return;
 
             foreach (var region in regions)
             {
-                if (region.CachedBounds.Intersects(range))
+                if (region.Intersects(queryVolume))
                     results.Add(region);
             }
 
@@ -61,7 +61,7 @@ namespace LevelStreaming
                 return;
 
             foreach (var child in children)
-                child.Query(range, results);
+                child.Query(queryVolume, results);
         }
 
         private void Subdivide()
@@ -80,7 +80,7 @@ namespace LevelStreaming
 
             for (int i = regions.Count - 1; i >= 0; i--)
             {
-                int childIndex = GetContainingChild(regions[i].CachedBounds);
+                int childIndex = GetContainingChild(regions[i].BroadphaseBounds);
                 if (childIndex < 0)
                     continue;
 

@@ -61,7 +61,7 @@ namespace LevelStreaming.Editor
                         "but Apply Bounds must be performed individually."));
                 }
 
-                ValidateBounds(region.CachedBounds, $"{prefix} bounds", issues);
+                ValidateBounds(region.BroadphaseBounds, $"{prefix} volume envelope", issues);
 
                 if (region.UnloadStrategy == null)
                     issues.Add(Warning($"{prefix} has no unload strategy and will remain loaded."));
@@ -84,7 +84,8 @@ namespace LevelStreaming.Editor
                     else if (!validNames.Contains(portal.TargetRegionName))
                         issues.Add(Error($"{portalPrefix} targets missing region '{portal.TargetRegionName}'."));
 
-                    ValidateBounds(portal.LocalBounds, $"{portalPrefix} bounds", issues);
+                    ValidateBounds(portal.WorldVolume?.BroadphaseBounds ?? portal.LocalBounds,
+                        $"{portalPrefix} volume envelope", issues);
                 }
             }
 

@@ -6,10 +6,10 @@ namespace LevelStreaming
     [CreateAssetMenu(menuName = "Streaming/UnloadStrategies/PortalAwareBounds")]
     public class PortalAwareBoundsUnloadStrategy : UnloadStrategy
     {
-        public override bool ShouldUnload(Bounds unloadBounds, RegionManager regionManager, RegionManager.Region region)
+        public override bool ShouldUnload(IStreamingVolume unloadVolume, RegionManager regionManager, RegionManager.Region region)
         {
             // 1. If region itself is still inside unload bounds → keep it
-            if (unloadBounds.Intersects(region.CachedBounds))
+            if (region.Intersects(unloadVolume))
                 return false;
 
             // 2. If any *loaded region* has a portal pointing to this region,
@@ -28,8 +28,7 @@ namespace LevelStreaming
                             region.RegionName,
                             StringComparison.Ordinal))
                     {
-                        var portalBounds = other.CachedWorldPortalBounds[i];
-                        if (unloadBounds.Intersects(portalBounds))
+                        if (StreamingVolumeIntersection.Intersects(unloadVolume, other.GetPortalVolume(i)))
                         {
                             // This region is protected by a nearby portal
                             return false;

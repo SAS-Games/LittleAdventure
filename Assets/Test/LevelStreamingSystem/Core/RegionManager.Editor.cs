@@ -91,7 +91,7 @@ namespace LevelStreaming
                 bool isLoaded = IsRegionLoaded(region);
                 Color wireColor = isLoaded ? Color.green : Color.cyan;
                 Color fillColor = new(wireColor.r, wireColor.g, wireColor.b, 0.1f);
-                Bounds bounds = region.CachedBounds;
+                Bounds bounds = region.BroadphaseBounds;
 
                 Gizmos.color = fillColor;
                 Gizmos.DrawCube(bounds.center, bounds.size);
@@ -109,7 +109,7 @@ namespace LevelStreaming
                     if (portal == null)
                         continue;
 
-                    Vector3 worldCenter = bounds.center + portal.LocalBounds.center;
+                    Vector3 worldCenter = region.Origin + portal.LocalBounds.center;
                     Gizmos.color = new Color(1f, 1f, 0f, 0.1f);
                     Gizmos.DrawCube(worldCenter, portal.LocalBounds.size);
                     Gizmos.color = Color.yellow;

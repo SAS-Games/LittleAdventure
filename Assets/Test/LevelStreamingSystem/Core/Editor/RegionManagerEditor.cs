@@ -138,6 +138,13 @@ namespace LevelStreaming.Editor
 
         private void DrawRegionBounds(RegionManager manager, RegionManager.Region region)
         {
+            if (region.HasCustomVolume)
+            {
+                Bounds envelope = region.BroadphaseBounds;
+                Handles.DrawWireCube(envelope.center, envelope.size);
+                Handles.Label(envelope.center, $"{region.RegionName} (volume envelope)");
+                return;
+            }
             Bounds bounds = region.CachedBounds;
             _regionHandle.center = bounds.center;
             _regionHandle.size = bounds.size;
@@ -169,6 +176,13 @@ namespace LevelStreaming.Editor
                 RegionManager.Portal portal = region.Portals[i];
                 if (portal == null)
                     continue;
+                if (portal.WorldVolume != null)
+                {
+                    Bounds envelope = portal.WorldVolume.BroadphaseBounds;
+                    Handles.DrawWireCube(envelope.center, envelope.size);
+                    Handles.Label(envelope.center, $"Portal {i} (volume envelope)");
+                    continue;
+                }
 
                 Vector3 worldCenter = region.CachedBounds.center + portal.LocalBounds.center;
                 _portalHandle.center = worldCenter;

@@ -13,13 +13,13 @@ namespace LevelStreaming
             _sceneRefs = regionRefs;
         }
 
-        public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
+        public override List<RegionManager.Region> GetNearbyRegions(IStreamingVolume queryVolume)
         {
             var result = new List<RegionManager.Region>();
 
             foreach (var scene in _sceneRefs)
             {
-                if (scene.CachedBounds.Intersects(queryBounds))
+                if (scene.Intersects(queryVolume))
                     result.Add(scene);
             }
 

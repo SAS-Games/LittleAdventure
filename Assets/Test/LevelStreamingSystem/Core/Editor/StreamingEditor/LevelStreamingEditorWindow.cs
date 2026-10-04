@@ -243,7 +243,7 @@ namespace LevelStreaming.Editor
             List<MonoBehaviour> providers = StreamingEditorValidation.FindProviders(m_Manager.gameObject.scene);
             if (providers.Count == 0)
             {
-                EditorGUILayout.HelpBox("No IStreamingBoundsProvider exists in this scene.", MessageType.Error);
+                EditorGUILayout.HelpBox("No IStreamingVolumeProvider exists in this scene.", MessageType.Error);
                 using (new EditorGUI.DisabledScope(Application.isPlaying))
                 {
                     if (GUILayout.Button("Add Adaptive Provider To Scene Camera"))
@@ -671,8 +671,8 @@ namespace LevelStreaming.Editor
         {
             foreach (MonoBehaviour provider in StreamingEditorValidation.FindProviders(m_Manager.gameObject.scene))
             {
-                if (provider is not IStreamingBoundsSnapshotProvider snapshotProvider ||
-                    !snapshotProvider.TryGetSnapshot(out StreamingBoundsSnapshot bounds))
+                if (provider is not IStreamingVolumeProvider volumeProvider ||
+                    !volumeProvider.TryGetVolumes(out StreamingVolumeSnapshot bounds))
                     continue;
 
                 EditorGUILayout.LabelField(
@@ -739,9 +739,9 @@ namespace LevelStreaming.Editor
                 bool selected = i == m_SelectedRegion;
                 Color color = selected ? Color.yellow : GetRegionColor(region.Type);
                 Handles.color = color;
-                Handles.DrawWireCube(region.CachedBounds.center, region.CachedBounds.size);
+                Handles.DrawWireCube(region.BroadphaseBounds.center, region.BroadphaseBounds.size);
 
-                Vector3 labelPosition = region.CachedBounds.center + Vector3.up * region.CachedBounds.extents.y;
+                Vector3 labelPosition = region.BroadphaseBounds.center + Vector3.up * region.BroadphaseBounds.extents.y;
                 float handleSize = HandleUtility.GetHandleSize(labelPosition) * 0.08f;
                 if (!Application.isPlaying && Handles.Button(
                         labelPosition,
@@ -770,6 +770,7 @@ namespace LevelStreaming.Editor
         private void DrawSelectedRegionHandle()
         {
             RegionManager.Region region = m_Manager.Regions[m_SelectedRegion];
+            if (region.HasCustomVolume) return;
             _regionHandle.center = region.CachedBounds.center;
             _regionHandle.size = region.CachedBounds.size;
             Handles.color = Color.yellow;
@@ -794,7 +795,7 @@ namespace LevelStreaming.Editor
                 return;
 
             RegionManager.Portal portal = region.Portals[m_SelectedPortal];
-            if (portal == null)
+            if (portal == null || portal.WorldVolume != null)
                 return;
 
             _portalHandle.center = region.CachedBounds.center + portal.LocalBounds.center;
@@ -960,7 +961,7 @@ namespace LevelStreaming.Editor
             if (m_Manager == null || index < 0 || index >= m_Manager.Regions.Count ||
                 m_Manager.Regions[index] == null)
                 return;
-            SceneView.lastActiveSceneView?.Frame(m_Manager.Regions[index].CachedBounds, false);
+            SceneView.lastActiveSceneView?.Frame(m_Manager.Regions[index].BroadphaseBounds, false);
         }
 
         private void FrameSelectedPortal()

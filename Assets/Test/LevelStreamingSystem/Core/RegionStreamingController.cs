@@ -53,7 +53,7 @@ namespace LevelStreaming
 #endif
 
         private RegionStreamingLoader _streamingLoader;
-        private IStreamingBoundsProvider _target;
+        private IStreamingVolumeProvider _target;
         private RegionManager _regionManager;
 
         private readonly HashSet<RegionManager.Region> _desiredRegions = new();
@@ -103,7 +103,7 @@ namespace LevelStreaming
                 return;
 
             _lastUpdateTime = Time.time;
-            if (!TryGetBoundsSnapshot(out StreamingBoundsSnapshot bounds))
+            if (!TryGetVolumeSnapshot(out StreamingVolumeSnapshot bounds))
                 return;
 
             UpdateDesiredRegions(bounds.Load);
@@ -115,12 +115,12 @@ namespace LevelStreaming
             _regionManager.UpdateLoadedRegions(_loadedRegions);
         }
 
-        private void UpdateDesiredRegions(Bounds loadBounds)
+        private void UpdateDesiredRegions(IStreamingVolume loadVolume)
         {
             _desiredRegions.Clear();
             _desireReasons.Clear();
 
-            var nearby = _regionManager.FindRegionsInRange(loadBounds);
+            var nearby = _regionManager.FindRegionsInRange(loadVolume);
             foreach (var region in nearby)
                 MarkDesired(region, RegionDesireReason.Bounds);
 
@@ -151,7 +151,7 @@ namespace LevelStreaming
                     var portal = source.Portals[i];
                     if (portal == null || string.IsNullOrWhiteSpace(portal.TargetRegionName))
                         continue;
-                    if (!loadBounds.Intersects(source.CachedWorldPortalBounds[i]))
+                    if (!StreamingVolumeIntersection.Intersects(loadVolume, source.GetPortalVolume(i)))
                         continue;
 
                     if (_regionManager.RegionLookup.TryGetValue(portal.TargetRegionName, out var target))
@@ -183,7 +183,7 @@ namespace LevelStreaming
             }
         }
 
-        private void HandleUnloading(Bounds unloadBounds)
+        private void HandleUnloading(IStreamingVolume unloadVolume)
         {
             _unloadCandidates.Clear();
             _unloadCandidates.UnionWith(_loadedRegions);
@@ -197,7 +197,7 @@ namespace LevelStreaming
                 bool shouldUnload;
                 try
                 {
-                    shouldUnload = region.UnloadStrategy.ShouldUnload(unloadBounds, _regionManager, region);
+                    shouldUnload = region.UnloadStrategy.ShouldUnload(unloadVolume, _regionManager, region);
                 }
                 catch (Exception exception)
                 {
@@ -217,7 +217,7 @@ namespace LevelStreaming
             }
         }
 
-        private void HandleActivation(Bounds activateBounds)
+        private void HandleActivation(IStreamingVolume activateVolume)
         {
             foreach (var region in _loadedRegions)
             {
@@ -225,7 +225,7 @@ namespace LevelStreaming
                     meta.State != RegionManager.RegionStreamingState.Loaded)
                     continue;
 
-                if (activateBounds.Intersects(region.CachedBounds))
+                if (region.Intersects(activateVolume))
                     ActivateRegion(region);
                 else
                     DeactivateRegion(region);
@@ -390,8 +390,8 @@ namespace LevelStreaming
             EnsureLoadedBookkeeping(region);
             LogState(region, "loaded");
 
-            if (!_isShuttingDown && TryGetBoundsSnapshot(out StreamingBoundsSnapshot bounds) &&
-                bounds.Activate.Intersects(region.CachedBounds))
+            if (!_isShuttingDown && TryGetVolumeSnapshot(out StreamingVolumeSnapshot bounds) &&
+                region.Intersects(bounds.Activate))
                 ActivateRegion(region);
         }
 
@@ -419,9 +419,9 @@ namespace LevelStreaming
             _regionManager.UpdateLoadedRegions(_loadedRegions);
         }
 
-        public void SetRegionLoadBoundsProvider(IStreamingBoundsProvider streamingBoundsProvider)
+        public void SetStreamingVolumeProvider(IStreamingVolumeProvider provider)
         {
-            _target = streamingBoundsProvider;
+            _target = provider;
         }
 
         public IReadOnlyList<RegionDebugSnapshot> GetDebugSnapshot()
@@ -473,24 +473,13 @@ namespace LevelStreaming
             return true;
         }
 
-        private bool TryGetBoundsSnapshot(out StreamingBoundsSnapshot snapshot)
+        private bool TryGetVolumeSnapshot(out StreamingVolumeSnapshot snapshot)
         {
             snapshot = default;
             if (!HasStreamingTarget())
                 return false;
 
-            if (_target is IStreamingBoundsSnapshotProvider snapshotProvider)
-                return snapshotProvider.TryGetSnapshot(out snapshot);
-
-            snapshot = new StreamingBoundsSnapshot(
-                _target.GetActivateBounds(),
-                _target.GetLoadBounds(),
-                _target.GetUnloadBounds(),
-                Vector3.zero,
-                Vector3.zero,
-                0f,
-                0);
-            return true;
+            return _target.TryGetVolumes(out snapshot) && snapshot.IsValid;
         }
 
         /// <summary>
@@ -568,12 +557,12 @@ namespace LevelStreaming
 
         private void OnDrawGizmos()
         {
-            if (!m_DrawStreamingBounds || !TryGetBoundsSnapshot(out StreamingBoundsSnapshot bounds))
+            if (!m_DrawStreamingBounds || !TryGetVolumeSnapshot(out StreamingVolumeSnapshot bounds))
                 return;
 
-            DrawBounds(bounds.Load, Color.yellow);
-            DrawBounds(bounds.Activate, Color.blue);
-            DrawBounds(bounds.Unload, Color.red);
+            DrawBounds(bounds.Load.BroadphaseBounds, Color.yellow);
+            DrawBounds(bounds.Activate.BroadphaseBounds, Color.blue);
+            DrawBounds(bounds.Unload.BroadphaseBounds, Color.red);
         }
 
         private static void DrawBounds(Bounds bounds, Color color)

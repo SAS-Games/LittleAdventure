@@ -6,13 +6,15 @@ namespace LevelStreaming
     public interface IRegionSelectionStrategy
     {
         void Initialize(IReadOnlyList<RegionManager.Region> regionRefs);
-        List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds);
+        List<RegionManager.Region> GetNearbyRegions(IStreamingVolume queryVolume);
     }
 
     public abstract class RegionSelectionStrategySO : ScriptableObject, IRegionSelectionStrategy
     {
         [field: SerializeField] public bool DebugDraw { get; private set; } = false;
         public abstract void Initialize(IReadOnlyList<RegionManager.Region> regionRefs);
-        public abstract List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds);
+        public abstract List<RegionManager.Region> GetNearbyRegions(IStreamingVolume queryVolume);
+        public List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds) =>
+            GetNearbyRegions(new BoxStreamingVolume(queryBounds));
     }
 }

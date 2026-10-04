@@ -7,7 +7,7 @@ namespace LevelStreaming
     {
         [SerializeField] private float m_TimeToUnload = 10f;
 
-        public override bool ShouldUnload(Bounds unloadBounds, RegionManager regionManager, RegionManager.Region region)
+        public override bool ShouldUnload(IStreamingVolume unloadVolume, RegionManager regionManager, RegionManager.Region region)
         {
             if (!regionManager.TryGetMeta(region, out var meta))
                 return false;

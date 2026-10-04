@@ -61,12 +61,12 @@ namespace LevelStreaming.Editor
             if (providers.Count == 0)
             {
                 issues.Add(new StreamingEditorIssue(MessageType.Error,
-                    "The persistent scene has no IStreamingBoundsProvider."));
+                    "The persistent scene has no IStreamingVolumeProvider."));
             }
             else if (providers.Count > 1)
             {
                 issues.Add(new StreamingEditorIssue(MessageType.Warning,
-                    $"The persistent scene has {providers.Count} bounds providers. Their Awake order decides which one controls streaming."));
+                    $"The persistent scene has {providers.Count} volume providers. Their Awake order decides which one controls streaming."));
             }
 
             foreach (RegionValidationIssue issue in RegionManagerValidator.Validate(manager))
@@ -85,7 +85,7 @@ namespace LevelStreaming.Editor
             {
                 foreach (MonoBehaviour behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
                 {
-                    if (behaviour is IStreamingBoundsProvider)
+                    if (behaviour is IStreamingVolumeProvider)
                         providers.Add(behaviour);
                 }
             }

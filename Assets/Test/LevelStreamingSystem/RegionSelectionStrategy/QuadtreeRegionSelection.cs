@@ -23,11 +23,11 @@ namespace LevelStreaming
 
                 if (!hasRegion)
                 {
-                    worldBounds = region.CachedBounds;
+                    worldBounds = region.BroadphaseBounds;
                     hasRegion = true;
                 }
                 else
-                    worldBounds.Encapsulate(region.CachedBounds);
+                    worldBounds.Encapsulate(region.BroadphaseBounds);
             }
 
             if (!hasRegion)
@@ -45,13 +45,13 @@ namespace LevelStreaming
             }
         }
 
-        public override List<RegionManager.Region> GetNearbyRegions(Bounds queryBounds)
+        public override List<RegionManager.Region> GetNearbyRegions(IStreamingVolume queryVolume)
         {
             if (_root == null)
                 return new List<RegionManager.Region>();
 
             var results = new HashSet<RegionManager.Region>();
-            _root.Query(queryBounds, results);
+            _root.Query(queryVolume, results);
             return new List<RegionManager.Region>(results);
         }
 

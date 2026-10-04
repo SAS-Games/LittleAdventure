@@ -8,7 +8,7 @@ namespace LevelStreaming
     {
         [SerializeField] private long m_MemoryLimitMB = 1024;
 
-        public override bool ShouldUnload(Bounds unloadBounds, RegionManager regionManager, RegionManager.Region region)
+        public override bool ShouldUnload(IStreamingVolume unloadVolume, RegionManager regionManager, RegionManager.Region region)
         {
             long currentMemory = Profiler.GetTotalAllocatedMemoryLong() / (1024 * 1024);
             if (currentMemory <= m_MemoryLimitMB)
