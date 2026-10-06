@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 2,
+  "tags": {
+    "id": { "contexts": ["dialogue", "choice"] },
+    "speaker": { "values": ["player", "kael"], "contexts": ["dialogue"] },
+    "listener": { "values": ["player", "kael"], "contexts": ["dialogue"] }
+  }
+}
