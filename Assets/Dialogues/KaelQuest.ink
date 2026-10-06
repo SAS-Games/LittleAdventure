@@ -1,6 +1,3 @@
-// The Bloomblade Delivery
-// Gameplay state, external methods, and variables are supplied by KaelQuestInkBinding.
-
 EXTERNAL kael_quest_state()
 EXTERNAL kael_is_first_conversation()
 EXTERNAL kael_has_moonbloom_oil()
@@ -9,14 +6,6 @@ EXTERNAL kael_try_deliver()
 EXTERNAL kael_last_reward()
 
 VAR kael_requested_item = "Moonbloom Oil"
-
-// Used only by Ink's editor Player window. In the game, KaelQuestInkBinding
-// overrides the external functions below with the real quest and inventory state.
-VAR preview_kael_quest_state = 1
-VAR preview_kael_first_conversation = true
-VAR preview_kael_has_moonbloom_oil = false
-VAR preview_kael_delivery_result = 1
-VAR preview_kael_reward = 150
 
 ~ temp quest_state = kael_quest_state()
 
@@ -330,35 +319,3 @@ The oil did its job. Thanks for getting it here.
 # listener:player
 The job is over. There's nothing more to discuss.
 -> END
-
-// Standalone Ink Player fallbacks -------------------------------------------
-
-=== function kael_quest_state() ===
-~ return preview_kael_quest_state
-
-=== function kael_is_first_conversation() ===
-~ return preview_kael_first_conversation
-
-=== function kael_has_moonbloom_oil() ===
-~ return preview_kael_has_moonbloom_oil
-
-=== function kael_mark_conversation_started() ===
-~ preview_kael_first_conversation = false
-
-=== function kael_try_deliver() ===
-{
-- not preview_kael_has_moonbloom_oil:
-    ~ return 0
-- else:
-    ~ preview_kael_has_moonbloom_oil = false
-    {
-    - preview_kael_delivery_result == 1 || preview_kael_delivery_result == 2:
-        ~ preview_kael_quest_state = 2
-    - else:
-        ~ preview_kael_quest_state = 3
-    }
-    ~ return preview_kael_delivery_result
-}
-
-=== function kael_last_reward() ===
-~ return preview_kael_reward

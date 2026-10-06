@@ -1,18 +1,9 @@
-// Configurable single-item shop example
-// The transaction is atomic: Coins are removed only if the item can be added.
-
 EXTERNAL shop_try_purchase()
 EXTERNAL shop_coin_count()
 EXTERNAL shop_item_quantity()
 
 VAR shop_item_name = "Tempering Powder"
 VAR shop_item_price = 120
-
-// Used only by Ink's editor Player window. In the game,
-// ShopkeeperPurchaseInkBinding overrides these external functions.
-VAR preview_shop_coins = 200
-VAR preview_shop_item_quantity = 0
-VAR preview_shop_inventory_capacity = 10
 
 -> start
 
@@ -185,23 +176,3 @@ Pleasure doing business. You now have {coins} Coins and {powder_count} {shop_ite
     # listener:player
     Come back if you need more.
     -> END
-
-// Standalone Ink Player fallbacks -------------------------------------------
-
-=== function shop_try_purchase() ===
-{
-- preview_shop_coins < shop_item_price:
-    ~ return 0
-- preview_shop_item_quantity >= preview_shop_inventory_capacity:
-    ~ return 1
-- else:
-    ~ preview_shop_coins -= shop_item_price
-    ~ preview_shop_item_quantity += 1
-    ~ return 2
-}
-
-=== function shop_coin_count() ===
-~ return preview_shop_coins
-
-=== function shop_item_quantity() ===
-~ return preview_shop_item_quantity
