@@ -27,13 +27,11 @@ The demo scene contains:
 The Kael binding registers:
 
 - `kael_quest_state`
-- `kael_is_first_conversation`
 - `kael_has_moonbloom_oil`
-- `kael_mark_conversation_started`
 - `kael_try_deliver`
 - `kael_last_reward`
 
-It also injects `kael_requested_item`.
+It also injects `kael_requested_item`. `SharedDialogueVariables.ink` is included by the Kael story and is the single declaration source for `kael_has_met`. `DialogueVariablesBootstrap.json` initializes `DialogueGlobalVariables`, which carries the value into later story instances and saves it under the handler's globals save key.
 
 The shop binding registers:
 

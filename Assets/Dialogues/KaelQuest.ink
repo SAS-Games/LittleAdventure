@@ -1,7 +1,7 @@
+INCLUDE SharedDialogueVariables.ink
+
 EXTERNAL kael_quest_state()
-EXTERNAL kael_is_first_conversation()
 EXTERNAL kael_has_moonbloom_oil()
-EXTERNAL kael_mark_conversation_started()
 EXTERNAL kael_try_deliver()
 EXTERNAL kael_last_reward()
 
@@ -11,7 +11,7 @@ VAR kael_requested_item = "Moonbloom Oil"
 
 { quest_state:
 - 1:
-    { kael_is_first_conversation():
+    { not kael_has_met:
         -> first_conversation
     - else:
         -> return_conversation
@@ -50,13 +50,11 @@ I need {kael_requested_item} for my weapon before it gets here.
 # listener:player
 Find a Moonbloom Flower, prepare the oil, and bring it back to me.
 
-~ kael_mark_conversation_started()
-
 # id:kael.first.have_oil_question
 # speaker:kael
 # listener:player
 Do you already have the oil?
-
+~ kael_has_met = true
 { kael_has_moonbloom_oil():
     -> first_has_oil
 - else:

@@ -687,7 +687,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RequestedItemName: Moonbloom Oil
   m_QuestState: 1
-  m_HasMetKael: 0
   m_QuestTimerExpired: 0
   m_ExcellentHealthThreshold: 75
   m_UsableHealthThreshold: 25

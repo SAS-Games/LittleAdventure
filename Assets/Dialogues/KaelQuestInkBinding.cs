@@ -19,7 +19,6 @@ public sealed class KaelQuestInkBinding : InkStoryBinding
 
     [Header("Quest State")]
     [SerializeField] private QuestState m_QuestState = QuestState.Active;
-    [SerializeField] private bool m_HasMetKael;
     [SerializeField] private bool m_QuestTimerExpired;
     [SerializeField, Range(0, 100)] private int m_ExcellentHealthThreshold = 75;
     [SerializeField, Range(0, 100)] private int m_UsableHealthThreshold = 25;
@@ -33,14 +32,8 @@ public sealed class KaelQuestInkBinding : InkStoryBinding
     [InkExternal("kael_quest_state")]
     private int GetQuestState() => (int)m_QuestState;
 
-    [InkExternal("kael_is_first_conversation")]
-    private bool IsFirstConversation() => !m_HasMetKael;
-
     [InkExternal("kael_has_moonbloom_oil")]
     private bool HasRequestedItem() => m_MoonbloomOilHealths.Count > 0;
-
-    [InkExternal("kael_mark_conversation_started")]
-    private void MarkConversationStarted() => m_HasMetKael = true;
 
     [InkExternal("kael_last_reward")]
     private int GetLastReward() => _lastReward;
@@ -90,7 +83,6 @@ public sealed class KaelQuestInkBinding : InkStoryBinding
     private void ResetState()
     {
         m_QuestState = QuestState.Active;
-        m_HasMetKael = false;
         m_QuestTimerExpired = false;
         m_MoonbloomOilHealths.Clear();
         _lastReward = 0;

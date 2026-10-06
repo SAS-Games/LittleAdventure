@@ -837,7 +837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73bffb575d8cdcf42ba34ef7f5c34fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LoadGlobalsJSON: {fileID: 0}
+  m_LoadGlobalsJSON: {fileID: 4900000, guid: f71e5a1b2c3d4e5f90123456789abcde, type: 3}
   m_GlobalsSaveKey: INK_VARIABLES
   m_DefaultMetadataProfile: {fileID: 11400000, guid: d6d480747cd444c2a602b9ffc91cecac, type: 2}
   m_DialoguePanel: {fileID: 4627647359639425192}
