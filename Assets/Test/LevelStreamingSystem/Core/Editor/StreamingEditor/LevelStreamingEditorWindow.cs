@@ -75,11 +75,14 @@ namespace LevelStreaming.Editor
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             if (m_Manager == null)
                 m_Manager = FindManagerFromSelection() ?? FindSingleLoadedManager();
+            RegionSceneLabelState.ControlledManager = m_Manager;
             BindManager();
         }
 
         private void OnDisable()
         {
+            if (RegionSceneLabelState.ControlledManager == m_Manager)
+                RegionSceneLabelState.ControlledManager = null;
             SceneView.duringSceneGui -= DuringSceneGui;
             EditorApplication.hierarchyChanged -= OnHierarchyChanged;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
@@ -451,6 +454,14 @@ namespace LevelStreaming.Editor
                         ApplySelectedBounds();
                 }
             }
+            if (m_EditRegionBounds &&
+                volume.managedReferenceValue is PolygonStreamingVolume or XZPolygonStreamingVolume)
+            {
+                EditorGUILayout.HelpBox(
+                    "Drag vertex handles to move them. Click a green edge handle to add a vertex. " +
+                    "Hold Ctrl (Cmd on macOS) and click a red vertex handle to remove it.",
+                    MessageType.Info);
+            }
 
             EditorGUILayout.Space(6f);
             EditorGUILayout.LabelField("Streaming Policy", EditorStyles.boldLabel);
@@ -726,7 +737,10 @@ namespace LevelStreaming.Editor
                     $"{m_Manager.Regions.Count} regions  |  {errors} errors  |  {warnings} warnings",
                     EditorStyles.miniLabel);
                 GUILayout.FlexibleSpace();
-                m_ShowAllLabels = GUILayout.Toggle(m_ShowAllLabels, "Scene Labels", EditorStyles.toolbarButton);
+                EditorGUI.BeginChangeCheck();
+                m_ShowAllLabels = GUILayout.Toggle(m_ShowAllLabels, "All Region Labels", EditorStyles.toolbarButton);
+                if (EditorGUI.EndChangeCheck())
+                    SceneView.RepaintAll();
             }
         }
 
@@ -746,6 +760,8 @@ namespace LevelStreaming.Editor
                 Color color = selected ? Color.yellow : GetRegionColor(region.Type);
                 if (region.Volume is PolygonStreamingVolume polygon)
                     PolygonStreamingVolumeEditorUtility.DrawWire(polygon, color);
+                else if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
+                    PolygonStreamingVolumeEditorUtility.DrawWire(horizontalPolygon, color);
                 else
                 {
                     Handles.color = color;
@@ -788,6 +804,22 @@ namespace LevelStreaming.Editor
                         polygon,
                         m_Manager,
                         "Edit Streaming Region Polygon"))
+                    return;
+
+                RegionEditorCommands.MarkDirty(m_Manager);
+                _serializedManager?.Update();
+                RefreshValidation();
+                Repaint();
+                return;
+            }
+
+            if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
+            {
+                Handles.color = Color.yellow;
+                if (!PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
+                        horizontalPolygon,
+                        m_Manager,
+                        "Edit Horizontal Streaming Region Polygon"))
                     return;
 
                 RegionEditorCommands.MarkDirty(m_Manager);
@@ -1009,6 +1041,7 @@ namespace LevelStreaming.Editor
             if (m_Manager == manager)
                 return;
             m_Manager = manager;
+            RegionSceneLabelState.ControlledManager = manager;
             m_SelectedRegion = manager != null && manager.Regions.Count > 0 ? 0 : -1;
             m_SelectedPortal = -1;
             m_InspectedProvider = null;
@@ -1103,6 +1136,7 @@ namespace LevelStreaming.Editor
             if (region == null || string.IsNullOrWhiteSpace(region.RegionName) ||
                 !IsUsableBounds(region.BroadphaseBounds) ||
                 region.Volume is PolygonStreamingVolume { IsValid: false } ||
+                region.Volume is XZPolygonStreamingVolume { IsValid: false } ||
                 GetSourceAsset(region) == null)
                 return MessageType.Error;
             return region.UnloadStrategy == null ? MessageType.Warning : MessageType.Info;

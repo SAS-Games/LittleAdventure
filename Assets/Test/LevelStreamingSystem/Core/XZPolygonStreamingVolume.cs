@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace LevelStreaming
 {
     /// <summary>
-    /// A world-space polygon on the XY plane, extruded between two Z coordinates.
-    /// The polygon may be concave, but must be simple (its edges may not cross).
+    /// A world-space polygon on the XZ plane, extruded between two Y coordinates.
+    /// Use separate height ranges for floors of a building. The polygon may be
+    /// concave, but must be simple (its edges may not cross).
     /// </summary>
     [Serializable]
-    public sealed class PolygonStreamingVolume : StreamingVolume
+    public sealed class XZPolygonStreamingVolume : StreamingVolume
     {
         private const float GeometryEpsilon = 0.00001f;
 
@@ -21,48 +21,52 @@ namespace LevelStreaming
             new Vector2(1f, 1f),
             new Vector2(1f, -1f)
         };
-        [FormerlySerializedAs("minY")]
-        [SerializeField] private float minZ = -1f;
-        [FormerlySerializedAs("maxY")]
-        [SerializeField] private float maxZ = 1f;
+        [SerializeField] private float minY = -1f;
+        [SerializeField] private float maxY = 1f;
 
-        public PolygonStreamingVolume() { }
+        public XZPolygonStreamingVolume() { }
 
-        public PolygonStreamingVolume(Bounds bounds)
+        public XZPolygonStreamingVolume(Bounds bounds)
         {
             Vector3 min = bounds.min;
             Vector3 max = bounds.max;
             vertices = new List<Vector2>
             {
-                new(min.x, min.y),
-                new(min.x, max.y),
-                new(max.x, max.y),
-                new(max.x, min.y)
+                new(min.x, min.z),
+                new(min.x, max.z),
+                new(max.x, max.z),
+                new(max.x, min.z)
             };
-            minZ = min.z;
-            maxZ = max.z;
+            minY = min.y;
+            maxY = max.y;
         }
 
-        public PolygonStreamingVolume(IEnumerable<Vector2> vertices, float minZ, float maxZ)
+        public XZPolygonStreamingVolume(IEnumerable<Vector2> vertices, float minY, float maxY)
         {
             this.vertices = vertices != null ? new List<Vector2>(vertices) : new List<Vector2>();
-            this.minZ = minZ;
-            this.maxZ = maxZ;
+            this.minY = minY;
+            this.maxY = maxY;
         }
 
         public IReadOnlyList<Vector2> Vertices => vertices;
-        public float MinZ { get => minZ; set => minZ = value; }
-        public float MaxZ { get => maxZ; set => maxZ = value; }
+        public float MinY { get => minY; set => minY = value; }
+        public float MaxY { get => maxY; set => maxY = value; }
 
-        public bool IsValid => vertices != null && vertices.Count >= 3 && IsFinite(minZ) && IsFinite(maxZ) &&
-                               maxZ > minZ && Mathf.Abs(SignedArea(vertices)) > GeometryEpsilon && AreVerticesFinite(vertices) &&
-                               !HasSelfIntersections(vertices);
+        public bool IsValid =>
+            vertices != null &&
+            vertices.Count >= 3 &&
+            IsFinite(minY) &&
+            IsFinite(maxY) &&
+            maxY > minY &&
+            Mathf.Abs(SignedArea(vertices)) > GeometryEpsilon &&
+            AreVerticesFinite(vertices) &&
+            !HasSelfIntersections(vertices);
 
         public override Bounds BroadphaseBounds
         {
             get
             {
-                if (vertices == null || vertices.Count == 0 || !IsFinite(minZ) || !IsFinite(maxZ))
+                if (vertices == null || vertices.Count == 0 || !IsFinite(minY) || !IsFinite(maxY))
                     return default;
 
                 bool foundVertex = false;
@@ -88,18 +92,20 @@ namespace LevelStreaming
                 if (!foundVertex)
                     return default;
 
-                float back = Mathf.Min(minZ, maxZ);
-                float front = Mathf.Max(minZ, maxZ);
-                return new Bounds(new Vector3((min.x + max.x) * 0.5f, (min.y + max.y) * 0.5f, (back + front) * 0.5f), new Vector3(max.x - min.x, max.y - min.y, front - back));
+                float bottom = Mathf.Min(minY, maxY);
+                float top = Mathf.Max(minY, maxY);
+                return new Bounds(
+                    new Vector3((min.x + max.x) * 0.5f, (bottom + top) * 0.5f, (min.y + max.y) * 0.5f),
+                    new Vector3(max.x - min.x, top - bottom, max.y - min.y));
             }
         }
 
         public override bool Contains(Vector3 point)
         {
-            if (!IsValid || point.z < minZ || point.z > maxZ)
+            if (!IsValid || point.y < minY || point.y > maxY)
                 return false;
 
-            return ContainsPoint(vertices, new Vector2(point.x, point.y));
+            return ContainsPoint(vertices, new Vector2(point.x, point.z));
         }
 
         public override bool TryIntersects(IStreamingVolume other, out bool intersects)
@@ -109,7 +115,7 @@ namespace LevelStreaming
                 case BoxStreamingVolume box:
                     intersects = IntersectsBox(box.Bounds);
                     return true;
-                case PolygonStreamingVolume polygon:
+                case XZPolygonStreamingVolume polygon:
                     intersects = IntersectsPolygon(polygon);
                     return true;
                 default:
@@ -120,8 +126,7 @@ namespace LevelStreaming
 
         public void SetVertex(int index, Vector2 value)
         {
-            if (vertices == null)
-                vertices = new List<Vector2>();
+            vertices ??= new List<Vector2>();
             vertices[index] = value;
         }
 
@@ -143,18 +148,18 @@ namespace LevelStreaming
 
         private bool IntersectsBox(Bounds bounds)
         {
-            if (!IsValid || bounds.max.z < minZ || bounds.min.z > maxZ)
+            if (!IsValid || bounds.max.y < minY || bounds.min.y > maxY)
                 return false;
 
-            Vector2 rectangleMin = new(bounds.min.x, bounds.min.y);
-            Vector2 rectangleMax = new(bounds.max.x, bounds.max.y);
+            Vector2 rectangleMin = new(bounds.min.x, bounds.min.z);
+            Vector2 rectangleMax = new(bounds.max.x, bounds.max.z);
             return PolygonIntersectsRectangle(vertices, rectangleMin, rectangleMax);
         }
 
-        private bool IntersectsPolygon(PolygonStreamingVolume other)
+        private bool IntersectsPolygon(XZPolygonStreamingVolume other)
         {
             if (!IsValid || other == null || !other.IsValid ||
-                other.maxZ < minZ || other.minZ > maxZ)
+                other.maxY < minY || other.minY > maxY)
                 return false;
 
             return PolygonsIntersect(vertices, other.vertices);

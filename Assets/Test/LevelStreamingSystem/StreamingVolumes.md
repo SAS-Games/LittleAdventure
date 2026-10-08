@@ -3,7 +3,9 @@
 The runtime makes load, activation, unload, and portal decisions through
 `IStreamingVolume`. The existing axis-aligned box is `BoxStreamingVolume`.
 Irregular side-scroller sections use `PolygonStreamingVolume`, a concave-capable
-world-space XY outline extruded between Back Z and Front Z.
+world-space XY outline extruded between Back Z and Front Z. Irregular open-world
+and building sections use `XZPolygonStreamingVolume`, a concave-capable XZ
+footprint extruded between Bottom Y and Top Y.
 
 ## Contracts
 
@@ -86,6 +88,24 @@ callers. Custom subclasses must override the new `IStreamingVolume` signature.
 The existing box Apply/Refresh tools and Phase 1 WorldAuthoring grid/profile/manifest
 schemas remain box-based. Apply/Refresh are disabled for polygon regions. Polygon
 outlines have their own Scene-view handles, validation, and exact gizmos.
+
+## Horizontal polygon regions and building floors
+
+Choose **Horizontal Polygon Prism (XZ + Y Height)** from a region's
+**Region Shape** field. Edit the XZ footprint in Scene view, then set **Bottom Y**
+and **Top Y** to the vertical range occupied by that region. Separate floors
+should use separate regions and adjacent height ranges. The observer's
+activate/load/unload boxes must have a small enough Y size to avoid intersecting
+unwanted floors; touching a floor boundary intentionally counts as intersection
+so adjacent floors can overlap briefly during stairs, lifts, or vertical motion.
+
+Use **Add Vertex** and **Remove Last** in Shape Data for list editing. In Scene
+view, drag a vertex to move it, click a green edge midpoint to insert a vertex,
+or hold Ctrl (Cmd on macOS) and click a red vertex to remove it. A valid polygon
+always retains at least three vertices.
+
+Use `GridRegionSelection` or `QuadtreeRegionSelection` for XZ open worlds.
+`GridRegionSelection2D` indexes XY and remains intended for side-scrollers.
 
 `Tests/Editor/StreamingVolumeTests.cs` covers concave polygon containment,
 polygon/box and polygon/polygon intersection, contact, depth separation,

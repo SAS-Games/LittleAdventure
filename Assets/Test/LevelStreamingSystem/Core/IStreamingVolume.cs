@@ -34,9 +34,14 @@ namespace LevelStreaming
     public sealed class BoxStreamingVolume : StreamingVolume
     {
         [SerializeField] private Bounds bounds;
-
         public BoxStreamingVolume(Bounds bounds) => this.bounds = bounds;
-        public Bounds Bounds { get => bounds; set => bounds = value; }
+
+        public Bounds Bounds
+        {
+            get => bounds;
+            set => bounds = value;
+        }
+
         public override Bounds BroadphaseBounds => bounds;
         public override bool Contains(Vector3 point) => bounds.Contains(point);
 
@@ -62,8 +67,7 @@ namespace LevelStreaming
                 return result;
             if (second.TryIntersects(first, out result))
                 return result;
-            throw new NotSupportedException(
-                $"No exact streaming intersection for {first.GetType().Name} and {second.GetType().Name}.");
+            throw new NotSupportedException($"No exact streaming intersection for {first.GetType().Name} and {second.GetType().Name}.");
         }
     }
 }

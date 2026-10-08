@@ -173,17 +173,27 @@ namespace LevelStreaming.Editor
         private static void ValidateVolume(IStreamingVolume volume, string label,
             List<RegionValidationIssue> issues)
         {
-            if (volume is not PolygonStreamingVolume polygon || polygon.IsValid)
-                return;
+            switch (volume)
+            {
+                case PolygonStreamingVolume polygon when !polygon.IsValid:
+                    AddPolygonIssue(polygon.Vertices?.Count ?? 0, polygon.HasSelfIntersections(),
+                        $"{label} must have finite XY vertices, a non-zero area, and Front Z greater than Back Z.");
+                    break;
+                case XZPolygonStreamingVolume polygon when !polygon.IsValid:
+                    AddPolygonIssue(polygon.Vertices?.Count ?? 0, polygon.HasSelfIntersections(),
+                        $"{label} must have finite XZ vertices, a non-zero area, and Top Y greater than Bottom Y.");
+                    break;
+            }
 
-            int vertexCount = polygon.Vertices?.Count ?? 0;
-            if (vertexCount < 3)
-                issues.Add(Error($"{label} needs at least three polygon vertices."));
-            else if (polygon.HasSelfIntersections())
-                issues.Add(Error($"{label} has crossing polygon edges."));
-            else
-                issues.Add(Error(
-                    $"{label} must have finite XY vertices, a non-zero area, and Front Z greater than Back Z."));
+            void AddPolygonIssue(int vertexCount, bool hasSelfIntersections, string invalidGeometryMessage)
+            {
+                if (vertexCount < 3)
+                    issues.Add(Error($"{label} needs at least three polygon vertices."));
+                else if (hasSelfIntersections)
+                    issues.Add(Error($"{label} has crossing polygon edges."));
+                else
+                    issues.Add(Error(invalidGeometryMessage));
+            }
         }
 
         private static bool IsFinite(Vector3 value)

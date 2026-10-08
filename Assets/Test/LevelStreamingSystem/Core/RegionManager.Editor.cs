@@ -95,6 +95,8 @@ namespace LevelStreaming
 
                 if (region.Volume is PolygonStreamingVolume polygon)
                     DrawPolygonGizmo(polygon, wireColor);
+                else if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
+                    DrawPolygonGizmo(horizontalPolygon, wireColor);
                 else
                 {
                     Gizmos.color = fillColor;
@@ -103,8 +105,11 @@ namespace LevelStreaming
                     Gizmos.DrawWireCube(bounds.center, bounds.size);
                 }
 
-                Handles.Label(bounds.center + Vector3.up * bounds.extents.y,
-                    string.IsNullOrWhiteSpace(region.RegionName) ? region.Type.ToString() : region.RegionName);
+                if (!RegionSceneLabelState.Controls(this))
+                {
+                    Handles.Label(bounds.center + Vector3.up * bounds.extents.y,
+                        string.IsNullOrWhiteSpace(region.RegionName) ? region.Type.ToString() : region.RegionName);
+                }
 
                 if (!m_DrawPortalGizmos || region.Portals == null)
                     continue;
@@ -117,6 +122,10 @@ namespace LevelStreaming
                     if (portal.WorldVolume is PolygonStreamingVolume portalPolygon)
                     {
                         DrawPolygonGizmo(portalPolygon, Color.yellow);
+                    }
+                    else if (portal.WorldVolume is XZPolygonStreamingVolume horizontalPortalPolygon)
+                    {
+                        DrawPolygonGizmo(horizontalPortalPolygon, Color.yellow);
                     }
                     else
                     {
@@ -151,6 +160,38 @@ namespace LevelStreaming
                 Gizmos.DrawLine(backCurrent, frontCurrent);
             }
         }
+
+        private static void DrawPolygonGizmo(XZPolygonStreamingVolume polygon, Color color)
+        {
+            if (polygon?.Vertices == null || polygon.Vertices.Count < 2)
+                return;
+
+            Gizmos.color = color;
+            for (int i = 0; i < polygon.Vertices.Count; i++)
+            {
+                Vector2 current = polygon.Vertices[i];
+                Vector2 next = polygon.Vertices[(i + 1) % polygon.Vertices.Count];
+                Vector3 bottomCurrent = new(current.x, polygon.MinY, current.y);
+                Vector3 bottomNext = new(next.x, polygon.MinY, next.y);
+                Vector3 topCurrent = new(current.x, polygon.MaxY, current.y);
+                Vector3 topNext = new(next.x, polygon.MaxY, next.y);
+                Gizmos.DrawLine(bottomCurrent, bottomNext);
+                Gizmos.DrawLine(topCurrent, topNext);
+                Gizmos.DrawLine(bottomCurrent, topCurrent);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Coordinates the runtime assembly's editor gizmos with the dedicated
+    /// Level Streaming editor without introducing an assembly dependency cycle.
+    /// </summary>
+    internal static class RegionSceneLabelState
+    {
+        internal static RegionManager ControlledManager { get; set; }
+
+        internal static bool Controls(RegionManager manager) =>
+            manager != null && ControlledManager == manager;
     }
 }
 #endif

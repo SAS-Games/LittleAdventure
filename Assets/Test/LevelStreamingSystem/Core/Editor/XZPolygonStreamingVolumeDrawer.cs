@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace LevelStreaming.Editor
 {
-    [CustomPropertyDrawer(typeof(PolygonStreamingVolume))]
-    internal sealed class PolygonStreamingVolumeDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(XZPolygonStreamingVolume))]
+    internal sealed class XZPolygonStreamingVolumeDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -19,7 +19,7 @@ namespace LevelStreaming.Editor
             height += line + spacing;
             height += (line + spacing) * 2f;
 
-            if (property.managedReferenceValue is PolygonStreamingVolume polygon && !polygon.IsValid)
+            if (property.managedReferenceValue is XZPolygonStreamingVolume polygon && !polygon.IsValid)
                 height += EditorGUIUtility.singleLineHeight * 2f + spacing;
 
             return height;
@@ -41,26 +41,27 @@ namespace LevelStreaming.Editor
 
             EditorGUI.indentLevel++;
             SerializedProperty vertices = property.FindPropertyRelative("vertices");
-            SerializedProperty minZ = property.FindPropertyRelative("minZ");
-            SerializedProperty maxZ = property.FindPropertyRelative("maxZ");
+            SerializedProperty minY = property.FindPropertyRelative("minY");
+            SerializedProperty maxY = property.FindPropertyRelative("maxY");
 
             row.y += line + spacing;
             float verticesHeight = EditorGUI.GetPropertyHeight(vertices, true);
-            EditorGUI.PropertyField(new Rect(row.x, row.y, row.width, verticesHeight), vertices, true);
+            EditorGUI.PropertyField(new Rect(row.x, row.y, row.width, verticesHeight), vertices,
+                new GUIContent("XZ Vertices"), true);
             row.y += verticesHeight + spacing;
 
             DrawVertexButtons(row, vertices);
             row.y += line + spacing;
-            EditorGUI.PropertyField(row, minZ, new GUIContent("Back Z"));
+            EditorGUI.PropertyField(row, minY, new GUIContent("Bottom Y"));
             row.y += line + spacing;
-            EditorGUI.PropertyField(row, maxZ, new GUIContent("Front Z"));
+            EditorGUI.PropertyField(row, maxY, new GUIContent("Top Y"));
             row.y += line + spacing;
 
-            if (property.managedReferenceValue is PolygonStreamingVolume polygon && !polygon.IsValid)
+            if (property.managedReferenceValue is XZPolygonStreamingVolume polygon && !polygon.IsValid)
             {
                 EditorGUI.HelpBox(
                     new Rect(row.x, row.y, row.width, line * 2f),
-                    "Use at least three finite XY vertices, a positive Z depth, and a simple non-crossing outline.",
+                    "Use at least three finite XZ vertices, a positive Y height, and a simple non-crossing outline.",
                     MessageType.Error);
             }
 

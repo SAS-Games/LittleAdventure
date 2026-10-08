@@ -40,6 +40,17 @@ namespace LevelStreaming.Tests
                 new Vector2(-4f, 4f)
             }, minZ, maxZ);
 
+        private static XZPolygonStreamingVolume HorizontalLShape(float minY = 0f, float maxY = 3f) =>
+            new(new[]
+            {
+                new Vector2(-4f, -4f),
+                new Vector2(4f, -4f),
+                new Vector2(4f, -1f),
+                new Vector2(-1f, -1f),
+                new Vector2(-1f, 4f),
+                new Vector2(-4f, 4f)
+            }, minY, maxY);
+
         private sealed class VolumeProvider : IStreamingVolumeProvider
         {
             public IStreamingVolume Query;
@@ -138,6 +149,81 @@ namespace LevelStreaming.Tests
             Assert.That(restored.Volume, Is.TypeOf<PolygonStreamingVolume>());
             Assert.That(restored.Volume.Contains(new Vector3(-3f, 3f, 2f)), Is.True);
             Assert.That(restored.Volume.Contains(new Vector3(2f, 2f, 0f)), Is.False);
+        }
+
+        [Test]
+        public void XZPolygonPrism_ContainsIrregularFootprintOnlyWithinItsHeight()
+        {
+            XZPolygonStreamingVolume polygon = HorizontalLShape(10f, 14f);
+
+            Assert.That(polygon.IsValid, Is.True);
+            Assert.That(polygon.Contains(new Vector3(-3f, 12f, 3f)), Is.True);
+            Assert.That(polygon.Contains(new Vector3(3f, 12f, -3f)), Is.True);
+            Assert.That(polygon.Contains(new Vector3(2f, 12f, 2f)), Is.False);
+            Assert.That(polygon.Contains(new Vector3(-3f, 15f, 3f)), Is.False);
+            Assert.That(polygon.BroadphaseBounds.center.y, Is.EqualTo(12f));
+            Assert.That(polygon.BroadphaseBounds.size.y, Is.EqualTo(4f));
+        }
+
+        [Test]
+        public void XZPolygonPrism_BoxIntersectionSeparatesBuildingFloors()
+        {
+            XZPolygonStreamingVolume groundFloor = HorizontalLShape(0f, 3f);
+            XZPolygonStreamingVolume firstFloor = HorizontalLShape(3f, 6f);
+            var groundObserver = new BoxStreamingVolume(
+                new Bounds(new Vector3(-3f, 1.5f, 3f), Vector3.one));
+            var firstFloorObserver = new BoxStreamingVolume(
+                new Bounds(new Vector3(-3f, 4.5f, 3f), Vector3.one));
+            var footprintGap = new BoxStreamingVolume(
+                new Bounds(new Vector3(2f, 1.5f, 2f), Vector3.one));
+
+            Assert.That(StreamingVolumeIntersection.Intersects(groundFloor, groundObserver), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(groundObserver, groundFloor), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(groundFloor, firstFloorObserver), Is.False);
+            Assert.That(StreamingVolumeIntersection.Intersects(firstFloor, groundObserver), Is.False);
+            Assert.That(StreamingVolumeIntersection.Intersects(firstFloor, firstFloorObserver), Is.True);
+            Assert.That(groundFloor.BroadphaseBounds.Intersects(footprintGap.Bounds), Is.True);
+            Assert.That(StreamingVolumeIntersection.Intersects(groundFloor, footprintGap), Is.False);
+        }
+
+        [TestCase(typeof(GridRegionSelection))]
+        [TestCase(typeof(QuadtreeRegionSelection))]
+        public void OpenWorldSelectors_LoadOnlyTheIntersectingHorizontalFloor(Type strategyType)
+        {
+            var strategy = (RegionSelectionStrategySO)ScriptableObject.CreateInstance(strategyType);
+            try
+            {
+                var groundFloor = new RegionManager.Region();
+                groundFloor.SetVolume(HorizontalLShape(0f, 3f));
+                var firstFloor = new RegionManager.Region();
+                firstFloor.SetVolume(HorizontalLShape(3f, 6f));
+                strategy.Initialize(new[] { groundFloor, firstFloor });
+
+                var groundObserver = new BoxStreamingVolume(
+                    new Bounds(new Vector3(-3f, 1f, 3f), Vector3.one));
+                var firstFloorObserver = new BoxStreamingVolume(
+                    new Bounds(new Vector3(-3f, 5f, 3f), Vector3.one));
+
+                Assert.That(strategy.GetNearbyRegions(groundObserver), Is.EquivalentTo(new[] { groundFloor }));
+                Assert.That(strategy.GetNearbyRegions(firstFloorObserver), Is.EquivalentTo(new[] { firstFloor }));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(strategy);
+            }
+        }
+
+        [Test]
+        public void XZPolygonPrism_RoundTripsSerialization()
+        {
+            var region = new RegionManager.Region();
+            region.SetVolume(HorizontalLShape(8f, 12f));
+
+            var restored = JsonUtility.FromJson<RegionManager.Region>(JsonUtility.ToJson(region));
+
+            Assert.That(restored.Volume, Is.TypeOf<XZPolygonStreamingVolume>());
+            Assert.That(restored.Volume.Contains(new Vector3(-3f, 10f, 3f)), Is.True);
+            Assert.That(restored.Volume.Contains(new Vector3(-3f, 13f, 3f)), Is.False);
         }
 
         [Test]

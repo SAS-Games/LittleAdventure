@@ -145,9 +145,28 @@ namespace LevelStreaming.Editor
                     polygon,
                     manager,
                     "Modify Region Polygon");
-                Handles.Label(
-                    polygon.BroadphaseBounds.center + Vector3.up * polygon.BroadphaseBounds.extents.y,
-                    region.RegionName);
+                if (!RegionSceneLabelState.Controls(manager))
+                {
+                    Handles.Label(
+                        polygon.BroadphaseBounds.center + Vector3.up * polygon.BroadphaseBounds.extents.y,
+                        region.RegionName);
+                }
+                return;
+            }
+
+            if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
+            {
+                PolygonStreamingVolumeEditorUtility.DrawWire(horizontalPolygon, Color.yellow);
+                PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
+                    horizontalPolygon,
+                    manager,
+                    "Modify Horizontal Region Polygon");
+                if (!RegionSceneLabelState.Controls(manager))
+                {
+                    Handles.Label(
+                        horizontalPolygon.BroadphaseBounds.center + Vector3.up * horizontalPolygon.BroadphaseBounds.extents.y,
+                        region.RegionName);
+                }
                 return;
             }
 
@@ -155,7 +174,8 @@ namespace LevelStreaming.Editor
             {
                 Bounds envelope = region.BroadphaseBounds;
                 Handles.DrawWireCube(envelope.center, envelope.size);
-                Handles.Label(envelope.center, $"{region.RegionName} (volume envelope)");
+                if (!RegionSceneLabelState.Controls(manager))
+                    Handles.Label(envelope.center, $"{region.RegionName} (volume envelope)");
                 return;
             }
             Bounds bounds = region.CachedBounds;
@@ -176,7 +196,8 @@ namespace LevelStreaming.Editor
             string label = string.IsNullOrWhiteSpace(region.RegionName)
                 ? region.Type.ToString()
                 : region.RegionName;
-            Handles.Label(bounds.center + Vector3.up * bounds.extents.y, label, EditorStyles.boldLabel);
+            if (!RegionSceneLabelState.Controls(manager))
+                Handles.Label(bounds.center + Vector3.up * bounds.extents.y, label, EditorStyles.boldLabel);
         }
 
         private void DrawRegionPortals(RegionManager manager, RegionManager.Region region)
