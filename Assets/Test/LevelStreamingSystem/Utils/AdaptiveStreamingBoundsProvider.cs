@@ -194,6 +194,17 @@ namespace LevelStreaming
             return _hasSnapshot && snapshot.IsValid;
         }
 
+        /// <summary>
+        /// Returns the most recently calculated camera footprint when the active
+        /// view mode uses one and the camera projection produced valid geometry.
+        /// </summary>
+        public bool TryGetCameraFootprint(out Bounds footprint)
+        {
+            EnsureSnapshot();
+            footprint = _lastCameraFootprint;
+            return _hasSnapshot && _hasCameraFootprint;
+        }
+
         private void EnsureSnapshot()
         {
             if (!_hasSnapshot)

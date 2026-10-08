@@ -107,9 +107,9 @@ always retains at least three vertices.
 Use `GridRegionSelection` or `QuadtreeRegionSelection` for XZ open worlds.
 `GridRegionSelection2D` indexes XY and remains intended for side-scrollers.
 
-`Tests/Editor/StreamingVolumeTests.cs` covers concave polygon containment,
+`Assets/Tests/Editor/StreamingVolumeTests.cs` covers concave polygon containment,
 polygon/box and polygon/polygon intersection, contact, depth separation,
 serialization, invalid outlines, reverse dispatch, selector/index paths,
 activation, unload, and portal protection. Native provider sampling, camera
 rotation, adaptive metadata/prediction, and readiness recovery are covered by
-`Tests/Editor/AdaptiveStreamingBoundsProviderTests.cs`.
+`Assets/Tests/Editor/AdaptiveStreamingBoundsProviderTests.cs`.
