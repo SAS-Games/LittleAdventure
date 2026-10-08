@@ -1,0 +1,22 @@
+{
+    "name": "SAS.WorldStreaming.Editor.Tests",
+    "rootNamespace": "SAS.WorldStreaming.Editor.Tests",
+    "references": [
+        "SAS.WorldStreaming.Editor",
+        "SAS.WorldStreaming.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}
