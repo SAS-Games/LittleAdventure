@@ -36,10 +36,7 @@ namespace LevelStreaming.Editor
             height += EditorGUI.GetPropertyHeight(boundsProp, true) + space;
 
             // Exact streaming shape
-            height += PolygonStreamingVolumeEditorUtility.GetShapeFieldHeight(volumeProp) + space;
-
-            // Fit/apply buttons
-            height += line + space;
+            height += PolygonPrismEditorUtility.GetShapeFieldHeight(volumeProp) + space;
 
             // Portals
             height += EditorGUI.GetPropertyHeight(portalsProp, true) + space;
@@ -111,57 +108,13 @@ namespace LevelStreaming.Editor
             EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, boundsHeight), boundsProp, true);
             rect.y += boundsHeight + space;
 
-            float shapeHeight = PolygonStreamingVolumeEditorUtility.GetShapeFieldHeight(volumeProp);
-            PolygonStreamingVolumeEditorUtility.DrawShapeField(
+            float shapeHeight = PolygonPrismEditorUtility.GetShapeFieldHeight(volumeProp);
+            PolygonPrismEditorUtility.DrawShapeField(
                 new Rect(rect.x, rect.y, rect.width, shapeHeight),
                 volumeProp,
                 boundsProp.boundsValue);
             rect.y += shapeHeight + space;
 
-            float buttonGap = 4f;
-            float buttonWidth = (rect.width - buttonGap) * 0.5f;
-            Rect refreshButton = new Rect(rect.x, rect.y, buttonWidth, line);
-            Rect applyButton = new Rect(rect.x + buttonWidth + buttonGap, rect.y, buttonWidth, line);
-
-            if (GUI.Button(refreshButton, "Fit From Asset"))
-            {
-                property.serializedObject.ApplyModifiedProperties();
-                var manager = property.serializedObject.targetObject as RegionManager;
-
-                if (manager != null)
-                {
-                    Undo.RecordObject(manager, "Refresh Region Bounds");
-
-                    // Find region index
-                    int index = GetRegionIndex(property);
-
-                    if (index >= 0 && index < manager.Regions.Count)
-                    {
-                        manager.RefreshBounds(manager.Regions[index]);
-                    }
-
-                    EditorUtility.SetDirty(manager);
-                }
-
-                property.serializedObject.Update();
-            }
-
-            if (GUI.Button(applyButton, "Apply To Asset"))
-            {
-                property.serializedObject.ApplyModifiedProperties();
-                var manager = property.serializedObject.targetObject as RegionManager;
-                int index = GetRegionIndex(property);
-                if (manager != null && index >= 0 && index < manager.Regions.Count &&
-                    EditorUtility.DisplayDialog(
-                        "Apply Streaming Bounds",
-                        "This writes the cached bounds into the source scene or prefab.",
-                        "Apply",
-                        "Cancel"))
-                    manager.ApplyBounds(manager.Regions[index]);
-                property.serializedObject.Update();
-            }
-
-            rect.y += line + space;
             // Portals
             float portalsHeight = EditorGUI.GetPropertyHeight(portalsProp, true);
             EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, portalsHeight), portalsProp, true);
@@ -174,24 +127,6 @@ namespace LevelStreaming.Editor
             EditorGUI.EndProperty();
         }
         
-        private int GetRegionIndex(SerializedProperty property)
-        {
-            string path = property.propertyPath;
-
-            int start = path.IndexOf('[') + 1;
-            int end = path.IndexOf(']');
-
-            if (start < 0 || end < 0)
-                return -1;
-
-            string indexStr = path.Substring(start, end - start);
-
-            if (int.TryParse(indexStr, out int index))
-                return index;
-
-            return -1;
-        }
-
         private static SerializedProperty GetSourceProperty(SerializedProperty property,
             RegionManager.RegionType type)
         {
@@ -202,6 +137,94 @@ namespace LevelStreaming.Editor
                 RegionManager.RegionType.AddressableScene => property.FindPropertyRelative("addressableSceneRef"),
                 _ => property.FindPropertyRelative("sceneRef")
             };
+        }
+    }
+
+    [CustomPropertyDrawer(typeof(RegionManager.Portal))]
+    internal sealed class PortalDrawer : PropertyDrawer
+    {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            if (!property.isExpanded)
+                return EditorGUIUtility.singleLineHeight;
+
+            float line = EditorGUIUtility.singleLineHeight;
+            float spacing = EditorGUIUtility.standardVerticalSpacing;
+            SerializedProperty target = RegionEditorCommands.FindPortalTargetProperty(property);
+            SerializedProperty bounds = RegionEditorCommands.FindPortalBoundsProperty(property);
+            SerializedProperty volume = RegionEditorCommands.FindPortalVolumeProperty(property);
+
+            float height = line + spacing;
+            height += EditorGUI.GetPropertyHeight(target, true) + spacing;
+            height += PolygonPrismEditorUtility.GetShapeFieldHeight(volume);
+            if (volume?.managedReferenceValue is PolygonPrismStreamingVolume)
+                height += spacing + EditorGUIUtility.singleLineHeight * 2f;
+            return height;
+        }
+
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            EditorGUI.BeginProperty(position, label, property);
+            float line = EditorGUIUtility.singleLineHeight;
+            float spacing = EditorGUIUtility.standardVerticalSpacing;
+            Rect row = new(position.x, position.y, position.width, line);
+
+            property.isExpanded = EditorGUI.Foldout(row, property.isExpanded, label, true);
+            if (!property.isExpanded)
+            {
+                EditorGUI.EndProperty();
+                return;
+            }
+
+            EditorGUI.indentLevel++;
+            SerializedProperty target = RegionEditorCommands.FindPortalTargetProperty(property);
+            SerializedProperty bounds = RegionEditorCommands.FindPortalBoundsProperty(property);
+            SerializedProperty volume = RegionEditorCommands.FindPortalVolumeProperty(property);
+
+            row.y += line + spacing;
+            float targetHeight = EditorGUI.GetPropertyHeight(target, true);
+            EditorGUI.PropertyField(new Rect(row.x, row.y, row.width, targetHeight),
+                target, new GUIContent("Target Region Name"), true);
+            row.y += targetHeight + spacing;
+
+            Bounds initialWorldBounds = bounds.boundsValue;
+            initialWorldBounds.center += FindRegionOrigin(property);
+            float shapeHeight = PolygonPrismEditorUtility.GetShapeFieldHeight(volume);
+            PolygonPrismEditorUtility.DrawShapeField(
+                new Rect(row.x, row.y, row.width, shapeHeight),
+                volume,
+                initialWorldBounds,
+                new GUIContent("Portal Shape"));
+            row.y += shapeHeight;
+
+            if (volume?.managedReferenceValue is PolygonPrismStreamingVolume)
+            {
+                row.y += spacing;
+                EditorGUI.HelpBox(
+                    new Rect(row.x, row.y, row.width, line * 2f),
+                    "Portal prism coordinates are world-space.",
+                    MessageType.Info);
+            }
+
+            EditorGUI.indentLevel--;
+            EditorGUI.EndProperty();
+        }
+
+        private static Vector3 FindRegionOrigin(SerializedProperty portal)
+        {
+            if (portal.serializedObject.targetObject is not RegionManager manager)
+                return Vector3.zero;
+
+            string path = portal.propertyPath;
+            int regionToken = path.IndexOf("regions.Array.data[", System.StringComparison.Ordinal);
+            if (regionToken < 0)
+                return Vector3.zero;
+            int start = regionToken + "regions.Array.data[".Length;
+            int end = path.IndexOf(']', start);
+            if (end <= start || !int.TryParse(path.Substring(start, end - start), out int index) ||
+                index < 0 || index >= manager.Regions.Count || manager.Regions[index] == null)
+                return Vector3.zero;
+            return manager.Regions[index].Origin;
         }
     }
 }

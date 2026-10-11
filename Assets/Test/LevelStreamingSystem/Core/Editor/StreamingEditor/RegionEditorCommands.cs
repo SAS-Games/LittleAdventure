@@ -105,10 +105,15 @@ namespace LevelStreaming.Editor
             SerializedProperty portals = region.FindPropertyRelative("portals");
             int portalIndex = portals.arraySize;
             portals.arraySize++;
+            Bounds newLocalBounds = localBounds ??
+                                    new Bounds(Vector3.zero, new Vector3(4f, 4f, 1f));
+            Bounds newWorldBounds = newLocalBounds;
+            newWorldBounds.center += manager.Regions[sourceRegionIndex].Origin;
             InitializePortal(
                 portals.GetArrayElementAtIndex(portalIndex),
                 targetName ?? string.Empty,
-                localBounds ?? new Bounds(Vector3.zero, new Vector3(4f, 4f, 1f)));
+                newLocalBounds,
+                newWorldBounds);
             serializedManager.ApplyModifiedProperties();
             manager.Regions[sourceRegionIndex]?.RebuildPortalWorldBounds();
             MarkDirty(manager);
@@ -158,11 +163,21 @@ namespace LevelStreaming.Editor
                     return target.Portals.IndexOf(existing);
             }
 
-            Vector3 worldCenter = source.CachedBounds.center + portal.LocalBounds.center;
+            Bounds worldBounds = portal.WorldVolume?.BroadphaseBounds ?? portal.LocalBounds;
+            if (portal.WorldVolume == null)
+                worldBounds.center += source.Origin;
             Bounds reciprocalBounds = new(
-                worldCenter - target.CachedBounds.center,
-                portal.LocalBounds.size);
-            return AddPortal(manager, targetIndex, source.RegionName, reciprocalBounds);
+                worldBounds.center - target.Origin,
+                worldBounds.size);
+            int reciprocalIndex = AddPortal(manager, targetIndex, source.RegionName, reciprocalBounds);
+            if (reciprocalIndex < 0 || portal.WorldVolume == null)
+                return reciprocalIndex;
+
+            // A connection describes one opening in world-space, so built-in exact shapes
+            // should be preserved on the portal in the opposite direction as well.
+            target.Portals[reciprocalIndex].WorldVolume = ClonePortalVolume(portal.WorldVolume);
+            MarkDirty(manager);
+            return reciprocalIndex;
         }
 
         public static int FindRegionIndex(RegionManager manager, string regionName)
@@ -194,6 +209,11 @@ namespace LevelStreaming.Editor
                    portal?.FindPropertyRelative("localBounds");
         }
 
+        public static SerializedProperty FindPortalVolumeProperty(SerializedProperty portal)
+        {
+            return portal?.FindPropertyRelative("worldVolume");
+        }
+
         public static void MarkDirty(RegionManager manager)
         {
             if (manager == null)
@@ -222,8 +242,11 @@ namespace LevelStreaming.Editor
         {
             region.FindPropertyRelative("type").enumValueIndex = (int)type;
             region.FindPropertyRelative("regionName").stringValue = regionName;
-            region.FindPropertyRelative("cachedBounds").boundsValue =
-                new Bounds(center, new Vector3(100f, 50f, 100f));
+            Bounds initialBounds = new(center, new Vector3(100f, 50f, 100f));
+            region.FindPropertyRelative("cachedBounds").boundsValue = initialBounds;
+            SerializedProperty volume = region.FindPropertyRelative("volume");
+            volume.managedReferenceValue = new BoxStreamingVolume(initialBounds);
+            volume.isExpanded = false;
             region.FindPropertyRelative("portals").arraySize = 0;
             region.FindPropertyRelative("unloadStrategy").objectReferenceValue = FindDefaultUnloadStrategy();
 
@@ -237,14 +260,38 @@ namespace LevelStreaming.Editor
             ClearAssetReference(region.FindPropertyRelative("addressableSceneRef"));
         }
 
-        private static void InitializePortal(SerializedProperty portal, string targetName, Bounds bounds)
+        private static void InitializePortal(SerializedProperty portal, string targetName,
+            Bounds localBoundsValue, Bounds worldBoundsValue)
         {
             SerializedProperty target = FindPortalTargetProperty(portal);
             SerializedProperty localBounds = FindPortalBoundsProperty(portal);
+            SerializedProperty worldVolume = FindPortalVolumeProperty(portal);
             if (target != null)
                 target.stringValue = targetName;
             if (localBounds != null)
-                localBounds.boundsValue = bounds;
+                localBounds.boundsValue = localBoundsValue;
+            if (worldVolume != null)
+            {
+                worldVolume.managedReferenceValue = new BoxStreamingVolume(worldBoundsValue);
+                worldVolume.isExpanded = false;
+            }
+        }
+
+        private static StreamingVolume ClonePortalVolume(StreamingVolume volume)
+        {
+            return volume switch
+            {
+                PolygonPrismStreamingVolume polygon =>
+                    new PolygonPrismStreamingVolume(
+                        polygon.Vertices,
+                        polygon.MinExtrusion,
+                        polygon.MaxExtrusion,
+                        polygon.ProjectionPlane),
+                BoxStreamingVolume box => new BoxStreamingVolume(box.Bounds),
+                // Unknown custom implementations still get a conservative reciprocal box
+                // through reciprocalBounds rather than sharing a mutable managed reference.
+                _ => null
+            };
         }
 
         private static string GenerateUniqueName(RegionManager manager, string baseName)

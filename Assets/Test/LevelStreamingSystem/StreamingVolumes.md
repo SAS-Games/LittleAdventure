@@ -1,11 +1,10 @@
 # Streaming volume architecture
 
 The runtime makes load, activation, unload, and portal decisions through
-`IStreamingVolume`. The existing axis-aligned box is `BoxStreamingVolume`.
-Irregular side-scroller sections use `PolygonStreamingVolume`, a concave-capable
-world-space XY outline extruded between Back Z and Front Z. Irregular open-world
-and building sections use `XZPolygonStreamingVolume`, a concave-capable XZ
-footprint extruded between Bottom Y and Top Y.
+`IStreamingVolume`. Authored regions and portals can use `BoxStreamingVolume` or
+`PolygonPrismStreamingVolume`. A polygon prism has a projection plane: `XY`
+extrudes along Z and `XZ` extrudes along Y. Camera and adaptive-provider
+activation/load/unload queries also use the inexpensive box implementation.
 
 ## Contracts
 
@@ -31,16 +30,15 @@ data or otherwise make the geometry available before content loads.
 
 ## Polygon regions
 
-Choose **Polygon Prism** from a region's **Region Shape** field. The cached bounds
-remain the content placement anchor and fallback box; switching shape creates a
-rectangle from those bounds as the initial polygon. Expand **Shape Data** to edit
-the XY vertex list and depth range. With **Edit Shape In Scene View** enabled,
-drag the yellow point handles to shape the outline.
+Choose **Polygon Prism** from a region or portal's shape field, then set
+**Projection Plane** to **XZ** for a floor footprint with Y height, or **XY** for
+a vertical profile with Z depth. With **Edit Shape In Scene View** enabled, drag
+the yellow point handles to shape the outline and cyan handles to edit extrusion.
 
 Vertices may run clockwise or counter-clockwise, and concave outlines are supported.
 The outline must contain at least three finite points, have non-zero area, and must
 not cross itself. Boundary contact counts as intersection. Polygon/box and
-polygon/polygon queries are exact in XY and also require their Z ranges to overlap.
+same-plane polygon/polygon queries are exact and require extrusion ranges to overlap.
 
 ## Provider and region extension points
 
@@ -59,13 +57,13 @@ Portals optionally expose `WorldVolume` for world-space custom geometry. Their
 legacy local box is converted by `region.GetPortalVolume(index)`. Call
 `RebuildPortalWorldBounds()` after changing legacy portal data or region placement.
 
-## Existing assets and compatibility
+## Box volumes
 
-Existing serialized `cachedBounds` and portal `LocalBounds` remain intact. A null
-custom volume uses the cached box, with no scene/prefab migration. Setting a custom
-volume to null returns to that legacy box. `Region.Origin` retains the existing
-placement anchor from `cachedBounds.center`; assigning new geometry does not move
-prefab instances or legacy portals to the geometry's envelope center.
+New regions and portals start as boxes. Boxes have simpler serialized data and
+cheaper intersection tests, and their six faces are editable with Scene handles.
+Convert to a polygon prism only when the authored boundary is irregular.
+`Region.Origin` retains the content placement anchor from `cachedBounds.center`;
+changing geometry does not move prefab instances.
 
 All observer providers implement `IStreamingVolumeProvider` directly. The old
 bounds-provider interfaces, bounds snapshot, registration method, and compatibility
@@ -89,12 +87,11 @@ The existing box Apply/Refresh tools and Phase 1 WorldAuthoring grid/profile/man
 schemas remain box-based. Apply/Refresh are disabled for polygon regions. Polygon
 outlines have their own Scene-view handles, validation, and exact gizmos.
 
-## Horizontal polygon regions and building floors
+## Building floors
 
-Choose **Horizontal Polygon Prism (XZ + Y Height)** from a region's
-**Region Shape** field. Edit the XZ footprint in Scene view, then set **Bottom Y**
-and **Top Y** to the vertical range occupied by that region. Separate floors
-should use separate regions and adjacent height ranges. The observer's
+Choose **Polygon Prism**, set its projection plane to **XZ**, edit the footprint
+in Scene view, then set **Bottom Y** and **Top Y** to the vertical range occupied
+by that region. Separate floors should use separate regions and adjacent height ranges. The observer's
 activate/load/unload boxes must have a small enough Y size to avoid intersecting
 unwanted floors; touching a floor boundary intentionally counts as intersection
 so adjacent floors can overlap briefly during stairs, lifts, or vertical motion.

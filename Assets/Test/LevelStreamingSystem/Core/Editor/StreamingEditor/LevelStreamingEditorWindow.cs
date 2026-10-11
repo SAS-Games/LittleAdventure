@@ -215,6 +215,22 @@ namespace LevelStreaming.Editor
                 }
             }
 
+            DrawSectionTitle("Asset Bounds");
+            EditorGUILayout.HelpBox(
+                "For Box regions, Refresh imports bounds from source assets and Apply writes the authored " +
+                "box back to those assets. Polygon Prism regions keep their custom shape.",
+                MessageType.Info);
+            using (new EditorGUI.DisabledScope(Application.isPlaying || !HasSyncableAssetBounds()))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("Refresh All From Assets", GUILayout.Height(28f)))
+                        RefreshAllBoundsFromAssets();
+                    if (GUILayout.Button("Apply All To Assets", GUILayout.Height(28f)))
+                        ApplyAllBoundsToAssets();
+                }
+            }
+
             RegionStreamingController controller = m_Manager.GetComponent<RegionStreamingController>();
             DrawSectionTitle("Streaming Controller");
             if (controller == null)
@@ -441,25 +457,19 @@ namespace LevelStreaming.Editor
             EditorGUILayout.LabelField("World Volume", EditorStyles.boldLabel);
             SerializedProperty cachedBounds = region.FindPropertyRelative("cachedBounds");
             SerializedProperty volume = region.FindPropertyRelative("volume");
-            EditorGUILayout.PropertyField(cachedBounds, new GUIContent("Placement / Box Bounds"), true);
-            PolygonStreamingVolumeEditorUtility.DrawShapeFieldLayout(volume, cachedBounds.boundsValue);
+            PolygonPrismEditorUtility.DrawShapeFieldLayout(
+                volume, cachedBounds.boundsValue, new GUIContent("Region Shape"));
             using (new EditorGUILayout.HorizontalScope())
             {
                 m_EditRegionBounds = GUILayout.Toggle(m_EditRegionBounds, "Edit Shape In Scene View", "Button");
-                using (new EditorGUI.DisabledScope(volume.managedReferenceValue != null))
-                {
-                    if (GUILayout.Button("Fit From Asset"))
-                        FitSelectedBounds();
-                    if (GUILayout.Button("Apply To Asset"))
-                        ApplySelectedBounds();
-                }
             }
             if (m_EditRegionBounds &&
-                volume.managedReferenceValue is PolygonStreamingVolume or XZPolygonStreamingVolume)
+                volume.managedReferenceValue is PolygonPrismStreamingVolume)
             {
                 EditorGUILayout.HelpBox(
                     "Drag vertex handles to move them. Click a green edge handle to add a vertex. " +
-                    "Hold Ctrl (Cmd on macOS) and click a red vertex handle to remove it.",
+                    "Hold Ctrl (Cmd on macOS) and click a red vertex handle to remove it. " +
+                    "Drag the cyan Min/Max handles to change height or depth.",
                     MessageType.Info);
             }
 
@@ -559,6 +569,7 @@ namespace LevelStreaming.Editor
             SerializedProperty portal = portals.GetArrayElementAtIndex(m_SelectedPortal);
             SerializedProperty target = RegionEditorCommands.FindPortalTargetProperty(portal);
             SerializedProperty bounds = RegionEditorCommands.FindPortalBoundsProperty(portal);
+            SerializedProperty worldVolume = RegionEditorCommands.FindPortalVolumeProperty(portal);
             EditorGUILayout.LabelField($"Portal {m_SelectedPortal + 1}", EditorStyles.boldLabel);
 
             string[] options = BuildRegionNameOptions();
@@ -576,8 +587,22 @@ namespace LevelStreaming.Editor
             if (target != null && newTarget != selectedTarget)
                 target.stringValue = newTarget == 0 ? string.Empty : options[newTarget];
 
-            if (bounds != null)
-                EditorGUILayout.PropertyField(bounds, new GUIContent("Local Bounds"), true);
+            if (worldVolume != null)
+            {
+                Bounds initialWorldBounds = bounds?.boundsValue ?? new Bounds(Vector3.zero, Vector3.one);
+                initialWorldBounds.center += m_Manager.Regions[m_SelectedRegion].Origin;
+                PolygonPrismEditorUtility.DrawShapeFieldLayout(
+                    worldVolume,
+                    initialWorldBounds,
+                    new GUIContent("Portal Shape"));
+
+                if (worldVolume.managedReferenceValue is PolygonPrismStreamingVolume)
+                {
+                    EditorGUILayout.HelpBox(
+                        "Portal prism coordinates are world-space.",
+                        MessageType.Info);
+                }
+            }
 
             using (new EditorGUILayout.HorizontalScope())
             {
@@ -598,6 +623,15 @@ namespace LevelStreaming.Editor
                         RebindAfterCommand();
                     }
                 }
+            }
+
+            if (m_EditPortalBounds &&
+                worldVolume?.managedReferenceValue is PolygonPrismStreamingVolume)
+            {
+                EditorGUILayout.HelpBox(
+                    "Drag vertex handles to move them. Green edge handles add vertices; " +
+                    "Ctrl/Cmd + a red vertex removes one. Cyan Min/Max handles change height or depth.",
+                    MessageType.Info);
             }
 
             if (target != null && string.Equals(
@@ -738,7 +772,12 @@ namespace LevelStreaming.Editor
                     EditorStyles.miniLabel);
                 GUILayout.FlexibleSpace();
                 EditorGUI.BeginChangeCheck();
-                m_ShowAllLabels = GUILayout.Toggle(m_ShowAllLabels, "All Region Labels", EditorStyles.toolbarButton);
+                m_ShowAllLabels = GUILayout.Toggle(
+                    m_ShowAllLabels,
+                    new GUIContent(
+                        "Region Labels",
+                        "Show or hide every region name in the Scene view, including the selected region."),
+                    EditorStyles.toolbarButton);
                 if (EditorGUI.EndChangeCheck())
                     SceneView.RepaintAll();
             }
@@ -758,10 +797,8 @@ namespace LevelStreaming.Editor
 
                 bool selected = i == m_SelectedRegion;
                 Color color = selected ? Color.yellow : GetRegionColor(region.Type);
-                if (region.Volume is PolygonStreamingVolume polygon)
-                    PolygonStreamingVolumeEditorUtility.DrawWire(polygon, color);
-                else if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
-                    PolygonStreamingVolumeEditorUtility.DrawWire(horizontalPolygon, color);
+                if (region.Volume is PolygonPrismStreamingVolume polygon)
+                    PolygonPrismEditorUtility.DrawWire(polygon, color);
                 else
                 {
                     Handles.color = color;
@@ -781,7 +818,7 @@ namespace LevelStreaming.Editor
                     GUIUtility.ExitGUI();
                 }
 
-                if (m_ShowAllLabels || selected)
+                if (m_ShowAllLabels)
                     Handles.Label(labelPosition + Vector3.up * handleSize, region.RegionName, EditorStyles.miniBoldLabel);
             }
 
@@ -797,13 +834,13 @@ namespace LevelStreaming.Editor
         private void DrawSelectedRegionHandle()
         {
             RegionManager.Region region = m_Manager.Regions[m_SelectedRegion];
-            if (region.Volume is PolygonStreamingVolume polygon)
+            if (region.Volume is PolygonPrismStreamingVolume polygon)
             {
                 Handles.color = Color.yellow;
-                if (!PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
+                if (!PolygonPrismEditorUtility.DrawVertexHandles(
                         polygon,
                         m_Manager,
-                        "Edit Streaming Region Polygon"))
+                        "Edit Streaming Region Polygon Prism"))
                     return;
 
                 RegionEditorCommands.MarkDirty(m_Manager);
@@ -813,35 +850,23 @@ namespace LevelStreaming.Editor
                 return;
             }
 
-            if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
-            {
-                Handles.color = Color.yellow;
-                if (!PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
-                        horizontalPolygon,
-                        m_Manager,
-                        "Edit Horizontal Streaming Region Polygon"))
-                    return;
-
-                RegionEditorCommands.MarkDirty(m_Manager);
-                _serializedManager?.Update();
-                RefreshValidation();
-                Repaint();
+            if (region.Volume is not BoxStreamingVolume box)
                 return;
-            }
-
-            if (region.HasCustomVolume)
-                return;
-            _regionHandle.center = region.CachedBounds.center;
-            _regionHandle.size = region.CachedBounds.size;
+            Bounds bounds = box.Bounds;
+            _regionHandle.center = bounds.center;
+            _regionHandle.size = bounds.size;
             Handles.color = Color.yellow;
             EditorGUI.BeginChangeCheck();
             _regionHandle.DrawHandle();
             if (!EditorGUI.EndChangeCheck())
                 return;
 
-            Undo.RecordObject(m_Manager, "Edit Streaming Region Bounds");
-            region.CachedBounds = new Bounds(_regionHandle.center, AbsSize(_regionHandle.size));
-            region.RebuildPortalWorldBounds();
+            Undo.RecordObject(m_Manager, "Edit Streaming Region Box");
+            Bounds changedBounds = new(_regionHandle.center, AbsSize(_regionHandle.size));
+            if (region.HasCustomVolume)
+                box.Bounds = changedBounds;
+            else
+                region.CachedBounds = changedBounds;
             RegionEditorCommands.MarkDirty(m_Manager);
             _serializedManager?.Update();
             RefreshValidation();
@@ -855,22 +880,59 @@ namespace LevelStreaming.Editor
                 return;
 
             RegionManager.Portal portal = region.Portals[m_SelectedPortal];
-            if (portal == null || portal.WorldVolume != null)
+            if (portal == null)
                 return;
 
-            _portalHandle.center = region.CachedBounds.center + portal.LocalBounds.center;
-            _portalHandle.size = portal.LocalBounds.size;
+            if (portal.WorldVolume is PolygonPrismStreamingVolume polygon)
+            {
+                PolygonPrismEditorUtility.DrawWire(polygon, Color.magenta);
+                if (PolygonPrismEditorUtility.DrawVertexHandles(
+                        polygon,
+                        m_Manager,
+                        "Edit Streaming Portal Polygon Prism"))
+                    PortalShapeChanged();
+                return;
+            }
+
+            Bounds bounds;
+            BoxStreamingVolume box = portal.WorldVolume as BoxStreamingVolume;
+            if (box != null)
+            {
+                bounds = box.Bounds;
+            }
+            else if (portal.WorldVolume == null)
+            {
+                bounds = portal.LocalBounds;
+                bounds.center += region.Origin;
+            }
+            else
+            {
+                return;
+            }
+
+            _portalHandle.center = bounds.center;
+            _portalHandle.size = bounds.size;
             Handles.color = Color.magenta;
             EditorGUI.BeginChangeCheck();
             _portalHandle.DrawHandle();
             if (!EditorGUI.EndChangeCheck())
                 return;
 
-            Undo.RecordObject(m_Manager, "Edit Streaming Portal Bounds");
-            portal.LocalBounds = new Bounds(
-                _portalHandle.center - region.CachedBounds.center,
-                AbsSize(_portalHandle.size));
-            region.RebuildPortalWorldBounds();
+            Undo.RecordObject(m_Manager, "Edit Streaming Portal Box");
+            Bounds changedBounds = new(_portalHandle.center, AbsSize(_portalHandle.size));
+            if (box != null)
+                box.Bounds = changedBounds;
+            else
+            {
+                changedBounds.center -= region.Origin;
+                portal.LocalBounds = changedBounds;
+                region.RebuildPortalWorldBounds();
+            }
+            PortalShapeChanged();
+        }
+
+        private void PortalShapeChanged()
+        {
             RegionEditorCommands.MarkDirty(m_Manager);
             _serializedManager?.Update();
             RefreshValidation();
@@ -889,26 +951,102 @@ namespace LevelStreaming.Editor
                         AssetDatabase.OpenAsset(GetSourceAsset(region));
                 }
             }
+
+            bool canSyncBounds = CanSyncAssetBounds(region);
+            using (new EditorGUI.DisabledScope(Application.isPlaying || !canSyncBounds))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("Refresh Bounds From Asset"))
+                        RefreshSelectedBoundsFromAsset();
+                    if (GUILayout.Button("Apply Bounds To Asset"))
+                        ApplySelectedBoundsToAsset();
+                }
+            }
+            if (!canSyncBounds && region?.Volume is PolygonPrismStreamingVolume)
+            {
+                EditorGUILayout.HelpBox(
+                    "Asset bounds sync is available for Box regions only.",
+                    MessageType.Info);
+            }
         }
 
-        private void FitSelectedBounds()
+        private void RefreshSelectedBoundsFromAsset()
         {
+            if (!HasSelectedRegion())
+                return;
+
             ApplyPendingChanges();
-            Undo.RecordObject(m_Manager, "Fit Streaming Region Bounds");
+            Undo.RecordObject(m_Manager, "Refresh Streaming Bounds");
             m_Manager.RefreshBounds(m_Manager.Regions[m_SelectedRegion]);
+            RegionEditorCommands.MarkDirty(m_Manager);
             RebindAfterCommand();
         }
 
-        private void ApplySelectedBounds()
+        private void ApplySelectedBoundsToAsset()
         {
+            if (!HasSelectedRegion())
+                return;
+
             ApplyPendingChanges();
+            RegionManager.Region region = m_Manager.Regions[m_SelectedRegion];
             if (!EditorUtility.DisplayDialog(
                     "Apply Streaming Bounds",
-                    "Write the cached world bounds into the selected source scene or prefab marker?",
+                    $"Write the cached bounds for '{region.RegionName}' into its source asset?",
                     "Apply",
                     "Cancel"))
                 return;
-            m_Manager.ApplyBounds(m_Manager.Regions[m_SelectedRegion]);
+
+            m_Manager.ApplyBounds(region);
+            RebindAfterCommand();
+        }
+
+        private void RefreshAllBoundsFromAssets()
+        {
+            ApplyPendingChanges();
+            Undo.RecordObject(m_Manager, "Refresh Streaming Bounds");
+            foreach (RegionManager.Region region in m_Manager.Regions)
+            {
+                if (CanSyncAssetBounds(region))
+                    m_Manager.RefreshBounds(region);
+            }
+            RegionEditorCommands.MarkDirty(m_Manager);
+            RebindAfterCommand();
+        }
+
+        private void ApplyAllBoundsToAssets()
+        {
+            ApplyPendingChanges();
+
+            var sources = new HashSet<string>();
+            foreach (RegionManager.Region region in m_Manager.Regions)
+            {
+                if (!CanSyncAssetBounds(region))
+                    continue;
+                string key = RegionBoundsAuthoringService.GetSourceKey(region);
+                if (key != null && !sources.Add(key))
+                {
+                    EditorUtility.DisplayDialog(
+                        "Cannot Apply All Bounds",
+                        "Multiple regions share a source asset. Applying all would make the last region " +
+                        "overwrite the others. Apply those regions individually instead.",
+                        "OK");
+                    return;
+                }
+            }
+
+            if (!EditorUtility.DisplayDialog(
+                    "Apply Streaming Bounds",
+                    "This writes every authored Box region into its source scene or prefab.",
+                    "Apply",
+                    "Cancel"))
+                return;
+
+            foreach (RegionManager.Region region in m_Manager.Regions)
+            {
+                if (CanSyncAssetBounds(region))
+                    m_Manager.ApplyBounds(region);
+            }
             RebindAfterCommand();
         }
 
@@ -1031,15 +1169,22 @@ namespace LevelStreaming.Editor
             RegionManager.Region region = m_Manager.Regions[m_SelectedRegion];
             if (region?.Portals == null || m_SelectedPortal < 0 || m_SelectedPortal >= region.Portals.Count)
                 return;
-            Bounds bounds = region.Portals[m_SelectedPortal].LocalBounds;
-            bounds.center += region.CachedBounds.center;
+            RegionManager.Portal portal = region.Portals[m_SelectedPortal];
+            if (portal == null)
+                return;
+            Bounds bounds = portal.WorldVolume?.BroadphaseBounds ?? portal.LocalBounds;
+            if (portal.WorldVolume == null)
+                bounds.center += region.Origin;
             SceneView.lastActiveSceneView?.Frame(bounds, false);
         }
 
         private void SetManager(RegionManager manager)
         {
             if (m_Manager == manager)
+            {
+                RegionSceneLabelState.ControlledManager = manager;
                 return;
+            }
             m_Manager = manager;
             RegionSceneLabelState.ControlledManager = manager;
             m_SelectedRegion = manager != null && manager.Regions.Count > 0 ? 0 : -1;
@@ -1051,6 +1196,7 @@ namespace LevelStreaming.Editor
 
         private void BindManager()
         {
+            RegionSceneLabelState.ControlledManager = m_Manager;
             _serializedManager = m_Manager == null ? null : new SerializedObject(m_Manager);
             ClampSelection();
             RefreshValidation();
@@ -1135,8 +1281,7 @@ namespace LevelStreaming.Editor
         {
             if (region == null || string.IsNullOrWhiteSpace(region.RegionName) ||
                 !IsUsableBounds(region.BroadphaseBounds) ||
-                region.Volume is PolygonStreamingVolume { IsValid: false } ||
-                region.Volume is XZPolygonStreamingVolume { IsValid: false } ||
+                region.Volume is PolygonPrismStreamingVolume { IsValid: false } ||
                 GetSourceAsset(region) == null)
                 return MessageType.Error;
             return region.UnloadStrategy == null ? MessageType.Warning : MessageType.Info;
@@ -1164,6 +1309,20 @@ namespace LevelStreaming.Editor
                     AssetDatabase.GUIDToAssetPath(region.AddressableSceneRef?.AssetGUID)),
                 _ => null
             };
+        }
+
+        private static bool CanSyncAssetBounds(RegionManager.Region region) =>
+            region?.Volume is BoxStreamingVolume && GetSourceAsset(region) != null;
+
+        private bool HasSyncableAssetBounds()
+        {
+            foreach (RegionManager.Region region in m_Manager.Regions)
+            {
+                if (CanSyncAssetBounds(region))
+                    return true;
+            }
+
+            return false;
         }
 
         private string[] BuildRegionNameOptions()

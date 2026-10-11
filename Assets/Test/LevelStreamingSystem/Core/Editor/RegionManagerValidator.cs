@@ -175,13 +175,9 @@ namespace LevelStreaming.Editor
         {
             switch (volume)
             {
-                case PolygonStreamingVolume polygon when !polygon.IsValid:
+                case PolygonPrismStreamingVolume polygon when !polygon.IsValid:
                     AddPolygonIssue(polygon.Vertices?.Count ?? 0, polygon.HasSelfIntersections(),
-                        $"{label} must have finite XY vertices, a non-zero area, and Front Z greater than Back Z.");
-                    break;
-                case XZPolygonStreamingVolume polygon when !polygon.IsValid:
-                    AddPolygonIssue(polygon.Vertices?.Count ?? 0, polygon.HasSelfIntersections(),
-                        $"{label} must have finite XZ vertices, a non-zero area, and Top Y greater than Bottom Y.");
+                        $"{label} must have finite vertices, a non-zero area, and Max Extrusion greater than Min Extrusion.");
                     break;
             }
 

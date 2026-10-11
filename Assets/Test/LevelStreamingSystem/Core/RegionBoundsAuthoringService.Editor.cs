@@ -13,9 +13,9 @@ namespace LevelStreaming.Editor
         {
             if (region == null)
                 return false;
-            if (region.HasCustomVolume)
+            if (region.HasCustomVolume && region.Volume is not BoxStreamingVolume)
             {
-                Debug.LogWarning("Apply Bounds only supports legacy box regions. Use the custom volume's authoring workflow.");
+                Debug.LogWarning("Apply Bounds only supports box regions. Polygon prisms must be authored in the streaming editor.");
                 return false;
             }
 
@@ -38,9 +38,9 @@ namespace LevelStreaming.Editor
         {
             if (region == null)
                 return false;
-            if (region.HasCustomVolume)
+            if (region.HasCustomVolume && region.Volume is not BoxStreamingVolume)
             {
-                Debug.LogWarning("Refresh Bounds only supports legacy box regions. Use the custom volume's authoring workflow.");
+                Debug.LogWarning("Refresh Bounds only supports box regions. Polygon prisms must be authored in the streaming editor.");
                 return false;
             }
 
@@ -126,7 +126,7 @@ namespace LevelStreaming.Editor
 
                 Undo.RecordObject(regionBound, "Apply Streaming Bounds");
                 regionBound.Bounds = BoundsTransformUtility.InverseTransform(
-                    region.CachedBounds,
+                    GetAuthoredBounds(region),
                     regionBound.transform.localToWorldMatrix);
                 EditorUtility.SetDirty(regionBound);
 
@@ -168,8 +168,7 @@ namespace LevelStreaming.Editor
                 if (!IsUsableBounds(sourceBounds, scenePath))
                     return false;
 
-                region.CachedBounds = sourceBounds;
-                region.RebuildPortalWorldBounds();
+                SetAuthoredBounds(region, sourceBounds, preserveCenter: false);
                 return true;
             }
             finally
@@ -221,7 +220,7 @@ namespace LevelStreaming.Editor
                 Bounds currentLocal = BoundsTransformUtility.Transform(
                     regionBound.Bounds,
                     regionBound.transform.localToWorldMatrix);
-                Bounds desiredLocal = new(currentLocal.center, region.CachedBounds.size);
+                Bounds desiredLocal = new(currentLocal.center, GetAuthoredBounds(region).size);
                 regionBound.Bounds = BoundsTransformUtility.InverseTransform(
                     desiredLocal,
                     regionBound.transform.localToWorldMatrix);
@@ -259,8 +258,7 @@ namespace LevelStreaming.Editor
                 if (!IsUsableBounds(contentBounds, prefabPath))
                     return false;
 
-                region.CachedBounds = new Bounds(region.CachedBounds.center, contentBounds.size);
-                region.RebuildPortalWorldBounds();
+                SetAuthoredBounds(region, contentBounds, preserveCenter: true);
                 return true;
             }
             finally
@@ -351,6 +349,23 @@ namespace LevelStreaming.Editor
 
             Debug.LogError($"RegionBound in '{sourcePath}' must have finite, positive bounds.");
             return false;
+        }
+
+        private static Bounds GetAuthoredBounds(RegionManager.Region region) =>
+            region.Volume is BoxStreamingVolume box ? box.Bounds : region.CachedBounds;
+
+        private static void SetAuthoredBounds(
+            RegionManager.Region region,
+            Bounds sourceBounds,
+            bool preserveCenter)
+        {
+            Bounds current = GetAuthoredBounds(region);
+            Bounds updated = new(preserveCenter ? current.center : sourceBounds.center, sourceBounds.size);
+            if (region.HasCustomVolume && region.Volume is BoxStreamingVolume box)
+                box.Bounds = updated;
+            else
+                region.CachedBounds = updated;
+            region.RebuildPortalWorldBounds();
         }
 
         private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);

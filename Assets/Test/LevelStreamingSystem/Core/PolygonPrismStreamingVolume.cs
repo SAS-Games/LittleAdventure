@@ -1,19 +1,26 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace LevelStreaming
 {
+    public enum PolygonPrismPlane
+    {
+        XY,
+        XZ
+    }
+
     /// <summary>
-    /// A world-space polygon on the XY plane, extruded between two Z coordinates.
-    /// The polygon may be concave, but must be simple (its edges may not cross).
+    /// A world-space polygon extruded perpendicular to its projection plane.
+    /// XY polygons extrude along Z; XZ polygons extrude along Y.
+    /// The polygon may be concave but must not self-intersect.
     /// </summary>
     [Serializable]
-    public sealed class PolygonStreamingVolume : StreamingVolume
+    public sealed class PolygonPrismStreamingVolume : StreamingVolume
     {
         private const float GeometryEpsilon = 0.00001f;
 
+        [SerializeField] private PolygonPrismPlane projectionPlane = PolygonPrismPlane.XZ;
         [SerializeField] private List<Vector2> vertices = new()
         {
             new Vector2(-1f, -1f),
@@ -21,85 +28,108 @@ namespace LevelStreaming
             new Vector2(1f, 1f),
             new Vector2(1f, -1f)
         };
-        [FormerlySerializedAs("minY")]
-        [SerializeField] private float minZ = -1f;
-        [FormerlySerializedAs("maxY")]
-        [SerializeField] private float maxZ = 1f;
+        [SerializeField] private float minExtrusion = -1f;
+        [SerializeField] private float maxExtrusion = 1f;
 
-        public PolygonStreamingVolume() { }
+        public PolygonPrismStreamingVolume() { }
 
-        public PolygonStreamingVolume(Bounds bounds)
+        public PolygonPrismStreamingVolume(Bounds bounds,
+            PolygonPrismPlane projectionPlane = PolygonPrismPlane.XZ)
         {
-            Vector3 min = bounds.min;
-            Vector3 max = bounds.max;
-            vertices = new List<Vector2>
-            {
-                new(min.x, min.y),
-                new(min.x, max.y),
-                new(max.x, max.y),
-                new(max.x, min.y)
-            };
-            minZ = min.z;
-            maxZ = max.z;
+            this.projectionPlane = projectionPlane;
+            SetFromBounds(bounds);
         }
 
-        public PolygonStreamingVolume(IEnumerable<Vector2> vertices, float minZ, float maxZ)
+        public PolygonPrismStreamingVolume(IEnumerable<Vector2> vertices,
+            float minExtrusion, float maxExtrusion,
+            PolygonPrismPlane projectionPlane = PolygonPrismPlane.XZ)
         {
             this.vertices = vertices != null ? new List<Vector2>(vertices) : new List<Vector2>();
-            this.minZ = minZ;
-            this.maxZ = maxZ;
+            this.minExtrusion = minExtrusion;
+            this.maxExtrusion = maxExtrusion;
+            this.projectionPlane = projectionPlane;
         }
 
+        public PolygonPrismPlane ProjectionPlane => projectionPlane;
         public IReadOnlyList<Vector2> Vertices => vertices;
-        public float MinZ { get => minZ; set => minZ = value; }
-        public float MaxZ { get => maxZ; set => maxZ = value; }
+        public float MinExtrusion { get => minExtrusion; set => minExtrusion = value; }
+        public float MaxExtrusion { get => maxExtrusion; set => maxExtrusion = value; }
 
-        public bool IsValid => vertices != null && vertices.Count >= 3 && IsFinite(minZ) && IsFinite(maxZ) &&
-                               maxZ > minZ && Mathf.Abs(SignedArea(vertices)) > GeometryEpsilon && AreVerticesFinite(vertices) &&
-                               !HasSelfIntersections(vertices);
+        public bool IsValid =>
+            Enum.IsDefined(typeof(PolygonPrismPlane), projectionPlane) &&
+            vertices != null && vertices.Count >= 3 &&
+            IsFinite(minExtrusion) && IsFinite(maxExtrusion) &&
+            maxExtrusion > minExtrusion &&
+            Mathf.Abs(SignedArea(vertices)) > GeometryEpsilon &&
+            AreVerticesFinite(vertices) && !HasSelfIntersections(vertices);
 
         public override Bounds BroadphaseBounds
         {
             get
             {
-                if (vertices == null || vertices.Count == 0 || !IsFinite(minZ) || !IsFinite(maxZ))
+                if (vertices == null || vertices.Count == 0 ||
+                    !IsFinite(minExtrusion) || !IsFinite(maxExtrusion))
                     return default;
 
                 bool foundVertex = false;
-                Vector2 min = default;
-                Vector2 max = default;
+                Vector2 polygonMin = default;
+                Vector2 polygonMax = default;
                 foreach (Vector2 vertex in vertices)
                 {
                     if (!IsFinite(vertex))
                         continue;
-
                     if (!foundVertex)
                     {
-                        min = max = vertex;
+                        polygonMin = polygonMax = vertex;
                         foundVertex = true;
                     }
                     else
                     {
-                        min = Vector2.Min(min, vertex);
-                        max = Vector2.Max(max, vertex);
+                        polygonMin = Vector2.Min(polygonMin, vertex);
+                        polygonMax = Vector2.Max(polygonMax, vertex);
                     }
                 }
 
                 if (!foundVertex)
                     return default;
 
-                float back = Mathf.Min(minZ, maxZ);
-                float front = Mathf.Max(minZ, maxZ);
-                return new Bounds(new Vector3((min.x + max.x) * 0.5f, (min.y + max.y) * 0.5f, (back + front) * 0.5f), new Vector3(max.x - min.x, max.y - min.y, front - back));
+                float extrusionMin = Mathf.Min(minExtrusion, maxExtrusion);
+                float extrusionMax = Mathf.Max(minExtrusion, maxExtrusion);
+                return projectionPlane switch
+                {
+                    PolygonPrismPlane.XY => new Bounds(
+                        new Vector3((polygonMin.x + polygonMax.x) * 0.5f,
+                            (polygonMin.y + polygonMax.y) * 0.5f,
+                            (extrusionMin + extrusionMax) * 0.5f),
+                        new Vector3(polygonMax.x - polygonMin.x,
+                            polygonMax.y - polygonMin.y,
+                            extrusionMax - extrusionMin)),
+                    PolygonPrismPlane.XZ => new Bounds(
+                        new Vector3((polygonMin.x + polygonMax.x) * 0.5f,
+                            (extrusionMin + extrusionMax) * 0.5f,
+                            (polygonMin.y + polygonMax.y) * 0.5f),
+                        new Vector3(polygonMax.x - polygonMin.x,
+                            extrusionMax - extrusionMin,
+                            polygonMax.y - polygonMin.y)),
+                    _ => default
+                };
             }
         }
 
         public override bool Contains(Vector3 point)
         {
-            if (!IsValid || point.z < minZ || point.z > maxZ)
+            if (!IsValid)
                 return false;
-
-            return ContainsPoint(vertices, new Vector2(point.x, point.y));
+            return projectionPlane switch
+            {
+                PolygonPrismPlane.XY =>
+                    point.z >= minExtrusion && point.z <= maxExtrusion &&
+                    ContainsPoint(vertices, new Vector2(point.x, point.y)),
+                PolygonPrismPlane.XZ =>
+                    point.y >= minExtrusion && point.y <= maxExtrusion &&
+                    ContainsPoint(vertices, new Vector2(point.x, point.z)),
+                _ => false
+            };
         }
 
         public override bool TryIntersects(IStreamingVolume other, out bool intersects)
@@ -109,7 +139,7 @@ namespace LevelStreaming
                 case BoxStreamingVolume box:
                     intersects = IntersectsBox(box.Bounds);
                     return true;
-                case PolygonStreamingVolume polygon:
+                case PolygonPrismStreamingVolume polygon when polygon.projectionPlane == projectionPlane:
                     intersects = IntersectsPolygon(polygon);
                     return true;
                 default:
@@ -120,8 +150,7 @@ namespace LevelStreaming
 
         public void SetVertex(int index, Vector2 value)
         {
-            if (vertices == null)
-                vertices = new List<Vector2>();
+            vertices ??= new List<Vector2>();
             vertices[index] = value;
         }
 
@@ -138,27 +167,65 @@ namespace LevelStreaming
         }
 
         public void RemoveVertexAt(int index) => vertices?.RemoveAt(index);
-
         public bool HasSelfIntersections() => vertices != null && HasSelfIntersections(vertices);
+
+        private void SetFromBounds(Bounds bounds)
+        {
+            Vector3 min = bounds.min;
+            Vector3 max = bounds.max;
+            if (projectionPlane == PolygonPrismPlane.XY)
+            {
+                vertices = Rectangle(new Vector2(min.x, min.y), new Vector2(max.x, max.y));
+                minExtrusion = min.z;
+                maxExtrusion = max.z;
+            }
+            else
+            {
+                vertices = Rectangle(new Vector2(min.x, min.z), new Vector2(max.x, max.z));
+                minExtrusion = min.y;
+                maxExtrusion = max.y;
+            }
+        }
 
         private bool IntersectsBox(Bounds bounds)
         {
-            if (!IsValid || bounds.max.z < minZ || bounds.min.z > maxZ)
+            if (!IsValid)
                 return false;
 
-            Vector2 rectangleMin = new(bounds.min.x, bounds.min.y);
-            Vector2 rectangleMax = new(bounds.max.x, bounds.max.y);
+            Vector2 rectangleMin;
+            Vector2 rectangleMax;
+            if (projectionPlane == PolygonPrismPlane.XY)
+            {
+                if (bounds.max.z < minExtrusion || bounds.min.z > maxExtrusion)
+                    return false;
+                rectangleMin = new Vector2(bounds.min.x, bounds.min.y);
+                rectangleMax = new Vector2(bounds.max.x, bounds.max.y);
+            }
+            else
+            {
+                if (bounds.max.y < minExtrusion || bounds.min.y > maxExtrusion)
+                    return false;
+                rectangleMin = new Vector2(bounds.min.x, bounds.min.z);
+                rectangleMax = new Vector2(bounds.max.x, bounds.max.z);
+            }
             return PolygonIntersectsRectangle(vertices, rectangleMin, rectangleMax);
         }
 
-        private bool IntersectsPolygon(PolygonStreamingVolume other)
+        private bool IntersectsPolygon(PolygonPrismStreamingVolume other)
         {
             if (!IsValid || other == null || !other.IsValid ||
-                other.maxZ < minZ || other.minZ > maxZ)
+                other.maxExtrusion < minExtrusion || other.minExtrusion > maxExtrusion)
                 return false;
-
             return PolygonsIntersect(vertices, other.vertices);
         }
+
+        private static List<Vector2> Rectangle(Vector2 min, Vector2 max) => new()
+        {
+            new Vector2(min.x, min.y),
+            new Vector2(min.x, max.y),
+            new Vector2(max.x, max.y),
+            new Vector2(max.x, min.y)
+        };
 
         private static bool PolygonIntersectsRectangle(IReadOnlyList<Vector2> polygon,
             Vector2 rectangleMin, Vector2 rectangleMax)
@@ -178,7 +245,6 @@ namespace LevelStreaming
                 rectangleMax,
                 new Vector2(rectangleMax.x, rectangleMin.y)
             };
-
             for (int i = 0; i < corners.Length; i++)
             {
                 if (ContainsPoint(polygon, corners[i]))
@@ -197,7 +263,6 @@ namespace LevelStreaming
                         return true;
                 }
             }
-
             return false;
         }
 
@@ -215,7 +280,6 @@ namespace LevelStreaming
                         return true;
                 }
             }
-
             return ContainsPoint(first, second[0]) || ContainsPoint(second, first[0]);
         }
 
@@ -223,20 +287,17 @@ namespace LevelStreaming
         {
             bool inside = false;
             for (int current = 0, previous = polygon.Count - 1;
-                 current < polygon.Count;
-                 previous = current++)
+                 current < polygon.Count; previous = current++)
             {
                 Vector2 a = polygon[previous];
                 Vector2 b = polygon[current];
                 if (PointOnSegment(point, a, b))
                     return true;
-
                 bool crossesRay = (a.y > point.y) != (b.y > point.y);
                 if (crossesRay && point.x <
                     (b.x - a.x) * (point.y - a.y) / (b.y - a.y) + a.x)
                     inside = !inside;
             }
-
             return inside;
         }
 
@@ -244,7 +305,6 @@ namespace LevelStreaming
         {
             if (polygon.Count < 4)
                 return false;
-
             for (int first = 0; first < polygon.Count; first++)
             {
                 int firstNext = (first + 1) % polygon.Count;
@@ -258,7 +318,6 @@ namespace LevelStreaming
                         return true;
                 }
             }
-
             return false;
         }
 
@@ -268,13 +327,11 @@ namespace LevelStreaming
             float abD = Cross(b - a, d - a);
             float cdA = Cross(d - c, a - c);
             float cdB = Cross(d - c, b - c);
-
             if (((abC > GeometryEpsilon && abD < -GeometryEpsilon) ||
                  (abC < -GeometryEpsilon && abD > GeometryEpsilon)) &&
                 ((cdA > GeometryEpsilon && cdB < -GeometryEpsilon) ||
                  (cdA < -GeometryEpsilon && cdB > GeometryEpsilon)))
                 return true;
-
             return Mathf.Abs(abC) <= GeometryEpsilon && PointOnSegment(c, a, b) ||
                    Mathf.Abs(abD) <= GeometryEpsilon && PointOnSegment(d, a, b) ||
                    Mathf.Abs(cdA) <= GeometryEpsilon && PointOnSegment(a, c, d) ||
@@ -285,7 +342,6 @@ namespace LevelStreaming
         {
             if (Mathf.Abs(Cross(end - start, point - start)) > GeometryEpsilon)
                 return false;
-
             return point.x >= Mathf.Min(start.x, end.x) - GeometryEpsilon &&
                    point.x <= Mathf.Max(start.x, end.x) + GeometryEpsilon &&
                    point.y >= Mathf.Min(start.y, end.y) - GeometryEpsilon &&

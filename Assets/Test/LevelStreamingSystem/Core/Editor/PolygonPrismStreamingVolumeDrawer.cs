@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace LevelStreaming.Editor
 {
-    [CustomPropertyDrawer(typeof(PolygonStreamingVolume))]
-    internal sealed class PolygonStreamingVolumeDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(PolygonPrismStreamingVolume))]
+    internal sealed class PolygonPrismStreamingVolumeDrawer : PropertyDrawer
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
@@ -15,13 +15,12 @@ namespace LevelStreaming.Editor
 
             SerializedProperty vertices = property.FindPropertyRelative("vertices");
             float height = line + spacing;
+            height += line + spacing;
             height += EditorGUI.GetPropertyHeight(vertices, true) + spacing;
             height += line + spacing;
             height += (line + spacing) * 2f;
-
-            if (property.managedReferenceValue is PolygonStreamingVolume polygon && !polygon.IsValid)
-                height += EditorGUIUtility.singleLineHeight * 2f + spacing;
-
+            if (property.managedReferenceValue is PolygonPrismStreamingVolume prism && !prism.IsValid)
+                height += line * 2f + spacing;
             return height;
         }
 
@@ -40,27 +39,52 @@ namespace LevelStreaming.Editor
             }
 
             EditorGUI.indentLevel++;
+            SerializedProperty plane = property.FindPropertyRelative("projectionPlane");
             SerializedProperty vertices = property.FindPropertyRelative("vertices");
-            SerializedProperty minZ = property.FindPropertyRelative("minZ");
-            SerializedProperty maxZ = property.FindPropertyRelative("maxZ");
+            SerializedProperty minimum = property.FindPropertyRelative("minExtrusion");
+            SerializedProperty maximum = property.FindPropertyRelative("maxExtrusion");
 
             row.y += line + spacing;
+            Bounds previousBounds = property.managedReferenceValue is PolygonPrismStreamingVolume current
+                ? current.BroadphaseBounds
+                : default;
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.PropertyField(row, plane, new GUIContent(
+                "Projection Plane",
+                "XZ creates a floor footprint with Y height. XY creates a vertical profile with Z depth."));
+            if (EditorGUI.EndChangeCheck())
+            {
+                var selectedPlane = (PolygonPrismPlane)plane.enumValueIndex;
+                property.managedReferenceValue =
+                    new PolygonPrismStreamingVolume(previousBounds, selectedPlane);
+                property.isExpanded = true;
+                EditorGUI.indentLevel--;
+                EditorGUI.EndProperty();
+                return;
+            }
+            row.y += line + spacing;
+
+            var projectionPlane = (PolygonPrismPlane)plane.enumValueIndex;
+            string vertexLabel = projectionPlane == PolygonPrismPlane.XZ ? "XZ Vertices" : "XY Vertices";
             float verticesHeight = EditorGUI.GetPropertyHeight(vertices, true);
-            EditorGUI.PropertyField(new Rect(row.x, row.y, row.width, verticesHeight), vertices, true);
+            EditorGUI.PropertyField(new Rect(row.x, row.y, row.width, verticesHeight),
+                vertices, new GUIContent(vertexLabel), true);
             row.y += verticesHeight + spacing;
 
             DrawVertexButtons(row, vertices);
             row.y += line + spacing;
-            EditorGUI.PropertyField(row, minZ, new GUIContent("Back Z"));
+            EditorGUI.PropertyField(row, minimum, new GUIContent(
+                projectionPlane == PolygonPrismPlane.XZ ? "Bottom Y" : "Back Z"));
             row.y += line + spacing;
-            EditorGUI.PropertyField(row, maxZ, new GUIContent("Front Z"));
+            EditorGUI.PropertyField(row, maximum, new GUIContent(
+                projectionPlane == PolygonPrismPlane.XZ ? "Top Y" : "Front Z"));
             row.y += line + spacing;
 
-            if (property.managedReferenceValue is PolygonStreamingVolume polygon && !polygon.IsValid)
+            if (property.managedReferenceValue is PolygonPrismStreamingVolume prism && !prism.IsValid)
             {
                 EditorGUI.HelpBox(
                     new Rect(row.x, row.y, row.width, line * 2f),
-                    "Use at least three finite XY vertices, a positive Z depth, and a simple non-crossing outline.",
+                    "Use at least three finite vertices, a positive extrusion, and a simple non-crossing outline.",
                     MessageType.Error);
             }
 

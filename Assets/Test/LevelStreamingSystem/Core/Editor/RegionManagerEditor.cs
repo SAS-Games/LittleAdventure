@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace LevelStreaming.Editor
@@ -7,11 +6,6 @@ namespace LevelStreaming.Editor
     [CustomEditor(typeof(RegionManager))]
     public class RegionManagerEditor : UnityEditor.Editor
     {
-        private readonly BoxBoundsHandle _regionHandle = new();
-        private readonly BoxBoundsHandle _portalHandle = new();
-        private int _selectedRegionIndex;
-        private bool _editSelectedRegion;
-
         public override bool RequiresConstantRepaint() => Application.isPlaying;
 
         public override void OnInspectorGUI()
@@ -25,7 +19,6 @@ namespace LevelStreaming.Editor
             serializedObject.ApplyModifiedProperties();
 
             var manager = (RegionManager)target;
-            DrawSceneAuthoringControls(manager);
             if (Application.isPlaying)
                 DrawRuntimeState(manager);
 
@@ -40,68 +33,6 @@ namespace LevelStreaming.Editor
             EditorGUILayout.LabelField("Validation", EditorStyles.boldLabel);
             foreach (var issue in issues)
                 EditorGUILayout.HelpBox(issue.Message, issue.Severity);
-        }
-
-        private void OnSceneGUI()
-        {
-            var manager = (RegionManager)target;
-            if (!_editSelectedRegion || manager?.Regions == null || manager.Regions.Count == 0)
-                return;
-
-            _selectedRegionIndex = Mathf.Clamp(_selectedRegionIndex, 0, manager.Regions.Count - 1);
-            RegionManager.Region region = manager.Regions[_selectedRegionIndex];
-            if (region == null)
-                return;
-
-            DrawRegionBounds(manager, region);
-            DrawRegionPortals(manager, region);
-        }
-
-        private void DrawSceneAuthoringControls(RegionManager manager)
-        {
-            EditorGUILayout.Space(4f);
-            EditorGUILayout.LabelField("Scene Authoring", EditorStyles.boldLabel);
-
-            using (new EditorGUI.DisabledScope(Application.isPlaying))
-            {
-                var loadAllContent = new GUIContent(
-                    "Load All Streaming Scenes For Editing",
-                    "Open every Scene and Addressable Scene region additively, then keep this persistent scene active.");
-                if (GUILayout.Button(loadAllContent))
-                    StreamingPersistentSceneMenu.LoadAllStreamingScenesForEditing(manager);
-
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    if (GUILayout.Button("Frame Complete World"))
-                        StreamingPersistentSceneMenu.FrameCompleteWorld(manager);
-                    if (GUILayout.Button("Unload Streaming Scenes"))
-                        StreamingPersistentSceneMenu.UnloadAllStreamingScenesForEditing(manager);
-                }
-            }
-
-            if (manager.Regions.Count == 0)
-            {
-                EditorGUILayout.HelpBox(
-                    "Add a region to enable edit-time scene loading and Scene view handles.",
-                    MessageType.Info);
-                _editSelectedRegion = false;
-                return;
-            }
-
-            string[] labels = new string[manager.Regions.Count];
-            for (int i = 0; i < labels.Length; i++)
-            {
-                RegionManager.Region region = manager.Regions[i];
-                labels[i] = region == null
-                    ? $"{i}: <null>"
-                    : $"{i}: {(string.IsNullOrWhiteSpace(region.RegionName) ? region.Type.ToString() : region.RegionName)}";
-            }
-
-            _selectedRegionIndex = Mathf.Clamp(_selectedRegionIndex, 0, labels.Length - 1);
-            _selectedRegionIndex = EditorGUILayout.Popup("Selected Region", _selectedRegionIndex, labels);
-            _editSelectedRegion = EditorGUILayout.Toggle(
-                new GUIContent("Edit Handles", "Only the selected region and its portals receive interactive handles."),
-                _editSelectedRegion);
         }
 
         private static void DrawRuntimeState(RegionManager manager)
@@ -136,110 +67,5 @@ namespace LevelStreaming.Editor
                 EditorGUILayout.HelpBox("Streaming controller is shutting down.", MessageType.Warning);
         }
 
-        private void DrawRegionBounds(RegionManager manager, RegionManager.Region region)
-        {
-            if (region.Volume is PolygonStreamingVolume polygon)
-            {
-                PolygonStreamingVolumeEditorUtility.DrawWire(polygon, Color.yellow);
-                PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
-                    polygon,
-                    manager,
-                    "Modify Region Polygon");
-                if (!RegionSceneLabelState.Controls(manager))
-                {
-                    Handles.Label(
-                        polygon.BroadphaseBounds.center + Vector3.up * polygon.BroadphaseBounds.extents.y,
-                        region.RegionName);
-                }
-                return;
-            }
-
-            if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
-            {
-                PolygonStreamingVolumeEditorUtility.DrawWire(horizontalPolygon, Color.yellow);
-                PolygonStreamingVolumeEditorUtility.DrawVertexHandles(
-                    horizontalPolygon,
-                    manager,
-                    "Modify Horizontal Region Polygon");
-                if (!RegionSceneLabelState.Controls(manager))
-                {
-                    Handles.Label(
-                        horizontalPolygon.BroadphaseBounds.center + Vector3.up * horizontalPolygon.BroadphaseBounds.extents.y,
-                        region.RegionName);
-                }
-                return;
-            }
-
-            if (region.HasCustomVolume)
-            {
-                Bounds envelope = region.BroadphaseBounds;
-                Handles.DrawWireCube(envelope.center, envelope.size);
-                if (!RegionSceneLabelState.Controls(manager))
-                    Handles.Label(envelope.center, $"{region.RegionName} (volume envelope)");
-                return;
-            }
-            Bounds bounds = region.CachedBounds;
-            _regionHandle.center = bounds.center;
-            _regionHandle.size = bounds.size;
-
-            EditorGUI.BeginChangeCheck();
-            _regionHandle.DrawHandle();
-            if (EditorGUI.EndChangeCheck())
-            {
-                Undo.RecordObject(manager, "Modify Region Bound");
-                region.CachedBounds = new Bounds(_regionHandle.center, _regionHandle.size);
-                region.RebuildPortalWorldBounds();
-                EditorUtility.SetDirty(manager);
-                bounds = region.CachedBounds;
-            }
-
-            string label = string.IsNullOrWhiteSpace(region.RegionName)
-                ? region.Type.ToString()
-                : region.RegionName;
-            if (!RegionSceneLabelState.Controls(manager))
-                Handles.Label(bounds.center + Vector3.up * bounds.extents.y, label, EditorStyles.boldLabel);
-        }
-
-        private void DrawRegionPortals(RegionManager manager, RegionManager.Region region)
-        {
-            if (region.Portals == null)
-                return;
-
-            for (int i = 0; i < region.Portals.Count; i++)
-            {
-                RegionManager.Portal portal = region.Portals[i];
-                if (portal == null)
-                    continue;
-                if (portal.WorldVolume != null)
-                {
-                    Bounds envelope = portal.WorldVolume.BroadphaseBounds;
-                    Handles.DrawWireCube(envelope.center, envelope.size);
-                    Handles.Label(envelope.center, $"Portal {i} (volume envelope)");
-                    continue;
-                }
-
-                Vector3 worldCenter = region.CachedBounds.center + portal.LocalBounds.center;
-                _portalHandle.center = worldCenter;
-                _portalHandle.size = portal.LocalBounds.size;
-
-                EditorGUI.BeginChangeCheck();
-                _portalHandle.DrawHandle();
-                if (EditorGUI.EndChangeCheck())
-                {
-                    Undo.RecordObject(manager, "Modify Portal Bound");
-                    Vector3 localCenter = _portalHandle.center - region.CachedBounds.center;
-                    portal.LocalBounds = new Bounds(localCenter, _portalHandle.size);
-                    region.RebuildPortalWorldBounds();
-                    EditorUtility.SetDirty(manager);
-                    worldCenter = region.CachedBounds.center + portal.LocalBounds.center;
-                }
-
-                string targetLabel = string.IsNullOrWhiteSpace(portal.TargetRegionName)
-                    ? "No target"
-                    : portal.TargetRegionName;
-                Handles.Label(worldCenter + Vector3.up * portal.LocalBounds.extents.y,
-                    $"Portal {i} -> {targetLabel}", EditorStyles.miniBoldLabel);
-            }
-        }
     }
 }

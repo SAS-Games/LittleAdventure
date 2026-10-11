@@ -93,10 +93,8 @@ namespace LevelStreaming
                 Color fillColor = new(wireColor.r, wireColor.g, wireColor.b, 0.1f);
                 Bounds bounds = region.BroadphaseBounds;
 
-                if (region.Volume is PolygonStreamingVolume polygon)
+                if (region.Volume is PolygonPrismStreamingVolume polygon)
                     DrawPolygonGizmo(polygon, wireColor);
-                else if (region.Volume is XZPolygonStreamingVolume horizontalPolygon)
-                    DrawPolygonGizmo(horizontalPolygon, wireColor);
                 else
                 {
                     Gizmos.color = fillColor;
@@ -119,13 +117,9 @@ namespace LevelStreaming
                     if (portal == null)
                         continue;
 
-                    if (portal.WorldVolume is PolygonStreamingVolume portalPolygon)
+                    if (portal.WorldVolume is PolygonPrismStreamingVolume portalPolygon)
                     {
                         DrawPolygonGizmo(portalPolygon, Color.yellow);
-                    }
-                    else if (portal.WorldVolume is XZPolygonStreamingVolume horizontalPortalPolygon)
-                    {
-                        DrawPolygonGizmo(horizontalPortalPolygon, Color.yellow);
                     }
                     else
                     {
@@ -141,7 +135,7 @@ namespace LevelStreaming
             }
         }
 
-        private static void DrawPolygonGizmo(PolygonStreamingVolume polygon, Color color)
+        private static void DrawPolygonGizmo(PolygonPrismStreamingVolume polygon, Color color)
         {
             if (polygon?.Vertices == null || polygon.Vertices.Count < 2)
                 return;
@@ -151,34 +145,22 @@ namespace LevelStreaming
             {
                 Vector2 current = polygon.Vertices[i];
                 Vector2 next = polygon.Vertices[(i + 1) % polygon.Vertices.Count];
-                Vector3 backCurrent = new(current.x, current.y, polygon.MinZ);
-                Vector3 backNext = new(next.x, next.y, polygon.MinZ);
-                Vector3 frontCurrent = new(current.x, current.y, polygon.MaxZ);
-                Vector3 frontNext = new(next.x, next.y, polygon.MaxZ);
-                Gizmos.DrawLine(backCurrent, backNext);
-                Gizmos.DrawLine(frontCurrent, frontNext);
-                Gizmos.DrawLine(backCurrent, frontCurrent);
+                Vector3 minimumCurrent = ToWorld(polygon, current, polygon.MinExtrusion);
+                Vector3 minimumNext = ToWorld(polygon, next, polygon.MinExtrusion);
+                Vector3 maximumCurrent = ToWorld(polygon, current, polygon.MaxExtrusion);
+                Vector3 maximumNext = ToWorld(polygon, next, polygon.MaxExtrusion);
+                Gizmos.DrawLine(minimumCurrent, minimumNext);
+                Gizmos.DrawLine(maximumCurrent, maximumNext);
+                Gizmos.DrawLine(minimumCurrent, maximumCurrent);
             }
         }
 
-        private static void DrawPolygonGizmo(XZPolygonStreamingVolume polygon, Color color)
+        private static Vector3 ToWorld(PolygonPrismStreamingVolume polygon,
+            Vector2 vertex, float extrusion)
         {
-            if (polygon?.Vertices == null || polygon.Vertices.Count < 2)
-                return;
-
-            Gizmos.color = color;
-            for (int i = 0; i < polygon.Vertices.Count; i++)
-            {
-                Vector2 current = polygon.Vertices[i];
-                Vector2 next = polygon.Vertices[(i + 1) % polygon.Vertices.Count];
-                Vector3 bottomCurrent = new(current.x, polygon.MinY, current.y);
-                Vector3 bottomNext = new(next.x, polygon.MinY, next.y);
-                Vector3 topCurrent = new(current.x, polygon.MaxY, current.y);
-                Vector3 topNext = new(next.x, polygon.MaxY, next.y);
-                Gizmos.DrawLine(bottomCurrent, bottomNext);
-                Gizmos.DrawLine(topCurrent, topNext);
-                Gizmos.DrawLine(bottomCurrent, topCurrent);
-            }
+            return polygon.ProjectionPlane == PolygonPrismPlane.XY
+                ? new Vector3(vertex.x, vertex.y, extrusion)
+                : new Vector3(vertex.x, extrusion, vertex.y);
         }
     }
 
